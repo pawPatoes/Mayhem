@@ -1,5 +1,6 @@
 # Balatro Mayhem
 An utterly ridiculous Balatro mod.
+![video](https://cdn.discordapp.com/attachments/1280466807026614275/1349311411968409620/average_modded_crapatro_hand.mp4?ex=67d2a3ad&is=67d1522d&hm=4fe29133430388b1c16edc97995f5f5380a3cbc904ca64904c4f16cd34971115&)
 
 # This mod is very, VERY W.I.P. 
 Much more content is planned, though the mod is currently public so it doesn't turn into Geometry Dash 2.2, as in i stop fixing and adding things forever and delaying the mod for 76 years.
