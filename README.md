@@ -32,7 +32,7 @@ You probably shouldn't play these with Mayhem
 
 - Jen's Almanac (that mod has its own systems and quirks which would be sisyphean to work around, along with conflicting content. You either play Mayhem or play Almanac, sorry) 
 
--# This list will be updated as you people try my stupid mod with other mods and experience the crashes for themselves 
+*This list will be updated as you people try my stupid mod with other mods and experience the crashes for themselves*
 
 ## What is this what is going on where am i help me axon dendrite 
 Mayhem is a bit of a spreadsheet mod. It centers around fusion chains. Basically, start with a sensible joker, combine with another joker to get a less sensible joker and then keep combining until you get the big numbers. This mod also has a lot of content that is never explained anywhere. You can check the wiki on this repo, but it's only temporary and very good-enough-ish. If you're checking this out moments after the mod releases, please wait patiently until someone writes about this catastrophe on the Balatro Modding Wiki, or maybe do it yourself idk. In the case someone does make a wiki for this mod, **it will be the official wiki** and i will personally try to help people understand this incoherent mess. 
