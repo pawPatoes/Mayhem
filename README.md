@@ -1,6 +1,13 @@
 # Balatro Mayhem
 An utterly ridiculous Balatro mod.
 
+## Credits 
+https://docs.google.com/document/d/1P53UrzO_xHavnu59BPmQSzwq0ZeTYD1dUHoRvsMqx9w/edit?usp=drivesdk
+## Planned Features List
+https://docs.google.com/document/d/1Y96uZDKu7lGcUndEbuiTgqzry3jFJa91LACRaCwv5vc/edit?usp=drivesdk
+## Discord
+https://discord.gg/esrGbYWHEQ
+
 # This mod is very, VERY W.I.P. 
 Much more content is planned, though the mod is currently public so it doesn't turn into Geometry Dash 2.2, as in i stop fixing and adding things forever and delaying the mod for 76 years.
 As a sideffect, this obviously means this mod is a twisted nightmare that will most likely break, and there are many gaps content-wise, so be patient.
@@ -39,11 +46,6 @@ Mayhem is a bit of a spreadsheet mod. It centers around fusion chains. Basically
 
 ## Mayhem and Eternum
 Yes, the whole mod is called Mayhem, but it features 2 main modes, Mayhem and Eternum. This is so people that want something more sane (Mayhem) can play fine but people who don't care about the well-being of the game (Eternum) can also play fine. The "official" mode is Mayhem, where all of the intended content is left as is. Meanwhile, Eternum absolutely breaks everything Balatro has to offer by reverting all of the difficulty tweaks present in Mayhem and adding completely unhinged content, turning the game into a big number generator and lag machine (as if Mayhem wasn't enough). The choice is yours because democracy sucks the least. 
-
-## I want to talk about this software modification
-You could doxx the specific person, go to their house and have a conversation over a nice cup of preferred beverage, but if you'd rather not break international cybernetic security law, you can join the Mayhem Discord server, which is a Discord server about Mayhem.
-
-https://discord.gg/BXUH5fHj8Z
 
 ## This mod is too crazy i want it to be less crazy please make it less crazy i will stab you to death if you don't make it less crazy
 Yes.
