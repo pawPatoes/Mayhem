@@ -1,5 +1,6 @@
 # Balatro Mayhem
 An utterly ridiculous Balatro mod.
+Your goal is simple: get the biggest numbers you can.
 
 ## Credits 
 https://docs.google.com/document/d/1P53UrzO_xHavnu59BPmQSzwq0ZeTYD1dUHoRvsMqx9w/edit?usp=drivesdk
