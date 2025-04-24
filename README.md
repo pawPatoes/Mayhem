@@ -45,6 +45,8 @@ You don't need these for Mayhem, but they make it better (crazier):
 - Grim
 - More Fluff
 
+(CM stands for cross-mod and means that Mayhem has certain content that's only accessible if you have that mod)
+
 ### Not recommended mods
 You probably shouldn't play these with Mayhem 
 
