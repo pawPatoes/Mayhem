@@ -26,7 +26,7 @@ Oh also lovely and steamodded. Check their guides on how to get mods working, bu
 
 - Talisman >=2.1.0
 - JenLib >=0.4.0
-- [[this version of Fusion Jokers]](https://github.com/Sayrus/Fusion-Jokers)
+- [this version of Fusion Jokers](https://github.com/Sayrus/Fusion-Jokers)
 - Steamodded >=0323b
 
 ### Recommended mods 
