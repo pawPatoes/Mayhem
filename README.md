@@ -2,6 +2,8 @@
 An utterly ridiculous Balatro mod.
 Your goal is simple: get the biggest numbers you can.
 
+https://www.youtube.com/watch?v=iG6z5mp5HqY
+
 ## Credits 
 https://docs.google.com/document/d/1P53UrzO_xHavnu59BPmQSzwq0ZeTYD1dUHoRvsMqx9w/edit?usp=drivesdk
 ## Planned Features List
@@ -22,10 +24,10 @@ You will need balatro for this.
 
 Oh also lovely and steamodded. Check their guides on how to get mods working, but for Mayhem you will need more stuff, specifically dependencies, specifically these ones:
 
-- Talisman (I'm planning on making a fork with even crazier stuff because i like taking thngs too far, but for now you will need normal talisman) 
-- JenLib, any modern version should work
-- Fusion Jokers X (fork of Fusion Jokers to make it usable and also stupider) 
-- Steamodded better-calc, because you probably like playing with multiple mods at once 
+- Talisman >=2.1.0
+- JenLib >=0.4.0
+- [[this version of Fusion Jokers]](https://github.com/Sayrus/Fusion-Jokers)
+- Steamodded >=0323b
 
 ### Recommended mods 
 You don't need these for Mayhem, but they make it better (crazier):
@@ -34,6 +36,10 @@ You don't need these for Mayhem, but they make it better (crazier):
 - Incantation
 - Cartomancer
 - Cryptid (CM) 
+- CardSleeves (CM)
+- Blind editions (CM)
+- Grim
+- More Fluff
 
 ### Not recommended mods
 You probably shouldn't play these with Mayhem 
