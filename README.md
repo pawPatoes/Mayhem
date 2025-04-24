@@ -15,6 +15,9 @@ https://discord.gg/esrGbYWHEQ
 Much more content is planned, though the mod is currently public so it doesn't turn into Geometry Dash 2.2, as in i stop fixing and adding things forever and delaying the mod for 76 years.
 As a sideffect, this obviously means this mod is a twisted nightmare that will most likely break, and there are many gaps content-wise, so be patient.
 
+# I suck
+This might be a repository on Codeberg, however I don't commit changes to files and do branches and pull requests and stuff. I recommend posting all of your improvements and issues in my Discord server as I don't check here very often.
+
 ## Installing
 ### The actual releases
 Most github/codeberg projects have constant commits and changes all the time. I dont like working that way. This repository is only so you can browse the code without downloading the mod, this is not actively updated as i change assets. This is to say the most recent release IS the most recent release, downloading the current code wont do anything different. I recommend downloading Mayhem from the discord server because i post new versions and pre-releases there more often.
