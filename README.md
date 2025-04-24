@@ -40,7 +40,7 @@ You don't need these for Mayhem, but they make it better (crazier):
 - Incantation
 - Cartomancer
 - Cryptid (CM) 
-- CardSleeves (CM)
+- CardSleeves (CM, WIP)
 - Blind editions (CM)
 - Grim
 - More Fluff
