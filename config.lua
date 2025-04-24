@@ -1,14 +1,37 @@
-return = {
-	Menu = true
-	Music = 1
-	Debug = false
-	Partymusic = false
-	Santamusic = false
-	Mode = 1
-	Limit = 2
-	VNShake = true
-	Scaling = 2
-	Params = 2
-	TrEffects = 2
-	TrAudio = 2
+return {
+	["Menu"] = true,
+	["Music"] = 1,
+	["Debug"] = false,
+	["Partymusic"] = false,
+	["Santamusic"] = false,
+	["Mode"] = 1,
+	["Limit"] = 2,
+	["Scaling"] = 2,
+	["Params"] = 2,
+	["TrEffects"] = 2,
+	["TrAudio"] = 100,
+	["WindowShake"] = true,
+	["JokerEffects"] = true,
+	["Safe"] = false,
+	["content"] = {
+		["WIP"] = true,
+		["Jokers"] = true,
+		["FusionJokers"] = true,
+		["Consumables"] = true,
+		["Vouchers"] = true,
+		["Blinds"] = true,
+		["Enhancements"] = true,
+		["Editions"] = true,
+	},
+	["CM"] = {
+		["Cryptid"] = true,
+	},
+	["Shakiness"] = {
+		["quiverlimit"] = 10,
+		["pulselimit"] = 10,
+		["unlimitquiver"] = false,
+		["unlimitpulse"] = false,
+	},
+	["transcendence_counter"] = true,
+	["massuse"] = true,
 }
