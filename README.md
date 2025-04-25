@@ -66,8 +66,8 @@ Turn some settings off in the mod config. This mod is demanding because I'm an a
 There's a spreadsheet of features i will most likely add to Mayhem (the link at the top). If you want your idea to be there, you need to make a post in the suggestions channel in the discord server and it also has to be good enough.
 
 ## That's some scrumptious code right there would be detrimental if i would just so happen to insert a replica of it in my project 
-Go ahead, this mod is CC0, which basically means you can do literally anything you want with it. 
-WARNING THIS DOES NOT AFFECT MAYHEM DEPENDENCIES. THEY ARE SEPERATE PROJECTS AND ONLY MAYHEM IS CC0. ADDITIONALLY, CERTAIN ASSETS (AUDIO) HAVE SEPARATE LICENSES. SIMPLY PUT, YOU CAN ONLY USE THE STUFF I DIDN'T MENTION IN THE CREDITS. BE CAREFUL MATE.
+Go ahead, this mod is GPL 3, which basically means you can do literally anything you want with it as long as your awesome mod is also GPL 3. 
+WARNING THIS DOES NOT AFFECT MAYHEM DEPENDENCIES. THEY ARE SEPERATE PROJECTS. ADDITIONALLY, CERTAIN ASSETS HAVE SEPARATE LICENSES BECAUSE I STOLE THEM. SIMPLY PUT, YOU CAN ONLY USE THE STUFF I DIDN'T MENTION IN THE CREDITS EXCEPT CODE BECAUSE GPL 3. BE CAREFUL MATE.
 
 # What do you plan to do with this mod?
 
