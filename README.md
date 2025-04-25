@@ -5,10 +5,13 @@ Your goal is simple: get the biggest numbers you can.
 https://www.youtube.com/watch?v=iG6z5mp5HqY
 
 ## Credits 
+Yes I know the mods I took code from are GPL 3.0 but I feel guilty so here's a comprehensive list of things I stole.
 https://docs.google.com/document/d/1P53UrzO_xHavnu59BPmQSzwq0ZeTYD1dUHoRvsMqx9w/edit?usp=drivesdk
 ## Planned Features List
+This is pretty unreliable because i suck at constantly updating things.
 https://docs.google.com/document/d/1Y96uZDKu7lGcUndEbuiTgqzry3jFJa91LACRaCwv5vc/edit?usp=drivesdk
 ## Discord
+I post random stuff here including pre-releases and you can talk with other people that like this disaster I* guess.
 https://discord.gg/esrGbYWHEQ
 
 # This mod is very, VERY W.I.P. 
