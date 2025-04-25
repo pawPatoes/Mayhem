@@ -16,7 +16,7 @@ Much more content is planned, though the mod is currently public so it doesn't t
 As a sideffect, this obviously means this mod is a twisted nightmare that will most likely break, and there are many gaps content-wise, so be patient.
 
 # I suck
-This might be a repository on Codeberg, however I don't commit changes to files and do branches and pull requests and stuff. I recommend posting all of your improvements and issues in my Discord server as I don't check here very often.
+This might be a repository on Codeberg, however I don't commit changes to files and do branches and pull requests and stuff. I recommend posting all of your improvements and issues in my Discord server as I don't check here very often. Also I admit that some parts of the mod are questionable, lazy or stolen (especially internally)
 
 ## Installing
 ### The actual releases
@@ -50,7 +50,7 @@ You don't need these for Mayhem, but they make it better (crazier):
 ### Not recommended mods
 You probably shouldn't play these with Mayhem 
 
-- Jen's Almanac (that mod has its own systems and quirks which would be sisyphean to work around, along with conflicting content. You either play Mayhem or play Almanac, sorry) 
+- Polterworx (that mod has its own systems and quirks which would be sisyphean to work around, along with conflicting content. You either play Mayhem or play Polterworx, sorry) 
 
 *This list will be updated as you people try my stupid mod with other mods and experience the crashes for themselves*
 
