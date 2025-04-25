@@ -11,7 +11,7 @@ https://docs.google.com/document/d/1P53UrzO_xHavnu59BPmQSzwq0ZeTYD1dUHoRvsMqx9w/
 This is pretty unreliable because i suck at constantly updating things.
 https://docs.google.com/document/d/1Y96uZDKu7lGcUndEbuiTgqzry3jFJa91LACRaCwv5vc/edit?usp=drivesdk
 ## Discord
-I post random stuff here including pre-releases and you can talk with other people that like this disaster I* guess.
+I post random stuff here including pre-releases and you can talk with other people that like this disaster I guess.
 https://discord.gg/esrGbYWHEQ
 
 # This mod is very, VERY W.I.P. 
