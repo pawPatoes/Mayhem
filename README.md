@@ -18,7 +18,7 @@ https://discord.gg/esrGbYWHEQ
 Much more content is planned, though the mod is currently public so it doesn't turn into Geometry Dash 2.2, as in i stop fixing and adding things forever and delaying the mod for 76 years.
 As a sideffect, this obviously means this mod is a twisted nightmare that will most likely break, and there are many gaps content-wise, so be patient. Please report every single bug you see unless it's been fixed already because this mod was made by me, an idiot :D.
 
-# I suck
+## I suck
 This might be a repository on Codeberg, however I don't commit changes to files and do branches and pull requests and stuff. I recommend posting all of your improvements and issues in my Discord server as I don't check here very often. Also I admit that some parts of the mod are questionable, lazy or stolen (especially internally)
 
 ## Installing
@@ -53,6 +53,7 @@ You probably shouldn't play these with Mayhem
 
 *This list will be updated as you people try my stupid mod with other mods and experience the crashes for themselves*
 
+# Stuff you should probably know
 ## What is this what is going on where am i help me axon dendrite 
 Mayhem is a bit of a spreadsheet mod. It centers around fusion chains. Basically, start with a sensible joker, combine with another joker to get a less sensible joker and then keep combining until you get the big numbers. This mod also has a lot of content that is never explained anywhere. You can check the wiki I'm probably making on the [Balatro Mods Wiki](https://balatromods.miraheze.org), though I may be very slow. I will most likely explain things in my discord server, so you can join it and annoy me there.
 
@@ -62,14 +63,10 @@ Yes, the whole mod is called Mayhem, but it features 2 main modes, Mayhem and Et
 ## My PC is on the brink of death
 Turn some settings off in the mod config. This mod is demanding because I'm an awesome coder and also because there's a lot of random stuff even if i just said that there are many gaps content-wise.
 
-## Can you please add a joker that CgChxcCr4ewug2uv GS EJB cheers mate
+## Can you please add my very EPIC and AWESOME joker cheers mate
 There's a spreadsheet of features i will most likely add to Mayhem (the link at the top). If you want your idea to be there, you need to make a post in the suggestions channel in the discord server and it also has to be good enough.
 
-## That's some scrumptious code right there would be detrimental if i would just so happen to insert a replica of it in my project 
-Go ahead, this mod is GPL 3, which basically means you can do literally anything you want with it as long as your awesome mod is also GPL 3. 
-WARNING THIS DOES NOT AFFECT MAYHEM DEPENDENCIES. THEY ARE SEPERATE PROJECTS. ADDITIONALLY, CERTAIN ASSETS HAVE SEPARATE LICENSES BECAUSE I STOLE THEM. SIMPLY PUT, YOU CAN ONLY USE THE STUFF I DIDN'T MENTION IN THE CREDITS EXCEPT CODE BECAUSE GPL 3. BE CAREFUL MATE.
-
-# What do you plan to do with this mod?
+## What do you plan to do with this mod?
 Unexpected error: expected string, got nil
 
 
