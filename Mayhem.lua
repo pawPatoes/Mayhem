@@ -377,17 +377,6 @@ SMODS.current_mod.extra_tabs = function()
 									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = conf, ref_value = "Partymusic" },
 								}},
 							}},
-							{n=G.UIT.R, config={}, nodes={
-								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
-									{ n = G.UIT.T, config = { text = 'Use Classic OST in-game', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
-								}},
-								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
-									{ n = G.UIT.T, config = { text = '(requires retsart)', scale = 0.15, colour = G.C.UI.TEXT_LIGHT }},
-								}},
-								{n = G.UIT.C, config = { align = "cl", padding = 0.05 }, nodes = {
-									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = MEOST, ref_value = "classic_ost" },
-								}},
-							}},
 						}}
 					}}
 					else
@@ -454,7 +443,7 @@ function generate_fact_text(fact, threshold)
 end
 
 -- Score Operator
--- Inspired and admitedly frankensteined from Jen's Almanac
+-- Inspired and admitedly frankensteined from Polterworx
 
 function get_final_score(chips, mult)
 	if to_big(chips or 0) == to_big(0) or to_big(mult or 0) == to_big(0) then
@@ -659,7 +648,7 @@ elseif conf.Limit == 4 then
 end
 
 -- Empowered Consumables
--- code mostly taken from Jen's Almanac
+-- code mostly taken from Polterworx
 
 if conf.content.WIP then
 
@@ -726,7 +715,7 @@ end
 end
 
 -- misc badges
--- taken from Jen's Alamanac (which took it from Cryptid (it's slightly different????))
+-- taken from Polterworx (which took it from Cryptid (it's slightly different????))
 local function calculate_scalefactor(text)
 	local size = 0.9
 	local font = G.LANG.font
@@ -1301,7 +1290,6 @@ if Incantation then
 	end
 end
 
-SMODS.current_mod.debug_info = "Hi you found a crash. Yell about it in my dms with the error message so i can fix it."
 
 -- Aurinko stuff
 if #SMODS.find_mod('aurinko') ~= 0 then
@@ -1312,6 +1300,7 @@ if #SMODS.find_mod('aurinko') ~= 0 then
 	end
 end
 -- Unrerollable UltraBlind stuff
+-- Taken from Polterworx
 
 local vanf_reb = G.FUNCS.reroll_boss
 
@@ -1327,7 +1316,7 @@ G.FUNCS.reroll_boss = function(e)
 	end
 end
 
--- Money operations
+-- Money hyperoperations
 
 function hypermoney(arrow, amount, silent)
 	if G and G.GAME then
@@ -2058,7 +2047,7 @@ function Card:get_chip_fact_bonus()
 end
 
 -- Number shakiness 
--- slightly modified code from Jen's Almanac
+-- slightly modified code from Polterworx
 
 function G.FUNCS.tsj_specific(e, quiver, pulse, juice)
 	if e and e.config and e.config.object and next(e.config.object) then
@@ -2342,7 +2331,7 @@ function get_mphand_level()
 	return G.GAME.hands[jl.favhand()].level 
 end
 
--- Custom chip-mult operations (doesnt work because talisman hates me)
+-- Custom chip-mult operations
 if SMODS and SMODS.calculate_individual_effect then
     local scie = SMODS.calculate_individual_effect
     function SMODS.calculate_individual_effect(effect, scored_card, key, amount, from_edition)
@@ -3302,7 +3291,7 @@ SMODS.Sound({key = 'e_ultraantimatter', path = 'edition/e_ultraantimatter.ogg'})
 
 SMODS.Sound({key = 'weezer', path='weezer.ogg'})
 SMODS.Sound({key = 'st_hohoho', path='hohoho.ogg'})
-SMODS.Sound({key = 'st_bells', path='santa_bells.mp3'})
+SMODS.Sound({key = 'st_bells', path='santa_bells.ogg'})
 
 SMODS.Sound({key = 'enchant', path='enchant.ogg'})
 SMODS.Sound({key = 'super_level', path='super_level.ogg'})
@@ -3358,7 +3347,7 @@ SMODS.Sound({key = 'eeeboth', path='operation/PentationalMultChips.ogg'})
 
 	-- Mythic
 	
--- FusionJokers.fusions:add_fusion('j_triboulet', nil, nil, 'j_baron', nil, nil, 'j_may_patriarch', 250)
+
 
 FusionJokers.fusions:add_fusion('j_may_man', nil, nil, 'j_may_wheel_of_eternity', nil, nil, 'j_may_diskus', 140)
  
@@ -4463,6 +4452,16 @@ SMODS.Booster {
 		SMODS.Booster.update_pack(self, dt)
 	end,
 	group_key = "k_may_editioncard_pack",
+	cry_digital_hallucinations = {
+		colour = G.C.EDITION,
+		loc_key = "may_cry_plus_edition_card",
+		create = function()
+			local ccard = create_card("editioncards", G.consumables, nil, nil, nil, nil, nil, "diha")
+			ccard:set_edition({ negative = true }, true)
+			ccard:add_to_deck()
+			G.consumeables:emplace(ccard)
+		end
+	}
 }
 
 if conf.content.WIP and conf.Mode == 2 then
@@ -4511,6 +4510,16 @@ SMODS.Booster {
 		SMODS.Booster.update_pack(self, dt)
 	end,
 	group_key = "k_may_yotta_pack",
+	cry_digital_hallucinations = {
+		colour = G.C.YELLOW,
+		loc_key = "may_cry_plus_yotta",
+		create = function()
+			local ccard = create_card("yottacards", G.consumables, nil, nil, nil, nil, pseudorandom_element(may.yotta_cards, pseudoseed('may_yotta_pack')), "diha")
+			ccard:set_edition({ negative = true }, true)
+			ccard:add_to_deck()
+			G.consumeables:emplace(ccard)
+		end
+	}
 }
 
 end
@@ -5310,7 +5319,7 @@ SMODS.Consumable {
 	loc_txt = {
 		name = "Astronomy",
 		text = {
-			"Creates 2 {C:attention}random{} {X:mult,C:white}Rare{} {C:planet}planets{}",
+			"Creates {C:attention}2 random{} {X:mult,C:white}Rare{} {C:planet}planets{}",
 			"{C:inactive}(requires room){}"
 		}
 	},
@@ -6865,8 +6874,9 @@ SMODS.Voucher {
 	pos = { x = 2, y = 0 },
 	atlas = 'placeholder_voucher',
 	cost = 10,
+	pools = { Tier3 = true },
 	unlocked = true,
-	requires = {'c_may_natural_selection'},
+	requires = {'v_may_natural_selection'},
 	redeem = function(self, card)
 		G.GAME.power_trip = true
 	end,
@@ -6880,35 +6890,20 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Booster Cataclysm",
 		text = {
-			"{C:attention}+1{} {C:green}booster pack{} in shop",
-			"{C:attention}Booster packs{} have {C:attention}1 extra card{} for the rest of the run"
+			"{C:attention}+2{} {C:green}booster packs{} in shop",
 		}
 	},
 	pos = { x = 2, y = 0 },
 	atlas = 'placeholder_voucher',
 	cost = 10,
+	pools = { Tier3 = true },
 	unlocked = true,
 	requires = {'v_may_booster_overabundance'},
 	redeem = function(self, card)
-		SMODS.change_booster_limit(1)
-		for k, v in ipairs(G.P_CENTERS) do
-			-- admittedly dumb way of doing this, please make my code better for profits
-			if G.P_CENTERS[v].config.choose then
-				if G.P_CENTERS[v].config.extra then
-					G.P_CENTERS[v].config.extra = G.P_CENTERS[v].config.extra + 1
-				end
-			end
-		end
+		SMODS.change_booster_limit(2)
 	end,
 	unredeem = function(self, card)
-		SMODS.change_booster_limit(-1)
-		for k, v in ipairs(G.P_CENTERS) do
-			if G.P_CENTERS[v].config.choose then
-				if G.P_CENTERS[v].config.extra and G.P_CENTERS[v].config.extra > 1 then
-					G.P_CENTERS[v].config.extra = G.P_CENTERS[v].config.extra + 1
-				end
-			end
-		end
+		SMODS.change_booster_limit(-2)
 	end,
 }
 
@@ -6924,8 +6919,9 @@ SMODS.Voucher {
 	pos = { x = 2, y = 0 },
 	atlas = 'placeholder_voucher',
 	cost = 10,
+	pools = { Tier3 = true },
 	unlocked = true,
-	requires = {'v_may_booster_overabundance'},
+	requires = {'v_may_bountiful_selection'},
 	redeem = function(self, card)
 		G.GAME.spectral_rate = 4
 		G.GAME.yottacards_rate = G.GAME.yottacards_rate*20
@@ -9223,7 +9219,7 @@ SMODS.Joker {
 		name = "Santa",
 		text = {
 			"This joker creates a {C:attention}random{} {C:dark_edition}Negative{} {X:mult,C:white}Rare{} Joker",
-			"if played hand is a {C:attention}Pair{}",
+			"if played hand contains a {C:attention}Pair{}",
 			"{X:mult,C:white}^#2#{} Mult",
 			"{C:inactive,s:0.5}Universal Collapse + Jolly Joker{}"
     }
@@ -11532,7 +11528,7 @@ end
 -- Blind Editions CM
 if SMODS.BlindEdition and conf.CM.BlindEditions then
 
--- Idea of adding sounds to blind editions was *borrowed* from Jen's Almanac
+-- Idea of adding sounds to blind editions was *borrowed* from Polterworx
 SMODS.BlindEdition:take_ownership('ble_foil', {
 	set_blind = function(self, blind_on_deck)
 		G.E_MANAGER:add_event(Event({func = function()
@@ -11687,6 +11683,7 @@ if conf.Debug then
 
 	local goog = to_big(1e100)
 	
+	-- added this way before the Alt+f5 shortcut and I've gotten used to it because contrary to popular belief im a human
 	SMODS.Keybind {
 		key_pressed = '`',
 		action = function(self)
