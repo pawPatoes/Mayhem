@@ -13,16 +13,12 @@ https://discord.gg/esrGbYWHEQ
 
 # This mod is very, VERY W.I.P. 
 Much more content is planned, though the mod is currently public so it doesn't turn into Geometry Dash 2.2, as in i stop fixing and adding things forever and delaying the mod for 76 years.
-As a sideffect, this obviously means this mod is a twisted nightmare that will most likely break, and there are many gaps content-wise, so be patient.
+As a sideffect, this obviously means this mod is a twisted nightmare that will most likely break, and there are many gaps content-wise, so be patient. Please report every single bug you see unless it's been fixed already because this mod was made by me, an idiot :D.
 
 # I suck
 This might be a repository on Codeberg, however I don't commit changes to files and do branches and pull requests and stuff. I recommend posting all of your improvements and issues in my Discord server as I don't check here very often. Also I admit that some parts of the mod are questionable, lazy or stolen (especially internally)
 
 ## Installing
-### The actual releases
-Most github/codeberg projects have constant commits and changes all the time. I dont like working that way. This repository is only so you can browse the code without downloading the mod, this is not actively updated as i change assets. This is to say the most recent release IS the most recent release, downloading the current code wont do anything different. I recommend downloading Mayhem from the discord server because i post new versions and pre-releases there more often.
-
-### Actually installing
 You will need balatro for this.
 
 Oh also lovely and steamodded. Check their guides on how to get mods working, but for Mayhem you will need more stuff, specifically dependencies, specifically these ones:
@@ -59,10 +55,6 @@ Mayhem is a bit of a spreadsheet mod. It centers around fusion chains. Basically
 
 ## Mayhem and Eternum
 Yes, the whole mod is called Mayhem, but it features 2 main modes, Mayhem and Eternum. This is so people that want something more sane (Mayhem) can play fine but people who don't care about the well-being of the game (Eternum) can also play fine. The "official" mode is Mayhem, where all of the intended content is left as is. Meanwhile, Eternum absolutely breaks everything Balatro has to offer by adding completely unhinged content and tweaking existing assets to make them even more insane, turning the game into a big number generator and lag machine (as if Mayhem wasn't enough). The choice is yours because democracy sucks the least. 
-
-## This mod is too crazy i want it to be less crazy please make it less crazy i will stab you to death if you don't make it less crazy
-Yes.
-The long answer is that you can toggle certain features in the mod config, so you could have transcendence effects without any feasible way of achieving them. Very useful.
 
 ## My PC is on the brink of death
 Turn some settings off in the mod config. This mod is demanding because I'm an awesome coder and also because there's a lot of random stuff even if i just said that there are many gaps content-wise.
