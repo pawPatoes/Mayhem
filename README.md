@@ -70,7 +70,7 @@ Go ahead, this mod is GPL 3, which basically means you can do literally anything
 WARNING THIS DOES NOT AFFECT MAYHEM DEPENDENCIES. THEY ARE SEPERATE PROJECTS. ADDITIONALLY, CERTAIN ASSETS HAVE SEPARATE LICENSES BECAUSE I STOLE THEM. SIMPLY PUT, YOU CAN ONLY USE THE STUFF I DIDN'T MENTION IN THE CREDITS EXCEPT CODE BECAUSE GPL 3. BE CAREFUL MATE.
 
 # What do you plan to do with this mod?
-
+Unexpected error: expected string, got nil
 
 
 
