@@ -46,6 +46,8 @@ You don't need these for Mayhem, but they make it better (crazier):
 
 (CM stands for cross-mod and means that Mayhem has certain content that's only accessible if you have that mod)
 
+I don't recommend playing with many joker mods because it's gonna make finding fusable jokers harder and the game devolves into grindy nonsense. 
+
 ### Not recommended mods
 You probably shouldn't play these with Mayhem 
 
