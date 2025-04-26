@@ -1057,16 +1057,6 @@ payload = "nominal_chips = (self.base.nominal > 0 and self.base.nominal or nil) 
 match_indent = true
 overwrite = true
 
-# Turn blind requirement into dynatext
-[[patches]] 
-[patches.pattern]
-target = "functions/UI_definitions.lua"
-pattern = "{n=G.UIT.T, config={ref_table = G.GAME.blind, ref_value = 'chip_text', scale = 0.001, colour = G.C.RED, shadow = true, id = 'HUD_blind_count', func = 'blind_chip_UI_scale'}}"
-position = "at"
-payload = '''{n=G.UIT.O, config={id = 'HUD_blind_count', func = 'blind_chip_UI_scale',object = DynaText({string = {{ref_table = G.GAME.blind, ref_value = "chip_text"}}, colours = {G.C.RED}, font = G.LANGUAGES['en-us'].font, shadow = true, float = true, scale = 0.001, maxw = 2, w = 1})}},'''
-match_indent = true
-overwrite = true
-
 # Custom operations
 [[patches]]
 [patches.pattern]

@@ -986,7 +986,7 @@ end
 				{n=G.UIT.O, config={object = DynaText({string = {{ref_table = may, ref_value = 'transcendence'}}, colours = {G.C.DARK_EDITION},shadow = true, font = G.LANGUAGES['en-us'].font, scale = .8+((may.transcendence or 0)/10)}),id = 'transcendence_count'}},
 			}},
 ]]
-if conf.transcendence_counter and #SMODS.find_mod('multiplayer') == 0 then
+if conf.transcendence_counter and #SMODS.find_mod('Multiplayer') == 0 then
 function create_UIBox_HUD()
 	local scale = 0.4
 	local stake_sprite = get_stake_sprite(G.GAME.stake or 1, 0.5)
@@ -1450,7 +1450,6 @@ elseif conf.TrEffects == 3 then
 			may.safe_transcendence = (G.ARGS.score_intensity.transcendence or 0)
 		end
 		if G.hand then
-			G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)
 			if (may.transcendence or 0) > 0 then
 				if may.transcendence < 10 then
 					G.hand_text_area.blind_chips:juice_up(0.01, math.random(-(may.transcendence or 0)/9, (may.transcendence or 0))/9)
@@ -1531,6 +1530,9 @@ elseif conf.TrEffects == 3 then
 				ease_colour(G.C.GOLD, copy_table(G.C.DARK_EDITION), .6)
 				ease_colour(G.C.ORANGE, copy_table(G.C.DARK_EDITION), .6)
 				ease_colour(G.C.UI.BACKGROUND_DARK, copy_table(G.C.DARK_EDITION), .6)
+				if #SMODS.find_mod('GRM') ~= 0 then
+					ease_colour(G.C.PURPLE, copy_table(G.C.DARK_EDITION), .6)
+				end
 				ease_background_colour({ new_colour = copy_table(G.C.DARK_EDITION), special_colour = copy_table(G.C.BLACK), contrast = 2 })
 			else
 				ease_colour(G.C.UI_CHIPS, HEX("009dff"), 1)
@@ -1542,6 +1544,9 @@ elseif conf.TrEffects == 3 then
 				ease_colour(G.C.GOLD, HEX('eac058'), 1)
 				ease_colour(G.C.ORANGE, HEX('fda200'), 1)
 				ease_colour(G.C.UI.BACKGROUND_DARK, HEX("7A9E9F"), 1)
+				if #SMODS.find_mod('GRM') ~= 0 then
+					ease_colour(G.C.PURPLE, HEX('8867a5'), .6)
+				end
 				love.window.setTitle('Balatro Mayhem')
 				if #SMODS.find_mod('Cryptid') == 0 then
 					transcendence_glitch = 0
@@ -2211,17 +2216,6 @@ G.FUNCS.hand_chip_total_UI_set = function(e)
 			end
 			G.ARGS.hand_chip_total_UI_set = G.GAME.current_round.current_hand.chip_total
 		end
-	end
-end
-
-G.FUNCS.blind_chip_UI_scale = function(e)
-	if G.GAME.blind and G.GAME.blind.chips then
-		e.config.object.scale = scale_number(G.GAME.blind.chips, 0.7, 100000)
-		e.config.object:set_quiver(math.min(conf.Shakiness.quiverlimit, math.min(math.max(0, (may.transcendence or 0)*0.1), 5)))
-		e.config.object:update_text()
-		e.config.object:align_letters()
-		e:update_object()
-		G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 	end
 end
 
@@ -9884,7 +9878,6 @@ SMODS.Back {
 	key = "gray_deck",
 	atlas = 'deck',
 	pos = { x = 7, y = 0 },
-	config = {mult = 10},
 	loc_txt = {
 		name = "Gray Deck",
 		text = {
@@ -9977,7 +9970,7 @@ SMODS.Back {
 	end
 }
 
--- Have to change the name because MF also has a raibow deck and they like interchanging
+-- Have to change the name because MF also has a rainbow deck and they like interchanging
 if #SMODS.find_mod('MoreFluff') == 0 then
 
 SMODS.Back {
@@ -9998,8 +9991,6 @@ SMODS.Back {
 	apply = function(self)
 		G.GAME.starting_params.hand_size = 8 + self.config.hand_size
 		G.GAME.starting_params.ante_scaling = G.GAME.starting_params.ante_scaling*self.config.size_mod
-		G.GAME.starting_params.discards = G.GAME.starting_params.discards + self.config.discards
-		G.GAME.starting_params.hands = G.GAME.starting_params.hands + self.config.hands
 		G.E_MANAGER:add_event(Event({func = function()
 			local card2 = create_card('Joker', G.jokers, nil, 3, false, nil, nil, 'rainbow_deck')
 			G.jokers:emplace(card2)
@@ -10029,8 +10020,6 @@ SMODS.Back {
 	apply = function(self)
 		G.GAME.starting_params.hand_size = 8 + self.config.hand_size
 		G.GAME.starting_params.ante_scaling = G.GAME.starting_params.ante_scaling*self.config.size_mod
-		G.GAME.starting_params.discards = G.GAME.starting_params.discards + self.config.discards
-		G.GAME.starting_params.hands = G.GAME.starting_params.hands + self.config.hands
 		G.E_MANAGER:add_event(Event({func = function()
 			local card2 = create_card('Joker', G.jokers, nil, 3, false, nil, nil, 'rainbow_deck')
 			G.jokers:emplace(card2)
@@ -11298,7 +11287,7 @@ CardSleeves.Sleeve {
 		local key, vars
 		if self.get_current_deck_key() == "b_may_rainbow_deck" then
 			key = self.key .. "_alt"
-			self.config = { extra_discard_bonus = 2 }
+			self.config = { extra_discard_bonus = 1 }
 		else
 			key = self.key
 		end
