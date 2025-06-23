@@ -4,12 +4,16 @@ Your goal is simple: get the biggest numbers you can.
 
 https://www.youtube.com/watch?v=iG6z5mp5HqY
 
+# SEIZURE AND AUDIO WARNING
+This mod goes absolutely haywire with effects which might be bad for you. if you're epileptic, try disabling these settings:
+- In Effects, set Transcendence Effects to Medium and disabled Shake Screen during Transcendence and Shake Cards during Transcendence
+- Also in Effects, lower down all of the Score Shakiness things, and disable Score Shakiness: Shake Screen
+In terms of audio, this mod has some asbolutely insane operation sounds that might get earrape-y when layered. You can enable Tamer Hyperoperation Sounds in Music, or disable them outright.
+
 ## Credits 
 Yes I know the mods I took code from are GPL 3.0 but I feel guilty so here's a comprehensive list of things I stole.
 https://docs.google.com/document/d/1P53UrzO_xHavnu59BPmQSzwq0ZeTYD1dUHoRvsMqx9w/edit?usp=drivesdk
-## Planned Features List
-This is pretty unreliable because i suck at constantly updating things.
-https://docs.google.com/document/d/1Y96uZDKu7lGcUndEbuiTgqzry3jFJa91LACRaCwv5vc/edit?usp=drivesdk
+
 ## Discord
 I post random stuff here including pre-releases and you can talk with other people that like this disaster I guess.
 https://discord.gg/esrGbYWHEQ
@@ -22,11 +26,8 @@ As a sideffect, this obviously means this mod is a twisted nightmare that will m
 This might be a repository on Codeberg, however I don't commit changes to files and do branches and pull requests and stuff. I recommend posting all of your improvements and issues in my Discord server as I don't check here very often. Also I admit that some parts of the mod are questionable, lazy or stolen (especially internally)
 
 ## Installing
-You will need balatro for this.
 
-Oh also lovely and steamodded. Check their guides on how to get mods working, but for Mayhem you will need more stuff, specifically dependencies, specifically these ones:
-
-- Talisman >=2.1.0
+- Talisman >=2.1.0 (preferably [OmegaNum optimization](https://github.com/SpectralPack/Talisman/tree/omeganum-optimization) branch)
 - JenLib >=0.4.0
 - [this version of Fusion Jokers](https://github.com/Sayrus/Fusion-Jokers)
 - Steamodded >=0323b
@@ -36,19 +37,46 @@ Oh also lovely and steamodded. Check their guides on how to get mods working, bu
 You don't need these for Mayhem, but they make it better (crazier):
 
 - Aurinko
+- Nopeus (CM, more speed options)
 - Incantation
 - Cartomancer
 - Cryptid (CM) 
 - CardSleeves (CM, WIP)
 - Blind editions (CM)
 - Grim
-- More Fluff
+- Galdur
+- Handy
+- Better Tags
 
 (CM stands for cross-mod and means that Mayhem has certain content that's only accessible if you have that mod)
 
 I don't recommend playing with many joker mods because it's gonna make finding fusable jokers harder and the game devolves into grindy nonsense. 
 
-### Not recommended mods
+### Mayhem Mega Modpack®
+This is a stupid name I came up with for my personal collection of mods I play with.
+- Aurinko
+- Banner
+- Better Tags
+- CardSleeves
+- Cartomancer
+- Collectors Cards
+- Crytpid
+- Debug+
+- Fusion Jokers
+- Galdur
+- Glue for Modpacks
+- Grim
+- Handy
+- Incantation
+- JenLib
+- Loop
+- Mayhem Dumpyard
+- Multiplayer
+- Next Ante Preview
+- Nopeus
+- Partner
+
+### Conflicts
 You probably shouldn't play these with Mayhem 
 
 - Polterworx (that mod has its own systems and quirks which would be sisyphean to work around, along with conflicting content. You either play Mayhem or play Polterworx, sorry) 
@@ -56,7 +84,7 @@ You probably shouldn't play these with Mayhem
 *This list will be updated as you people try my stupid mod with other mods and experience the crashes for themselves*
 
 # Stuff you should probably know
-## What is this what is going on where am i help me axon dendrite 
+## What is this
 Mayhem is a bit of a spreadsheet mod. It centers around fusion chains. Basically, start with a sensible joker, combine with another joker to get a less sensible joker and then keep combining until you get the big numbers. This mod also has a lot of content that is never explained anywhere. You can check the wiki I'm probably making on the [Balatro Mods Wiki](https://balatromods.miraheze.org), though I may be very slow. I will most likely explain things in my discord server, so you can join it and annoy me there.
 
 ## Mayhem and Eternum
@@ -64,9 +92,6 @@ Yes, the whole mod is called Mayhem, but it features 2 main modes, Mayhem and Et
 
 ## My PC is on the brink of death
 Turn some settings off in the mod config. This mod is demanding because I'm an awesome coder and also because there's a lot of random stuff even if i just said that there are many gaps content-wise.
-
-## Can you please add my very EPIC and AWESOME joker cheers mate
-There's a spreadsheet of features i will most likely add to Mayhem (the link at the top). If you want your idea to be there, you need to make a post in the suggestions channel in the discord server and it also has to be good enough.
 
 ## What do you plan to do with this mod?
 Unexpected error: expected string, got nil
