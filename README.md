@@ -8,10 +8,11 @@ https://www.youtube.com/watch?v=iG6z5mp5HqY
 This mod goes absolutely haywire with effects which might be bad for you. If you're epileptic, try disabling these settings:
 - In Effects, set Transcendence Effects to at least Medium and disable Shake Screen during Transcendence and Shake Cards during Transcendence
 - Also in Effects, lower down all of the Score Shakiness things, and disable Score Shakiness: Shake Screen
+
 In terms of audio, this mod has some asbolutely insane operation sounds that might get earrape-y when layered. You can enable Tamer Hyperoperation Sounds in Music, or disable them outright.
 
 ## Credits 
-Yes I know the mods I took code from are GPL 3.0 but I shouldn't take full credit when this mod has things made by other people.
+Yes, I know the mods I took code from are GPL 3.0 but I shouldn't take full credit when this mod has things made by other people.
 https://docs.google.com/document/d/1P53UrzO_xHavnu59BPmQSzwq0ZeTYD1dUHoRvsMqx9w/edit?usp=drivesdk
 
 ## Discord
@@ -93,6 +94,7 @@ Yes, the whole mod is called Mayhem, but it features 2 main modes, Mayhem and Et
 
 ## This is way too stupid
 Yes.
+
 The long answer is that I did my best to add extensive customizability so you can enjoy the mod however you like. Don't like the effects? Disable them. Don't like UltraBlinds? Disable them. Don't like ridiculous Jokers? Disable them. This is turning into an advertisement but, you can do all of these.
 
 ## My PC is on the brink of death
