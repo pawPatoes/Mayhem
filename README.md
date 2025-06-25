@@ -50,7 +50,7 @@ You don't need these for Mayhem, but they make it better (crazier):
 
 (CM stands for cross-mod and means that Mayhem has certain content that's only accessible if you have that mod)
 
-I don't recommend playing with many joker mods because it's gonna make finding fusable jokers harder and the game devolves into grindy nonsense. 
+I don't recommend playing with many joker mods because it's gonna make finding fusable jokers harder and the game devolves into grindy nonsense. If you do, I recommend installing Glue for Modpacks, which can give you more slots in the shop to start with.
 
 ### Mayhem Mega Modpack®
 This is a stupid name I came up with for my personal collection of mods I play with.
@@ -93,7 +93,7 @@ Yes, the whole mod is called Mayhem, but it features 2 main modes, Mayhem and Et
 
 ## This is way too stupid
 Yes.
-The long answer is that I did my best to add extensive customizability so you can enjoy the mod however you like. Don't like the effects? Disable them. Don't like UltraBlinds? Disable them. Don't like ridiculous Jokers? Diable them. This is turning into an advertisement but, you can do all of these.
+The long answer is that I did my best to add extensive customizability so you can enjoy the mod however you like. Don't like the effects? Disable them. Don't like UltraBlinds? Disable them. Don't like ridiculous Jokers? Disable them. This is turning into an advertisement but, you can do all of these.
 
 ## My PC is on the brink of death
 Turn some settings off in the mod config. This mod is demanding because I'm an awesome* coder and also because this mod relies on crazy OmegaNum operations with like hundreds of arrows (fun fact it has to calculate 1e1000{4000}1e1000 every frame during a blind)
