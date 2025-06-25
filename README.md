@@ -79,14 +79,14 @@ This is a stupid name I came up with for my personal collection of mods I play w
 ### Conflicts
 You probably shouldn't play these with Mayhem 
 
-- Polterworx (that mod has its own systems and quirks which would be sisyphean to work around, along with conflicting content. You either play Mayhem or play Polterworx, sorry) 
+- POLTERWORX (that mod has its own systems and quirks which would be sisyphean to work around, along with conflicting content. You either play Mayhem or play POLTERWORX, sorry) 
 
 *This list will be updated as you people try my stupid mod with other mods and experience the crashes for themselves*
 
 # Stuff you should probably know
 ## What is this
 Mayhem is basically a mod designed only to be in your advantage and allows you to destroy the game. Obviously the game doesnt just crash instantly (usually), but instead I implemented some very SUBTLE* effects for when you get big scores.
-An important mechanic is fusion. Basically, 2 Jokers can fuse into a better Joker if you spend money. For example, AAAA and Universal Collapse can fuse into Acum if you spennd $1111. Fusion is imperative for getting big scores, because all of the really good Jokers are fusions.
+An important mechanic is fusion. Basically, 2 Jokers can fuse into a better Joker if you spend money. For example, AAAA and Universal Collapse can fuse into Acum if you spend $1111. Fusion is imperative for getting big scores, because all of the really good Jokers are fusions.
 
 ## Mayhem and Eternum
 Yes, the whole mod is called Mayhem, but it features 2 main modes, Mayhem and Eternum. This is so people that want something more sane (Mayhem) can play fine but people who don't care about the well-being of the game (Eternum) can also play fine. The "official" mode is Mayhem, where all of the intended content is left as is. Meanwhile, Eternum absolutely breaks everything Balatro has to offer by adding completely unhinged content and tweaking existing assets to make them even more insane, turning the game into a big number generator and lag machine (as if Mayhem wasn't enough).
