@@ -38,7 +38,7 @@ You don't need these for Mayhem, but they make it better (crazier):
 
 - Aurinko
 - Nopeus (CM, more speed options)
-- Incantation
+- **Incantation** (sillier Jokers create HEAPS of consumables (I've had runs with 1e15 Negative Wheel of Fortunes), so this is basically required if you don't want your pc to explode)
 - Cartomancer
 - Cryptid (CM) 
 - CardSleeves (CM, WIP)
