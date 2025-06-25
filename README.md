@@ -5,32 +5,32 @@ Your goal is simple: get the biggest numbers you can.
 https://www.youtube.com/watch?v=iG6z5mp5HqY
 
 # SEIZURE AND AUDIO WARNING
-This mod goes absolutely haywire with effects which might be bad for you. if you're epileptic, try disabling these settings:
-- In Effects, set Transcendence Effects to Medium and disabled Shake Screen during Transcendence and Shake Cards during Transcendence
+This mod goes absolutely haywire with effects which might be bad for you. If you're epileptic, try disabling these settings:
+- In Effects, set Transcendence Effects to at least Medium and disable Shake Screen during Transcendence and Shake Cards during Transcendence
 - Also in Effects, lower down all of the Score Shakiness things, and disable Score Shakiness: Shake Screen
 In terms of audio, this mod has some asbolutely insane operation sounds that might get earrape-y when layered. You can enable Tamer Hyperoperation Sounds in Music, or disable them outright.
 
 ## Credits 
-Yes I know the mods I took code from are GPL 3.0 but I feel guilty so here's a comprehensive list of things I stole.
+Yes I know the mods I took code from are GPL 3.0 but I shouldn't take full credit when this mod has things made by other people.
 https://docs.google.com/document/d/1P53UrzO_xHavnu59BPmQSzwq0ZeTYD1dUHoRvsMqx9w/edit?usp=drivesdk
 
 ## Discord
-I post random stuff here including pre-releases and you can talk with other people that like this disaster I guess.
+I post random stuff here including pre-releases and sneak-peeks. If 0.0.2 released mere moments ago, it's also a place where I can inform you about this mod because the wiki is most likely nonexistent.
 https://discord.gg/esrGbYWHEQ
 
 # This mod is very, VERY W.I.P. 
-Much more content is planned, though the mod is currently public so it doesn't turn into Geometry Dash 2.2, as in i stop fixing and adding things forever and delaying the mod for 76 years.
-As a sideffect, this obviously means this mod is a twisted nightmare that will most likely break, and there are many gaps content-wise, so be patient. Please report every single bug you see unless it's been fixed already because this mod was made by me, an idiot :D.
+Much more content is planned, though the mod is currently public so I stop fixing and adding things forever and delaying the mod indefinitely.
+As a sideffect, this obviously means this mod is a twisted nightmare that will most likely break, and there are many gaps content-wise. Please report every single bug you see unless it's been fixed already because this mod was made by me, an idiot :D.
 
 ## I suck
-This might be a repository on Codeberg, however I don't commit changes to files and do branches and pull requests and stuff. I recommend posting all of your improvements and issues in my Discord server as I don't check here very often. Also I admit that some parts of the mod are questionable, lazy or stolen (especially internally)
+This might be a repository on Codeberg (Github but not Microsoft), however I don't commit changes to files and do branches and pull requests and stuff. I recommend posting all of your improvements and issues in my Discord server as I don't check here very often. Also I admit that some parts of the mod are questionable or lazy.
 
-## Installing
+## Dependencies
 
-- Talisman >=2.1.0 (preferably [OmegaNum optimization](https://github.com/SpectralPack/Talisman/tree/omeganum-optimization) branch)
+- Talisman >=2.1.0 (preferably [OmegaNum optimization](https://github.com/SpectralPack/Talisman/tree/omeganum-optimization) branch) (you need to set Talisman to OmegaNum, otherwise Mayhem gets grumpy. Do that in Talisman's config)
 - JenLib >=0.4.0
 - [this version of Fusion Jokers](https://github.com/Sayrus/Fusion-Jokers)
-- Steamodded >=0323b
+- Steamodded >=0530b
 - Lovely >=0.7.0
 
 ### Recommended mods 
@@ -85,13 +85,18 @@ You probably shouldn't play these with Mayhem
 
 # Stuff you should probably know
 ## What is this
-Mayhem is a bit of a spreadsheet mod. It centers around fusion chains. Basically, start with a sensible joker, combine with another joker to get a less sensible joker and then keep combining until you get the big numbers. This mod also has a lot of content that is never explained anywhere. You can check the wiki I'm probably making on the [Balatro Mods Wiki](https://balatromods.miraheze.org), though I may be very slow. I will most likely explain things in my discord server, so you can join it and annoy me there.
+Mayhem is basically a mod designed only to be in your advantage and allows you to destroy the game. Obviously the game doesnt just crash instantly (usually), but instead I implemented some very SUBTLE* effects for when you get big scores.
+An important mechanic is fusion. Basically, 2 Jokers can fuse into a better Joker if you spend money. For example, AAAA and Universal Collapse can fuse into Acum if you spennd $1111. Fusion is imperative for getting big scores, because all of the really good Jokers are fusions.
 
 ## Mayhem and Eternum
-Yes, the whole mod is called Mayhem, but it features 2 main modes, Mayhem and Eternum. This is so people that want something more sane (Mayhem) can play fine but people who don't care about the well-being of the game (Eternum) can also play fine. The "official" mode is Mayhem, where all of the intended content is left as is. Meanwhile, Eternum absolutely breaks everything Balatro has to offer by adding completely unhinged content and tweaking existing assets to make them even more insane, turning the game into a big number generator and lag machine (as if Mayhem wasn't enough). The choice is yours because democracy sucks the least. 
+Yes, the whole mod is called Mayhem, but it features 2 main modes, Mayhem and Eternum. This is so people that want something more sane (Mayhem) can play fine but people who don't care about the well-being of the game (Eternum) can also play fine. The "official" mode is Mayhem, where all of the intended content is left as is. Meanwhile, Eternum absolutely breaks everything Balatro has to offer by adding completely unhinged content and tweaking existing assets to make them even more insane, turning the game into a big number generator and lag machine (as if Mayhem wasn't enough).
+
+## This is way too stupid
+Yes.
+The long answer is that I did my best to add extensive customizability so you can enjoy the mod however you like. Don't like the effects? Disable them. Don't like UltraBlinds? Disable them. Don't like ridiculous Jokers? Diable them. This is turning into an advertisement but, you can do all of these.
 
 ## My PC is on the brink of death
-Turn some settings off in the mod config. This mod is demanding because I'm an awesome coder and also because there's a lot of random stuff even if i just said that there are many gaps content-wise.
+Turn some settings off in the mod config. This mod is demanding because I'm an awesome* coder and also because this mod relies on crazy OmegaNum operations with like hundreds of arrows (fun fact it has to calculate 1e1000{4000}1e1000 every frame during a blind)
 
 ## What do you plan to do with this mod?
 Unexpected error: expected string, got nil
