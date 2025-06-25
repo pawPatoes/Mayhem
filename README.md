@@ -61,7 +61,7 @@ This is a stupid name I came up with for my personal collection of mods I play w
 - Cartomancer
 - Collectors Cards
 - Crytpid
-- Debug+
+- DebugPlus
 - Fusion Jokers
 - Galdur
 - Glue for Modpacks
