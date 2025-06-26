@@ -27,10 +27,11 @@ As a sideffect, this obviously means this mod is a twisted nightmare that will m
 This might be a repository on Codeberg (Github but not Microsoft), however I don't commit changes to files and do branches and pull requests and stuff. I recommend posting all of your improvements and issues in my Discord server as I don't check here very often. Also I admit that some parts of the mod are questionable or lazy.
 
 ## Dependencies
+Most of this stuff is derelict junk that you probably won't find on your own so just click the links here. 
 
 - Talisman >=2.1.0 (preferably [OmegaNum optimization](https://github.com/SpectralPack/Talisman/tree/omeganum-optimization) branch) (you need to set Talisman to OmegaNum, otherwise Mayhem gets grumpy. Do that in Talisman's config)
 - [JenLib >=0.4.0](https://drive.google.com/file/d/1DpYkuF54FtuyjH7aBr1U3Bg2ubTn_TcP/view?usp=drivesdk)
-- [this version of Fusion Jokers](https://github.com/Sayrus/Fusion-Jokers)
+- [this version of Fusion Jokers](https://drive.google.com/file/d/1EAwoZJoz1U1WlGLYzt01vzZIAHmz9NbR/view?usp=drivesdk)
 - Steamodded >=0530b
 - Lovely >=0.7.0
 
