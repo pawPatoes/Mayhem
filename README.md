@@ -39,7 +39,7 @@ You don't need these for Mayhem, but they make it better (crazier):
 
 - [Aurinko](https://drive.google.com/file/d/1DHPBbGDNxm7x-JCgSi1WjZiDFN_Ok1xg/view?usp=drivesdk)
 - [Nopeus](https://drive.google.com/file/d/1DXUXiAsH0eym0nB3Cft0YCcRwNMZ0PLA/view?usp=drivesdk) (CM, more speed options)
-- [**Incantation**](https://drive.google.com/file/d/1DlhEjWpjyL2XZxwkgjs64FhljQM4IzAK/view?usp=drivesdk) (sillier Jokers create HEAPS of consumables (I've had runs with 1e15 Negative Wheel of Fortunes), so this is basically required if you don't want your pc to explode)
+- [**Incantation**](https://drive.google.com/file/d/1DsswtTseGgIdb3kd18jxsDgg6VLuN0vM/view?usp=drivesdk) (sillier Jokers create HEAPS of consumables (I've had runs with 1e15 Negative Wheel of Fortunes), so this is basically required if you don't want your pc to explode)
 - Cartomancer
 - Cryptid (CM) 
 - CardSleeves (CM, WIP)
