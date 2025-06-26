@@ -69,8 +69,8 @@ This is a stupid name I came up with for my personal collection of mods I play w
 - Grim
 - Handy
 - Incantation
+- [Loop](https://drive.google.com/file/d/1Dkps8tTwZCW3euVygbULihUmfWWORRgO/view?usp=drivesdk)
 - JenLib
-- Loop
 - Mayhem Dumpyard
 - Multiplayer
 - Next Ante Preview
