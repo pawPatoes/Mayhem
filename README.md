@@ -29,7 +29,7 @@ This might be a repository on Codeberg (Github but not Microsoft), however I don
 ## Dependencies
 
 - Talisman >=2.1.0 (preferably [OmegaNum optimization](https://github.com/SpectralPack/Talisman/tree/omeganum-optimization) branch) (you need to set Talisman to OmegaNum, otherwise Mayhem gets grumpy. Do that in Talisman's config)
-- [JenLib >=0.4.0](https://drive.google.com/file/d/1D68WB3WxuYzSw2Q8hNoK-f9UuwqOo0pl/view?usp=drivesdk)
+- [JenLib >=0.4.0](https://drive.google.com/file/d/1DpYkuF54FtuyjH7aBr1U3Bg2ubTn_TcP/view?usp=drivesdk)
 - [this version of Fusion Jokers](https://github.com/Sayrus/Fusion-Jokers)
 - Steamodded >=0530b
 - Lovely >=0.7.0
