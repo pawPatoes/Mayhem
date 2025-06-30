@@ -10,6 +10,7 @@ This mod goes absolutely haywire with effects which might be bad for you. If you
 - Also in Effects, lower down all of the Score Shakiness things, and disable Score Shakiness: Shake Screen
 
 In terms of audio, this mod has some asbolutely insane operation sounds that might get earrape-y when layered. You can enable Tamer Hyperoperation Sounds in Music, or disable them outright.
+Also, during high Transcendence (REALLY big scores), the literal game window will start shaking if you're playing in windowed mode. If you want to disable this, toggle 'Window Shake' in Effects off.
 
 ## Credits 
 Yes, I know the mods I took code from are GPL 3.0 but I shouldn't take full credit when this mod has things made by other people.
