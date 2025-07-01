@@ -29,7 +29,7 @@ As a sideffect, this obviously means this mod is a twisted nightmare that will m
 This might be a repository on Codeberg (Github but not Microsoft), however I don't commit changes to files and do branches and pull requests and stuff. I recommend posting all of your improvements and issues in my Discord server as I don't check here very often. Also I admit that some parts of the mod are questionable or lazy.
 
 ## Dependencies
-Talisman and JenLib are included in the zip you download because getting the dependencies for this mod is a nightmare.
+The Mayhem zip includes Fusion Jokers, Talisman and every mod made by Jen except Loop for convenience.
 
 - Talisman >=2.1.0 (preferably [OmegaNum optimization](https://github.com/SpectralPack/Talisman/tree/omeganum-optimization) branch) (you need to set Talisman to OmegaNum, otherwise Mayhem gets grumpy. Do that in Talisman's config)
 - [JenLib >=0.4.0](https://drive.google.com/file/d/1DpYkuF54FtuyjH7aBr1U3Bg2ubTn_TcP/view?usp=drivesdk)
@@ -85,6 +85,8 @@ This is a stupid name I came up with for my personal collection of mods I play w
 You probably shouldn't play these with Mayhem 
 
 - POLTERWORX (that mod has its own systems and quirks which would be sisyphean to work around, along with conflicting content. You either play Mayhem or play POLTERWORX, sorry) 
+- Trance (Mayhem overrides most colors for transcendence to work. If you want Trance, you'll need to disable Transcendence Effects)
+- Entropy (currently crashes when continuing a run. Will be fixed in the next update)
 
 *This list will be updated as you people try my stupid mod with other mods and experience the crashes for themselves*
 
