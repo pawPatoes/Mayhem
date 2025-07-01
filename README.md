@@ -4,6 +4,9 @@ Your goal is simple: get the biggest numbers you can.
 
 https://www.youtube.com/watch?v=iG6z5mp5HqY
 
+# THE REPOSITORY IS OUTDATED
+Do NOT download the source to play Mayhem. The latest version that actually works is in releases. 
+
 # SEIZURE AND AUDIO WARNING
 This mod goes absolutely haywire with effects which might be bad for you. If you're epileptic, try disabling these settings:
 - In Effects, set Transcendence Effects to at least Medium and disable Shake Screen during Transcendence and Shake Cards during Transcendence
