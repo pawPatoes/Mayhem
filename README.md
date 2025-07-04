@@ -16,6 +16,8 @@ In terms of audio, this mod has some asbolutely insane operation sounds that mig
 
 Also, during high Transcendence (REALLY big scores), the literal game window will start shaking if you're playing in windowed mode. If you want to disable this, toggle 'Window Shake' in Effects off.
 
+I also recommend turning your screen shake down.
+
 ## Credits 
 Yes, I know the mods I took code from are GPL 3.0 but I shouldn't take full credit when this mod has things made by other people.
 https://docs.google.com/document/d/1P53UrzO_xHavnu59BPmQSzwq0ZeTYD1dUHoRvsMqx9w/edit?usp=drivesdk
