@@ -70,7 +70,7 @@ This is a stupid name I came up with for my personal collection of mods I play w
 - CardSleeves
 - Cartomancer
 - Collectors Cards
-- Crytpid
+- Cryptid
 - DebugPlus
 - Fusion Jokers
 - Galdur
