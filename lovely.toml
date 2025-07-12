@@ -10,224 +10,6 @@ target = "functions/misc_functions.lua"
 pattern = "G.ARGS.score_intensity.organ = G.video_organ or G.ARGS.score_intensity.required_score > 0 and math.max(math.min(0.4, 0.1*math.log(G.ARGS.score_intensity.earned_score/(G.ARGS.score_intensity.required_score+1), 5)),0.) or 0"
 position = "at"
 payload = '''
-if Big.arrow and G.GAME.blind and to_big(G.GAME.blind.chips or 0) > to_big(0) then
-		local notzero = to_big(G.ARGS.score_intensity.required_score) > to_big(0)
-		local curs = to_big(G.ARGS.score_intensity.earned_score)
-		local reqs = to_big(G.ARGS.score_intensity.required_score+1)
-	
-		local googol = to_big(1e100)
-		local centillion = to_big(1e303)
-		local googchime = to_big(googol:arrow(1, 10))
-	
-		local req1 = math.max(math.min(1, 0.1*math.log(curs/(reqs*1e100), 5)),0.)
-		local req2 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs^1e100), 5)),0.))
-		local req3 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(2, googol)), 5)),0.))
-		local req4 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(3, googol)), 5)),0.))
-		local req5 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(4, googol)), 5)),0.))
-		local req6 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(4, centillion)), 5)),0.))
-		local req7 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(5, googol)), 5)),0.))
-		local req8 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(6, googchime)), 5)),0.))
-		local req9 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(10, googchime)), 5)),0.))
-		local req10 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(70, googchime)), 5)),0.))
-		local req10 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(200, googchime)), 5)),0.))
-	
-		if not G.ARGS.score_intensity.tran1 then 
-			G.ARGS.score_intensity.tran1 = 0 
-		end
-		if not G.ARGS.score_intensity.tran2 then 
-			G.ARGS.score_intensity.tran2 = 0 
-		end
-		if not G.ARGS.score_intensity.tran3 then 
-			G.ARGS.score_intensity.tran3 = 0 
-		end
-		if not G.ARGS.score_intensity.tran4 then 
-			G.ARGS.score_intensity.tran4 = 0 
-		end
-		if not G.ARGS.score_intensity.tran5 then 
-			G.ARGS.score_intensity.tran5 = 0 
-		end
-		if not G.ARGS.score_intensity.tran6 then 
-			G.ARGS.score_intensity.tran6 = 0 
-		end
-		if not G.ARGS.score_intensity.tran7 then 
-			G.ARGS.score_intensity.tran7 = 0 
-		end
-		if not G.ARGS.score_intensity.tran8 then 
-			G.ARGS.score_intensity.tran8 = 0 
-		end
-		if not G.ARGS.score_intensity.tran9 then 
-			G.ARGS.score_intensity.tran9 = 0 
-		end
-		if not G.ARGS.score_intensity.tran10 then 
-			G.ARGS.score_intensity.tran10 = 0 
-		end
-		if not G.ARGS.score_intensity.tran11 then 
-			G.ARGS.score_intensity.tran11 = 0 
-		end
-		if not G.ARGS.score_intensity.transcendence then
-			G.ARGS.score_intensity.transcendence = 0
-		end
-		
-		G.ARGS.score_intensity.tran11 = notzero and req11:to_number() or 0
-		
-		G.ARGS.score_intensity.tran10 = (
-		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and notzero) and req10:to_number() or 0
-		
-		G.ARGS.score_intensity.tran9 = (
-		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and notzero) and req9:to_number() or 0
-		
-		G.ARGS.score_intensity.tran8 = (
-		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and notzero) and req8:to_number() or 0
-		
-		G.ARGS.score_intensity.tran7 = (
-		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and notzero) and req7:to_number() or 0
-		
-		G.ARGS.score_intensity.tran6 = (
-		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and notzero) and req6:to_number() or 0
-		
-		G.ARGS.score_intensity.tran5 = (
-		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran6 or 0) <= 0.05 and notzero) and req5:to_number() or 0
-		
-		G.ARGS.score_intensity.tran4 = (
-		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran6 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran5 or 0) <= 0.05 and notzero) and req4:to_number() or 0
-	
-		G.ARGS.score_intensity.tran3 = (
-		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran6 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran4 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran5 or 0) <= 0.05 and	notzero) and req3:to_number() or 0
-		
-		G.ARGS.score_intensity.tran2 = (
-		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran6 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran5 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran4 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran3 or 0) <= 0.05 and notzero) and req2:to_number() or 0
-		
-		G.ARGS.score_intensity.tran1 = (
-		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran6 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran5 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran4 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran3 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran2 or 0) <= 0.05 and notzero) and req1 or 0
-		
-		G.ARGS.score_intensity.organ = (G.video_organ or (
-		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran6 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran5 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran4 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran3 or 0) <= 0.05 and 
-		(G.ARGS.score_intensity.tran2 or 0) <= 0.05 and 
-		(G.ARGS.score_intensity.tran1 or 0) <= 0.05 and notzero)) and math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.earned_score/(G.ARGS.score_intensity.required_score+1), 5)),0.) or 0
-
-		if G.ARGS.score_intensity.tran1 < 1 then
-			G.ARGS.score_intensity.transcendence = 0
-		end
-		if G.ARGS.score_intensity.tran1 > 0 then
-			G.ARGS.score_intensity.transcendence = 1
-		end
-		if G.ARGS.score_intensity.tran2 > 0 then
-			G.ARGS.score_intensity.transcendence = 2
-		end
-		if G.ARGS.score_intensity.tran3 > 0 then
-			G.ARGS.score_intensity.transcendence = 3
-		end
-		if G.ARGS.score_intensity.tran4 > 0 then
-			G.ARGS.score_intensity.transcendence = 4
-		end
-		if G.ARGS.score_intensity.tran5 > 0 then
-			G.ARGS.score_intensity.transcendence = 5
-		end
-		if G.ARGS.score_intensity.tran6 > 0 then
-			G.ARGS.score_intensity.transcendence = 6
-		end
-		if G.ARGS.score_intensity.tran7 > 0 then
-			G.ARGS.score_intensity.transcendence = 7
-		end
-		if G.ARGS.score_intensity.tran8 > 0 then
-			G.ARGS.score_intensity.transcendence = 8
-		end
-		if G.ARGS.score_intensity.tran9 > 0 then
-			G.ARGS.score_intensity.transcendence = 9
-		end
-		if G.ARGS.score_intensity.tran10 > 0 then
-			G.ARGS.score_intensity.transcendence = 10
-		end
-		if G.ARGS.score_intensity.tran11 > 0 then
-			G.ARGS.score_intensity.transcendence = 11
-		end
-	
-		notzero = nil
-		curs = nil
-		reqs = nil
-		googol = nil
-		centillion = nil
-		googchime = nil
-		req1 = nil
-		req2 = nil
-		req3 = nil
-		req4 = nil
-		req5 = nil
-		req6 = nil
-		req7 = nil
-		req8 = nil
-		req9 = nil
-		req10 = nil
-		req11 = nil
-		
-		if may and type(may) == 'table' then
-			may.transcendence = G.ARGS.score_intensity.transcendence or 0 
-		end
-	else
-		G.ARGS.score_intensity.organ = G.video_organ or to_number(G.ARGS.score_intensity.required_score) > 0 and math.max(math.min(0.4, 0.1*math.log(G.ARGS.score_intensity.earned_score/(G.ARGS.score_intensity.required_score+1), 5)),0.) or 0
-	end
-'''
-match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = "functions/misc_functions.lua"
-pattern = "G.ARGS.score_intensity.organ = G.video_organ or to_big(G.ARGS.score_intensity.required_score) > to_big(0) and math.max(math.min(0.4, 0.1*math.log(G.ARGS.score_intensity.earned_score/(G.ARGS.score_intensity.required_score+1), 5)),0.) or 0"
-position = "at"
-payload = '''
 	if Big.arrow and G.GAME.blind and to_big(G.GAME.blind.chips or 0) > to_big(0) then
 		local notzero = to_big(G.ARGS.score_intensity.required_score) > to_big(0)
 		local curs = to_big(G.ARGS.score_intensity.earned_score)
@@ -235,7 +17,9 @@ payload = '''
 	
 		local googol = to_big(1e100)
 		local googchime = to_big(googol:arrow(1, 10))
-	
+		local megagoog = googchime:arrow(2, googchime)
+		
+		local req0 = math.max(math.min(1, 0.1*math.log(curs/(reqs+1), 5)),0.) or 0
 		local req1 = math.max(math.min(1, 0.1*math.log(curs/(reqs*1e100), 5)),0.)
 		local req2 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs^1e100), 5)),0.))
 		local req3 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(2, googol)), 5)),0.))
@@ -248,6 +32,10 @@ payload = '''
 		local req10 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(70, googchime)), 5)),0.))
 		local req11 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(200, googchime)), 5)),0.))
 		local req12 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(1000, googchime)), 5)),0.))
+		-- using fake score requirements because laggy
+		local req13 = to_big(math.max(math.min(1, 0.1*math.log(curs/(googchime:arrow(2000, googchime)), 5)),0.))
+		local req14 = to_big(math.max(math.min(1, 0.1*math.log(curs/(googchime:arrow(3000, googchime)), 5)),0.))
+		local req15 = to_big(math.max(math.min(1, 0.1*math.log(curs/(googchime:arrow(4000, googchime)), 5)),0.))
 	
 		if not G.ARGS.score_intensity.tran1 then 
 			G.ARGS.score_intensity.tran1 = 0 
@@ -285,31 +73,67 @@ payload = '''
 		if not G.ARGS.score_intensity.tran12 then 
 			G.ARGS.score_intensity.tran12 = 0 
 		end
+		if not G.ARGS.score_intensity.tran13 then 
+			G.ARGS.score_intensity.tran13 = 0 
+		end
+		if not G.ARGS.score_intensity.tran14 then 
+			G.ARGS.score_intensity.tran14 = 0 
+		end
+		if not G.ARGS.score_intensity.tran15 then 
+			G.ARGS.score_intensity.tran15 = 0 
+		end
 		if not G.ARGS.score_intensity.transcendence then
 			G.ARGS.score_intensity.transcendence = 0
 		end
 		
-		G.ARGS.score_intensity.tran12 = notzero and req12:to_number() or 0
+		G.ARGS.score_intensity.tran15 = notzero and req15:to_number() or 0
+		
+		G.ARGS.score_intensity.tran14 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and notzero) and req14:to_number() or 0
+		
+		G.ARGS.score_intensity.tran13 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and notzero) and req13:to_number() or 0
+		
+		G.ARGS.score_intensity.tran12 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and notzero) and req12:to_number() or 0
 		
 		G.ARGS.score_intensity.tran11 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and notzero) and req11:to_number() or 0
 		
 		G.ARGS.score_intensity.tran10 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and notzero) and req10:to_number() or 0
 		
 		G.ARGS.score_intensity.tran9 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and notzero) and req9:to_number() or 0
 		
 		G.ARGS.score_intensity.tran8 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and notzero) and req8:to_number() or 0
 		
 		G.ARGS.score_intensity.tran7 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
@@ -317,6 +141,9 @@ payload = '''
 		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and notzero) and req7:to_number() or 0
 		
 		G.ARGS.score_intensity.tran6 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
@@ -325,6 +152,9 @@ payload = '''
 		(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and notzero) and req6:to_number() or 0
 		
 		G.ARGS.score_intensity.tran5 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
@@ -334,6 +164,9 @@ payload = '''
 		(G.ARGS.score_intensity.tran6 or 0) <= 0.05 and notzero) and req5:to_number() or 0
 		
 		G.ARGS.score_intensity.tran4 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
@@ -344,6 +177,9 @@ payload = '''
 		(G.ARGS.score_intensity.tran5 or 0) <= 0.05 and notzero) and req4:to_number() or 0
 	
 		G.ARGS.score_intensity.tran3 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
@@ -355,6 +191,9 @@ payload = '''
 		(G.ARGS.score_intensity.tran5 or 0) <= 0.05 and	notzero) and req3:to_number() or 0
 		
 		G.ARGS.score_intensity.tran2 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
@@ -367,6 +206,9 @@ payload = '''
 		(G.ARGS.score_intensity.tran3 or 0) <= 0.05 and notzero) and req2:to_number() or 0
 		
 		G.ARGS.score_intensity.tran1 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
@@ -379,19 +221,24 @@ payload = '''
 		(G.ARGS.score_intensity.tran3 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran2 or 0) <= 0.05 and notzero) and req1 or 0
 		
-		G.ARGS.score_intensity.organ = (G.video_organ or (
-		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran6 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran5 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran4 or 0) <= 0.05 and
-		(G.ARGS.score_intensity.tran3 or 0) <= 0.05 and 
-		(G.ARGS.score_intensity.tran2 or 0) <= 0.05 and 
-		(G.ARGS.score_intensity.tran1 or 0) <= 0.05 and notzero)) and math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.earned_score/(G.ARGS.score_intensity.required_score+1), 5)),0.) or 0
+		G.ARGS.score_intensity.organ = G.video_organ or 
+			((
+			(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran6 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran5 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran4 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran3 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran2 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran1 or 0) <= 0.05 and notzero) and req0) or 0
+		end
 
 		if G.ARGS.score_intensity.tran1 < 1 then
 			G.ARGS.score_intensity.transcendence = 0
@@ -432,12 +279,22 @@ payload = '''
 		if G.ARGS.score_intensity.tran12 > 0 then
 			G.ARGS.score_intensity.transcendence = 12
 		end
+		if G.ARGS.score_intensity.tran13 > 0 then
+			G.ARGS.score_intensity.transcendence = 13
+		end
+		if G.ARGS.score_intensity.tran14 > 0 then
+			G.ARGS.score_intensity.transcendence = 14
+		end
+		if G.ARGS.score_intensity.tran15 > 0 then
+			G.ARGS.score_intensity.transcendence = 15
+		end
 	
 		notzero = nil
 		curs = nil
 		reqs = nil
 		googol = nil
 		googchime = nil
+		megagoog = nil
 		req1 = nil
 		req2 = nil
 		req3 = nil
@@ -450,6 +307,328 @@ payload = '''
 		req10 = nil
 		req11 = nil
 		req12 = nil
+		re13 = nil
+		req14 = nil
+		req15 = nil
+		
+		if may and type(may) == 'table' then
+			may.transcendence = G.ARGS.score_intensity.transcendence or 0 
+		end
+	else
+		G.ARGS.score_intensity.organ = G.video_organ or to_number(G.ARGS.score_intensity.required_score) > 0 and math.max(math.min(0.4, 0.1*math.log(G.ARGS.score_intensity.earned_score/(G.ARGS.score_intensity.required_score+1), 5)),0.) or 0
+	end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/misc_functions.lua"
+pattern = "G.ARGS.score_intensity.organ = G.video_organ or to_big(G.ARGS.score_intensity.required_score) > to_big(0) and math.max(math.min(0.4, 0.1*math.log(G.ARGS.score_intensity.earned_score/(G.ARGS.score_intensity.required_score+1), 5)),0.) or 0"
+position = "at"
+payload = '''
+	if Big.arrow and G.GAME.blind and to_big(G.GAME.blind.chips or 0) > to_big(0) then
+		local notzero = to_big(G.ARGS.score_intensity.required_score) > to_big(0)
+		local curs = to_big(G.ARGS.score_intensity.earned_score)
+		local reqs = to_big(G.ARGS.score_intensity.required_score+1)
+	
+		local googol = to_big(1e100)
+		local googchime = to_big(googol:arrow(1, 10))
+		local megagoog = googchime:arrow(2, googchime)
+		
+		local req0 = math.max(math.min(1, 0.1*math.log(curs/(reqs+1), 5)),0.) or 0
+		local req1 = math.max(math.min(1, 0.1*math.log(curs/(reqs*1e100), 5)),0.)
+		local req2 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs^1e100), 5)),0.))
+		local req3 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(2, googol)), 5)),0.))
+		local req4 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(3, googol)), 5)),0.))
+		local req5 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(4, googol)), 5)),0.))
+		local req6 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(5, googol)), 5)),0.))
+		local req7 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(6, googol)), 5)),0.))
+		local req8 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(7, googchime)), 5)),0.))
+		local req9 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(10, googchime)), 5)),0.))
+		local req10 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(70, googchime)), 5)),0.))
+		local req11 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(200, googchime)), 5)),0.))
+		local req12 = to_big(math.max(math.min(1, 0.1*math.log(curs/(reqs:arrow(1000, googchime)), 5)),0.))
+		-- using fake score requirements because laggy
+		local req13 = to_big(math.max(math.min(1, 0.1*math.log(curs/(googchime:arrow(2000, googchime)), 5)),0.))
+		local req14 = to_big(math.max(math.min(1, 0.1*math.log(curs/(googchime:arrow(3000, googchime)), 5)),0.))
+		local req15 = to_big(math.max(math.min(1, 0.1*math.log(curs/(googchime:arrow(4000, googchime)), 5)),0.))
+	
+		if not G.ARGS.score_intensity.tran1 then 
+			G.ARGS.score_intensity.tran1 = 0 
+		end
+		if not G.ARGS.score_intensity.tran2 then 
+			G.ARGS.score_intensity.tran2 = 0 
+		end
+		if not G.ARGS.score_intensity.tran3 then 
+			G.ARGS.score_intensity.tran3 = 0 
+		end
+		if not G.ARGS.score_intensity.tran4 then 
+			G.ARGS.score_intensity.tran4 = 0 
+		end
+		if not G.ARGS.score_intensity.tran5 then 
+			G.ARGS.score_intensity.tran5 = 0 
+		end
+		if not G.ARGS.score_intensity.tran6 then 
+			G.ARGS.score_intensity.tran6 = 0 
+		end
+		if not G.ARGS.score_intensity.tran7 then 
+			G.ARGS.score_intensity.tran7 = 0 
+		end
+		if not G.ARGS.score_intensity.tran8 then 
+			G.ARGS.score_intensity.tran8 = 0 
+		end
+		if not G.ARGS.score_intensity.tran9 then 
+			G.ARGS.score_intensity.tran9 = 0 
+		end
+		if not G.ARGS.score_intensity.tran10 then 
+			G.ARGS.score_intensity.tran10 = 0 
+		end
+		if not G.ARGS.score_intensity.tran11 then 
+			G.ARGS.score_intensity.tran11 = 0 
+		end
+		if not G.ARGS.score_intensity.tran12 then 
+			G.ARGS.score_intensity.tran12 = 0 
+		end
+		if not G.ARGS.score_intensity.tran13 then 
+			G.ARGS.score_intensity.tran13 = 0 
+		end
+		if not G.ARGS.score_intensity.tran14 then 
+			G.ARGS.score_intensity.tran14 = 0 
+		end
+		if not G.ARGS.score_intensity.tran15 then 
+			G.ARGS.score_intensity.tran15 = 0 
+		end
+		if not G.ARGS.score_intensity.transcendence then
+			G.ARGS.score_intensity.transcendence = 0
+		end
+		
+		G.ARGS.score_intensity.tran15 = notzero and req15:to_number() or 0
+		
+		G.ARGS.score_intensity.tran14 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and notzero) and req14:to_number() or 0
+		
+		G.ARGS.score_intensity.tran13 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and notzero) and req13:to_number() or 0
+		
+		G.ARGS.score_intensity.tran12 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and notzero) and req12:to_number() or 0
+		
+		G.ARGS.score_intensity.tran11 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and notzero) and req11:to_number() or 0
+		
+		G.ARGS.score_intensity.tran10 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and notzero) and req10:to_number() or 0
+		
+		G.ARGS.score_intensity.tran9 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and notzero) and req9:to_number() or 0
+		
+		G.ARGS.score_intensity.tran8 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and notzero) and req8:to_number() or 0
+		
+		G.ARGS.score_intensity.tran7 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and notzero) and req7:to_number() or 0
+		
+		G.ARGS.score_intensity.tran6 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and notzero) and req6:to_number() or 0
+		
+		G.ARGS.score_intensity.tran5 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran6 or 0) <= 0.05 and notzero) and req5:to_number() or 0
+		
+		G.ARGS.score_intensity.tran4 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran6 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran5 or 0) <= 0.05 and notzero) and req4:to_number() or 0
+	
+		G.ARGS.score_intensity.tran3 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran6 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran4 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran5 or 0) <= 0.05 and	notzero) and req3:to_number() or 0
+		
+		G.ARGS.score_intensity.tran2 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran6 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran5 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran4 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran3 or 0) <= 0.05 and notzero) and req2:to_number() or 0
+		
+		G.ARGS.score_intensity.tran1 = (
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran6 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran5 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran4 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran3 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran2 or 0) <= 0.05 and notzero) and req1 or 0
+		
+		if may.TrAudio == 0 then
+			G.ARGS.score_intensity.organ = G.video_organ or notzero and to_big(req0):to_number() or 0
+		else
+		G.ARGS.score_intensity.organ = G.video_organ or 
+			((
+			(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran6 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran5 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran4 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran3 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran2 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran1 or 0) <= 0.05 and notzero) and req0) or 0
+		end
+
+		if G.ARGS.score_intensity.tran1 < 1 then
+			G.ARGS.score_intensity.transcendence = 0
+		end
+		if G.ARGS.score_intensity.tran1 > 0 then
+			G.ARGS.score_intensity.transcendence = 1
+		end
+		if G.ARGS.score_intensity.tran2 > 0 then
+			G.ARGS.score_intensity.transcendence = 2
+		end
+		if G.ARGS.score_intensity.tran3 > 0 then
+			G.ARGS.score_intensity.transcendence = 3
+		end
+		if G.ARGS.score_intensity.tran4 > 0 then
+			G.ARGS.score_intensity.transcendence = 4
+		end
+		if G.ARGS.score_intensity.tran5 > 0 then
+			G.ARGS.score_intensity.transcendence = 5
+		end
+		if G.ARGS.score_intensity.tran6 > 0 then
+			G.ARGS.score_intensity.transcendence = 6
+		end
+		if G.ARGS.score_intensity.tran7 > 0 then
+			G.ARGS.score_intensity.transcendence = 7
+		end
+		if G.ARGS.score_intensity.tran8 > 0 then
+			G.ARGS.score_intensity.transcendence = 8
+		end
+		if G.ARGS.score_intensity.tran9 > 0 then
+			G.ARGS.score_intensity.transcendence = 9
+		end
+		if G.ARGS.score_intensity.tran10 > 0 then
+			G.ARGS.score_intensity.transcendence = 10
+		end
+		if G.ARGS.score_intensity.tran11 > 0 then
+			G.ARGS.score_intensity.transcendence = 11
+		end
+		if G.ARGS.score_intensity.tran12 > 0 then
+			G.ARGS.score_intensity.transcendence = 12
+		end
+		if G.ARGS.score_intensity.tran13 > 0 then
+			G.ARGS.score_intensity.transcendence = 13
+		end
+		if G.ARGS.score_intensity.tran14 > 0 then
+			G.ARGS.score_intensity.transcendence = 14
+		end
+		if G.ARGS.score_intensity.tran15 > 0 then
+			G.ARGS.score_intensity.transcendence = 15
+		end
+	
+		notzero = nil
+		curs = nil
+		reqs = nil
+		googol = nil
+		googchime = nil
+		megagoog = nil
+		req1 = nil
+		req2 = nil
+		req3 = nil
+		req4 = nil
+		req5 = nil
+		req6 = nil
+		req7 = nil
+		req8 = nil
+		req9 = nil
+		req10 = nil
+		req11 = nil
+		req12 = nil
+		re13 = nil
+		req14 = nil
+		req15 = nil
 		
 		if may and type(may) == 'table' then
 			may.transcendence = G.ARGS.score_intensity.transcendence or 0 
@@ -466,15 +645,15 @@ target = "functions/misc_functions.lua"
 pattern = "ambientOrgan1 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.music_volume + 100)/200*(G.ARGS.score_intensity.organ) end},"
 position = "after"
 payload = '''
-	may_tran1 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran1 or 0) * 6) end},
-	may_tran2 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran2 or 0) * 10) end},
-	may_tran3 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran3 or 0) * 10) end},
-	may_tran4 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran4 or 0) * 6) end},
-	may_tran5 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran5 or 0) * 7) end},
-	may_tran6 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran6 or 0) * 8) end},
-	may_tran7 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran7 or 0) * 8) end},
-	may_tran8 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran8 or 0) * 8) end},
-	-- tran9, tran10 tran11 and tran12 are handled as a music tracks so they can replace the main theme
+	may_tran1 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran1 or 0) * 6) * (may.conf.TrAudio * 0.01) end},
+	may_tran2 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran2 or 0) * 10) * (may.conf.TrAudio * 0.01) end},
+	may_tran3 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran3 or 0) * 10) * (may.conf.TrAudio * 0.01) end},
+	may_tran4 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran4 or 0) * 6) * (may.conf.TrAudio * 0.01) end},
+	may_tran5 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran5 or 0) * 7) * (may.conf.TrAudio * 0.01) end},
+	may_tran6 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran6 or 0) * 8) * (may.conf.TrAudio * 0.01) end},
+	may_tran7 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran7 or 0) * 8) * (may.conf.TrAudio * 0.01) end},
+	may_tran8 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran8 or 0) * 8) * (may.conf.TrAudio * 0.01) end},
+	-- the rest oif the transcendences are handled as a music tracks so they can replace the main theme
 	may_ambient_mass_use = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.music_volume + 100)/200*((may_mass_use_index or 0) * 8) end},
 '''
 match_indent = true
@@ -609,7 +788,7 @@ match_indent = true
 target = "functions/UI_definitions.lua"
 pattern = '''{n=G.UIT.T, config={text = "X", lang = G.LANGUAGES['en-us'], scale = scale*2, colour = G.C.UI_MULT, shadow = true}},'''
 position = "at"
-payload = '''{n=G.UIT.T, config={id = "score_operator_text", text = "X", lang = G.LANGUAGES["en-us"], scale = scale*2, colour = G.C.UI_MULT, shadow = true}},'''
+payload = '''{n=G.UIT.T, config={id = "chipmult_op", text = "X", lang = G.LANGUAGES["en-us"], scale = scale*2, colour = G.C.UI_MULT, shadow = true}},'''
 match_indent = true
 
 [[patches]]
@@ -617,8 +796,37 @@ match_indent = true
 target = "game.lua"
 pattern = "game_chips = self.HUD:get_UIE_by_ID('chip_UI_count'),"
 position = "after"
-payload = '''score_operator = self.HUD:get_UIE_by_ID('score_operator_text'),'''
+payload = '''chipmult_op = self.HUD:get_UIE_by_ID('chipmult_op'),'''
 match_indent = true
+
+# Yggdrasil compat
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''{n=G.UIT.T, config={text = "X", lang = G.LANGUAGES['en-us'], scale = scale*1, colour = G.C.UI_MULT, shadow = true}},'''
+position = "at"
+payload = '''{n=G.UIT.T, config={id = "chipmult_op", text = "X", lang = G.LANGUAGES["en-us"], scale = scale*1, colour = G.C.UI_MULT, shadow = true}},'''
+match_indent = true
+
+# Intrusive PATA fix
+[[patches]]
+[patches.pattern]
+target = 'functions/UI_definitions.lua'
+pattern = '''
+	local realhand = Yggdrasil and contents.hand.nodes[1] or contents.hand
+	local sc = (Yggdrasil and contents.hand.nodes[1] or contents.hand).nodes[1].nodes[2].nodes[2].nodes[1].config.scale
+	local exis = DynaText{string = {"X"}, pop_in_rate = 9999999, silent = true, scale = sc, colours = {G.C.UI_MULT}, shadow = true}
+	realhand.nodes[1].nodes[2].nodes[2].nodes[1] = {n=G.UIT.O, config={object = exis, id = 'chips_what_mult'}}
+	'''
+position = 'before'
+payload = '''
+	local realhand = Yggdrasil and contents.hand.nodes[1] or contents.hand
+	local sc = (Yggdrasil and contents.hand.nodes[1] or contents.hand).nodes[1].nodes[2].nodes[2].nodes[1].config.scale
+	local exis = DynaText{string = {"X"}, pop_in_rate = 9999999, silent = true, scale = sc, colours = {G.C.UI_MULT}, shadow = true}
+	realhand.nodes[1].nodes[2].nodes[2].nodes[1] = {n=G.UIT.O, config={object = exis, id = 'chipmult_op'}}
+'''
+match_indent = true
+times = 1
 
 # Custom hyperoperation effects
 
@@ -628,7 +836,7 @@ target = "functions/common_events.lua"
 pattern = "local extrafunc = nil"
 position = "after"
 payload = '''
-	if eval_type == 'hyper_chips' or eval_type == 'hyper_mult' then
+	if eval_type == 'hyper_chips' or eval_type == 'hyper_mult' or eval_type == 'hyperchip_mod' or eval_type == 'hypermult_mod' then
 		local arrow = amt[1]
 	end
 	local operator_intensity = 0
@@ -694,7 +902,7 @@ elseif eval_type == 'eee_mult' then
 	colour = G.C.MULT
 	config.type = 'fade'
 	config.scale = 0.7
-elseif eval_type == 'hyper_mult' then 
+elseif eval_type == 'hyper_mult' or eval_type == 'hypermult_mod' then 
 	sound = 'talisman_eeemult'
 	text = (amt[1] > 5 and ('{' .. tostring(amt[1]) .. '}') or string.rep('^', amt[1])) .. tostring(amt[2]) .. ' Mult'
 	amt = amt[2]
@@ -734,24 +942,8 @@ elseif eval_type == 'eee_chips' then
 	config.type = 'fade'
 	config.scale = 0.7
 	operator_intensity = 0.5
-elseif eval_type == 'hyper_chips' then
-	if amt[1] == 1 then
-		sound = 'talisman_echip'
-	elseif amt[1] == 2 then
-		sound = 'talisman_eechip'
-	elseif amt[1] == 3 then
-		sound = 'talisman_eeechip'
-	elseif amt[1] == 4 then
-		sound = 'may_hexchip'
-	elseif amt[1] == 5 then
-		sound = 'may_hepchip'
-	elseif amt[1] == 6 then
-		sound = 'may_octchip'
-	elseif amt[1] == 7 then
-		sound = 'may_ennchip'
-	elseif amt[1] >= 8 then
-		sound = 'may_decchip'
-	end
+elseif eval_type == 'hyper_chips' or eval_type == 'hyperchip_mod' then
+	sound = may.get_operation_sound(amt[1], 'chips')
 	text = (amt[1] > 5 and ('{' .. tostring(amt[1]) .. '}') or string.rep('^', amt[1])) .. tostring(amt[2])..' Chips'
 	colour = G.C.CHIPS
 	config.type = 'fade'
@@ -783,23 +975,7 @@ elseif eval_type == 'eee_mult' then
 	config.scale = 0.7
 	operator_intensity = 0.5
 elseif eval_type == 'hyper_mult' then 
-	if amt[1] == 1 then
-		sound = 'talisman_emult'
-	elseif amt[1] == 2 then
-		sound = 'talisman_eemult'
-	elseif amt[1] == 3 then
-		sound = 'talisman_eeemult'
-	elseif amt[1] == 4 then
-		sound = 'may_hexmult'
-	elseif amt[1] == 5 then
-		sound = 'may_hepmult'
-	elseif amt[1] == 6 then
-		sound = 'may_octmult'
-	elseif amt[1] == 7 then
-		sound = 'may_ennmult'
-	elseif amt[1] >= 8 then
-		sound = 'may_decmult'
-	end
+	sound = may.get_operation_sound(amt[1], 'mult')
 	text = (amt[1] > 5 and ('{' .. tostring(amt[1]) .. '}') or string.rep('^', amt[1])) .. tostring(amt[2]) .. ' Mult'
 	colour = G.C.MULT
 	config.type = 'fade'
@@ -811,6 +987,37 @@ elseif eval_type == 'hyper_mult' then
         amt = amt
         text = 'X'..localize("$")..tostring(math.abs(amt))
         colour = amt < 1 and G.C.RED or G.C.MONEY
+'''
+match_indent = true
+overwrite = true
+
+# Failsafe because custom hyperoperation sound patch is very fussy
+[[patches]] 
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''
+	elseif eval_type == 'hyper_mult' then 
+		sound = 'talisman_eeemult'
+'''
+position = "at"
+payload = '''
+	elseif eval_type == 'hyper_mult' then 
+		sound = may.get_operation_sound(amt[1], 'mult')
+'''
+match_indent = true
+overwrite = true
+
+[[patches]] 
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''
+	elseif eval_type == 'hyper_chips' then 
+		sound = 'talisman_eeechip'
+'''
+position = "at"
+payload = '''
+	elseif eval_type == 'hyper_chips' then 
+		sound = may.get_operation_sound(amt[1], 'chips')
 '''
 match_indent = true
 overwrite = true
@@ -1035,7 +1242,7 @@ match_indent = true
 target = "conf.lua"
 pattern = "t.title = 'Balatro'"
 position = "at"
-payload = "t.title = 'Balatro Mayhem'"
+payload = "t.title = 'Balatro' -- Wanted to have Balatro Mayhem as the game title but that's cheesy"
 match_indent = true
 
 # Playing card chip multiplier (brown deck, white seal)
@@ -1044,7 +1251,12 @@ match_indent = true
 target = "card.lua"
 pattern = "return self.base.nominal + self.ability.bonus + (self.ability.perma_bonus or 0)"
 position = "at"
-payload = "return (self.base.nominal + self.ability.bonus + (self.ability.perma_bonus or 0)) * (G.GAME.playing_card_multiplier or 1) * (self.ability.nominal_multiplier or 1)"
+payload = '''
+if not G.GAME then
+	return (self.base.nominal + self.ability.bonus + (self.ability.perma_bonus or 0)) * (self.ability.nominal_multiplier or 1)
+else
+	return (self.base.nominal + self.ability.bonus + (self.ability.perma_bonus or 0)) * (G.GAME.playing_card_multiplier or 1) * (self.ability.nominal_multiplier or 1)
+end'''
 match_indent = true
 overwrite = true
 
@@ -1053,7 +1265,7 @@ overwrite = true
 target = "card.lua"
 pattern = "nominal_chips = self.base.nominal > 0 and self.base.nominal or nil,"
 position = "at"
-payload = "nominal_chips = (self.base.nominal > 0 and self.base.nominal or nil) * (G.GAME.playing_card_multiplier or 1) * (self.ability.nominal_multiplier or 1),"
+payload = "nominal_chips = (self.base.nominal > 0 and self.base.nominal or 0) * (G.GAME and G.GAME.playing_card_multiplier or 1) * (self.ability.nominal_multiplier or 1),"
 match_indent = true
 overwrite = true
 
@@ -1067,9 +1279,11 @@ payload = '''
 if effects.jokers.xdollars_mod then dollars = xdollars_mod;extras.dollars = true end
 
 if effects.FACTmult_mod then mult = mod_mult(to_big(mult):fact(effects.FACTmult_mod));extras.mult = true end
+if effects.EXPOFACTmult_mod then mult = mod_mult(to_big(mult):expofact(effects.EXPOFACTmult_mod));extras.mult = true end
 if effects.APEmult_mod then mult = mod_mult(to_big(mult):aperiorate(effects.APEmult_mod));extras.mult = true end
 
 if effects.FACTchip_mod then chips = mod_chips(to_big(chips):fact(effects.FACTchip_mod));extras.chip = true end
+if effects.EXPOFACTchip_mod then mult = mod_mult(to_big(mult):expofact(effects.EXPOFACTchip_mod));extras.chip = true end
 if effects.APEchip_mod then chips = mod_chips(to_big(chips):aperiorate(effects.APEchip_mod));extras.chip = true end
 '''
 match_indent = true
@@ -1085,7 +1299,6 @@ payload = '''
 	G.SHADERS['CRT']:send('noise_fac', transcendence_noise or 0)
 	G.SHADERS['CRT']:send('bloom_fac', transcendence_bloom or 0)
 	G.SHADERS['CRT']:send('crt_intensity', transcendence_crt or 0)
-	love.graphics.setShader(G.SHADERS['may_tr_chromatic'])
 '''
 match_indent = true
 
@@ -1100,6 +1313,217 @@ payload = '''
 	G.SHADERS['CRT']:send('noise_fac', transcendence_noise or 0)
 	G.SHADERS['CRT']:send('bloom_fac', transcendence_bloom or 0)
 	G.SHADERS['CRT']:send('crt_intensity', transcendence_crt or 0)
-	love.graphics.setShader(G.SHADERS['may_tr_chromatic'])
 '''
 match_indent = true
+
+# Midground sprites
+# taken from Cryptid
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if self.config.center.soul_pos and (self.config.center.discovered or self.bypass_discovery_center) then"
+position = "after"
+payload = '''
+	if self.config.center.soul_pos and self.config.center.soul_pos.extra and (self.config.center.discovered or self.bypass_discovery_center) then
+		local scale_mod = 0.07-- + 0.02*math.cos(1.8*G.TIMERS.REAL) + 0.00*math.cos((G.TIMERS.REAL - math.floor(G.TIMERS.REAL))*math.pi*14)*(1 - (G.TIMERS.REAL - math.floor(G.TIMERS.REAL)))^3
+		local rotate_mod = 0--0.05*math.cos(1.219*G.TIMERS.REAL) + 0.00*math.cos((G.TIMERS.REAL)*math.pi*5)*(1 - (G.TIMERS.REAL - math.floor(G.TIMERS.REAL)))^2
+		self.children.floating_sprite2:draw_shader('dissolve',0, nil, nil, self.children.center,scale_mod, rotate_mod,nil, 0.1--[[ + 0.03*math.cos(1.8*G.TIMERS.REAL)--]],nil, 0.6)
+		self.children.floating_sprite2:draw_shader('dissolve', nil, nil, nil, self.children.center, scale_mod, rotate_mod)
+	end
+'''
+match_indent = true
+
+# Dynatext pulse screen shake 
+[[patches]]
+[patches.pattern]
+target = "engine/text.lua"
+pattern = "letter.r = letter.r + (G.SETTINGS.reduced_motion and 0 or 1)*(letter.scale - 1)*(0.02*(-#self.strings[self.focused_string].letters/2 - 0.5 + k))"
+position = "after"
+payload = '''
+if to_number(letter.scale) > 8 and self.config.pulse.shake_screen then
+	G.ROOM.jiggle = G.ROOM.jiggle + (to_number(letter.scale)/24)
+end
+'''
+match_indent = true
+
+# Failsafe for rational hyperoperators
+# couldnt figure out how to hook it so im doing this garbage instead 
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Talisman "big-num/omeganum.lua"]'''
+pattern = "arrows = Big:create(arrows)"
+position = "after"
+payload = '''arrows = arrows:ceil()'''
+match_indent = true
+
+# Plasma deck stuff
+[[patches]]
+[patches.pattern]
+target = "back.lua"
+pattern = '''G.E_MANAGER:add_event(Event({
+            func = (function()
+                local text = localize('k_balanced')
+                play_sound('gong', 0.94, 0.3)
+                play_sound('gong', 0.94*1.5, 0.2)
+                play_sound('tarot1', 1.5)
+                ease_colour(G.C.UI_CHIPS, {0.8, 0.45, 0.85, 1})
+                ease_colour(G.C.UI_MULT, {0.8, 0.45, 0.85, 1})
+                attention_text({
+                    scale = 1.4, text = text, hold = 2, align = 'cm', offset = {x = 0,y = -2.7},major = G.play
+                })
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    blockable = false,
+                    blocking = false,
+                    delay =  4.3,
+                    func = (function() 
+                            ease_colour(G.C.UI_CHIPS, G.C.BLUE, 2)
+                            ease_colour(G.C.UI_MULT, G.C.RED, 2)
+                        return true
+                    end)
+                }))
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    blockable = false,
+                    blocking = false,
+                    no_delete = true,
+                    delay =  6.3,
+                    func = (function() 
+                        G.C.UI_CHIPS[1], G.C.UI_CHIPS[2], G.C.UI_CHIPS[3], G.C.UI_CHIPS[4] = G.C.BLUE[1], G.C.BLUE[2], G.C.BLUE[3], G.C.BLUE[4]
+                        G.C.UI_MULT[1], G.C.UI_MULT[2], G.C.UI_MULT[3], G.C.UI_MULT[4] = G.C.RED[1], G.C.RED[2], G.C.RED[3], G.C.RED[4]
+                        return true
+                    end)
+                }))
+                return true
+            end)
+        }))'''
+position = "after"
+payload = '''G.E_MANAGER:add_event(Event({
+            func = (function()
+                local text = localize('k_balanced')
+                play_sound('gong', 0.94, 0.3)
+                play_sound('gong', 0.94*1.5, 0.2)
+                play_sound('tarot1', 1.5)
+				G.GAME.may_override_monitor_colors = true
+                ease_colour(G.C.UI_CHIPS, {0.8, 0.45, 0.85, 1})
+                ease_colour(G.C.UI_MULT, {0.8, 0.45, 0.85, 1})
+                attention_text({
+                    scale = 1.4, text = text, hold = 2, align = 'cm', offset = {x = 0,y = -2.7},major = G.play
+                })
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    blockable = false,
+                    blocking = false,
+                    delay =  4.3,
+                    func = (function() 
+                            ease_colour(G.C.UI_CHIPS, G.C.BLUE, 2)
+                            ease_colour(G.C.UI_MULT, G.C.RED, 2)
+                        return true
+                    end)
+                }))
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    blockable = false,
+                    blocking = false,
+                    no_delete = true,
+                    delay =  6.3,
+                    func = (function() 
+                        G.C.UI_CHIPS[1], G.C.UI_CHIPS[2], G.C.UI_CHIPS[3], G.C.UI_CHIPS[4] = G.C.BLUE[1], G.C.BLUE[2], G.C.BLUE[3], G.C.BLUE[4]
+                        G.C.UI_MULT[1], G.C.UI_MULT[2], G.C.UI_MULT[3], G.C.UI_MULT[4] = G.C.RED[1], G.C.RED[2], G.C.RED[3], G.C.RED[4]
+                        return true
+                    end)
+                }))
+				G.GAME.may_override_monitor_colors = false
+                return true
+            end)
+        }))'''
+match_indent = true
+
+# Rational Poker Hand level fixes
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = "colours = {(to_big(G.GAME.hands[cfg.hand_type].level)==to_big(1) and G.C.UI.TEXT_DARK or G.C.HAND_LEVELS[to_number(to_big(math.min(7, G.GAME.hands[cfg.hand_type].level)))])}"
+position = "at"
+payload = '''colours = {(to_big(G.GAME.hands[cfg.hand_type].level):floor() == to_big(1) and G.C.UI.TEXT_DARK or to_big(G.GAME.hands[cfg.hand_type].level):floor() == to_big(0) and G.C.RED or G.C.HAND_LEVELS[to_number(to_big(math.min(7, G.GAME.hands[cfg.hand_type].level)):floor())])}'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''G.hand_text_area.hand_level.config.colour = G.C.HAND_LEVELS[math.min(vals.level, 7)]'''
+position = "at"
+payload = '''G.hand_text_area.hand_level.config.colour = G.C.HAND_LEVELS[math.min(math.floor(vals.level), 7)]'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''G.hand_text_area.hand_level.config.colour = G.C.HAND_LEVELS[to_number(to_big(math.min(vals.level, 7)))]'''
+position = "at"
+payload = '''G.hand_text_area.hand_level.config.colour = G.C.HAND_LEVELS[to_number(to_big(math.min(math.floor(vals.level), 7)))]'''
+match_indent = true
+overwrite = true
+
+# Make Cryptid Redeemed Deck not give Transcend Vouchers
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Cryptid "items/deck.lua"]'''
+pattern = "if vv == self.config.center.key then"
+position = "at"
+payload = '''if vv == self.config.center.key and v.key ~= 'v_may_transcend_1' and v.key ~= 'v_may_transcend_2' then'''
+match_indent = true
+
+# make table of secret hands
+[[patches]]
+[patches.pattern]
+target = '''game.lua'''
+pattern = "G.FUNCS.blind_chip_UI_scale(G.hand_text_area.blind_chips)"
+position = "after"
+payload = '''
+	may.secret_hands = {}
+	for k, v in pairs(G.GAME.hands) do
+		if not v.visible then
+			table.insert(may.secret_hands, k)
+		end
+	end
+'''
+match_indent = true
+
+# Intrusive Entropy fixes again
+[[patches]]
+[patches.pattern]
+target = '''functions/misc_functions.lua'''
+pattern = "G.ARGS.score_intensity.earned_score = to_number(math.min(Entropy.get_chipmult_score(G.GAME.current_round.current_hand.chips, G.GAME.current_round.current_hand.mult), 1e300))"
+position = "at"
+payload = '''G.ARGS.score_intensity.earned_score = get_final_score(to_big(G.GAME.current_round.current_hand.chips), to_big(G.GAME.current_round.current_hand.mult))'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Entropy "lib/utils.lua"]'''
+pattern = '''
+	function Entropy.get_chipmult_score(hand_chips, mult)
+		local operator = math.max(get_final_operator(), -1)
+		if Entropy.score_cache[number_format(hand_chips).."x"..number_format(mult)] then return Entropy.score_cache[number_format(hand_chips).."x"..number_format(mult)] end
+		if operator <= -2 then return to_big(1) / to_big(0)
+		elseif operator == -2 then hand_chips=to_big(mult); return hand_chips
+		elseif operator == -1 then return to_big(hand_chips)+to_big(mult) 
+		elseif operator == 0 then return to_big(hand_chips)*to_big(mult) end
+		local ret = (operator and to_big(hand_chips):arrow(operator, to_big(mult)) or to_big(hand_chips)*to_big(mult))
+		Entropy.score_cache[number_format(hand_chips).."x"..number_format(mult)] = ret
+		return ret
+	end
+'''
+position = "at"
+payload = '''
+	function Entropy.get_chipmult_score(hand_chips, mult)
+		return get_final_score(hand_chips, mult)
+	end
+
+'''
+match_indent = true
+overwrite = true
