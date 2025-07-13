@@ -34,9 +34,9 @@ As a sideffect, this obviously means this mod is a twisted nightmare that will m
 This might be a repository on Codeberg (Github but not Microsoft), however I don't commit changes to files and do branches and pull requests and stuff. I recommend posting all of your improvements and issues in my Discord server as I don't check here very often. Also I admit that some parts of the mod are questionable or lazy.
 
 ## Dependencies
-The Mayhem zip includes Fusion Jokers, Talisman and every mod made by Jen except Loop for convenience.
+The Mayhem zip includes Fusion Jokers, Talisman, Nopeus, Engulf and Overflow for convenience.
 
-- Talisman >=2.1.0 (preferably [OmegaNum optimization](https://github.com/SpectralPack/Talisman/tree/omeganum-optimization) branch) (you need to set Talisman to OmegaNum, otherwise Mayhem gets grumpy. Do that in Talisman's config)
+- Talisman 2.3.0 (preferably [OmegaNum optimization](https://github.com/SpectralPack/Talisman/tree/omeganum-optimization) branch) (you need to set Talisman to OmegaNum, otherwise Mayhem gets grumpy. Do that in Talisman's config)
 - [JenLib >=0.4.0](https://drive.google.com/file/d/1DpYkuF54FtuyjH7aBr1U3Bg2ubTn_TcP/view?usp=drivesdk)
 - [this version of Fusion Jokers](https://drive.google.com/file/d/1EAwoZJoz1U1WlGLYzt01vzZIAHmz9NbR/view?usp=drivesdk)
 - Steamodded >=0530b
@@ -44,11 +44,11 @@ The Mayhem zip includes Fusion Jokers, Talisman and every mod made by Jen except
 
 ### Recommended mods 
 You don't need these for Mayhem, but they make it better (crazier)
-Aurinko, Incantation and Nopeus are included in the release zip.
+Engulf, Overflow and Nopeus are included in the release zip.
 
-- [Aurinko](https://drive.google.com/file/d/1DHPBbGDNxm7x-JCgSi1WjZiDFN_Ok1xg/view?usp=drivesdk)
+- Engulf
 - [Nopeus](https://drive.google.com/file/d/1DXUXiAsH0eym0nB3Cft0YCcRwNMZ0PLA/view?usp=drivesdk) (CM, more speed options)
-- [**Incantation**](https://drive.google.com/file/d/1DsswtTseGgIdb3kd18jxsDgg6VLuN0vM/view?usp=drivesdk) (sillier Jokers create HEAPS of consumables (I've had runs with 1e15 Negative Wheel of Fortunes), so this is basically required if you don't want your pc to explode)
+- **Overflow** (sillier Jokers create HEAPS of consumables (I've had runs with 1e15 Negative Wheel of Fortunes), so this is basically required if you don't want your pc to explode)
 - Cartomancer
 - Cryptid (CM) 
 - CardSleeves (CM, WIP)
@@ -85,13 +85,13 @@ This is a stupid name I came up with for my personal collection of mods I play w
 - Next Ante Preview
 - Nopeus
 - Partner
+- Yggdrasil
 
 ### Conflicts
 You probably shouldn't play these with Mayhem 
 
 - POLTERWORX (that mod has its own systems and quirks which would be sisyphean to work around, along with conflicting content. You either play Mayhem or play POLTERWORX, sorry) 
 - Trance (Mayhem overrides most colors for transcendence to work. If you want Trance, you'll need to disable Transcendence Effects)
-- Entropy (currently crashes when continuing a run. Will be fixed in the next update)
 
 *This list will be updated as you people try my stupid mod with other mods and experience the crashes for themselves*
 
