@@ -1,6 +1,5 @@
 # Balatro Mayhem
-An utterly ridiculous Balatro mod.
-Your goal is simple: get the biggest numbers you can.
+A very ridiculous Balatro mod. Fuse Jokers continuously to get stronger and stronger Jokers and break the game in the process.
 
 https://www.youtube.com/watch?v=iG6z5mp5HqY
 
@@ -18,29 +17,29 @@ Also, during high Transcendence (REALLY big scores), the literal game window wil
 
 I also recommend turning your screen shake down.
 
-## Credits 
+# Credits 
 Yes, I know the mods I took code from are GPL 3.0 but I shouldn't take full credit when this mod has things made by other people.
 https://docs.google.com/document/d/1P53UrzO_xHavnu59BPmQSzwq0ZeTYD1dUHoRvsMqx9w/edit?usp=drivesdk
 
+# Installing
+Mayhem has a gigantic list of very specific dependencies, so all of them (except Steamodded) are included in the releases zip. Please **override existing mods with the ones Mayhem has**, especially Talisman.
+### Dependencies
+- [Talisman OmegaNum optimization](https://github.com/SpectralPack/Talisman/tree/omeganum-optimization) (you need to set Talisman to OmegaNum, otherwise Mayhem gets grumpy. Do that in Talisman's config)
+- [JenLib >=0.4.0](https://drive.google.com/file/d/1DpYkuF54FtuyjH7aBr1U3Bg2ubTn_TcP/view?usp=drivesdk)
+- [this version of Fusion Jokers](https://drive.google.com/file/d/1EAwoZJoz1U1WlGLYzt01vzZIAHmz9NbR/view?usp=drivesdk)
+- Steamodded >=0530b
+- Lovely >=0.7.0
+
 ## Discord
-I post random stuff here including pre-releases and sneak-peeks. If 0.0.2 released mere moments ago, it's also a place where I can inform you about this mod because the wiki is most likely nonexistent.
+I post random stuff here including pre-releases, sneak-peeks and unfunny jokes.
 https://discord.gg/esrGbYWHEQ
 
-# This mod is very, VERY W.I.P. 
+## This mod is very, VERY W.I.P. 
 Much more content is planned, though the mod is currently public so I stop fixing and adding things forever and delaying the mod indefinitely.
 As a sideffect, this obviously means this mod is a twisted nightmare that will most likely break, and there are many gaps content-wise. Please report every single bug you see unless it's been fixed already because this mod was made by me, an idiot :D.
 
 ## I suck
 This might be a repository on Codeberg (Github but not Microsoft), however I don't commit changes to files and do branches and pull requests and stuff. I recommend posting all of your improvements and issues in my Discord server as I don't check here very often. Also I admit that some parts of the mod are questionable or lazy.
-
-## Dependencies
-The Mayhem zip includes Fusion Jokers, Talisman, Nopeus, Engulf and Overflow for convenience.
-
-- Talisman 2.3.0 (preferably [OmegaNum optimization](https://github.com/SpectralPack/Talisman/tree/omeganum-optimization) branch) (you need to set Talisman to OmegaNum, otherwise Mayhem gets grumpy. Do that in Talisman's config)
-- [JenLib >=0.4.0](https://drive.google.com/file/d/1DpYkuF54FtuyjH7aBr1U3Bg2ubTn_TcP/view?usp=drivesdk)
-- [this version of Fusion Jokers](https://drive.google.com/file/d/1EAwoZJoz1U1WlGLYzt01vzZIAHmz9NbR/view?usp=drivesdk)
-- Steamodded >=0530b
-- Lovely >=0.7.0
 
 ### Recommended mods 
 You don't need these for Mayhem, but they make it better (crazier)
@@ -89,11 +88,9 @@ This is a stupid name I came up with for my personal collection of mods I play w
 
 ### Conflicts
 You probably shouldn't play these with Mayhem 
-
-- POLTERWORX (that mod has its own systems and quirks which would be sisyphean to work around, along with conflicting content. You either play Mayhem or play POLTERWORX, sorry) 
 - Trance (Mayhem overrides most colors for transcendence to work. If you want Trance, you'll need to disable Transcendence Effects)
 
-*This list will be updated as you people try my stupid mod with other mods and experience the crashes for themselves*
+*I don't play with many mods so this list isn't very big. If you find a conflict, please report it.*
 
 # Stuff you should probably know
 ## What is this
