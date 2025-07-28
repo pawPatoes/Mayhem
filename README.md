@@ -30,6 +30,11 @@ Mayhem has a gigantic list of very specific dependencies, so all of them (except
 - Steamodded >=0530b
 - Lovely >=0.7.0
 
+## Modules
+Modules are official mods that add content from Mayhem or add content to Mayhem
+* [Tranquil](https://codeberg.org/Alex343xd/tranquil): Adds Transcendence, Score Shakiness and custom hyperoperation sounds from Mayhem
+* [Mayhem Dumpyard](https://codeberg.org/Alex343xd/balatromayhem/releases/download/0.0.2.1h2/Mayhem%20Dumpyard%201.0.3.zip): Adds very WIP content that will not be implemented into the actual mod for a long time
+
 ## Discord
 I post random stuff here including pre-releases, sneak-peeks and unfunny jokes.
 https://discord.gg/esrGbYWHEQ
