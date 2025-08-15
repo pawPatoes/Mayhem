@@ -39,6 +39,10 @@ Modules are official mods that add content from Mayhem or add content to Mayhem
 I post random stuff here including pre-releases, sneak-peeks and unfunny jokes.
 https://discord.gg/esrGbYWHEQ
 
+## Mayhem OST
+All of the music and ambiance from the mod with proper labels and bonus stuff
+https://drive.google.com/file/d/1KfnanY6HAdpo05hoFcTVPKXoG9_UMf3G/view?usp=drivesdk
+
 ## This mod is very, VERY W.I.P. 
 Much more content is planned, though the mod is currently public so I stop fixing and adding things forever and delaying the mod indefinitely.
 As a sideffect, this obviously means this mod is a twisted nightmare that will most likely break, and there are many gaps content-wise. Please report every single bug you see unless it's been fixed already because this mod was made by me, an idiot :D.
