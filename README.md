@@ -22,12 +22,9 @@ Yes, I know the mods I took code from are GPL 3.0 but I shouldn't take full cred
 https://docs.google.com/document/d/1P53UrzO_xHavnu59BPmQSzwq0ZeTYD1dUHoRvsMqx9w/edit?usp=drivesdk
 
 # Installing
-Mayhem has a gigantic list of very specific dependencies, so all of them (except Steamodded) are included in the releases zip. Please **override existing mods with the ones Mayhem has**, especially Talisman.
 ### Dependencies
-- [Talisman OmegaNum optimization](https://github.com/SpectralPack/Talisman/tree/omeganum-optimization) (you need to set Talisman to OmegaNum, otherwise Mayhem gets grumpy. Do that in Talisman's config)
-- [JenLib >=0.4.0](https://drive.google.com/file/d/1DpYkuF54FtuyjH7aBr1U3Bg2ubTn_TcP/view?usp=drivesdk)
-- [this version of Fusion Jokers](https://drive.google.com/file/d/1EAwoZJoz1U1WlGLYzt01vzZIAHmz9NbR/view?usp=drivesdk)
-- Steamodded >=0530b
+- [Talisman >=2.4.0](https://github.com/SpectralPack/Talisman/releases) (you need to set Talisman to OmegaNum, otherwise Mayhem gets grumpy. Do that in Talisman's config)
+- [Steamodded >=0827c](https://github.com/Steamodded/smods/releases)
 - Lovely >=0.7.0
 
 ## Modules
@@ -36,7 +33,7 @@ Modules are official mods that add content from Mayhem or add content to Mayhem
 * [Mayhem Dumpyard](https://codeberg.org/Alex343xd/balatromayhem/releases/download/0.0.2.1h2/Mayhem%20Dumpyard%201.0.3.zip): Adds very WIP content that will not be implemented into the actual mod for a long time
 
 ## Discord
-I post random stuff here including pre-releases, sneak-peeks and unfunny jokes.
+I post random stuff here including pre-releases, sneak-peeks and unfunny jokes. Also the home of [Poltergeist](https://codeberg.org/BalatroPoltergeist).
 https://discord.gg/esrGbYWHEQ
 
 ## Mayhem OST
@@ -56,12 +53,11 @@ Engulf, Overflow and Nopeus are included in the release zip.
 
 - Engulf
 - [Nopeus](https://drive.google.com/file/d/1DXUXiAsH0eym0nB3Cft0YCcRwNMZ0PLA/view?usp=drivesdk) (CM, more speed options)
-- **Overflow** (sillier Jokers create HEAPS of consumables (I've had runs with 1e15 Negative Wheel of Fortunes), so this is basically required if you don't want your pc to explode)
 - Cartomancer
 - Cryptid (CM) 
 - CardSleeves (CM, WIP)
 - Blind editions (CM)
-- Grim
+- Grim (CM)
 - Galdur
 - Handy
 - Better Tags
