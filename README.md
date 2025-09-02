@@ -24,6 +24,7 @@ https://docs.google.com/document/d/1P53UrzO_xHavnu59BPmQSzwq0ZeTYD1dUHoRvsMqx9w/
 # Installing
 ### Dependencies
 - [Talisman >=2.4.0](https://github.com/SpectralPack/Talisman/releases) (you need to set Talisman to OmegaNum, otherwise Mayhem gets grumpy. Do that in Talisman's config)
+- [Overflow](https://github.com/lord-ruby/Overflow)
 - [Steamodded >=0827c](https://github.com/Steamodded/smods/releases)
 - Lovely >=0.7.0
 
