@@ -1,7 +1,12 @@
+![Banner](https://codeberg.org/Alex343xd/Mayhem/raw/branch/main/repoassets/banner2rounded.png)
 # Mayhem
-Balatro content mod that focuses on continuous fusions between Jokers. 
+Chaotic (and stupid) Balatro content mod that focuses on continuous fusions between Jokers. 
 
 Mayhem is currently a huge WIP and in a very buggy state, expect issues. The mod is also built on top of a several months old foundation, so in terms of gameplay the mod may be underwhelming. I am currently transitioning the mod to a fusion tree mod as it's original vision was to simply be the biggest number mod ever. 
+
+![Screenshot](https://codeberg.org/Alex343xd/Mayhem/raw/branch/main/repoassets/InShot_20251002_160744053.jpg)
+
+** **
 
 # SEIZURE AND AUDIO WARNING
 Mayhem has a bunch of effects for scoring really high numbers that may trigger epileptic reactions. If you are prone to flashing lights and shaking things, disable some settings in the mod's Effects tab.
@@ -53,3 +58,11 @@ Since Mayhem is big, seperate parts of it can be installed as seperate small mod
 * [Mayhem OST](https://drive.google.com/file/d/1DDH5pKHx9_ZdpyvpYrMSFwMVEi2HT7L_/view?usp=drivesdk) - Every song for Mayhem, implemented or otherwise, labeled properly with bonus tracks, old versions of tracks and Transcendence ambiance
 
 If you have any questions or problems, feel free to start a discussion thread on this repo or contact me on Discord (@alex343xd).
+
+** **
+
+** **
+
+** **
+![Nacho](https://codeberg.org/Alex343xd/Mayhem/raw/branch/main/repoassets/mrnachohd.png)
+Mr. Nacho awaits you.
