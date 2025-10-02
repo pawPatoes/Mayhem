@@ -1,121 +1,55 @@
-# Balatro Mayhem
-A very ridiculous Balatro mod. Fuse Jokers continuously to get stronger and stronger Jokers and break the game in the process.
+# Mayhem
+Balatro content mod that focuses on continuous fusions between Jokers. 
 
-https://www.youtube.com/watch?v=iG6z5mp5HqY
-
-# THE REPOSITORY IS OUTDATED
-Do NOT download the source to play Mayhem. The latest version that actually works is in releases. 
+Mayhem is currently a huge WIP and in a very buggy state, expect issues. The mod is also built on top of a several months old foundation, so in terms of gameplay the mod may be underwhelming. I am currently transitioning the mod to a fusion tree mod as it's original vision was to simply be the biggest number mod ever. 
 
 # SEIZURE AND AUDIO WARNING
-This mod goes absolutely haywire with effects which might be bad for you. If you're epileptic, try disabling these settings:
-- In Effects, set Transcendence Effects to at least Medium and disable Shake Screen during Transcendence and Shake Cards during Transcendence
-- Also in Effects, lower down all of the Score Shakiness things, and disable Score Shakiness: Shake Screen
+Mayhem has a bunch of effects for scoring really high numbers that may trigger epileptic reactions. If you are prone to flashing lights and shaking things, disable some settings in the mod's Effects tab.
 
-In terms of audio, this mod has some asbolutely insane operation sounds that might get earrape-y when layered. You can enable Tamer Hyperoperation Sounds in Music, or disable them outright.
+Mayhem also has custom operation sounds which get very intense. If your headphones/speakers start distorting and/or the noises are unpleasant, you can disable them in the Audio tab or toggle some less intense versions of those sounds.
 
-Also, during high Transcendence (REALLY big scores), the literal game window will start shaking if you're playing in windowed mode. If you want to disable this, toggle 'Window Shake' in Effects off.
+# Installation
+Mayhem has the following dependencies which must be installed for the mod to work
+* [Steamodded](https://github.com/Steamodded/smods) (at least 1.0.0-BETA-0827c)
+* [Talisman](https://github.com/SpectralPack/Talisman) (at least 2.3.4) 
+* [Overflow](https://github.com/lord-ruby/Overflow)
+## Installation Notices 
+* Do **NOT** download the repository's source code as it is outdated and non-functional due to technical difficulties on my end. Working versions are available in the Releases tab. 
+* Mayhem release zips do **NOT** include dependencies due to the release file size limit.
+* Do not play with Incantation and Aurinko as Mayhem only supports ruby’s alternatives (Oveflow and Engulf). 
+* Mayhem currently conflicts with Vallkarri and Paya's Terrible Additions and may behave weirdly with Cryptid. Please report any other conflicts you find. 
+* Mayhem currently does not have custom save files. 
+* [Balatro Multiplayer](https://github.com/Balatro-Multiplayer/BalatroMultiplayer) support is currently not known, however is **likely not compatible**. 
+**Tip:** If your game crashes with an error along the lines of ``attempt to index a nil value ("may")``, Mayhem was not able to load, usually due to incorrect/missing dependencies. 
 
-I also recommend turning your screen shake down.
+# Recommended Mods 
+Mods marked with CM enable additional content from Mayhem when used.
+## Content Mods 
+* [Engulf](https://github.com/lord-ruby/Engulf) (CM)
+* [Poltergeist](https://codeberg.org/BalatroPoltergeist)
+* [Grim](https://github.com/MathGuy23/Grim) (CM)
+* [Blind Editions](https://github.com/MathGuy23/BlindEditions) (CM)
+* [Partner API](https://github.com/Icecanno/Partner-API)
+* [Cryptid](https://github.com/SpectralPack/Cryptid) (CM)
+## QoL Mods
+* [Handy](https://github.com/SleepyG11/HandyBalatro)
+* [Cartomancer](https://github.com/stupxd/Cartomancer) (may currently break Mayhem's naneinf flames fix)
+* [BetterTags](https://github.com/WaffleDevs/BetterTags)
+* [Galdur](https://github.com/Eremel/Galdur)
+* [Yorick](https://github.com/Somethingcom515/Yorick)
+* [Nopeus](https://github.com/lord-ruby/RubysBalatroCollection/tree/main/LegacyMods/Nopeus)
+* [Banner](https://github.com/SylviBlossom/Banner)
+* [Glue for Modpacks](https://github.com/icyethics/Glue-For-Modpacks)
+* [Next Ante Preview](https://github.com/DigitalDetective47/next-ante-preview)
 
-# Credits 
-Yes, I know the mods I took code from are GPL 3.0 but I shouldn't take full credit when this mod has things made by other people.
-https://docs.google.com/document/d/1P53UrzO_xHavnu59BPmQSzwq0ZeTYD1dUHoRvsMqx9w/edit?usp=drivesdk
+# Modules
+Since Mayhem is big, seperate parts of it can be installed as seperate small mods so they can be bundled in non-Mayhem modpacks or played alone if you like specific parts of the mod but not the rest. There is currently only 1 of these mods.
+* [Tranquil](https://codeberg.org/alex343xd/Tranquil) - adds Transcendence, Score Shakiness and custom hyperoperation sounds
 
-# Installing
-### Dependencies
-- [Talisman >=2.4.0](https://github.com/SpectralPack/Talisman/releases) (you need to set Talisman to OmegaNum, otherwise Mayhem gets grumpy. Do that in Talisman's config)
-- [Overflow](https://github.com/lord-ruby/Overflow)
-- [Steamodded >=0827c](https://github.com/Steamodded/smods/releases)
-- Lovely >=0.7.0
+# Links
+* [Credits](https://docs.google.com/document/d/1P53UrzO_xHavnu59BPmQSzwq0ZeTYD1dUHoRvsMqx9w/edit?usp=drivesdk)
+* [Wiki](https://balatromods.miraheze.org/wiki/Mayhem)
+* [Mayhem Docs](https://docs.google.com/document/d/1fxpHe9eeimEFgb8htmr9WFAyqFMfycXNf_Vwx-uh0e4/edit?usp=drivesdk) - Categorized list of EVERY piece of Mayhem content, planned and implemented
+* [Mayhem OST](https://drive.google.com/file/d/1DDH5pKHx9_ZdpyvpYrMSFwMVEi2HT7L_/view?usp=drivesdk) - Every song for Mayhem, implemented or otherwise, labeled properly with bonus tracks, old versions of tracks and Transcendence ambiance
 
-## Modules
-Modules are official mods that add content from Mayhem or add content to Mayhem
-* [Tranquil](https://codeberg.org/Alex343xd/tranquil): Adds Transcendence, Score Shakiness and custom hyperoperation sounds from Mayhem
-* [Mayhem Dumpyard](https://codeberg.org/Alex343xd/balatromayhem/releases/download/0.0.2.1h2/Mayhem%20Dumpyard%201.0.3.zip): Adds very WIP content that will not be implemented into the actual mod for a long time
-
-## Discord
-I post random stuff here including pre-releases, sneak-peeks and unfunny jokes. Also the home of [Poltergeist](https://codeberg.org/BalatroPoltergeist).
-https://discord.gg/esrGbYWHEQ
-
-## Mayhem OST
-All of the music and ambiance from the mod with proper labels and bonus stuff
-https://drive.google.com/file/d/1KfnanY6HAdpo05hoFcTVPKXoG9_UMf3G/view?usp=drivesdk
-
-## This mod is very, VERY W.I.P. 
-Much more content is planned, though the mod is currently public so I stop fixing and adding things forever and delaying the mod indefinitely.
-As a sideffect, this obviously means this mod is a twisted nightmare that will most likely break, and there are many gaps content-wise. Please report every single bug you see unless it's been fixed already because this mod was made by me, an idiot :D.
-
-## I suck
-This might be a repository on Codeberg (Github but not Microsoft), however I don't commit changes to files and do branches and pull requests and stuff. I recommend posting all of your improvements and issues in my Discord server as I don't check here very often. Also I admit that some parts of the mod are questionable or lazy.
-
-### Recommended mods 
-You don't need these for Mayhem, but they make it better (crazier)
-Engulf, Overflow and Nopeus are included in the release zip.
-
-- Engulf
-- [Nopeus](https://drive.google.com/file/d/1DXUXiAsH0eym0nB3Cft0YCcRwNMZ0PLA/view?usp=drivesdk) (CM, more speed options)
-- Cartomancer
-- Cryptid (CM) 
-- CardSleeves (CM, WIP)
-- Blind editions (CM)
-- Grim (CM)
-- Galdur
-- Handy
-- Better Tags
-
-(CM stands for cross-mod and means that Mayhem has certain content that's only accessible if you have that mod)
-
-I don't recommend playing with many joker mods because it's gonna make finding fusable jokers harder and the game devolves into grindy nonsense. If you do, I recommend installing Glue for Modpacks, which can give you more slots in the shop to start with.
-
-### Mayhem Mega Modpack®
-This is a stupid name I came up with for my personal collection of mods I play with.
-- Aurinko
-- Banner
-- Better Tags
-- CardSleeves
-- Cartomancer
-- Collectors Cards
-- Cryptid
-- DebugPlus
-- Fusion Jokers
-- Galdur
-- Glue for Modpacks
-- Grim
-- Handy
-- Incantation
-- [Loop](https://drive.google.com/file/d/1Dkps8tTwZCW3euVygbULihUmfWWORRgO/view?usp=drivesdk)
-- JenLib
-- Mayhem Dumpyard
-- Multiplayer
-- Next Ante Preview
-- Nopeus
-- Partner
-- Yggdrasil
-
-### Conflicts
-You probably shouldn't play these with Mayhem 
-- Trance (Mayhem overrides most colors for transcendence to work. If you want Trance, you'll need to disable Transcendence Effects)
-
-*I don't play with many mods so this list isn't very big. If you find a conflict, please report it.*
-
-# Stuff you should probably know
-## What is this
-Mayhem is basically a mod designed only to be in your advantage and allows you to destroy the game. Obviously the game doesnt just crash instantly (usually), but instead I implemented some very SUBTLE* effects for when you get big scores.
-An important mechanic is fusion. Basically, 2 Jokers can fuse into a better Joker if you spend money. For example, AAAA and Universal Collapse can fuse into Acum if you spend $1111. Fusion is imperative for getting big scores, because all of the really good Jokers are fusions.
-
-## Mayhem and Eternum
-Yes, the whole mod is called Mayhem, but it features 2 main modes, Mayhem and Eternum. This is so people that want something more sane (Mayhem) can play fine but people who don't care about the well-being of the game (Eternum) can also play fine. The "official" mode is Mayhem, where all of the intended content is left as is. Meanwhile, Eternum absolutely breaks everything Balatro has to offer by adding completely unhinged content and tweaking existing assets to make them even more insane, turning the game into a big number generator and lag machine (as if Mayhem wasn't enough).
-
-## This is way too stupid
-Yes.
-
-The long answer is that I did my best to add extensive customizability so you can enjoy the mod however you like. Don't like the effects? Disable them. Don't like UltraBlinds? Disable them. Don't like ridiculous Jokers? Disable them. This is turning into an advertisement but, you can do all of these.
-
-## My PC is on the brink of death
-Turn some settings off in the mod config. This mod is demanding because I'm an awesome* coder and also because this mod relies on crazy OmegaNum operations with like hundreds of arrows (fun fact it has to calculate 1e1000{4000}1e1000 every frame during a blind)
-
-## What do you plan to do with this mod?
-Unexpected error: expected string, got nil
-
-
-
+If you have any questions or problems, feel free to start a discussion thread on this repo or contact me on Discord (@alex343xd).
