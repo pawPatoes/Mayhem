@@ -25,6 +25,7 @@ Mayhem has the following dependencies which must be installed for the mod to wor
 * Mayhem currently conflicts with Vallkarri and Paya's Terrible Additions and may behave weirdly with Cryptid. Please report any other conflicts you find. 
 * Mayhem currently does not have custom save files. 
 * [Balatro Multiplayer](https://github.com/Balatro-Multiplayer/BalatroMultiplayer) support is currently not known, however is **likely not compatible**. 
+
 **Tip:** If your game crashes with an error along the lines of ``attempt to index a nil value ("may")``, Mayhem was not able to load, usually due to incorrect/missing dependencies. 
 
 # Recommended Mods 
