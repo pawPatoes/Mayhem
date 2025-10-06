@@ -22,7 +22,8 @@ Mayhem has the following dependencies which must be installed for the mod to wor
 * Do **NOT** download the repository's source code as it is outdated and non-functional due to technical difficulties on my end. Working versions are available in the Releases tab. 
 * Mayhem release zips do **NOT** include dependencies due to the release file size limit.
 * Do not play with Incantation and Aurinko as Mayhem only supports ruby’s alternatives (Oveflow and Engulf). 
-* Mayhem currently conflicts with Vallkarri and Paya's Terrible Additions and may behave weirdly with Cryptid. Please report any other conflicts you find. 
+* Mayhem currently crashes with Cryptid, however this will be fixed in the next version
+* Mayhem currently conflicts with Vallkarri and Paya's Terrible Additions. Please report any other conflicts you find. 
 * Mayhem currently does not have custom save files. 
 * [Balatro Multiplayer](https://github.com/Balatro-Multiplayer/BalatroMultiplayer) support is currently not known, however is **likely not compatible**. 
 
