@@ -16,7 +16,7 @@ Mayhem also has custom operation sounds which get very intense. If your headphon
 # Installation
 Mayhem has the following dependencies which must be installed for the mod to work
 * [Steamodded](https://github.com/Steamodded/smods) (at least 1.0.0-BETA-0827c)
-* [Talisman](https://github.com/SpectralPack/Talisman) (at least 2.3.4) 
+* [Talisman](https://github.com/SpectralPack/Talisman) (preferably latest version) 
 * [Overflow](https://github.com/lord-ruby/Overflow)
 ## Installation Notices 
 * Do **NOT** download the repository's source code as it is outdated and non-functional due to technical difficulties on my end. Working versions are available in the Releases tab. 
