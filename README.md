@@ -20,11 +20,10 @@ Mayhem has the following dependencies which must be installed for the mod to wor
 * [Overflow](https://github.com/lord-ruby/Overflow)
 ## Installation Notices 
 * Do **NOT** download the repository's source code as it is outdated and non-functional due to technical difficulties on my end. Working versions are available in the Releases tab. 
-* Mayhem release zips do **NOT** include dependencies due to the release file size limit.
+* Mayhem release zips do **NOT** include dependencies due to the release file size limit. Those are in the ``Dependencies`` zip
 * Do not play with Incantation and Aurinko as Mayhem only supports ruby’s alternatives (Oveflow and Engulf). 
-* Mayhem currently crashes with Cryptid, however this will be fixed in the next version
-* Mayhem currently conflicts with Vallkarri and Paya's Terrible Additions. Please report any other conflicts you find. 
-* Mayhem currently does not have custom save files. 
+* Mayhem may conflict with certain content mods.
+* Mayhem currently does not have custom save files and automatically unlocks all content on any save file you play on.
 * [Balatro Multiplayer](https://github.com/Balatro-Multiplayer/BalatroMultiplayer) support is currently not known, however is **likely not compatible**. 
 
 **Tip:** If your game crashes with an error along the lines of ``attempt to index a nil value ("may")``, Mayhem was not able to load, usually due to incorrect/missing dependencies. 
@@ -37,10 +36,10 @@ Mods marked with CM enable additional content from Mayhem when used.
 * [Grim](https://github.com/MathGuy23/Grim) (CM)
 * [Blind Editions](https://github.com/MathGuy23/BlindEditions) (CM)
 * [Partner API](https://github.com/Icecanno/Partner-API)
-* [Cryptid](https://github.com/SpectralPack/Cryptid) (CM)
+* [Cryptid](https://github.com/SpectralPack/Cryptid) (CM, not recommended if you want a balanced experience)
 ## QoL Mods
 * [Handy](https://github.com/SleepyG11/HandyBalatro)
-* [Cartomancer](https://github.com/stupxd/Cartomancer) (may currently break Mayhem's naneinf flames fix)
+* [Cartomancer](https://github.com/stupxd/Cartomancer)
 * [BetterTags](https://github.com/WaffleDevs/BetterTags)
 * [Galdur](https://github.com/Eremel/Galdur)
 * [Yorick](https://github.com/Somethingcom515/Yorick)
@@ -51,7 +50,7 @@ Mods marked with CM enable additional content from Mayhem when used.
 
 # Modules
 Since Mayhem is big, seperate parts of it can be installed as seperate small mods so they can be bundled in non-Mayhem modpacks or played alone if you like specific parts of the mod but not the rest. There is currently only 1 of these mods.
-* [Tranquil](https://codeberg.org/alex343xd/Tranquil) - adds Transcendence, Score Shakiness and custom hyperoperation sounds
+* [Tranquil](https://codeberg.org/BalatroMayhem/Tranquil) - adds Transcendence, Score Shakiness and custom hyperoperation sounds
 
 # Links
 * [Credits](https://docs.google.com/document/d/1P53UrzO_xHavnu59BPmQSzwq0ZeTYD1dUHoRvsMqx9w/edit?usp=drivesdk)
