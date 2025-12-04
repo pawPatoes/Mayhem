@@ -20,10 +20,8 @@ Mayhem has the following dependencies which must be installed for the mod to wor
 * [Overflow](https://github.com/lord-ruby/Overflow)
 ## Installation Notices 
 * Do **NOT** download the repository's source code as it is outdated and non-functional due to technical difficulties on my end. Working versions are available in the Releases tab. 
-* Mayhem release zips do **NOT** include dependencies due to the release file size limit. Those are in the ``Dependencies`` zip
-* Do not play with Incantation and Aurinko as Mayhem only supports ruby’s alternatives (Oveflow and Engulf). 
+* Do not play with Incantation and Aurinko as Mayhem only supports ruby’s alternatives (Oveflow and Engulf). Saturn should also not be used.
 * Mayhem may conflict with certain content mods.
-* [Balatro Multiplayer](https://github.com/Balatro-Multiplayer/BalatroMultiplayer) support is currently not known, however is **likely not compatible**. 
 
 **Tip:** If your game crashes with an error along the lines of ``attempt to index a nil value ("may")``, Mayhem was not able to load, usually due to incorrect/missing dependencies. 
 
