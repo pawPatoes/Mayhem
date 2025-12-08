@@ -1,10 +1,10 @@
-![Banner](https://codeberg.org/Alex343xd/Mayhem/raw/branch/main/repoassets/banner2rounded.png)
+![Banner](https://codeberg.org/BalatroMayhem/Mayhem/raw/branch/main/repoassets/banner2rounded.png)
 # Mayhem
 Chaotic (and stupid) Balatro content mod that focuses on continuous fusions between Jokers. 
 
 Mayhem is currently a huge WIP and in a very buggy state, expect issues. The mod is also built on top of a several months old foundation, so in terms of gameplay the mod may be underwhelming. I am currently transitioning the mod to a fusion tree mod as it's original vision was to simply be the biggest number mod ever. 
 
-![Screenshot](https://codeberg.org/Alex343xd/Mayhem/raw/branch/main/repoassets/InShot_20251002_160744053.jpg)
+![Screenshot](https://codeberg.org/BalatroMayhem/Mayhem/raw/branch/main/repoassets/InShot_20251002_160744053.jpg)
 
 ** **
 
@@ -39,11 +39,19 @@ Mods marked with CM enable additional content from Mayhem when used.
 * [Cartomancer](https://github.com/stupxd/Cartomancer)
 * [BetterTags](https://github.com/WaffleDevs/BetterTags)
 * [Galdur](https://github.com/Eremel/Galdur)
-* [Yorick](https://github.com/Somethingcom515/Yorick)
 * [Nopeus](https://github.com/lord-ruby/RubysBalatroCollection/tree/main/LegacyMods/Nopeus)
 * [Banner](https://github.com/SylviBlossom/Banner)
 * [Glue for Modpacks](https://github.com/icyethics/Glue-For-Modpacks)
 * [Next Ante Preview](https://github.com/DigitalDetective47/next-ante-preview)
+
+# For content creators 
+First of all, thank you. Second of all, here's some things you should keep in mind if you want to stream and/or make Mayhem content:
+* Disable "White noise during Transcendence" in Mayhem's Effects tab. This setting disables the crazy static during high scores, which can absolutely obliterate your bitrate. 
+* Enable "Tamer hyperoperation sounds" in Mayhem's Audio & SFX tab. This setting makes the absolutely crazy sounds that play with really high operations more controlled, as they get really earrape-y when layered. 
+* Do NOT use the latest release of Slay the Jokers, as it is incompatible with Mayhem. Make sure to instead download the absolute latest commit. 
+* If you've played Mayhem once a while back, you should delete your Mayhem config and start fresh to avoid freak bugs from huge version jumps (your config file is ``%AppData%/balatro/config/mayhem.jkr``). 
+* Mayhem has custom save files, no need to back your saves up. 
+* Minimal Screen Shake is recommended for Mayhem's effects (~25), CRT filter should be turned off BUT CRT Bloom should be on
 
 # Modules
 Since Mayhem is big, seperate parts of it can be installed as seperate small mods so they can be bundled in non-Mayhem modpacks or played alone if you like specific parts of the mod but not the rest. There is currently only 1 of these mods.
@@ -62,5 +70,5 @@ If you have any questions or problems, feel free to start a discussion thread on
 ** **
 
 ** **
-![Nacho](https://codeberg.org/Alex343xd/Mayhem/raw/branch/main/repoassets/mrnachohd.png)
+![Nacho](https://codeberg.org/BalatroMayhem/Mayhem/raw/branch/main/repoassets/mrnachohd.png)
 Mr. Nacho awaits you.
