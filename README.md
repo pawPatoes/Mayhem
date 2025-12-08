@@ -52,6 +52,7 @@ First of all, thank you. Second of all, here's some things you should keep in mi
 * If you've played Mayhem once a while back, you should delete your Mayhem config and start fresh to avoid freak bugs from huge version jumps (your config file is ``%AppData%/balatro/config/mayhem.jkr``). 
 * Mayhem has custom save files, no need to back your saves up. 
 * Minimal Screen Shake is recommended for Mayhem's effects (~25), CRT filter should be turned off BUT CRT Bloom should be on
+* Please add an epilepsy warning.
 
 # Modules
 Since Mayhem is big, seperate parts of it can be installed as seperate small mods so they can be bundled in non-Mayhem modpacks or played alone if you like specific parts of the mod but not the rest. There is currently only 1 of these mods.
