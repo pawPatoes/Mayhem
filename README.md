@@ -2,7 +2,9 @@
 # Mayhem
 Chaotic (and stupid) Balatro content mod that focuses on continuous fusions between Jokers. 
 
-Mayhem is currently a huge WIP and in a very buggy state, expect issues. The mod is also built on top of a several months old foundation, so in terms of gameplay the mod may be underwhelming. I am currently transitioning the mod to a fusion tree mod as it's original vision was to simply be the biggest number mod ever. 
+Mayhem is very WIP and very buggy. Expect issues. 
+
+Don't play this if you're a vanilla stooge. Ever.
 
 ![Screenshot](https://codeberg.org/BalatroMayhem/Mayhem/raw/branch/main/repoassets/InShot_20251002_160744053.jpg)
 
@@ -14,14 +16,15 @@ Mayhem has a bunch of effects for scoring really high numbers that may trigger e
 Mayhem also has custom operation sounds which get very intense. If your headphones/speakers start distorting and/or the noises are unpleasant, you can disable them in the Audio tab or toggle some less intense versions of those sounds.
 
 # Installation
+### [Video installation guide](https://youtu.be/Ldbd94HM8hg?si=YSJAtWxdds9Tr3dq) (by TheUnseenExplosion)
 Mayhem has the following dependencies which must be installed for the mod to work
 * [Steamodded](https://github.com/Steamodded/smods) (at least 1.0.0-BETA-0827c)
-* [Talisman](https://github.com/SpectralPack/Talisman) (preferably latest version) 
-* [Overflow](https://github.com/lord-ruby/Overflow)
+* [Talisman](https://github.com/SpectralPack/Talisman) (at least 2.4.0) 
+* [Overflow](https://github.com/lord-ruby/Overflow) (downloading code as ZIP recommended)
 ## Installation Notices 
 * Do **NOT** download the repository's source code as it is outdated and non-functional due to technical difficulties on my end. Working versions are available in the Releases tab. 
 * Do not play with Incantation and Aurinko as Mayhem only supports ruby’s alternatives (Oveflow and Engulf). Saturn should also not be used.
-* Mayhem may conflict with certain content mods.
+* Mayhem may conflict with certain content mods. Most popular mods should work, but more obscure and rough mods may cause issues.
 
 **Tip:** If your game crashes with an error along the lines of ``attempt to index a nil value ("may")``, Mayhem was not able to load, usually due to incorrect/missing dependencies. 
 
