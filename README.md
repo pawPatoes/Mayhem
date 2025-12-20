@@ -47,7 +47,6 @@ Mods marked with (CM) enable additional content from Mayhem when used.
 * Frost's Utils: Optimization.
 * BigMem: Optimization.
 * UnBlind: Shows a preview of the current ante in the shop instead of the usual Shop sign
-* Nopeus: Adds fast-forward and allows you to disable specific card messages
 
 ### Content
 * Grim (CM): Adds a per-run skill tree with classes that enable specific content
