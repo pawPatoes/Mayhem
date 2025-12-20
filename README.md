@@ -28,24 +28,36 @@ Mayhem has the following dependencies which must be installed for the mod to wor
 
 **Tip:** If your game crashes with an error along the lines of ``attempt to index a nil value ("may")``, Mayhem was not able to load, usually due to incorrect/missing dependencies. 
 
-# Recommended Mods 
-Mods marked with CM enable additional content from Mayhem when used.
-## Content Mods 
-* [Engulf](https://github.com/lord-ruby/Engulf) (CM)
-* [Poltergeist](https://codeberg.org/BalatroPoltergeist)
-* [Grim](https://github.com/MathGuy23/Grim) (CM)
-* [Blind Editions](https://github.com/MathGuy23/BlindEditions) (CM)
-* [Partner API](https://github.com/Icecanno/Partner-API)
-* [Cryptid](https://github.com/SpectralPack/Cryptid) (CM, not recommended if you want a balanced experience)
-## QoL Mods
-* [Handy](https://github.com/SleepyG11/HandyBalatro)
-* [Cartomancer](https://github.com/stupxd/Cartomancer)
-* [BetterTags](https://github.com/WaffleDevs/BetterTags)
-* [Galdur](https://github.com/Eremel/Galdur)
-* [Nopeus](https://github.com/lord-ruby/RubysBalatroCollection/tree/main/LegacyMods/Nopeus)
-* [Banner](https://github.com/SylviBlossom/Banner)
-* [Glue for Modpacks](https://github.com/icyethics/Glue-For-Modpacks)
-* [Next Ante Preview](https://github.com/DigitalDetective47/next-ante-preview)
+# Recommended Mods
+Mayhem releases come with a Recommended Mods ZIP which has a plethora of smaller mods that work excellently with Mayhem. These are obviously optional, but they make the experience feel more complete. 
+
+Mods marked with (CM) enable additional content from Mayhem when used.
+
+### QoL
+* Handy: General QoL mod that allows you to swipe to select cards, increase the game speed to really high amounts and mass destroy Tags and Consumables in case of emergency
+* Cartomancer: Miscellaneous QoL mod that mainly allows you to zoom in or hide your Jokers and Consumables, improves hand card sorting, limit Chip/Mult flames and your deck size
+* Galdur: Overhauls the New Run tab to make it more worthwhile when you have a lot of decks and stakes (which you will considering you play Mayhem)
+* Spotlight: Highlights card area changes, like Joker/Consumable Slot and Hand Size increases or decreases
+* Banner: Allows you to disable individual pieces of content
+* BetterTags: Makes identical Tags only display themselves once, stacking them like Overflow, however their order is still preserved
+* BetterIllusion: Fixes the Illusion Voucher, allowing cards in the shop to appear with Seals
+* DebugPlus: While intended for mod developers, it is still handy for showing your FPS and allowing you to cheat in cards if you just want to mess around
+* Blueprint: Makes the Blueprint Joker display the Joker it is copying
+* Next Ante Preview: Shows a preview of the Blinds in the next Ante at the cash out screen after defeating a Boss Blind
+* Frost's Utils: Optimization.
+* BigMem: Optimization.
+* UnBlind: Shows a preview of the current ante in the shop instead of the usual Shop sign
+* Nopeus: Adds fast-forward and allows you to disable specific card messages
+
+### Content
+* Grim (CM): Adds a per-run skill tree with classes that enable specific content
+* Engulf (CM): Allows Planet Cards to appear with Editions which are applied to the Poker Hands they affect
+* Fitxes: Adds Token consumables which give Tags when use
+* Espazio (CM): Adds Blank Consumables which turn into the next consumable of their type that's used while held
+* Blind Editions (CM): Allows Blinds to have Editions, which make the encounter slightly more challenging
+* Spectrum API: Adds the Spectrum hand type, which contains 5 different suits at once
+* Card Sleeves (CM): Adds Sleeves which are equipped on top of decks, analogous to existing decks (eg Yellow Sleeve starts you out with an additional $10). Use the deck with its corresponding Sleeve to unlock a crazier new ability for your sleeve...
+* Finity: Adds Showdown Jokers corresponding to each Finisher Boss Blind, which are obtained after defeating them
 
 # For content creators 
 First of all, thank you. Second of all, here's some things you should keep in mind if you want to stream and/or make Mayhem content:
