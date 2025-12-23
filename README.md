@@ -51,11 +51,11 @@ Mods marked with (CM) enable additional content from Mayhem when used.
 ### Content
 * Grim (CM): Adds a per-run skill tree with classes that enable specific content
 * Engulf (CM): Allows Planet Cards to appear with Editions which are applied to the Poker Hands they affect
-* Fitxes: Adds Token consumables which give Tags when use
+* Fitxes: Adds Token consumables which give Tags when used
 * Espazio (CM): Adds Blank Consumables which turn into the next consumable of their type that's used while held
 * Blind Editions (CM): Allows Blinds to have Editions, which make the encounter slightly more challenging
 * Spectrum API: Adds the Spectrum hand type, which contains 5 different suits at once
-* Card Sleeves (CM): Adds Sleeves which are equipped on top of decks, analogous to existing decks (eg Yellow Sleeve starts you out with an additional $10). Use the deck with its corresponding Sleeve to unlock a crazier new ability for your sleeve...
+* Card Sleeves (CM): Adds Sleeves which are equipped on top of decks, analogous to existing decks (eg Yellow Sleeve starts you out with an additional $10). Use the deck with its corresponding Sleeve to unlock a crazier new ability for your Sleeve...
 * Finity: Adds Showdown Jokers corresponding to each Finisher Boss Blind, which are obtained after defeating them
 
 # For content creators 
