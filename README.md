@@ -76,7 +76,7 @@ Since Mayhem is big, seperate parts of it can be installed as seperate small mod
 * [Credits](https://docs.google.com/document/d/1P53UrzO_xHavnu59BPmQSzwq0ZeTYD1dUHoRvsMqx9w/edit?usp=drivesdk)
 * [Wiki](https://balatromods.miraheze.org/wiki/Mayhem)
 * [Mayhem Docs](https://docs.google.com/document/d/1fxpHe9eeimEFgb8htmr9WFAyqFMfycXNf_Vwx-uh0e4/edit?usp=drivesdk) - Categorized list of EVERY piece of Mayhem content, planned and implemented
-* [Mayhem OST](https://drive.google.com/file/d/17hQbm5VJkgUKS7qxsHm6GWFvv-uSkyD3/view?usp=drivesdk) - Every song for Mayhem, implemented or otherwise, labeled properly with bonus tracks, old versions of tracks and Transcendence ambiance
+* [Mayhem OST](https://drive.google.com/file/d/1dVqHYeIT0wLCxvW3i0UNW9cDwSPXuDGF/view?usp=drivesdk) - Every song for Mayhem, implemented or otherwise, labeled properly with bonus tracks, old versions of tracks and Transcendence ambiance
 
 If you have any questions or problems, feel free to start a discussion thread on this repo or contact me on Discord (@alex343xd).
 
