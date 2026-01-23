@@ -21,8 +21,7 @@ Mayhem has the following dependencies which must be installed for the mod to wor
 * [Steamodded](https://github.com/Steamodded/smods) (at least 1.0.0-BETA-0827c)
 * [Talisman](https://github.com/SpectralPack/Talisman) (at least 2.4.0) 
 * [Noituus](https://codeberg.org/alex343xd/Noituus) (for anything above 1.3.0-pre3, use [Overflow](https://github.com/lord-ruby/Overflow) for any version before that)
-## Installation Notices 
-* Do **NOT** download the repository's source code as it is outdated and non-functional due to technical difficulties on my end. Working versions are available in the Releases tab. 
+## Installation Notices
 * Do not play with Incantation and Aurinko as Mayhem only supports ruby’s alternatives (Oveflow and Engulf). Saturn should also not be used.
 * Mayhem may conflict with certain content mods. Most popular mods should work, but more obscure and rough mods may cause issues.
 
