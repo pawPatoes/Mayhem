@@ -1,0 +1,95 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# Taken from Entropy
+# Custom save profiles
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = 'Cryptid.profile_prefix = "M"'
+position = "after"
+payload = 'Cryptid.profile_prefix = Cryptid.profile_prefix == "M" and "" or Cryptid.profile_prefix.."MAY"'
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = 'self:load_profile(G.SETTINGS.profile or 1)'
+position = "before"
+payload = '''
+	if not Cryptid then Cryptid = {profile_prefix = "MAY"} end;
+	if type(G.SETTINGS.profile) ~= "string" or G.SETTINGS.profile:sub(1, #Cryptid.profile_prefix) ~= Cryptid.profile_prefix then
+		G.SETTINGS.profile = Cryptid.profile_prefix .. "1"
+	end
+	for i = 1, 3 do
+		G.PROFILES[Cryptid.profile_prefix .. i] = {}
+	end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = 'for i = 1, 3 do'
+position = "after"
+payload = 'if not Cryptid then Cryptid = {profile_prefix = "MAY"} end; i = Cryptid.profile_prefix .. i'
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/UI_definitions.lua'
+pattern = '''
+	local t =   create_UIBox_generic_options({padding = 0,contents ={
+      {n=G.UIT.R, config={align = "cm", padding = 0, draw_layer = 1, minw = 4}, nodes={
+        create_tabs(
+        {tabs = {
+            {
+                label = 1,
+                chosen = G.focused_profile == 1,
+                tab_definition_function = G.UIDEF.profile_option,
+                tab_definition_function_args = 1
+            },
+            {
+                label = 2,
+                chosen = G.focused_profile == 2,
+                tab_definition_function = G.UIDEF.profile_option,
+                tab_definition_function_args = 2
+            },
+            {
+                label = 3,
+                chosen = G.focused_profile == 3,
+                tab_definition_function = G.UIDEF.profile_option,
+                tab_definition_function_args = 3
+            }
+        },
+'''
+position = "at"
+payload = '''
+if not Cryptid then Cryptid = {profile_prefix = "MAY"} end;
+	local t =   create_UIBox_generic_options({padding = 0,contents ={
+		{n=G.UIT.R, config={align = "cm", padding = 0, draw_layer = 1, minw = 4}, nodes={
+			create_tabs(
+				{tabs = {
+					 {
+						label = Cryptid.profile_prefix..1,
+						chosen = G.focused_profile == Cryptid.profile_prefix..1,
+						tab_definition_function = G.UIDEF.profile_option,
+						tab_definition_function_args = Cryptid.profile_prefix..1
+					},
+					{
+						label = Cryptid.profile_prefix..2,
+						chosen = G.focused_profile == Cryptid.profile_prefix..2,
+						tab_definition_function = G.UIDEF.profile_option,
+						tab_definition_function_args = Cryptid.profile_prefix..2
+					},
+					{
+						label = Cryptid.profile_prefix..3,
+						chosen = G.focused_profile == Cryptid.profile_prefix..3,
+						tab_definition_function = G.UIDEF.profile_option,
+						tab_definition_function_args = Cryptid.profile_prefix..3
+					}
+			},
+'''
+match_indent = true

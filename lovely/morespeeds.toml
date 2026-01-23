@@ -1,0 +1,34 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# Taken from Nopeus
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = "create_option_cycle({label = localize('b_set_gamespeed'),scale = 0.8, options = {0.5, 1, 2, 4}, opt_callback = 'change_gamespeed', current_option = (G.SETTINGS.GAMESPEED == 0.5 and 1 or G.SETTINGS.GAMESPEED == 4 and 4 or G.SETTINGS.GAMESPEED + 1)}),"
+position = "at"
+payload = '''G.UIDEF.may_morespeeds(),
+G.UIDEF.nopeus_fastforward_options(),
+G.UIDEF.nopeus_statustext_options(),'''
+match_indent = true
+
+# Nopeus Compat
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = "G.UIDEF.nopeus_options(),"
+position = "at"
+payload = '''G.UIDEF.may_morespeeds(),
+G.UIDEF.nopeus_fastforward_options(),
+G.UIDEF.nopeus_statustext_options(),'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = '''G.ACC = math.min((G.ACC or 0) + dt*0.2*self.SETTINGS.GAMESPEED, 16)'''
+position = "at"
+payload = '''G.ACC = (G.ACC or 0) + dt*0.2*self.SETTINGS.GAMESPEED'''
+match_indent = true

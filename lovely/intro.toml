@@ -1,0 +1,84 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# Unlock everything here
+# Code from POLTERWORX
+[[patches]]
+[patches.pattern]
+target = '''game.lua'''
+pattern = "play_sound('introPad1', 0.704, 0.6)"
+position = "before"
+payload = '''
+	G.PROFILES[G.SETTINGS.profile].all_unlocked = true
+	for k, v in pairs(G.P_CENTERS) do
+		if not v.demo and not v.wip and v.original_mod ~= 'mayhem' then 
+			v.alerted = true
+			v.discovered = true
+			v.unlocked = true
+		end
+	end
+	for k, v in pairs(G.P_BLINDS) do
+		if not v.demo and not v.wip and v.original_mod ~= 'mayhem' then 
+			v.alerted = true
+			v.discovered = true
+			v.unlocked = true
+		end
+	end
+	for k, v in pairs(G.P_TAGS) do
+		if not v.demo and not v.wip and v.original_mod ~= 'mayhem' then 
+			v.alerted = true
+			v.discovered = true
+			v.unlocked = true
+		end
+	end
+	set_profile_progress()
+	set_discover_tallies()
+	G:save_progress()
+	G.FILE_HANDLER.force = true
+'''
+match_indent = true
+
+# Change intro pad sound
+[[patches]]
+[patches.pattern]
+target = '''game.lua'''
+pattern = "play_sound('introPad1', 0.704, 0.6)"
+position = "at"
+payload = '''play_sound(may.conf.intro and 'may_intro_pad' or 'introPad1', may.conf.intro and 1 or 0.704, 0.6)'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''game.lua'''
+pattern = "play_sound('splash_buildup', 1, 0.7)"
+position = "at"
+payload = '''play_sound(may.conf.intro and 'may_ethereal_joker' or 'splash_buildup', may.conf.intro and 0.5 or 1, 0.7)'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''game.lua'''
+pattern = "play_sound('magic_crumple', 1, 0.5)"
+position = "at"
+payload = '''play_sound(may.conf.intro and 'may_c_ascended' or 'magic_crumple', may.conf.intro and 0.75 or 1, 0.5)'''
+match_indent = true
+
+# Change the splash card
+[[patches]]
+[patches.pattern]
+target = '''game.lua'''
+pattern = "SC = Card(G.ROOM.T.w/2 - SC_scale*G.CARD_W/2, 10. + G.ROOM.T.h/2 - SC_scale*G.CARD_H/2, SC_scale*G.CARD_W, SC_scale*G.CARD_H, G.P_CARDS.empty, G.P_CENTERS['j_joker'])"
+position = "at"
+payload = '''SC = Card(G.ROOM.T.w/2 - SC_scale*G.CARD_W/2, 10. + G.ROOM.T.h/2 - SC_scale*G.CARD_H/2, SC_scale*G.CARD_W, SC_scale*G.CARD_H, G.P_CARDS.empty, G.P_CENTERS[may.conf.intro and 'j_sly' or 'j_joker'])'''
+match_indent = true
+
+# Change the background color
+[[patches]]
+[patches.pattern]
+target = '''game.lua'''
+pattern = "{name = 'colour_1', ref_table = G.C, ref_value = 'BLUE'},"
+position = "at"
+payload = '''{name = 'colour_1', ref_table = may.conf.intro and SMODS.Gradients or G.C, ref_value = may.conf.intro and (may.conf.Mode == 1 and 'may_col_mayhem_gradient' or 'may_col_eternum_green') or 'BLUE'}, '''
+match_indent = true

@@ -1,0 +1,109 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 1000
+
+# Rational Poker Hand level fixes and more level colors
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = "colours = {(to_big(G.GAME.hands[cfg.hand_type].level)==to_big(1) and G.C.UI.TEXT_DARK or G.C.HAND_LEVELS[to_number(to_big(math.min(7, G.GAME.hands[cfg.hand_type].level)))])}"
+position = "at"
+payload = '''colours = {(to_big(G.GAME.hands[cfg.hand_type].level):floor() == to_big(1) and G.C.UI.TEXT_DARK or to_big(G.GAME.hands[cfg.hand_type].level):floor() == to_big(0) and G.C.RED or G.C.HAND_LEVELS[to_number(to_big(math.min(G.C.MAX_HAND_LEVEL_COLOR, G.GAME.hands[cfg.hand_type].level)):floor())])}'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''colours = {(to_big(G.GAME.hands[cfg.hand_type].level)==to_big(1) and G.C.UI.TEXT_DARK or G.C.HAND_LEVELS[math.floor(to_number(math.min(7, G.GAME.hands[cfg.hand_type].level)))])}'''
+position = "at"
+payload = '''colours = {(to_big(G.GAME.hands[cfg.hand_type].level)==to_big(1) and G.C.UI.TEXT_DARK or G.C.HAND_LEVELS[math.floor(to_number(math.min(G.C.MAX_HAND_LEVEL_COLOR, G.GAME.hands[cfg.hand_type].level)))])}'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''G.hand_text_area.hand_level.config.colour = G.C.HAND_LEVELS[math.min(vals.level, 7)]'''
+position = "at"
+payload = '''G.hand_text_area.hand_level.config.colour = G.C.HAND_LEVELS[math.min(math.floor(vals.level), G.C.MAX_HAND_LEVEL_COLOR)]'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''G.hand_text_area.hand_level.config.colour = G.C.HAND_LEVELS[math.floor(to_number(math.min(vals.level, 7)))]'''
+position = "at"
+payload = '''G.hand_text_area.hand_level.config.colour = G.C.HAND_LEVELS[math.floor(to_number(math.min(vals.level, G.C.MAX_HAND_LEVEL_COLOR)))]'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''G.hand_text_area.hand_level.config.colour = G.C.HAND_LEVELS[to_number(to_big(math.min(vals.level, 7)))]'''
+position = "at"
+payload = '''G.hand_text_area.hand_level.config.colour = G.C.HAND_LEVELS[to_number(to_big(math.min(math.floor(vals.level), G.C.MAX_HAND_LEVEL_COLOR)))]'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.HAND_LEVELS[to_big(math.min(7, G.GAME.hands[handname].level)):to_number()], minw = 1.5, outline = 0.8, outline_colour = G.C.WHITE}, nodes={'''
+position = "at"
+payload = '''{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.HAND_LEVELS[to_big(math.min(G.C.MAX_HAND_LEVEL_COLOR, G.GAME.hands[handname].level)):to_number()], minw = 1.5, outline = 0.8, outline_colour = G.C.WHITE}, nodes={'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.HAND_LEVELS[math.floor(to_number(math.min(7, G.GAME.hands[handname].level)))], minw = 1.5, outline = 0.8, outline_colour = G.C.WHITE}, nodes={'''
+position = "at"
+payload = '''{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.HAND_LEVELS[math.floor(to_number(math.min(G.C.MAX_HAND_LEVEL_COLOR, G.GAME.hands[handname].level)))], minw = 1.5, outline = 0.8, outline_colour = G.C.WHITE}, nodes={'''
+match_indent = true
+
+# Misc Poker Hand values
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''G.GAME.hands[text].visible = true'''
+position = "after"
+payload = '''
+	if G.GAME.hands[text].dollars then
+		ease_dollars(G.GAME.hands[text].dollars)
+	end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''-- context.after calculations'''
+position = "before"
+payload = '''
+	if text then
+		if G.GAME.hands[text].score then
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function() 
+				G.GAME.chips = to_big(G.GAME.chips):add(G.GAME.hands[text].score)
+				G.HUD:get_UIE_by_ID('chip_UI_count'):juice_up(0.3, 0.3)
+				play_sound('may_addscore')
+			return true end}))
+		end
+	end
+	if to_big(G.GAME.chips) >= to_big(G.GAME.blind.chips) * 1e100 then
+	    G.GAME.may_tr1_reached = true 
+	end
+'''
+match_indent = true
+
+# Failsafe
+[[patches]]
+[patches.pattern]
+target = '''functions/common_events.lua'''
+pattern = "G.GAME.hands[hand].level = math.max(0, G.GAME.hands[hand].level + amount)"
+position = "at"
+payload = '''G.GAME.hands[hand or 'High Card'].level = math.max(0, to_big(G.GAME.hands[hand or 'High Card'].level) + to_big(amount))'''
+match_indent = true

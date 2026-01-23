@@ -1,0 +1,250 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# Copy and paste from Cryptid
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if G.hand and (#G.hand.highlighted == 1) and G.hand.highlighted[1] and (not G.hand.highlighted[1].edition) then return true end"
+position = "at"
+payload = '''
+if self.area ~= G.hand then
+    return G.hand and (#G.hand.highlighted == 1) and G.hand.highlighted[1] and (not G.hand.highlighted[1].edition)
+else
+    local idx = 1
+    if G.hand.highlighted[1] == self then
+        local idx = 2
+    end
+    return (#G.hand.highlighted == 2) and (not G.hand.highlighted[idx].edition)
+end
+'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = "if area == G.consumeables then"
+position = "at"
+payload = "if area == G.consumeables or area == G.hand then"
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if not self.config.center.discovered and (self.ability.consumeable or self.config.center.unlocked) and not self.config.center.demo and not self.bypass_discovery_center then"
+position = "before"
+payload = "if self.ability.set == 'Enhanced' then self.ability.consumeable = nil end"
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''if center.consumeable then 
+	self.ability.consumeable = center.config'''
+position = "after"
+payload = '''
+else
+	self.ability.consumeable = nil
+ '''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = """
+if self.edition.type == 'negative' and self.ability.consumeable then
+    badges[#badges + 1] = 'negative_consumable'
+elseif self.edition.type == 'negative' and (self.ability.set == 'Enhanced' or self.ability.set == 'Default') then
+    badges[#badges + 1] = 'negative_playing_card'
+"""
+position = "at"
+payload = """
+if self.edition.type == 'negative' and self.playing_card then
+    badges[#badges + 1] = 'negative_playing_card'
+elseif self.edition.type == 'negative' and self.ability.consumeable then
+    badges[#badges + 1] = 'negative_consumable'
+"""
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = """=[SMODS _ "src/overrides.lua"]"""
+pattern = """if self.ability.consumeable then"""
+position = "at"
+payload = """if self.ability.consumeable and not self.playing_card then"""
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = """if self.ability.consumeable then"""
+position = "at"
+payload = """if self.ability.consumeable and not self.playing_card then"""
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''name_from_rows(AUT.name, is_playing_card and G.C.WHITE or nil),'''
+position = "at"
+payload = '''
+AUT.ccd and name_from_rows(AUT.ccd.name, G.C.WHITE) or nil,
+AUT.ccd and desc_from_rows(AUT.ccd.main) or nil,
+name_from_rows(AUT.name, is_playing_card and G.C.WHITE or nil),
+'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''return generate_card_ui(self.config.center, nil, loc_vars, card_type, badges, hide_desc, main_start, main_end, self)'''
+position = "before"
+payload = '''
+if card_type ~= 'Default' and card_type ~= 'Enhanced' and self.playing_card then
+	loc_vars = loc_vars or {}
+	loc_vars.ccd = {
+		playing_card = not not self.base.colour, value = self.base.value, suit = self.base.suit, colour = self.base.colour,
+		nominal_chips = self.base.nominal > 0 and self.base.nominal or nil,
+		bonus_chips = (self.ability.bonus + (self.ability.perma_bonus or 0)) > 0 and (self.ability.bonus + (self.ability.perma_bonus or 0)) or nil,
+	}
+end
+'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''local loc_vars = {}'''
+position = "before"
+payload = '''
+if specific_vars and specific_vars.ccd then
+	full_UI_table.ccd = {name = {}, main = {}}
+	localize{type = 'other', key = 'playing_card', set = 'Other', nodes = full_UI_table.ccd.name, vars = {localize(specific_vars.ccd.value, 'ranks'), localize(specific_vars.ccd.suit, 'suits_plural'), colours = {specific_vars.ccd.colour}}}
+	full_UI_table.ccd.name = full_UI_table.ccd.name[1]
+	if specific_vars.ccd.nominal_chips then 
+		localize{type = 'other', key = 'card_chips', nodes = full_UI_table.ccd.main, vars = {specific_vars.ccd.nominal_chips}}
+	end
+	if specific_vars.ccd.bonus_chips then
+		localize{type = 'other', key = 'card_extra_chips', nodes = full_UI_table.ccd.main, vars = {specific_vars.ccd.bonus_chips}}
+	end
+end
+'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if self.ability.consumeable.mod_num >= #G.hand.highlighted and #G.hand.highlighted >= (self.ability.consumeable.min_highlighted or 1) then"
+position = "at"
+payload = "if (self.ability.consumeable.mod_num - ((G.GAME.modifiers.cry_consumable_reduce and (self.ability.name ~= 'Death')) and (self.ability.consumeable.mod_num > 1) and 1 or 0)) >= #G.hand.highlighted + (self.area == G.hand and -1 or 0) and #G.hand.highlighted + (self.area == G.hand and -1 or 0) >= 1 then"
+match_indent = true
+overwrite = true
+
+# Fix stuff if Cryptid is enabled
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''if center.consumeable then 
+        self.ability.consumeable = center.config
+    else
+    	self.ability.consumeable = nil
+     
+    else
+    	self.ability.consumeable = nil
+     
+    end'''
+position = "at"
+payload = '''
+	if center.consumeable then 
+        self.ability.consumeable = center.config
+    else
+    	self.ability.consumeable = nil
+     
+    end'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''AUT.ccd and name_from_rows(AUT.ccd.name, G.C.WHITE) or nil,
+              AUT.ccd and desc_from_rows(AUT.ccd.main) or nil,
+              AUT.ccd and name_from_rows(AUT.ccd.name, G.C.WHITE) or nil,
+              AUT.ccd and desc_from_rows(AUT.ccd.main) or nil,'''
+position = "at"
+payload = '''
+	AUT.ccd and name_from_rows(AUT.ccd.name, G.C.WHITE) or nil,
+              AUT.ccd and desc_from_rows(AUT.ccd.main) or nil,'''
+match_indent = true
+overwrite = true
+
+# Fix Grim hoarder class overriding use button
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = "elseif card.playing_card and G.GAME.skills.sk_grm_cl_hoarder and (card.area ~= G.pack_cards) and (card.area ~= G.play) then"
+position = "before"
+payload = '''elseif card.playing_card and card.ability.consumeable and G.GAME.skills.sk_grm_cl_hoarder and (card.area ~= G.pack_cards) and (card.area ~= G.play) then
+    return {n=G.UIT.ROOT, config = {padding = 0, colour = G.C.CLEAR}, nodes={
+        {n=G.UIT.R, config={align = 'cl'}, nodes={
+            {n=G.UIT.C, config={align = "cr"}, nodes={
+                {n=G.UIT.C, config={ref_table = card, align = "cr",maxw = 1.25, padding = 0.1, r=0.08, minw = 1.25, minh = 1, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'use_card', func = 'can_use_consumeable'}, nodes={
+                    {n=G.UIT.B, config = {w=0.1,h=0.6}},
+                    {n=G.UIT.T, config={text = localize('b_use'),colour = G.C.UI.TEXT_LIGHT, scale = 0.55, shadow = true}}
+                }}
+            }}, 
+        }},
+        {n=G.UIT.R, config={ref_table = card, r = 0.08, padding = 0.1, align = "bm", minw = 0.5*card.T.w - 0.15, minh = 0.8*card.T.h, maxw = 0.7*card.T.w - 0.15, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'grm_pack_card', func = 'grm_can_pack_card'}, nodes={
+            {n=G.UIT.T, config={text = localize('b_pack'),colour = G.C.UI.TEXT_LIGHT, scale = 0.55, shadow = true}}
+        }},
+    }}'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = "if card.area and (card.area == G.consumeables) and card.playing_card and not (hit_minor_arcana_suits and hit_minor_arcana_suits[card.config.card.suit]) then"
+position = "before"
+payload = '''if card.area and (card.area == G.consumeables) and card.playing_card and card.ability.consumeable and not (hit_minor_arcana_suits and hit_minor_arcana_suits[card.config.card.suit]) then
+    use = {n=G.UIT.C, config={align = "cr"}, nodes={
+        {n=G.UIT.C, config={ref_table = card, align = "cr",maxw = 1.25, padding = 0.1, r=0.08, minw = 1.25, minh = 1, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'grm_discard_card', func = 'grm_can_discard_card'}, nodes={
+            {n=G.UIT.B, config = {w=0.1,h=0.6}},
+            {n=G.UIT.T, config={text = localize('b_discard'),colour = G.C.UI.TEXT_LIGHT, scale = 0.55, shadow = true}}
+        }}
+    }}
+    sell = {n=G.UIT.C, config={align = "cr"}, nodes={
+	    {n=G.UIT.C, config={ref_table = card, align = "cr",maxw = 1.25, padding = 0.1, r=0.08, minw = 1.25, minh = 1, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'grm_draw_card', func = 'grm_can_draw_card'}, nodes={
+            {n=G.UIT.B, config = {w=0.1,h=0.6}},
+            {n=G.UIT.T, config={text = localize('b_draw'),colour = G.C.UI.TEXT_LIGHT, scale = 0.55, shadow = true}}
+        }}
+    }}
+    local t = {n=G.UIT.ROOT, config = {padding = 0, colour = G.C.CLEAR}, nodes={
+        {n=G.UIT.C, config={padding = 0.15, align = 'cl'}, nodes={
+            {n=G.UIT.R, config={align = 'cl'}, nodes={
+                sell
+            }},
+            {n=G.UIT.R, config={align = 'cl'}, nodes={
+                use
+            }},
+			{n=G.UIT.R, config={ref_table = card, r = 0.08, padding = 0.1, align = "bm", minw = 0.5*card.T.w - 0.15, minh = 0.2*card.T.h, maxw = 0.7*card.T.w - 0.15, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'use_card', func = 'can_use_consumeable'}, nodes={
+                {n=G.UIT.T, config={text = localize('b_use'),colour = G.C.UI.TEXT_LIGHT, scale = 0.55, shadow = true}}
+            }},
+        }},
+    }}
+    return t
+end'''
+match_indent = true
+overwrite = true
