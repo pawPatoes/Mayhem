@@ -2,9 +2,16 @@
 
 SMODS.Scoring_Calculation:take_ownership('add', {colour = G.C.CHIPS})
 
+SMODS.Scoring_Calculation:take_ownership('multiply', {colour = G.C.MULT})
+
 SMODS.Scoring_Calculation:take_ownership('exponent', {colour = SMODS.Gradients.may_col_eternum_green})
 
-SMODS.Scoring_Calculation:take_ownership('talisman_hyper', {colour = SMODS.Gradients.may_col_ethereal})
+SMODS.Scoring_Calculation:take_ownership('talisman_hyper', {
+	colour = function()
+		local col = may.score_operator_colors[math.min((G.GAME.hyper_operator or 2) - 1, #may.score_operator_colors)]
+		return SMODS.Gradients[type(col or '') == 'string' and col or 'may_col_ethereal']
+	end 
+})
 
 SMODS.Scoring_Calculation {
 	order = -2,
@@ -131,7 +138,7 @@ SMODS.Scoring_Calculation {
 	key = "desmos",
 	func = function(self, chips, mult, flames) 
 		if to_big(chips) ~= to_big(0) and to_big(mult) ~= to_big(0) then
-			return ((chips + (mult * (1  +math.log10(chips)))) * chips) ^ 0.8
+			return ((chips + (mult * (1 + math.log10(chips)))) * chips) ^ 0.8
 		else
 			return to_big(0)
 		end
@@ -139,38 +146,3 @@ SMODS.Scoring_Calculation {
 	text = 'DSM',
 	colour = G.C.DARK_EDITION
 }
-
--- support for hidden operators
-function change_operator(amount)
-	local order = SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or "multiply"].order + amount
-	if not order then return end
-	if G.GAME.current_scoring_calculation_key == "talisman_hyper" then
-		G.GAME.hyper_operator = (G.GAME.hyper_operator or 2) + amount
-		order = G.GAME.hyper_operator
-	end
-	local next = "add"
-	local keys = {}
-	for i, v in pairs(SMODS.Scoring_Calculations) do
-		if v.order then
-			keys[#keys+1] = i
-		end
-	end
-	table.sort(keys, function(a, b) return SMODS.Scoring_Calculations[a].order < SMODS.Scoring_Calculations[b].order end)
-	for i, v in pairs(keys) do
-		if SMODS.Scoring_Calculations[v].order <= order and not SMODS.Scoring_Calculations[v].hidden then
-			next = v
-		end
-	end
-	if next then
-		SMODS.set_scoring_calculation(next)
-	end
-	if amount > 0 then
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.5, func = function()
-			play_sound('may_increase_operator')
-		return true end}))
-	else
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.5, func = function()
-			play_sound('may_decrease_operator')
-		return true end}))
-	end
-end

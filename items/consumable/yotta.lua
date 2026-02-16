@@ -80,7 +80,7 @@ SMODS.Consumable {
     endless = true,
     loc_vars = function(self, info_queue, card)
         local amount = 0
-        if G.consumeables and card.area == G.consumeables then
+        if G.consumeables then
             for k, v in pairs(G.consumeables.cards) do
                 if v:gc().set == 'Planet' then 
                     amount = amount + v.sell_cost
@@ -90,14 +90,12 @@ SMODS.Consumable {
         return { vars = { 1 + ((amount * 2) * 0.05) } }
     end, 
 	can_use = function(self, card)
-        if card.area == G.consumeables then
-            for k, v in pairs(G.consumeables.cards) do
-                if v:gc().set == 'Planet' then 
-                    return may.canuse()
-                end 
+        for k, v in pairs(G.consumeables.cards) do
+            if v:gc().set == 'Planet' then 
+                return may.canuse()
             end 
         end 
-        return false
+        return false 
 	end,
 	discovered = true,
     no_grc = true,
@@ -152,7 +150,7 @@ SMODS.Consumable {
     endless = true,
 	can_use = function(self, card)
         if G.jokers and #G.jokers.highlighted == 1 then 
-            return may.canuse() and (G.jokers.highlighted[1]:may_is_fusion() and G.jokers.highlighted[1]:gc().rarity ~= 'may_mythic') or G.jokers.highlighted[1]:gc().rarity == 'may_surreal' 
+            return may.canuse() and (((G.jokers.highlighted[1]:may_is_fusion() and G.jokers.highlighted[1]:gc().rarity ~= 'may_mythic') or G.jokers.highlighted[1]:gc().rarity == 'may_surreal') and G.jokers.highlighted[1]:gc().rarity ~= 'may_mystery') 
         end 
         return false
 	end,
@@ -170,14 +168,13 @@ SMODS.Consumable {
                 amount = amount + 3
             elseif G.jokers.highlighted[1]:gc().rarity == 'may_interdimensional' then 
                 amount = amount + 2
-            else
+            elseif G.jokers.highlighted[1]:gc().rarity == 'may_hyperascendant' then
                 amount = amount + 10
             end 
             G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
                 G.jokers.highlighted[1]:start_dissolve()
-                play_sound('card3')
-                play_sound('may_big_score1', 1, 0.5)
-                G.ROOM.jiggle = G.ROOM.jiggle + 0.1
+                play_sound('may_big_score1', 0.5, 1)
+                G.ROOM.jiggle = G.ROOM.jiggle + 3
             return true end}))
         end
         G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
@@ -235,7 +232,7 @@ SMODS.Consumable {
 	soul_set = 'Spectral',
     loc_vars = function(self, info_queue, card)
         local amount = 0
-        if G.consumeables and card.area == G.consumeables then
+        if G.consumeables then
             for k, v in pairs(G.consumeables.cards) do
                 if v:gc().key ~= 'c_may_speculum' then 
                     amount = amount + v:gc().cost

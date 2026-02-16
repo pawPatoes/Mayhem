@@ -1,5 +1,6 @@
 -- Joker Pools
- 
+-- Pools in G.P_CENTER_POOLS are created in lib/menu.lua
+
 -- Deprecated
 function may.is_food(card)
 	--[[local center = type(card) == "string" and G.P_CENTERS[card] or (card.config and card.config.center)
@@ -39,6 +40,10 @@ function may.is_pool_center(center, pool)
 		end
 	elseif pool == 'HandSpecific' then
 		return center.config and ((not (not center.config.hand_type)) or center.pools and (not (not center.pools.HandSpecific)))
+	elseif pool == 'Fusable' then
+		return may.is_fusable(center) and not may.is_fusion(center)
+	elseif pool == 'Fusable_NOBP' then
+		return may.is_fusable(center) and (not may.is_fusion(center)) and center.key ~= 'j_blueprint'
     else
 	    if center.pools then
 			return not (not center.pools[pool])

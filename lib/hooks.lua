@@ -104,47 +104,26 @@ function Game:update(dt)
 	end]]
 end
 
--- Level up hand context and Ring Bonuses
-
-local vanf_luh = level_up_hand
-function level_up_hand(card, hand, instant, amount)
-	if G.GAME.may_ring_bonuses and (G.GAME.may_ring_bonuses.levels or 0) ~= 0 then
-		amount = (amount or 1) + G.GAME.may_ring_bonuses.levels
-		G.GAME.may_ring_bonuses.levels = 0
+local vanf_suph = SMODS.upgrade_poker_hands
+function SMODS.upgrade_poker_hands(args)
+	if args.level_up then
+		if G.GAME.may_ring_bonuses and (G.GAME.may_ring_bonuses.levels or 0) ~= 0 then
+		    args.level_up = (args.level_up or 1) + G.GAME.may_ring_bonuses.levels
+		    G.GAME.may_temp_ring_levels = G.GAME.may_ring_bonuses.levels
+		    G.GAME.may_ring_bonuses.levels = 0
+	    end
+	    if #SMODS.find_card('v_may_astronomy_1') ~= 0 then
+		    args.level_up = math.max((args.level_up or 1), 0) * (2 ^ #SMODS.find_card('v_may_astronomy_1'))
+	    end
+	    if #SMODS.find_card('v_may_astronomy_3') ~= 0 and hand ~= may.favhand() then
+		    args.level_up = args.level_up * (4 ^ #SMODS.find_card('v_may_astronomy_3'))
+	    end
 	end
-	vanf_luh(card, hand, instant, amount)
-	SMODS.calculate_context({level_up_hand = true, other_card = card, hand = (hand or 'High Card'), instant = (instant or false), amount = (amount or 1)})
-	if G.GAME.may_ring_bonuses then
-		if (G.GAME.may_ring_bonuses.lev_mult or 0) ~= 0 then
-			may.hand_mod_lvl_multchips(hand, 'mult', -1, G.GAME.may_ring_bonuses.lev_mult, false)
-			G.GAME.may_ring_bonuses.lev_mult = 0
-		end
-		if (G.GAME.may_ring_bonuses.lev_chips or 0) ~= 0 then
-			may.hand_mod_lvl_multchips(hand, 'chips', -1, G.GAME.may_ring_bonuses.lev_chips, false)
-			G.GAME.may_ring_bonuses.lev_chips = 0
-		end
-		if (G.GAME.may_ring_bonuses.score or 0) ~= 0 then
-			may.hand_mod_score(hand, -1, G.GAME.may_ring_bonuses.score, false)
-			G.GAME.may_ring_bonuses.score = 0
-		end
-		if (G.GAME.may_ring_bonuses.dollars or 0) ~= 0 then
-			may.hand_mod_dollars(hand, -1, G.GAME.may_ring_bonuses.dollars, false)
-			G.GAME.may_ring_bonuses.dollars = 0
-		end
-		if (G.GAME.may_ring_bonuses.mult or 0) ~= 0 then
-			may.hand_mod_multchips(hand, 'mult', -1, G.GAME.may_ring_bonuses.mult, false, card)
-			G.GAME.may_ring_bonuses.mult = 0
-		end
-		if (G.GAME.may_ring_bonuses.chips or 0) ~= 0 then
-			may.hand_mod_multchips(hand, 'chips', -1, G.GAME.may_ring_bonuses.chips, false, card)
-			G.GAME.may_ring_bonuses.chips = 0
-		end
+	vanf_suph(args)
+	if args.level_up then
+		may.toggle_ring_display(false)
 	end
-	may.toggle_ring_display(false)
-	if not instant then
-	    may.ch()
-	end
-end
+end 
 
 local vanf_sb = G.FUNCS.select_blind
 function G.FUNCS.select_blind(e)
@@ -185,44 +164,86 @@ function G.FUNCS.select_blind(e)
 	end
 end
 
+-- don't ask
+local vanf_cest = card_eval_status_text
+function card_eval_status_text(card, eval_type, amt, percent, dir, extra)
+    if extra and extra.message and type(extra.message) == 'table' then
+		extra.message = extra.message[1]
+	end
+	vanf_cest(card, eval_type, amt, percent, dir, extra)
+end
+
+
+local function FALLBACK(x, y)
+	if may.invalid_number(x) or to_big(x):isInfinite() or to_big(x):isNaN() then 
+		return to_big(vanf_gba(math.floor(y)) * (1 + (y - math.floor(y)))):normalize()
+	end
+	return to_big(x):mul(1):normalize()
+end
+
 -- Custom Blind Scaling
+-- if you're wondering why there's to many to_bigs, I AM SICK AND TIRED OF OMEGANUM INFINITY WHAT DO YOU MEAN ARITHMETIC ERROR WHAT DID I EVEN DO WRONG 
 local vanf_gba = get_blind_amount
 function get_blind_amount(ante)
+	local big1 = to_big(1)
+	local big3 = to_big(3)
+	local big1_5 = to_big(1.5)
+	local big10 = to_big(10)
+	local big20 = to_big(20)
+	local big30 = to_big(30)
+	local big35 = to_big(35)
+	local big50 = to_big(50)
+	local big0_1 = to_big(0.1)
+	local big0_2 = to_big(0.2)
+	local big0_3 = to_big(0.3)
+	local big0_35 = to_big(0.35)
+	local big0_5 = to_big(0.5)
 	-- Fix decimal ante
-	local amount = to_big(vanf_gba(math.floor(ante)) * (1 + (ante - math.floor(ante))))
+	local amount = to_big(vanf_gba(math.floor(ante)) * (big1 + (ante - math.floor(ante)))) 
 	if (G.GAME.may_instability or 0) > 0 then
-		amount = to_big(amount):arrow(1, 1 + (G.GAME.may_instability * 0.1))
+		amount = to_big(amount):arrow(1, to_big(big1 + (to_big(G.GAME.may_instability) * big0_1)))
+	    amount = FALLBACK(amount, ante)
 	end
 	if G.GAME.may_instability_blind_increases and #G.GAME.may_instability_blind_increases > 0 then
 		for k, v in ipairs(G.GAME.may_instability_blind_increases) do
-		    amount = to_big(amount):arrow(v[1], v[2])
+		    amount = to_big(amount):arrow(v[1], to_big(v[2]))
         end
+	    amount = FALLBACK(amount, ante)
 	end
 	if may.conf.scaling then
-		ante = math.ceil(math.abs(ante)) ~= 0 and math.abs(ante) or 1
-		if (G.GAME.may_mythic_scaling or 0) > 0 then
-			amount = to_big(amount) ^ ((G.GAME.may_mythic_scaling or 0) * ((10 + (ante * 0.1)) + 1))
-		end 
-		if (G.GAME.may_transcendent_scaling or 0) > 0 then
-			amount = to_big(amount) ^ ((G.GAME.may_transcendent_scaling or 0) * ((20 + (ante * 0.2)) + 1))
-		end 
-		if (G.GAME.may_interdimensional_scaling or 0) > 0 then
-			amount = to_big(amount):arrow(2, ((G.GAME.may_interdimensional_scaling or 0) * ((30 + (ante * 0.3)) + 1)))
-		end 
-		if (G.GAME.may_ethereal_scaling or 0) > 0 then 
-			amount = to_big(amount):arrow(3, ((G.GAME.may_ethereal_scaling or 0) * ((35 + (ante * 0.35)) + 1)))
-		end
-		if (G.GAME.may_surreal_scaling or 0) > 0 then 
-			amount = to_big(amount):arrow(4, ((G.GAME.may_surreal_scaling or 0) * (((ante * 0.1)) + 1.5)))
-		end
-		if (G.GAME.may_hyperascendant_scaling or 0) > 0 then
-			amount = to_big(amount):arrow(math.floor(3 + math.log10(ante) * ((G.GAME.may_hyperascendant_scaling or 0) + 1)), ((G.GAME.may_hyperascendant_scaling or 0) * ((50 + (ante * 0.5)) + 1)))
+		ante = to_big(math.abs(ante or 1))
+		local mythic = to_big(G.GAME.may_mythic_scaling or 0)
+		local transcendent = to_big(G.GAME.may_transcendent_scaling or 0)
+		local interdimensional = to_big(G.GAME.may_interdimensional_scaling or 0) 
+		local ethereal = to_big(G.GAME.may_ethereal_scaling or 0)
+		local surreal = to_big(G.GAME.may_surreal_scaling or 0)
+		local hyperascendant = to_big(G.GAME.may_hyperascendant_scaling or 0)
+		if mythic > to_big(0) then
+			amount = to_big(amount):arrow(1, to_big(((mythic * ((big20 + (to_big(ante) * big0_1)) + big1)))))
+		    amount = FALLBACK(amount, ante)
+	    end
+		if transcendent > to_big(0) then
+			amount = to_big(amount):arrow(1, to_big((transcendent * (big30 + (to_big(ante) * big0_3)) + big1)))
+		    amount = FALLBACK(amount, ante)
+	    end
+		if interdimensional > to_big(0) then
+			amount = to_big(amount):arrow(2, to_big((interdimensional * ((big35 + (to_big(ante) * big0_35)) + big1))))
+		    amount = FALLBACK(amount, ante)
+	    end
+		if ethereal > to_big(0) then 
+			amount = to_big(amount):arrow(3, to_big((ethereal * ((big50 + (to_big(ante) * big0_5)) + big1))))
+		    amount = FALLBACK(amount, ante)
+	    end
+		if surreal > to_big(0) then 
+			amount = to_big(amount):arrow(4, to_big(surreal * (to_big(ante) * big0_1) + big1_5))
+		    amount = FALLBACK(amount, ante)
+	    end
+		if hyperascendant > to_big(0) then
+			amount = to_big(amount):arrow(to_big(math.floor(big3 + to_big(ante):logBase(big3) * (hyperascendant + big1))), to_big((hyperascendant * ((big50 + (to_big(ante) * big0_5)) + big1))))
 		end
 	end
-	if may.invalid_number(amount) or to_big(amount):isInfinite() or to_big(amount):isNaN() then 
-		amount = to_big(vanf_gba(math.floor(ante)) * (1 + (ante - math.floor(ante))))
-	end
-	return amount
+	amount = FALLBACK(amount, ante)
+	return to_big(amount or vanf_gba(math.floor(ante)) * (big1 + (ante - math.floor(ante)))):mul(big1):normalize()
 end
 
 local vanf_cuc = Card.use_consumeable
@@ -262,37 +283,6 @@ function Card:sell_card()
     if self.area == G.jokers then 
         G.GAME.may_jokers_sold = (G.GAME.may_jokers_sold or 0) + 1
     end
-end
-
--- Invulnerable Blinds 
--- Taken from POLTERWORX
-local vanf_reb = G.FUNCS.reroll_boss
-
-G.FUNCS.reroll_boss = function(e)
-	local blind = G.P_BLINDS[G.GAME.round_resets.blind_choices.Boss]
-	if blind.ultra or blind.tainted then
-		play_sound('cancel', 0.8, 1)
-		play_sound('may_error')
-		G.blind_select_opts.boss:juice_up()
-		G.ROOM.jiggle = G.ROOM.jiggle + 0.2
-	else
-		return vanf_reb(e)
-	end
-end
-
-local vanf_bd = Blind.disable
-function Blind:disable()
-	local blind = self.config.blind
-	if blind then
-		if blind.ultra or blind.tainted then
-			play_sound('cancel', 0.8, 1)
-			play_sound('may_error')
-			SMODS.juice_up_blind()
-			G.ROOM.jiggle = G.ROOM.jiggle + 0.2
-			return true
-		end
-	end
-	return vanf_bd(self)
 end
 
 local vanf_csa = Card.set_ability
@@ -408,149 +398,14 @@ function Card:start_dissolve(dissolve_colours, silent, dissolve_time_fac, no_jui
 		end
 	end
 	vanf_csd(self, dissolve_colours, silent, dissolve_time_fac, no_juice)
-end
-
--- Overhaul vouchers tab in run info so it can handle many vouchers
--- taken from Betmma Better Vouchers This Run UI
-if #SMODS.find_mod('BetterVouchersThisRunUI') == 0 then
-	local PAIRS_PER_ROW=5
-    local ROWS_PER_PAGE=2
-    
-	function G.UIDEF.used_vouchers()
-        local silent = false
-        local keys_used = {}
-        local vouchers_used = {}
-        local area_count = 0
-        local voucher_areas = {}
-        local voucher_pairs = {}
-        local voucher_rows = {}
-        G.your_collection={}
-        for k, v in ipairs(G.P_CENTER_POOLS["Voucher"]) do
-        local key = 1 + math.floor((k-0.1)/2)
-        keys_used[key] = keys_used[key] or {}
-        if G.GAME.used_vouchers[v.key] then 
-            keys_used[key][#keys_used[key]+1] = v
-            table.insert(vouchers_used,v)
-            silent=true
+	G.E_MANAGER:add_event(Event({func = function()
+		if G and G.GAME and G.vouchers then
+		    G.GAME.used_vouchers = {}
+		    for i, v in ipairs(G.vouchers.cards) do
+			    G.GAME.used_vouchers[v.config.center_key] = true
+			end
         end
-        end
-        local keys_used2={}
-        for k, v in ipairs(keys_used) do 
-            if next(v) then
-                area_count = area_count + 1
-                table.insert(keys_used2,v)
-            end
-        end
-        keys_used=keys_used2
-
-        for k, v in ipairs(keys_used) do 
-            if k>PAIRS_PER_ROW*ROWS_PER_PAGE then break end
-            if next(v) then
-                if #voucher_areas and #voucher_areas % PAIRS_PER_ROW==0 then 
-                table.insert(voucher_rows, 
-                    {n=G.UIT.R, config={align = "cm", padding = 0, no_fill = true}, nodes=voucher_pairs}
-                    )
-                    voucher_pairs = {}
-                end
-                voucher_areas[#voucher_areas + 1] = CardArea(
-                    G.ROOM.T.x + 0.2*G.ROOM.T.w/2,G.ROOM.T.h,
-                    (#v == 1 and 1 or 1.33)*G.CARD_W,
-                    (area_count >=10 and 0.75 or 1.07)*G.CARD_H, 
-                    {card_limit = 2, type = 'voucher', highlight_limit = 2})
-                G.your_collection[#G.your_collection+1]=voucher_areas[#voucher_areas]
-                for kk, vv in ipairs(v) do 
-                    local center = G.P_CENTERS[vv.key]
-                    local card = Card(voucher_areas[#voucher_areas].T.x + voucher_areas[#voucher_areas].T.w/2, voucher_areas[#voucher_areas].T.y, G.CARD_W, G.CARD_H, nil, center, {bypass_discovery_center=true,bypass_discovery_ui=true,bypass_lock=true})
-                    card.ability.order = vv.order
-					card.ability.in_voucher_tab = true
-                    card:start_materialize(nil, silent)
-                    silent = true
-                    voucher_areas[#voucher_areas]:emplace(card)
-                end
-            table.insert(voucher_pairs, 
-                {n=G.UIT.C, config={align = "cm", padding = 0, no_fill = true}, nodes={
-                    {n=G.UIT.O, config={object = voucher_areas[#voucher_areas]}}
-                }}
-            )
-            end
-        end
-        table.insert(voucher_rows, 
-            {n=G.UIT.R, config={align = "cm", padding = 0, no_fill = true}, nodes=voucher_pairs}
-        )
-        local deck_tables = {}
-
-        local voucher_options = {}
-        for i = 1, math.ceil(area_count/(PAIRS_PER_ROW*ROWS_PER_PAGE)) do
-            table.insert(voucher_options, localize('k_page')..' '..tostring(i)..'/'..tostring(math.ceil(area_count/(PAIRS_PER_ROW*ROWS_PER_PAGE))))
-        end
-        if not silent then
-            local t ={n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes={
-                {n=G.UIT.O, config={object = DynaText({string = {localize('ph_no_vouchers')}, colours = {G.C.UI.TEXT_LIGHT}, bump = true, scale = 0.6})}}
-            }}
-            return t
-        end
-        INIT_COLLECTION_CARD_ALERTS()
-        t={n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes={
-            {n=G.UIT.R, config={align = "cm"}, nodes={
-              {n=G.UIT.O, config={object = DynaText({string = {localize('ph_vouchers_redeemed')}, colours = {G.C.UI.TEXT_LIGHT}, bump = true, scale = 0.6})}}
-            }},
-            {n=G.UIT.R, config={align = "cm", minh = 0.5}, nodes={
-            }},
-            {n=G.UIT.R, config={align = "cm", colour = G.C.BLACK, r = 1, padding = 0.15, emboss = 0.05}, nodes={
-              {n=G.UIT.R, config={align = "cm"}, nodes=voucher_rows},
-            }},
-            {n=G.UIT.R, config={align = "cm"}, nodes={
-                create_option_cycle({options = voucher_options, w = 4.5, cycle_shoulders = true, opt_callback = 'used_voucher_page', focus_args = {snap_to = true, nav = 'wide'}, current_option = 1, colour = G.C.RED, no_pips = true})
-            }}
-          }}
-        return t
-    end
-	
-    G.FUNCS.used_voucher_page = function(args)
-        if not args or not args.cycle_config then return end
-        local keys_used = {}
-        local vouchers_used = {}
-        local area_count = 0
-        local voucher_areas = {}
-        local voucher_pairs = {}
-        local voucher_rows = {}
-        for k, v in ipairs(G.P_CENTER_POOLS["Voucher"]) do
-            local key = 1 + math.floor((k-0.1)/2)
-            keys_used[key] = keys_used[key] or {}
-            if G.GAME.used_vouchers[v.key] then 
-                keys_used[key][#keys_used[key]+1] = v
-                table.insert(vouchers_used,v)
-                silent=true
-            end
-        end
-        local keys_used2={}
-        for k, v in ipairs(keys_used) do 
-            if next(v) then
-                area_count = area_count + 1
-                table.insert(keys_used2,v)
-            end
-        end
-        keys_used=keys_used2
-        for j = 1, #G.your_collection do
-            for i = #G.your_collection[j].cards,1, -1 do
-                local c = G.your_collection[j]:remove_card(G.your_collection[j].cards[i])
-                c:remove()
-                c = nil
-            end
-        end
-        for i = 1, #G.your_collection do
-            v=keys_used[PAIRS_PER_ROW*ROWS_PER_PAGE*(args.cycle_config.current_option - 1)+i]
-            if not v then break end
-            for j = 1, #v do
-                local center = v[j]
-                if not center then break end
-                local card = Card(G.your_collection[j].T.x + G.your_collection[j].T.w/2, G.your_collection[j].T.y, G.CARD_W, G.CARD_H, G.P_CARDS.empty, center)
-                card:start_materialize(nil, i>1 or j>1)
-                G.your_collection[i]:emplace(card)
-            end
-        end
-        INIT_COLLECTION_CARD_ALERTS()
-    end
+	return true end}))
 end
 
 local vanf_ebc = ease_background_colour
@@ -570,170 +425,6 @@ function ease_background_colour(args)
 		args.contrast = 2
 	end
 	vanf_ebc(args)
-end
-
-local vanf_uasb = G.UIDEF.use_and_sell_buttons
-function G.UIDEF.use_and_sell_buttons(card)
-	local ui = vanf_uasb(card)
-	-- Reserving functionality mostly taken from Entropy
-	if card.area == G.pack_cards and G.pack_cards and card.config.center.reserve then
-		return {n = G.UIT.ROOT, config = { padding = -0.07, colour = G.C.CLEAR }, nodes = {
-				{n = G.UIT.R, config = {ref_table = card, r = 0.08, padding = 0.13, align = "bm", minw = 0.5 * card.T.w - 0.15, maxw = 0.5 * card.T.w - 0.15, minh = 0.15 * card.T.h, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = "use_card", func = card:is_playing_card() and "can_reserve_card_to_deck" or "may_can_reserve", handy_insta_action = 'use'}, nodes = {
-					{n = G.UIT.T, config = {text = 'RESERVE', colour = G.C.UI.TEXT_LIGHT, scale = 0.65, shadow = true}},
-				}},
-				{n = G.UIT.R, config = {ref_table = card, r = 0.08, padding = 0.1, align = "bm", minw = 0.5 * card.T.w - 0.15, maxw = 0.5 * card.T.w - 0.15, minh = 0.1 * card.T.h, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = "you matter :blush:", func = "can_use_consumeable", handy_insta_action = 'use'}, nodes = {
-					{n = G.UIT.T, config = {text = localize("b_use"), colour = G.C.UI.TEXT_LIGHT, scale = 0.55, shadow = true}},
-				}},
-				{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
-				{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
-				{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
-				{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
-			},
-		}
-	end
-	if card.area ~= G.pack_cards and card.config.center.may_permanent or card.config.center.indestructible then
-		return {n = G.UIT.ROOT, config = { padding = 0, colour = G.C.CLEAR }, nodes = {
-			{n=G.UIT.C, config={align = "cr"}, nodes={
-			}}
-		}}
-	end
-	-- Sell redeemed compatible vouchers
-	if card.ability.in_voucher_tab and card:gc().set == 'Voucher' and card:gc().voucher_sellable then
-		return {n = G.UIT.ROOT, config = { padding = 0, colour = G.C.CLEAR }, nodes = {
-            {n = G.UIT.R, config = {ref_table = card, r = 0.08, padding = 0.1, align = "bm", minw = 0.5 * card.T.w - 0.15, maxw = 0.5 * card.T.w - 0.15, minh = 0.1 * card.T.h, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = "may_sell_voucher", func = "may_can_sell_voucher", handy_insta_action = 'use'}, nodes = {
-				{n = G.UIT.T, config = {text = localize("b_sell"), colour = G.C.UI.TEXT_LIGHT, scale = 0.55, shadow = true}},
-			}},
-			{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
-			{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
-		}}
-	end
-	-- Joker abilities
-	if card.area == G.jokers and card.config.center.key == 'j_may_ourania_kleidaria' then
-        return {n = G.UIT.ROOT, config = { padding = 0, colour = G.C.CLEAR }, nodes = {
-            {n=G.UIT.R, config={align = 'cl'}, nodes={
-			    {n=G.UIT.C, config={align = "cl"}, nodes={
-				    {n=G.UIT.C, config={ref_table = card, align = "cr", padding = 0.1, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'sell_card', func = 'can_sell_card', handy_insta_action = 'sell'}, nodes={
-					    {n=G.UIT.B, config = {w=0.1,h=0.6}},
-						{n=G.UIT.C, config={align = "tm"}, nodes={
-							{n=G.UIT.R, config={align = "cm", maxw = 1.25}, nodes={
-								{n=G.UIT.T, config={text = localize('b_sell'),colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true}}
-							}},
-							{n=G.UIT.R, config={align = "cm"}, nodes={
-							    {n=G.UIT.T, config={text = localize('$'),colour = G.C.WHITE, scale = 0.4, shadow = true}},
-							    {n=G.UIT.T, config={ref_table = card, ref_value = 'sell_cost_label',colour = G.C.WHITE, scale = 0.55, shadow = true}}
-                            }},
-					    }}
-				    }},
-                }}, 
-            }}, 
-            {n=G.UIT.R, config={align = 'cl'}, nodes={
-                {n=G.UIT.C, config={align = "cl"}, nodes={
-                    {n=G.UIT.C, config={ref_table = card, align = "cl", padding = 0.2, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'may_ourania_kleidaria_ability', func = 'may_can_use_ourania_kleidaria_ability', handy_insta_action = 'ability'}, nodes={
-                        {n=G.UIT.B, config = {w=0.1,h=0.6}},
-                        {n=G.UIT.C, config={align = "cm"}, nodes={
-                            {n=G.UIT.R, config={align = "cm", maxw = 1.25}, nodes={
-                                {n=G.UIT.T, config={text = 'ABILITY',colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true}}
-                            }}
-                        }},
-                    }}, 
-                }}, 
-            }}
-		}}
-	end
-	if card.area == G.jokers and card.config.center.key == 'j_may_guacamole' then
-        return {n = G.UIT.ROOT, config = { padding = 0, colour = G.C.CLEAR }, nodes = {
-            {n=G.UIT.R, config={align = 'cl'}, nodes={
-			    {n=G.UIT.C, config={align = "cl"}, nodes={
-				    {n=G.UIT.C, config={ref_table = card, align = "cr", padding = 0.1, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'sell_card', func = 'can_sell_card', handy_insta_action = 'sell'}, nodes={
-					    {n=G.UIT.B, config = {w=0.1,h=0.6}},
-						{n=G.UIT.C, config={align = "tm"}, nodes={
-							{n=G.UIT.R, config={align = "cm", maxw = 1.25}, nodes={
-								{n=G.UIT.T, config={text = localize('b_sell'),colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true}}
-							}},
-							{n=G.UIT.R, config={align = "cm"}, nodes={
-							    {n=G.UIT.T, config={text = localize('$'),colour = G.C.WHITE, scale = 0.4, shadow = true}},
-							    {n=G.UIT.T, config={ref_table = card, ref_value = 'sell_cost_label',colour = G.C.WHITE, scale = 0.55, shadow = true}}
-                            }},
-					    }}
-				    }},
-                }}, 
-            }}, 
-            {n=G.UIT.R, config={align = 'cl'}, nodes={
-                {n=G.UIT.C, config={align = "cl"}, nodes={
-                    {n=G.UIT.C, config={ref_table = card, align = "cl", padding = 0.2, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'may_guacamole_ability', func = 'may_can_use_guacamole_ability', handy_insta_action = 'ability'}, nodes={
-                        {n=G.UIT.B, config = {w=0.1,h=0.6}},
-                        {n=G.UIT.C, config={align = "cm"}, nodes={
-                            {n=G.UIT.R, config={align = "cm", maxw = 1.25}, nodes={
-                                {n=G.UIT.T, config={text = 'ABILITY',colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true}}
-                            }}
-                        }},
-                    }}, 
-                }}, 
-            }}
-		}}
-	end
-	-- Booster Packs and Vouchers in Consumable Slots
-	if card:gc().set == "Voucher" and card.area == G.consumeables then
-		return {n=G.UIT.ROOT, config = {padding = 0, colour = G.C.CLEAR}, nodes={
-            {n=G.UIT.C, config={padding = 0.15, align = 'cl'}, nodes={
-                {n=G.UIT.R, config={align = 'cl'}, nodes={
-                    {n=G.UIT.C, config={align = "cr"}, nodes={
-                        {n=G.UIT.C, config={ref_table = card, align = "cr",padding = 0.1, r=0.08, minw = 1.2, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'sell_card', func = 'can_sell_card', handy_insta_action = 'sell'}, nodes={
-                            {n=G.UIT.B, config = {w=0.1,h=0.6}},
-                            {n=G.UIT.C, config={align = "tm"}, nodes={
-                                {n=G.UIT.R, config={align = "cm", maxw = 1.25}, nodes={
-                                    {n=G.UIT.T, config={text = localize('b_sell'),colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true}}
-                                }},
-                                {n=G.UIT.R, config={align = "cm"}, nodes={
-                                    {n=G.UIT.T, config={text = localize('$'),colour = G.C.WHITE, scale = 0.4, shadow = true}},
-                                    {n=G.UIT.T, config={ref_table = card, ref_value = 'sell_cost_label',colour = G.C.WHITE, scale = 0.55, shadow = true}}
-                                }}
-                            }}
-                        }},
-                    }}
-                }},
-                {n=G.UIT.R, config={align = 'cl'}, nodes={
-                    {n=G.UIT.C, config={align = "cr"}, nodes={ 
-                        {n=G.UIT.C, config={ref_table = card, align = "cr",maxw = 1.2, padding = 0.1, r=0.08, minw = 1.25, minh = (card.area and card.area.config.type == 'joker') and 0 or 1, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'redeem_voucher', func = 'can_redeem_voucher', handy_insta_action = 'use'}, nodes={
-                            {n=G.UIT.B, config = {w=0.1,h=0.6}},
-                            {n=G.UIT.T, config={text = localize('b_redeem'),colour = G.C.UI.TEXT_LIGHT, scale = 0.55, shadow = true}}
-                        }}
-                    }}
-                }},
-            }},
-        }}
-    end
-	if card:gc().set == "Booster" and card.area == G.consumeables then
-		return {n=G.UIT.ROOT, config = {padding = 0, colour = G.C.CLEAR}, nodes={
-            {n=G.UIT.C, config={padding = 0.15, align = 'cl'}, nodes={
-                {n=G.UIT.R, config={align = 'cl'}, nodes={
-                    {n=G.UIT.C, config={align = "cr"}, nodes={
-                        {n=G.UIT.C, config={ref_table = card, align = "cr",padding = 0.1, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'sell_card', func = 'can_sell_card', handy_insta_action = 'sell'}, nodes={
-                            {n=G.UIT.B, config = {w=0.1,h=0.6}},
-                            {n=G.UIT.C, config={align = "tm"}, nodes={
-                                {n=G.UIT.R, config={align = "cm", maxw = 1.25}, nodes={
-                                    {n=G.UIT.T, config={text = localize('b_sell'),colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true}}
-                                }},
-                                {n=G.UIT.R, config={align = "cm"}, nodes={
-                                    {n=G.UIT.T, config={text = localize('$'),colour = G.C.WHITE, scale = 0.4, shadow = true}},
-                                    {n=G.UIT.T, config={ref_table = card, ref_value = 'sell_cost_label',colour = G.C.WHITE, scale = 0.55, shadow = true}}
-                                }}
-                            }}
-                        }},
-                    }}
-                }},
-                {n=G.UIT.R, config={align = 'cl'}, nodes={
-                    {n=G.UIT.C, config={align = "cr"}, nodes={ 
-                        {n=G.UIT.C, config={ref_table = card, align = "cr",maxw = 1.25, padding = 0.1, r=0.08, minw = 1.25, minh = (card.area and card.area.config.type == 'joker') and 0 or 1, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'open_pack', func = 'can_open_pack', handy_insta_action = 'use'}, nodes={
-                            {n=G.UIT.B, config = {w=0.1,h=0.6}},
-                            {n=G.UIT.T, config={text = localize('b_open'),colour = G.C.UI.TEXT_LIGHT, scale = 0.55, shadow = true}}
-                        }}
-                    }}
-                }},
-            }},
-        }}
-    end
-	return ui
 end
 
 local vanf_gfec = G.FUNCS.end_consumeable
@@ -766,4 +457,23 @@ G.FUNCS.end_consumeable = function(e, delayfac)
             end
         return true end}))
     return true end}))]] 
+end
+
+local vanf_caath = CardArea.add_to_highlighted
+function CardArea:add_to_highlighted(card, silent)
+	if card and card.ability.in_voucher_tab then
+		card.area:unhighlight_all() 
+		card.zoom = true		
+	end
+	vanf_caath(self, card, silent)
+end
+
+local vanf_catd = Card.add_to_deck
+function Card:add_to_deck(from_debuff)
+	vanf_catd(self, from_debuff)
+	if self.gc and self:gc().set == 'may_display' then
+	    if self.area == G.consumeables or self.area == G.jokers then
+		    self:set_ability(may.random_consumable('display_failsafe', nil, nil, G.P_CENTER_POOLS.Consumeable, true), nil, true)
+		end 
+	end	
 end

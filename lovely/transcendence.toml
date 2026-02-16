@@ -11,7 +11,7 @@ pattern = "G.ARGS.score_intensity.organ = G.video_organ or G.ARGS.score_intensit
 position = "at"
 payload = '''
 	if Big.arrow and G.GAME.blind and to_big(G.GAME.blind.chips or 0) > to_big(0) then
-		if (type(SMODS.get_scoring_parameter('chips', true)) == 'number' or type(SMODS.get_scoring_parameter('chips', true)) == 'table') and (type(SMODS.get_scoring_parameter('mult', true)) == 'number' or type(SMODS.get_scoring_parameter('mult', true)) == 'table') then
+		if is_number(SMODS.get_scoring_parameter('chips', true)) and is_number(SMODS.get_scoring_parameter('mult', true)) then
 			G.ARGS.score_intensity.true_score = to_big(G.GAME.current_scoring_calculation:func(SMODS.get_scoring_parameter('chips', true), SMODS.get_scoring_parameter('mult', true), true))
 		else
 			G.ARGS.score_intensity.true_score = to_big(0)
@@ -19,6 +19,7 @@ payload = '''
 		local notzero = to_big(G.ARGS.score_intensity.true_score) > to_big(0)
 		local reqs = to_big(G.ARGS.score_intensity.required_score+1)
 		
+		local req00 = math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs*1e50), 5)),0.) or 0
 		local req0 = math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs+1), 5)),0.) or 0
 		local req1 = math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs*1e100), 5)),0.)
 		local req2 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs^1e100), 5)),0.))
@@ -265,6 +266,25 @@ payload = '''
 		(G.ARGS.score_intensity.tran3 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran2 or 0) <= 0.05 and notzero) and to_number(to_big(req1)) or 0
 		
+		G.ARGS.score_intensity.tran0 = (
+		(G.ARGS.score_intensity.tran17 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran16 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran6 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran5 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran4 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran3 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran2 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran1 or 0) <= 0.05 and notzero) and to_number(to_big(req00)) or 0
+		
 		if may.TrAudio == 0 then
 			G.ARGS.score_intensity.organ = G.video_organ or notzero and to_big(req0):to_number() or 0
 		else
@@ -286,9 +306,10 @@ payload = '''
 			(G.ARGS.score_intensity.tran4 or 0) <= 0.05 and
 			(G.ARGS.score_intensity.tran3 or 0) <= 0.05 and
 			(G.ARGS.score_intensity.tran2 or 0) <= 0.05 and
-			(G.ARGS.score_intensity.tran1 or 0) <= 0.05 and notzero) and req0) or 0
+			(G.ARGS.score_intensity.tran1 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran0 or 0) <= 0.05 and notzero) and req0) or 0
 		end
-
+        
 		if G.ARGS.score_intensity.tran1 < 1 then
 			G.ARGS.score_intensity.transcendence = 0
 		end
@@ -345,8 +366,8 @@ payload = '''
 		end
 	
 		notzero = nil
-		G.ARGS.score_intensity.true_score = nil
 		reqs = nil
+		req00 = nil
 		req1 = nil
 		req2 = nil
 		req3 = nil
@@ -367,7 +388,7 @@ payload = '''
 		
 		if may then
 			may.transcendence = G.ARGS.score_intensity.transcendence or 0 
-            may.calc_transcendence()
+            --may.calc_transcendence()
 		end
 	else
 		G.ARGS.score_intensity.organ = G.video_organ or to_number(G.ARGS.score_intensity.required_score) > 0 and math.max(math.min(0.4, 0.1*math.log(G.ARGS.score_intensity.earned_score/(G.ARGS.score_intensity.required_score+1), 5)),0.) or 0
@@ -382,14 +403,15 @@ pattern = "G.ARGS.score_intensity.organ = G.video_organ or to_big(G.ARGS.score_i
 position = "at"
 payload = '''
 	if Big.arrow and G.GAME.blind and to_big(G.GAME.blind.chips or 0) > to_big(0) then
-		if (type(SMODS.get_scoring_parameter('chips', true)) == 'number' or type(SMODS.get_scoring_parameter('chips', true)) == 'table') and (type(SMODS.get_scoring_parameter('mult', true)) == 'number' or type(SMODS.get_scoring_parameter('mult', true)) == 'table') then
+		if is_number(SMODS.get_scoring_parameter('chips', true)) and is_number(SMODS.get_scoring_parameter('mult', true)) then
 			G.ARGS.score_intensity.true_score = to_big(G.GAME.current_scoring_calculation:func(SMODS.get_scoring_parameter('chips', true), SMODS.get_scoring_parameter('mult', true), true))
 		else
 			G.ARGS.score_intensity.true_score = to_big(0)
 		end
-        local notzero = to_big(G.ARGS.score_intensity.true_score) > to_big(0)
+		local notzero = to_big(G.ARGS.score_intensity.true_score) > to_big(0)
 		local reqs = to_big(G.ARGS.score_intensity.required_score+1)
 		
+		local req00 = math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs*1e50), 5)),0.) or 0
 		local req0 = math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs+1), 5)),0.) or 0
 		local req1 = math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs*1e100), 5)),0.)
 		local req2 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs^1e100), 5)),0.))
@@ -636,6 +658,25 @@ payload = '''
 		(G.ARGS.score_intensity.tran3 or 0) <= 0.05 and
 		(G.ARGS.score_intensity.tran2 or 0) <= 0.05 and notzero) and to_number(to_big(req1)) or 0
 		
+		G.ARGS.score_intensity.tran0 = (
+		(G.ARGS.score_intensity.tran17 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran16 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran15 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran14 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran13 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran12 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran11 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran10 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran9 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran8 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran7 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran6 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran5 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran4 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran3 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran2 or 0) <= 0.05 and
+		(G.ARGS.score_intensity.tran1 or 0) <= 0.05 and notzero) and to_number(to_big(req00)) or 0
+		
 		if may.TrAudio == 0 then
 			G.ARGS.score_intensity.organ = G.video_organ or notzero and to_big(req0):to_number() or 0
 		else
@@ -657,9 +698,10 @@ payload = '''
 			(G.ARGS.score_intensity.tran4 or 0) <= 0.05 and
 			(G.ARGS.score_intensity.tran3 or 0) <= 0.05 and
 			(G.ARGS.score_intensity.tran2 or 0) <= 0.05 and
-			(G.ARGS.score_intensity.tran1 or 0) <= 0.05 and notzero) and req0) or 0
+			(G.ARGS.score_intensity.tran1 or 0) <= 0.05 and
+			(G.ARGS.score_intensity.tran0 or 0) <= 0.05 and notzero) and req0) or 0
 		end
-
+        
 		if G.ARGS.score_intensity.tran1 < 1 then
 			G.ARGS.score_intensity.transcendence = 0
 		end
@@ -716,8 +758,8 @@ payload = '''
 		end
 	
 		notzero = nil
-		G.ARGS.score_intensity.true_score = nil
 		reqs = nil
+		req00 = nil
 		req1 = nil
 		req2 = nil
 		req3 = nil
@@ -738,7 +780,7 @@ payload = '''
 		
 		if may then
 			may.transcendence = G.ARGS.score_intensity.transcendence or 0 
-            may.calc_transcendence()
+            --may.calc_transcendence()
 		end
 	else
 		G.ARGS.score_intensity.organ = G.video_organ or to_number(G.ARGS.score_intensity.required_score) > 0 and math.max(math.min(0.4, 0.1*math.log(G.ARGS.score_intensity.earned_score/(G.ARGS.score_intensity.required_score+1), 5)),0.) or 0
@@ -752,6 +794,7 @@ target = "functions/misc_functions.lua"
 pattern = "ambientOrgan1 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.music_volume + 100)/200*(G.ARGS.score_intensity.organ) end},"
 position = "after"
 payload = '''
+    may_tran0 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran0 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
 	may_tran1 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran1 or 0) * 4) * (may.conf.TrAudio * 0.01) end},
 	may_tran2 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran2 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
 	may_tran3 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran3 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
@@ -817,3 +860,27 @@ payload = '''
 	end
 '''
 match_indent = true 
+
+[[patches]]
+[patches.pattern]
+target = 'functions/button_callbacks.lua'
+match_indent = true
+position = 'at'
+pattern = '''
+for i=1, 3 do
+	parameter.lick[i] = math.min(math.max(((parameter.colour[i]*0.5+G.C.YELLOW[i]*0.5) + 0.1)^2, 0.1), 1)
+end
+'''
+payload = '''
+for i=1, 3 do
+	local col = parameter.colour
+	if parameter.key == 'mult' then
+		col = (may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.get_transcendence_color(may.transcendence) or G.C.RED
+	end
+	if parameter.key == 'chips' then
+		col = (may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.get_transcendence_color(may.transcendence) or G.C.BLUE
+	end
+	parameter.lick[i] = math.min(math.max(((col[i]*0.5+G.C.YELLOW[i]*0.5) + 0.1)^2, 0.1), 1)
+end
+'''
+

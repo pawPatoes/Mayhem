@@ -215,8 +215,8 @@ SMODS.Joker {
             {
 			    "{C:money}$#1#{} / {C:attention}$#2#{}", 
 				may.pager(),
-				"When {C:money}money{} is {C:green}increased{}, {C:attention}half{} of", 
-				"added amount is {C:mult}instead{} added to this {C:attention}Joker{}",
+				"When {C:money}money{} is {C:green}increased{}, this {C:attention}Joker's{} {C:money}money{}", 
+				"counter {C:green}increases{} by a {C:mult}quarter{} of the {C:money}increase{}", 
 				may.pager(),
                 "When {C:money}money{} {C:attention}requirement{} is reached, adds", 
 				"{C:attention}#3#{} {C:dark_edition}Negative{} regular {C:green}Voucher{}", 
@@ -242,13 +242,14 @@ SMODS.Joker {
     soul_pos = { x = 1, y = 3 }, 
     immutable = true, 
 	blueprint_compat = false,
+	demicoloncompat = false,
 	cost = 20,
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.money, card.ability.extra.money_req, card.ability.extra.voucher, card.ability.extra.pack, card.ability.extra.increase } }
 	end,
 	calculate = function(self, card, context)
 		if (not context.blueprint) and (context.money_altered and to_big(context.amount) > to_big(0) and to_big(context.amount) < Big.create(self, 'ee308') and to_big(G.GAME.dollars) < Big.create(self, 'ee308')) then
-			card.ability.extra.money = card.ability.extra.money + (context.amount * 0.5)
+			card.ability.extra.money = card.ability.extra.money + (context.amount * 0.25)
 			local triggers = 0
 			while to_big(card.ability.extra.money) > to_big(card.ability.extra.money_req) do
 				card.ability.extra.money = card.ability.extra.money - card.ability.extra.money_req
@@ -281,10 +282,8 @@ SMODS.Joker {
 				end
 			end
 			return {
-				p_dollars = context.amount * -0.5,
-				card = card,
-				colour = G.C.MONEY,
 				message = triggers == 0 and localize('k_upgrade_ex') or "Activated! (x"..triggers..")",
+				message_card = card,
 			}
 		end
 	end, 
@@ -425,6 +424,9 @@ SMODS.Joker {
 				may.pager(50),
 				"{C:inactive,s:0.7,E:1}Ho-ho-ho!{}",
 			},
+			{
+				"{C:inactive,E:1}Music from Rolling Sky by Cheetah Mobile{}"
+			}
 		}
 	},
 	rarity = 4,
@@ -488,7 +490,7 @@ SMODS.Joker {
     endless = true, 
 	cost = 1,
 	loc_vars = function(self, info_queue, card)
-		return { vars = { G.GAME.instability or 0 } }
+		return { vars = { G.GAME.may_instability or 0 } }
 	end,
 	calculate = function(self, card, context)
 		if context.selling_card and context.card.ability.set == "Joker" and not context.blueprint then 
@@ -497,7 +499,7 @@ SMODS.Joker {
             end 
         end
 		if context.end_of_round and context.game_over == false and context.main_eval then
-			if (G.GAME.instability or 0) >= 15 then
+			if (G.GAME.may_instability or 0) >= 15 then
                 G.E_MANAGER:add_event(Event({delay = 0.1, func = function() 
                     play_sound('may_big_score1')
                     play_sound('may_hyperascendant_joker', 0.5)

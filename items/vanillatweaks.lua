@@ -33,7 +33,7 @@ SMODS.Booster:take_ownership('p_spectral_jumbo_1', {
 
 SMODS.Booster:take_ownership('p_spectral_mega_1', {
 	weight = .6,
-	config = {extra = 6, choose = 2}
+	config = {extra = 5, choose = 2}
 })
 
 for i=1, 4 do
@@ -47,7 +47,7 @@ end
 for i=1, 2 do
     SMODS.Booster:take_ownership('p_celestial_jumbo_'..i, {
 	    weight = .5,
-	    config = {extra = 6, choose = 1}, 
+	    config = {extra = 5, choose = 1}, 
 		draw_hand = true, 
     })
 end
@@ -55,7 +55,7 @@ end
 for i=1, 2 do
     SMODS.Booster:take_ownership('p_celestial_mega_'..i, {
 	    weight = .25,
-	    config = {extra = 7, choose = 2},
+	    config = {extra = 6, choose = 2},
 		draw_hand = true,
     })
 end
@@ -441,25 +441,5 @@ for k, v in pairs(may.intro_unlocks) do
     SMODS.Back:take_ownership(v, {
 	    discovered = true, 
 	    unlocked = true,
-    }, true)
-end
-
--- Make certain Vanilla Vouchers sellable
-may.sellable_vanilla_vouchers = {
-	'v_tarot_merchant',
-    'v_tarot_tycoon', 
-	'v_planet_merchant', 
-	'v_planet_tycoon', 
-	'v_magic_trick', 
-	'v_omen_globe', 
-	'v_hieroglyph', 
-	'v_petroglyph', 
-	'v_telescope', 
-	'v_hone', 
-	'v_glow_up'
-}
-for k, v in pairs(may.sellable_vanilla_vouchers) do
-	SMODS.Voucher:take_ownership(v, {
-	    voucher_sellable = true
     }, true)
 end

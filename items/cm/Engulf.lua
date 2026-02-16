@@ -1,17 +1,92 @@
 -- Engulf cross-mod
 
-Engulf.EditionFuncs.e_foil = nil
-Engulf.EditionFuncs.e_holo = nil
-Engulf.EditionFuncs.e_polychrome = nil
-
-Engulf.EditionFuncs.e_may_hypnotic = function(card, hand, instant, amount, edition) 
-	may.hand_mod_multchips(hand, 'mult', 'eq', G.GAME.hands[hand].chips ^ 1.5, instant, card)
+Engulf.AllowedKeys = Engulf.AllowedKeys or {}
+for k, v in pairs({
+	'c_may_gray_hole', 'c_may_galileo', 'c_may_icarus', 
+	'c_may_mercurius', 'c_may_venos', 'c_may_terra', 'c_may_marte', 'c_may_iupiterus', 'c_may_saturnus',
+	'c_may_uranos', 'c_may_neptunus', 'c_may_ploto', 'c_may_nonuvus', 'c_may_ceves', 'c_may_eres'
+}) do
+    table.insert(Engulf.AllowedKeys, v)
 end
 
-Engulf.EditionFuncs.e_may_twilight = function(card, hand, instant, amount, edition) 
-	may.hand_mod_multchips(hand, 'mult', -1, (G.GAME.may_twilight_amount or 5), instant, card)
-	may.hand_mod_multchips(hand, 'chips', -1, (G.GAME.may_twilight_amount or 5), instant, card)
-	G.GAME.may_twilight_amount = ((G.GAME.may_twilight_amount or 5) * 1.2) ^ 1.075
+Engulf.EditionFuncs = Engulf.EditionFuncs or {}
+
+Engulf.ApplyEditionFuncs = Engulf.ApplyEditionFuncs or {}
+
+for k, v in ipairs({
+	{'score', 'add_score', 501}, {'score_mod', 'add_score', 501},
+	{'xscore', 'x_score', 502}, {'x_score', 'x_score', 502},
+	{'escore', 'e_score', 503}, {'e_score', 'e_score', 503},
+}) do
+	table.insert(Engulf.GenericKeys, v)
+end
+
+Engulf.ApplyEditionFuncs["dollars"] = function(card, hand, instant, amount, detected_key, cosmetic)
+	if (not cosmetic) then
+		if not instant then
+		    delay(0.5)
+		end
+		may.hand_mod_dollars(card, hand, instant, -1, card.edition[detected_key] * amount)
+		if not instant then 
+		    may.refresh_score_operator()
+		end
+	end
+end
+
+Engulf.ApplyEditionFuncs["x_dollars"] = function(card, hand, instant, amount, detected_key, cosmetic)
+	if (not cosmetic) then
+		if not instant then
+		    delay(0.5)
+		end
+		may.hand_mod_dollars(card, hand, instant, 0, card.edition[detected_key] ^ amount)
+		if not instant then 
+		    may.refresh_score_operator()
+		end
+	end
+end
+
+Engulf.ApplyEditionFuncs["add_score"] = function(card, hand, instant, amount, detected_key, cosmetic)
+	if (not cosmetic) then
+		if not instant then
+		    delay(0.5)
+		end
+		may.hand_mod_score(card, hand, instant, -1, card.edition[detected_key] * amount)
+		if not instant then 
+		    may.refresh_score_operator()
+		end
+	end
+end
+
+Engulf.ApplyEditionFuncs["x_score"] = function(card, hand, instant, amount, detected_key, cosmetic)
+	if (not cosmetic) then
+		if not instant then
+		    delay(0.5)
+		end
+		may.hand_mod_score(card, hand, instant, 0, card.edition[detected_key] ^ amount)
+		if not instant then 
+		    may.refresh_score_operator()
+		end
+	end
+end
+
+Engulf.ApplyEditionFuncs["e_score"] = function(card, hand, instant, amount, detected_key, cosmetic)
+	if (not cosmetic) then
+		if not instant then
+		    delay(0.5)
+		end
+		may.hand_mod_score(card, hand, instant, 1, factor)
+		if not instant then 
+		    may.refresh_score_operator()
+		end
+	end
+end
+
+Engulf.EditionFuncs.e_may_hypnotic = function(card, hand, instant, amount, edition) 
+	may.hand_multchips(card, hand, instant, nil, {'eq', G.GAME.hands[hand].chips ^ 1.5})
+end
+
+Engulf.EditionFuncs.e_may_twilight = function(card, hand, instant, amount, edition)
+	may.hand_multchips(card, hand, {-1, (G.GAME.may_twilight_amount or 5)}, {-1, (G.GAME.may_twilight_amount or 5)})
 end
 
 Engulf.EditionFuncs.e_may_alloy = function(card, hand, instant, amount, edition)
@@ -24,12 +99,12 @@ Engulf.EditionFuncs.e_may_alloy = function(card, hand, instant, amount, edition)
 			gold = gold + 1
 		end
 	end
-	may.hand_mod_multchips(hand, 'mult', 0, (1 + (edition.x_mult * steel)) ^ amount, instant, card)
+	may.hand_multchips(card, hand, instant, nil, {0, (1 + (edition.x_mult * steel)) ^ amount})
 	may.hand_mod_dollars(hand, 0, (1 + (edition.x_dollars * gold)) ^ amount, instant)
 end
 
 Engulf.EditionFuncs.e_may_inverted = function(card, hand, instant, amount, edition)
-	may.ease_interest(-1, 0.01 * amount)
+	may.ease_interest(-1, 0.01 * amount, instant)
 end
 
 Engulf.EditionFuncs.e_may_neon = function(card, hand, instant, amount, edition)
@@ -60,27 +135,24 @@ Engulf.EditionFuncs.e_may_laminated = function(card, hand, instant, amount, edit
 		end
 	end
 	if found > 0 then
-	    may.hand_mod_multchips(hand, 'chips', -1, edition.chips * amount * found, instant, card)
-	    may.hand_mod_multchips(hand, 'mult', -1, edition.mult * amount * found, instant, card)
+	    may.hand_multchips(card, hand, instant, {-1, edition.chips * amount * found}, {-1, edition.mult * amount * found})
 	end
 end
 
 Engulf.EditionFuncs.e_may_cosmic = function(card, hand, instant, amount, edition)
-    if card:gc().set and card:gc().set == 'Planet' then
-	    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-            play_sound('timpani')
-		    local new = create_card('Planet', G.consumeables, nil, nil, nil, nil, may.planethand(hand), 'may_cosmic_engulf')
-            new:add_to_deck()
-            G.consumeables:emplace(new)
-			new:juice_up(0.3, 0.5)
-		    new:setQty(amount)
-            new:set_edition('e_negative')
-        return true end}))
-    end
+	G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+        play_sound('timpani')
+		local new = create_card('Planet', G.consumeables, nil, nil, nil, nil, may.planethand(hand), 'may_cosmic_engulf')
+        new:add_to_deck()
+        G.consumeables:emplace(new)
+		new:juice_up(0.3, 0.5)
+		new:setQty(amount)
+        new:set_edition('e_negative')
+    return true end}))
 end
 
 -- Custom operations and hyperoperation sounds
-function Engulf.EditionHand(card, hand, edition, amount, instant)
+--[[function Engulf.EditionHand(card, hand, edition, amount, instant)
     if card.ability.consumeable then
 	    if Engulf.EditionFuncs[edition.key] then Engulf.EditionFuncs[edition.key](card, hand, instant, Engulf.config.stackeffects and amount or 1, edition) else
 			
@@ -150,4 +222,4 @@ function level_up_hand(card, hand, instant, amount)
         end
     end
     vanf_luh(card, hand, instant, amount)
-end
+end]] 

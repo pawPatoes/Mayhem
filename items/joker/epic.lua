@@ -102,9 +102,9 @@ SMODS.Joker {
         end
 		if context.forcetrigger then
 			return {
-				dollars = card.ability.extra.dollars,
-				card = context.other_card,
-			}
+                e_mult = card.ability.extra.e_mult,
+                card = card
+            }
 		end
 	end
 }

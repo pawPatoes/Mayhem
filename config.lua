@@ -23,7 +23,7 @@ return {
 	["Limit"] = 2,
 	["Scaling"] = 1,
 	["Params"] = 1,
-	["TrEffects"] = 4,
+	["TrEffects"] = 5,
 	["TrAudio"] = 100,
 	["TrShakeCards"] = true,
 	["TrShakeScreen"] = true,

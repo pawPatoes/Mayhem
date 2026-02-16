@@ -1,5 +1,18 @@
 -- Poker Hand functions
 
+function may.no_context_lvl_up(card, hand, instant, amount)
+    SMODS.upgrade_poker_hands({
+        hands = hand,
+        func = function(base, hand, parameter)
+            return base + G.GAME.hands[hand]['l_' .. parameter] * amount
+        end,
+        level_up = amount,
+        from = card,
+        instant = instant, 
+		no_context = true,
+    })
+end
+
 -- Gets the least played Poker Hand 
 function lphand()
 	if not G.GAME then return 0 else
@@ -107,11 +120,11 @@ function may.level_up_hand_hyper(card, hand, instant, amount, arrow)
 	local former_level = G.GAME.hands[hand].level
 	arrow = arrow or 0
 	amount = amount or 1
-    amount = to_big(amount)
+	amount = to_big(amount)
 	if hand and G.GAME.hands[hand] then
-        if not instant then 
-            may.th(hand) 
-        end
+		if not instant then 
+			may.th(hand) 
+		end
 		level_up_hand(card, hand, true, to_big(G.GAME.hands[hand].level):arrow(arrow or 0, amount) - G.GAME.hands[hand].level)
 		if not instant then 
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
@@ -142,7 +155,7 @@ function may.level_up_hand_hyper(card, hand, instant, amount, arrow)
 			update_hand_text({sound = 'button', volume = 0.7, pitch = 0.9, delay = 0}, {level=number_format(G.GAME.hands[hand].level)})
 			delay(1.3)
 		end
-    end
+	end
 end
 
 -- Equals level basically, used in stuff like Mangas
@@ -158,18 +171,18 @@ function may.set_hand_level(card, hand, instant, mod)
 				if card then card:juice_up(0.8, 0.5) end
 				G.TAROT_INTERRUPT_PULSE = true
 			return true end}))
-			may.hm(G.GAME.hands[hand].mult)
+			may.hm(G.GAME.hands[hand].mult, true)
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
 				play_sound('may_eq_level')
 				if card then card:juice_up(0.8, 0.5) end
 			return true end}))
-			may.hc(G.GAME.hands[hand].chips)
+			may.hc(G.GAME.hands[hand].chips, true)
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
 				play_sound('may_eq_level')
 				if card then card:juice_up(0.8, 0.5) end
 				G.TAROT_INTERRUPT_PULSE = nil
 			return true end}))
-			may.hlv(G.GAME.hands[hand].level)
+			may.hlv(G.GAME.hands[hand].level, true)
 			delay(1.3)
 			may.ch()
 		end
@@ -204,18 +217,18 @@ function may.level_up_all_hands(card, instant, amount, ignore)
 				G.TAROT_INTERRUPT_PULSE = true
 				return true end}))
 			if to_big(amount) > to_big(0) then
-				may.hm('+')
+				may.hm('+', true)
 			else
-				may.hm('-')
+				may.hm('-', true)
 			end
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.5, func = function()
 				play_sound('tarot1')
 				if card then card:juice_up(0.8, 0.5) end
 				return true end}))
 			if to_big(amount) > to_big(0) then
-				may.hc('+')
+				may.hc('+', true)
 			else
-				may.hc('-')
+				may.hc('-', true)
 			end
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.5, func = function()
 				play_sound('tarot1')
@@ -223,9 +236,9 @@ function may.level_up_all_hands(card, instant, amount, ignore)
 				G.TAROT_INTERRUPT_PULSE = nil
 			return true end}))
 			if to_big(amount) > to_big(0) then
-				may.hlv('+'..number_format(amount))
+				may.hlv('+'..amount, true)
 			else
-				may.hlv(number_format(-math.abs(amount)))
+				may.hlv(-math.abs(amount), true)
 			end
 			delay(1.3)
 			may.ch()
@@ -263,11 +276,11 @@ function may.level_up_all_hands_hyper(card, instant, amount, arrow, ignore)
 				end
 				if card then card:juice_up(0.8, 0.5) end
 				G.TAROT_INTERRUPT_PULSE = true
-				return true end}))
+			return true end}))
 			if to_big(amount) > to_big(0) then
-				may.hm('+')
+				may.hm('+', true)
 			else
-				may.hm('-')
+				may.hm('-', true)
 			end
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
 				play_sound('may_super_level')
@@ -275,11 +288,11 @@ function may.level_up_all_hands_hyper(card, instant, amount, arrow, ignore)
 					play_sound(may.get_operation_sound(arrow, 'chips'))
 				end
 				if card then card:juice_up(0.8, 0.5) end
-				return true end}))
+			return true end}))
 			if to_big(amount) > to_big(0) then
-				may.hc('+')
+				may.hc('+', true)
 			else
-				may.hc('-')
+				may.hc('-', true)
 			end
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
 				play_sound('may_super_level')
@@ -289,7 +302,7 @@ function may.level_up_all_hands_hyper(card, instant, amount, arrow, ignore)
 				if card then card:juice_up(0.8, 0.5) end
 				G.TAROT_INTERRUPT_PULSE = nil
 			return true end}))
-			may.hlv(may.generate_arrow_text(arrow)..amount)
+			may.hlv(may.generate_arrow_text(arrow)..amount, true)
 			delay(1.3)
 			may.ch()
 		end
@@ -338,91 +351,78 @@ function may.set_all_hand_levels(card, instant, mod, ignore)
 	end
 end
 
+-- deprecated
 function may.hand_mod_lvl_multchips(hand, multchips, arrow, mod, silent)
+	may.hand_lvl_multchips(nil, hand, silent, (multchips == 'chips' or multchips == 'multchips') and {arrow, mod} or nil, (multchips == 'mult' or multchips == 'multchips') and {arrow, mod} or nil)
+	may.ch()
+	may.refresh_score_operator()
+end
+
+-- New function for modifying level Mult & Chips. mult and chips are tables: {ARROW, MOD}
+function may.hand_lvl_multchips(card, hand, instant, chips, mult)
+	if not G.GAME.hands[hand] then return end 
 	mod = to_big(mod)
+	local prev_chips = to_big(G.GAME.hands[hand].l_chips)
+	local prev_mult = to_big(G.GAME.hands[hand].l_mult)
 	G.GAME.hands[hand].l_mult = to_big(G.GAME.hands[hand].l_mult)
 	G.GAME.hands[hand].l_chips = to_big(G.GAME.hands[hand].l_chips)
-	if arrow >= 0 then
-		if multchips == 'mult' then
-			G.GAME.hands[hand].l_mult = G.GAME.hands[hand].l_mult:arrow(arrow, mod)
-		elseif multchips == 'chips' then
-			G.GAME.hands[hand].l_chips = G.GAME.hands[hand].l_chips:arrow(arrow, mod)
-		elseif multchips == 'multchips' then
-			G.GAME.hands[hand].l_mult = G.GAME.hands[hand].l_mult:arrow(arrow, mod)
-			G.GAME.hands[hand].l_chips = G.GAME.hands[hand].l_chips:arrow(arrow, mod)
-		end
-	else
-		if arrow == -1 then
-			if multchips == 'mult' then
-				G.GAME.hands[hand].l_mult = G.GAME.hands[hand].l_mult:add(mod)
-			elseif multchips == 'chips' then
-				G.GAME.hands[hand].l_chips = G.GAME.hands[hand].l_chips:add(mod)
-			elseif multchips == 'multchips' then
-				G.GAME.hands[hand].l_mult = G.GAME.hands[hand].l_mult:add(mod)
-				G.GAME.hands[hand].l_chips = G.GAME.hands[hand].l_chips:add(mod)
-			end
-		elseif arrow == -2 then
-			if multchips == 'mult' then
-				G.GAME.hands[hand].l_mult = G.GAME.hands[hand].l_mult:sub(mod)
-			elseif multchips == 'chips' then
-				G.GAME.hands[hand].l_chips = G.GAME.hands[hand].l_chips:sub(mod)
-			elseif multchips == 'multchips' then
-				G.GAME.hands[hand].l_mult = G.GAME.hands[hand].l_mult:sub(mod)
-				G.GAME.hands[hand].l_chips = G.GAME.hands[hand].l_chips:sub(mod)
-			end
-		elseif arrow == -3 then
-			if multchips == 'mult' then
-				G.GAME.hands[hand].l_mult = G.GAME.hands[hand].l_mult:div(mod)
-			elseif multchips == 'chips' then
-				G.GAME.hands[hand].l_chips = G.GAME.hands[hand].l_chips:div(mod)
-			elseif multchips == 'multchips' then
-				G.GAME.hands[hand].l_mult = G.GAME.hands[hand].l_mult:div(mod)
-				G.GAME.hands[hand].l_chips = G.GAME.hands[hand].l_chips:div(mod)
-			end
-		end
+	if chips then
+		G.GAME.hands[hand].l_chips = to_big(G.GAME.hands[hand].l_chips):arrow(chips[1] or -1, chips[2])
 	end
-	if not silent then
-		local handarea = G.HUD:get_UIE_by_ID('hand_text_area')
+	if mult then
+		G.GAME.hands[hand].l_mult = to_big(G.GAME.hands[hand].l_mult):arrow(mult[1] or -1, mult[2])
+	end
+	if not instant then
+		may.th(hand)
 		delay(0.5)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			local text = localize(hand, 'poker_hands')..' '
-			if arrow >= 1 then
-				text = text..may.generate_arrow_text(arrow, 4)
-			elseif arrow == 0  then
-				text = text..'X'
-			elseif arrow == -1 then
-				text = text..'+'
-			elseif arrow == -2 then
-				text = text..'-'
-			elseif arrow <= -3 then
-				text = text..'/'
+		may.cosmetic_score_operator('Lv.', G.C.UI.TEXT_LIGHT, 'may_lvl_multchips')
+		may.hcm(prev_chips, prev_mult, false)
+		delay(0.7)
+		if chips then 
+			local op = may.generate_arrow_text(chips[1])
+			local op_num = chips[1]
+			if chips[1] == -1 and to_big(chips[2]) < to_big(0) then
+				op = '-'
+				op_num = -2
 			end
-			local col 
-			if multchips == 'mult' then
-				col = G.C.MULT
-			elseif	multchips == 'chips' then
-				col = G.C.CHIPS
-			elseif	multchips == 'multchips' then
-				col = G.C.PURPLE
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+				G.TAROT_INTERRUPT_PULSE = true
+				play_sound(may.get_operation_sound(op_num, 'chips'))
+				if card then card:juice_up(0.8, 0.5) end
+			return true end}))
+			may.hc(op..math.abs(chips[2]), true)
+			delay(0.2)
+			may.hc(to_big(G.GAME.hands[hand].l_chips), false)
+		end
+		if mult then 
+			local op = may.generate_arrow_text(mult[1])
+			local op_num = mult[1]
+			if mult[1] == -1 and to_big(mult[2]) < to_big(0) then
+				op = '-'
+				op_num = -2
 			end
-			attention_text({
-				text = text..(to_number(mod) or 0),
-				scale = 1, 
-				hold = 1,
-				cover = handarea,
-				cover_colour = col,
-				align = 'cm',
-			})
-			play_sound('may_lvl_multchips')
-			play_sound('generic1')
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+				G.TAROT_INTERRUPT_PULSE = true
+				play_sound(may.get_operation_sound(op_num, 'mult'))
+				if card then card:juice_up(0.8, 0.5) end
+			return true end}))
+			may.hm(op..math.abs(mult[2]), true)
+			delay(0.2)
+			may.hm(to_big(G.GAME.hands[hand].l_mult), false)
+		end
+		delay(1.3)
+		G.E_MANAGER:add_event(Event({func = function()
+			G.TAROT_INTERRUPT_PULSE = nil
 		return true end}))
 	end
 end
 
-function may.hand_mod_dollars(hand, arrow, mod, silent)
+function may.hand_mod_dollars(card, hand, silent, arrow, mod)
+	if not G.GAME.hands[hand] then return end 
 	mod = to_big(mod)
 	G.GAME.hands[hand].dollars = to_big(G.GAME.hands[hand].dollars or 0)
-	if arrow >= 0 then
+	local prev = G.GAME.hands[hand].dollars
+	if to_big(arrow) >= to_big(0) then
 		G.GAME.hands[hand].dollars = G.GAME.hands[hand].dollars:arrow(arrow, mod)
 	else
 		if arrow == -1 then
@@ -434,41 +434,43 @@ function may.hand_mod_dollars(hand, arrow, mod, silent)
 		end
 	end
 	if not silent then
-		local handarea = G.HUD:get_UIE_by_ID('hand_text_area')
-		delay(0.5)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			local text = localize(hand, 'poker_hands')..' '
-			if arrow >= 1 then
-				text = text..may.generate_arrow_text(arrow, 4)
-			elseif arrow == 0  then
-				text = text..'X'
-			elseif arrow == -1 then
-				text = text..'+'
-			elseif arrow == -2 then
-				text = text..'-'
-			elseif arrow <= -3 then
-				text = text..'/'
-			end
-			attention_text({
-				text = text..(to_number(mod) or 0),
-				scale = 1, 
-				hold = 1,
-				cover = handarea,
-				cover_colour = G.C.MONEY,
-				align = 'cm',
-			})
-			play_sound('coin6')
-			play_sound('generic1')
+		G.GAME.may_override_monitor_colors = true
+		may.cosmetic_score_operator('', {0, 0, 0, 0})
+		G.E_MANAGER:add_event(Event({delay = 0.2, func = function()
+			ease_colour(G.C.UI_CHIPS, copy_table(G.C.GOLD), 0.1)
+		return true end}))
+		may.h(localize(hand, 'poker_hands'), prev, '---', G.GAME.hands[hand].level)
+		local op = may.generate_arrow_text(arrow)
+		local op_num = arrow
+		if arrow == -1 and to_big(mod) < to_big(0) then
+			op = '-'
+			op_num = -2
+		end
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+			G.TAROT_INTERRUPT_PULSE = true
+			play_sound(may.get_operation_sound(op_num, 'dollars'))
+			if card then card:juice_up(0.8, 0.5) end
+		return true end}))
+		may.hc(op..math.abs(mod), true)
+		delay(0.2)
+		may.hc(G.GAME.hands[hand].dollars, false)
+		delay(1.3)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+			ease_colour(G.C.UI_CHIPS, G.C.BLUE, 0.1)
+			G.GAME.may_override_monitor_colors = nil
+		return true end}))
+		G.E_MANAGER:add_event(Event({func = function()
+			G.TAROT_INTERRUPT_PULSE = nil
 		return true end}))
 	end
 end
 
-function may.hand_mod_dollars_all(arrow, mod, silent)
+function may.hand_mod_dollars_all(card, silent, arrow, mod)
 	mod = to_big(mod)
 	for k, v in pairs(G.GAME.hands) do
 		v.dollars = to_big(v.dollars or 0)
 	end
-	if arrow >= 0 then
+	if to_big(arrow) >= to_big(0) then
 		for k, v in pairs(G.GAME.hands) do
 			v.dollars = v.dollars:arrow(arrow, mod)
 		end
@@ -488,39 +490,40 @@ function may.hand_mod_dollars_all(arrow, mod, silent)
 		end
 	end
 	if not silent then
-		local handarea = G.HUD:get_UIE_by_ID('hand_text_area')
-		delay(0.5)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			local text = 'All Hands '
-			if arrow >= 1 then
-				text = text..may.generate_arrow_text(arrow, 4)
-			elseif arrow == 0  then
-				text = text..'X'
-			elseif arrow == -1 then
-				text = text..'+'
-			elseif arrow == -2 then
-				text = text..'-'
-			elseif arrow <= -3 then
-				text = text..'/'
-			end
-			attention_text({
-				text = text..(to_number(mod) or 0),
-				scale = 1, 
-				hold = 1,
-				cover = handarea,
-				cover_colour = G.C.MONEY,
-				align = 'cm',
-			})
-			play_sound('coin6')
-			play_sound('generic1')
+		G.GAME.may_override_monitor_colors = true
+		may.cosmetic_score_operator('', {0, 0, 0, 0})
+		G.E_MANAGER:add_event(Event({delay = 0.2, func = function()
+			ease_colour(G.C.UI_CHIPS, copy_table(G.C.GOLD), 0.1)
+		return true end}))
+		may.h('All Hands', '...', '---', G.GAME.hands[hand].level)
+		local op = may.generate_arrow_text(arrow)
+		local op_num = arrow
+		if arrow == -1 and to_big(mod) < to_big(0) then
+			op = '-'
+			op_num = -2
+		end
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+			G.TAROT_INTERRUPT_PULSE = true
+			play_sound(may.get_operation_sound(op_num, 'dollars'))
+			if card then card:juice_up(0.8, 0.5) end
+		return true end}))
+		may.hc(op..math.abs(mod), true)
+		delay(1.3)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+			ease_colour(G.C.UI_CHIPS, G.C.BLUE, 0.1)
+			G.GAME.may_override_monitor_colors = nil
+		return true end}))
+		G.E_MANAGER:add_event(Event({func = function()
+			G.TAROT_INTERRUPT_PULSE = nil
 		return true end}))
 	end
 end
 
-function may.hand_mod_score(hand, arrow, mod, silent)
+function may.hand_mod_score(card, hand, silent, arrow, mod)
 	mod = to_big(mod)
 	G.GAME.hands[hand].score = to_big(G.GAME.hands[hand].score or 0)
-	if arrow >= 0 then
+	local prev = G.GAME.hands[hand].score
+	if to_big(arrow) >= to_big(0) then
 		G.GAME.hands[hand].score = G.GAME.hands[hand].score:arrow(arrow, mod)
 	else
 		if arrow == -1 then
@@ -532,383 +535,305 @@ function may.hand_mod_score(hand, arrow, mod, silent)
 		end
 	end
 	if not silent then
-		local handarea = G.HUD:get_UIE_by_ID('hand_text_area')
-		delay(0.5)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			local text = localize(hand, 'poker_hands')..' '
-			if arrow >= 1 then
-				text = text..may.generate_arrow_text(arrow, 4)
-			elseif arrow == 0  then
-				text = text..'X'
-			elseif arrow == -1 then
-				text = text..'+'
-			elseif arrow == -2 then
-				text = text..'-'
-			elseif arrow <= -3 then
-				text = text..'/'
+		G.GAME.may_override_monitor_colors = true
+		may.cosmetic_score_operator('', {0, 0, 0, 0})
+		G.E_MANAGER:add_event(Event({delay = 0.2, func = function()
+			ease_colour(G.C.UI_MULT, copy_table(may.C.score), 0.1)
+		return true end}))
+		may.h(localize(hand, 'poker_hands'), '---', prev, G.GAME.hands[hand].level)
+		local op = may.generate_arrow_text(arrow)
+		local op_num = arrow
+		if arrow == -1 and to_big(mod) < to_big(0) then
+			op = '-'
+			op_num = -2
+		end
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+			G.TAROT_INTERRUPT_PULSE = true
+			play_sound(may.get_operation_sound(op_num, 'score'))
+			if card then card:juice_up(0.8, 0.5) end
+		return true end}))
+		may.hm(op..math.abs(mod), true)
+		delay(0.2)
+		may.hm(G.GAME.hands[hand].score, false)
+		delay(1.3)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+			ease_colour(G.C.UI_MULT, G.C.RED, 0.1)
+			G.GAME.may_override_monitor_colors = nil
+		return true end}))
+		G.E_MANAGER:add_event(Event({func = function()
+			G.TAROT_INTERRUPT_PULSE = nil
+		return true end}))
+	end
+end
+
+function may.hand_mod_score_dollars_composite(card, hand, silent, score, dollars)
+	G.GAME.hands[hand].score = to_big(G.GAME.hands[hand].score or 0)
+	G.GAME.hands[hand].dollars = to_big(G.GAME.hands[hand].dollars or 0)
+	local prev_score = G.GAME.hands[hand].score
+	local prev_dollars = G.GAME.hands[hand].dollars
+	if score then
+		G.GAME.hands[hand].score = to_big(G.GAME.hands[hand].score):arrow(score[1] or -1, score[2])
+	end
+	if dollars then
+		G.GAME.hands[hand].dollars = to_big(G.GAME.hands[hand].dollars):arrow(dollars[1] or -1, dollars[2])
+	end
+	if not silent then
+		G.GAME.may_override_monitor_colors = true
+		may.cosmetic_score_operator('', {0, 0, 0, 0})
+		G.E_MANAGER:add_event(Event({delay = 0.2, func = function()
+			if score then
+				ease_colour(G.C.UI_MULT, copy_table(may.C.score), 0.1)
 			end
-			attention_text({
-				text = text..(to_number(mod) or 0),
-				scale = 1, 
-				hold = 1,
-				cover = handarea,
-				cover_colour = may.C.score,
-				align = 'cm',
-			})
-			play_sound('may_addscore')
-			play_sound('generic1')
+			if dollars then
+				ease_colour(G.C.UI_CHIPS, copy_table(G.C.GOLD), 0.1)
+			end
+		return true end}))
+		may.h(localize(hand, 'poker_hands'), prev_dollars, prev_score, number_format(G.GAME.hands[hand].level))
+		if dollars then
+			local op = may.generate_arrow_text(dollars[1])
+			local op_num = dollars[1]
+			if dollars[1] == -1 and to_big(dollars[2]) < to_big(0) then
+				op = '-'
+				op_num = -2
+			end
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+				G.TAROT_INTERRUPT_PULSE = true
+				play_sound(may.get_operation_sound(op_num, 'dollars'))
+				if card then card:juice_up(0.8, 0.5) end
+			return true end}))
+			may.hc(op..math.abs(dollars[2]), true)
+			delay(0.2)
+			may.hc(G.GAME.hands[hand].dollars, false)
+		end
+		if score then
+			local op = may.generate_arrow_text(score[1])
+			local op_num = score[1]
+			if score[1] == -1 and to_big(score[2]) < to_big(0) then
+				op = '-'
+				op_num = -2
+			end
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+				G.TAROT_INTERRUPT_PULSE = true
+				play_sound(may.get_operation_sound(op_num, 'score'))
+				if card then card:juice_up(0.8, 0.5) end
+			return true end}))
+			may.hm(op..math.abs(score[2]), true)
+			delay(0.2)
+			may.hm(G.GAME.hands[hand].score, false)
+		end
+		delay(1.3)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+			ease_colour(G.C.UI_MULT, G.C.RED, 0.1)
+			ease_colour(G.C.UI_CHIPS, G.C.BLUE, 0.1)
+			G.GAME.may_override_monitor_colors = nil
+		return true end}))
+		G.E_MANAGER:add_event(Event({func = function()
+			G.TAROT_INTERRUPT_PULSE = nil
 		return true end}))
 	end
 end
 
+-- deprecated
 function may.hand_mod_multchips(hand, multchips, arrow, mod, silent, card)
-	local previous_mult = to_big(G.GAME.hands[hand].mult)
-	local previous_chips = to_big(G.GAME.hands[hand].chips)
-	if arrow == 'eq' then
-		if multchips == 'mult' then
-			G.GAME.hands[hand].mult = to_big(mod)
-		elseif multchips == 'chips' then
-			G.GAME.hands[hand].chips = to_big(mod)
-		elseif multchips == 'multchips' then
-			G.GAME.hands[hand].mult = to_big(mod)
-			G.GAME.hands[hand].chips = to_big(mod)
-		end
-	elseif arrow >= 0 then
-		if multchips == 'mult' then
-			G.GAME.hands[hand].mult = to_big(G.GAME.hands[hand].mult):arrow(arrow, mod)
-		elseif multchips == 'chips' then
-			G.GAME.hands[hand].chips = to_big(G.GAME.hands[hand].chips):arrow(arrow, mod)
-		elseif multchips == 'multchips' then
-			G.GAME.hands[hand].mult = to_big(G.GAME.hands[hand].mult):arrow(arrow, mod)
-			G.GAME.hands[hand].chips = to_big(G.GAME.hands[hand].chips):arrow(arrow, mod)
-		end
-	elseif arrow == -1 then
-		if multchips == 'mult' then
-			G.GAME.hands[hand].mult = to_big(G.GAME.hands[hand].mult):add(mod)
-		elseif multchips == 'chips' then
-			G.GAME.hands[hand].chips = to_big(G.GAME.hands[hand].chips):add(mod)
-		elseif multchips == 'multchips' then
-			G.GAME.hands[hand].mult = to_big(G.GAME.hands[hand].mult):add(mod)
-			G.GAME.hands[hand].chips = to_big(G.GAME.hands[hand].chips):add(mod)
-		end
-	elseif arrow == -2 then
-		if multchips == 'mult' then
-			G.GAME.hands[hand].mult = to_big(G.GAME.hands[hand].mult):sub(mod)
-		elseif multchips == 'chips' then
-			G.GAME.hands[hand].chips = to_big(G.GAME.hands[hand].chips):sub(mod)
-		elseif multchips == 'multchips' then
-			G.GAME.hands[hand].mult = to_big(G.GAME.hands[hand].mult):sub(mod)
-			G.GAME.hands[hand].chips = to_big(G.GAME.hands[hand].chips):sub(mod)
-		end
-	elseif arrow == -3 then
-		if multchips == 'mult' then
-			G.GAME.hands[hand].mult = to_big(G.GAME.hands[hand].mult):div(mod)
-		elseif multchips == 'chips' then
-			G.GAME.hands[hand].chips = to_big(G.GAME.hands[hand].chips):div(mod)
-		elseif multchips == 'multchips' then
-			G.GAME.hands[hand].mult = to_big(G.GAME.hands[hand].mult):div(mod)
-			G.GAME.hands[hand].chips = to_big(G.GAME.hands[hand].chips):siv(mod)
+	may.hand_multchips(nil, hand, silent, (multchips == 'chips' or multchips == 'multchips') and {arrow, mod} or nil, (multchips == 'mult' or multchips == 'multchips') and {arrow, mod} or nil)
+	may.ch()
+end
+
+function may.hand_multchips(card, hand, instant, chips, mult)
+	local prev_mult = to_big(G.GAME.hands[hand].mult)
+	local prev_chips = to_big(G.GAME.hands[hand].chips)
+	if chips then
+	    if chips[1] == 'eq' then
+			G.GAME.hands[hand].chips = to_big(chips[2])
+	    else
+			G.GAME.hands[hand].chips = to_big(G.GAME.hands[hand].chips):arrow(chips[1], chips[2])
 		end
 	end
-	G.GAME.hands[hand].mult = to_big(G.GAME.hands[hand].mult):abs():normalize()
-	G.GAME.hands[hand].chips = to_big(G.GAME.hands[hand].chips):abs():normalize()
-	if to_big(G.GAME.hands[hand].mult):isNaN() or to_big(G.GAME.hands[hand].mult):lt(1) then
-		G.GAME.hands[hand].mult = previous_mult
+	if mult then
+	    if mult[1] == 'eq' then
+			G.GAME.hands[hand].mult = to_big(mult[2])
+	    else
+			G.GAME.hands[hand].mult = to_big(G.GAME.hands[hand].mult):arrow(mult[1], mult[2])
+		end
 	end
-	if to_big(G.GAME.hands[hand].chips):isNaN() or to_big(G.GAME.hands[hand].chips):lt(1) then
-		G.GAME.hands[hand].chips = previous_chips
-	end
-	if not silent then
-		local display_arrow = arrow
-		if arrow == -1 and to_big(mod) < to_big(0) then display_arrow = -2 end
-		if arrow == -2 and to_big(mod) < to_big(0) then display_arrow = -1 end
+	if not instant then
+		may.h(localize(hand, 'poker_hands'), prev_chips, prev_mult, G.GAME.hands[hand].level)
 		delay(0.5)
-		Q(function() if card then card:juice_up(.2, .3) end return true end)
-		may.h(localize(hand, 'poker_hands'), previous_chips, previous_mult, G.GAME.hands[hand].level)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('button')
+		if chips then 
+			local op = may.generate_arrow_text(chips[1])
+			local op_num = chips[1]
+			if chips[1] == -1 and to_big(chips[2]) < to_big(0) then
+				op = '-'
+				op_num = -2
+			end
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+				G.TAROT_INTERRUPT_PULSE = true
+				play_sound(may.get_operation_sound(op_num, 'chips'))
+				if card then card:juice_up(0.8, 0.5) end
+			return true end}))
+			may.hc(op..math.abs(chips[2]), true)
+			delay(0.2)
+			may.hc(G.GAME.hands[hand].chips, false)
+		end
+		if mult then 
+			local op = may.generate_arrow_text(mult[1])
+			local op_num = mult[1]
+			if mult[1] == -1 and to_big(mult[2]) < to_big(0) then
+				op = '-'
+				op_num = -2
+			end
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+			    G.TAROT_INTERRUPT_PULSE = true
+				play_sound(may.get_operation_sound(op_num, 'mult'))
+				if card then card:juice_up(0.8, 0.5) end
+			return true end}))
+			may.hm(op..math.abs(mult[2]), true)
+			delay(0.2)
+			may.hm(G.GAME.hands[hand].mult, false)
+		end
+		delay(1.3)
+		G.E_MANAGER:add_event(Event({func = function()
+			G.TAROT_INTERRUPT_PULSE = nil
 		return true end}))
-		if multchips == 'chips' or multchips == 'multchips' then
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-				play_sound(may.get_operation_sound(arrow, 'chips'))
-                if card then 
-					card:juice_up(0.3, 0.5)
-                end
-				if type(arrow) == 'number' and arrow > 2 then
-					G.ROOM.jiggle = G.ROOM.jiggle + math.min(30, math.log10(arrow) + math.log(mod, 1000))
-				end
-			return true end}))
-			may.hc(may.generate_arrow_text(display_arrow)..number_format(math.abs(mod)), true)
-		end
-		if multchips == 'mult' or multchips == 'multchips' then
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-				play_sound(may.get_operation_sound(arrow, 'mult'))
-				if card then 
-					card:juice_up(0.3, 0.5)
-                end
-				if type(arrow) == 'number' and arrow > 2 then
-					G.ROOM.jiggle = G.ROOM.jiggle + math.min(30, math.log10(arrow) + math.log(mod, 1000))
-				end
-			return true end}))
-			may.hm(may.generate_arrow_text(display_arrow)..number_format(math.abs(mod)), true)
-		end
-		may.th(hand)
-		delay(0.5)
-		may.ch()
-		delay(0.5)
 	end
 end
 
-function may.hand_mod_multchips_all(multchips, arrow, mod, silent, card, ignore)
+function may.hand_multchips_all(card, ignore, instant, chips, mult, hand_text)
+	local targets = {}
 	for k, v in pairs(G.GAME.hands) do
-        if k ~= (ignore or '') then
-		    local previous_mult = v.mult
-		    local previous_chips = v.chips
-		    if arrow == 'eq' then
-			    if multchips == 'mult' then
-				    v.mult = to_big(mod)
-			    elseif multchips == 'chips' then
-				    v.chips = to_big(mod)
-			    elseif multchips == 'multchips' then
-				    v.mult = to_big(mod)
-				    v.chips = to_big(mod)
-			    end
-		    elseif arrow >= 0 then
-			    if multchips == 'mult' then
-				    v.mult = to_big(v.mult):arrow(arrow, mod)
-			    elseif multchips == 'chips' then
-				    v.chips = to_big(v.chips):arrow(arrow, mod)
-			    elseif multchips == 'multchips' then
-				    v.mult = to_big(v.mult):arrow(arrow, mod)
-				    v.chips = to_big(v.chips):arrow(arrow, mod)
-			    end
-		    elseif arrow == -1 then
-			    if multchips == 'mult' then
-				    v.mult = to_big(v.mult):add(mod)
-			    elseif multchips == 'chips' then
-				    v.chips = to_big(v.chips):add(mod)
-			    elseif multchips == 'multchips' then
-				    v.mult = to_big(v.mult):add(mod)
-				    v.chips = to_big(v.chips):add(mod)
-			    end
-		    elseif arrow == -2 then
-			    if multchips == 'mult' then
-				    v.mult = to_big(v.mult):sub(mod)
-			    elseif multchips == 'chips' then
-				    v.chips = to_big(v.chips):sub(mod)
-			    elseif multchips == 'multchips' then
-				    v.mult = to_big(v.mult):sub(mod)
-				    v.chips = to_big(v.chips):sub(mod)
-			    end
-		    elseif arrow == -3 then
-			    if multchips == 'mult' then
-				    v.mult = to_big(v.mult):div(mod)
-			    elseif multchips == 'chips' then
-				    v.chips = to_big(v.chips):div(mod)
-			    elseif multchips == 'multchips' then
-				    v.mult = to_big(v.mult):div(mod)
-				    v.chips = to_big(v.chips):div(mod)
-			    end
-		    end
-		    if to_big(v.mult):isNaN() or to_big(v.mult):lt(1) then
-			    v.mult = previous_mult
-		    end
-		    if to_big(v.chips):isNaN() or to_big(v.chips):lt(1) then
-			    v.chips = previous_chips
-		    end
-	    end
-    end
-	if not silent then
-		local display_arrow = arrow
-		if arrow == -1 and to_big(mod) < to_big(0) then display_arrow = -2 end
-		if arrow == -2 and to_big(mod) < to_big(0) then display_arrow = -1 end
+	    if (type(ignore) == 'string' and k ~= ignore) or (type(ignore) == 'table' and not table_hasvalue(ignore, k)) or (not ignore) then
+		    table.insert(targets, k)
+		end
+	end
+	for k, v in pairs(targets) do
+	   may.hand_multchips(card, v, true, chips, mult)
+	end
+	if not instant then
+		may.h(hand_text or (not ignore and 'All Hands' or 'Other Hands'), '...', '...', '...')
 		delay(0.5)
-		Q(function() card:juice_up(.2, .3) return true end)
-		may.h('All Hands', '...', '...', '...')
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('button')
+		if chips then 
+			local op = may.generate_arrow_text(chips[1])
+			local op_num = chips[1]
+			if chips[1] == -1 and to_big(chips[2]) < to_big(0) then
+				op = '-'
+				op_num = -2
+			end
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+				G.TAROT_INTERRUPT_PULSE = true
+				play_sound(may.get_operation_sound(op_num, 'chips'))
+				if card then card:juice_up(0.8, 0.5) end
+			return true end}))
+			may.hc(op..math.abs(chips[2]), true)
+		end
+		if mult then 
+			local op = may.generate_arrow_text(mult[1])
+			local op_num = mult[1]
+			if mult[1] == -1 and to_big(mult[2]) < to_big(0) then
+				op = '-'
+				op_num = -2
+			end
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+				G.TAROT_INTERRUPT_PULSE = true
+				play_sound(may.get_operation_sound(op_num, 'mult'))
+				if card then card:juice_up(0.8, 0.5) end
+			return true end}))
+			may.hm(op..math.abs(mult[2]), true)
+		end
+		delay(1.3)
+		G.E_MANAGER:add_event(Event({func = function()
+			G.TAROT_INTERRUPT_PULSE = nil
 		return true end}))
-		if multchips == 'chips' or multchips == 'multchips' then
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-				play_sound(may.get_operation_sound(arrow, 'chips'))
-				card:juice_up(0.3, 0.5)
-				if type(arrow) == 'number' and arrow > 2 then
-					G.ROOM.jiggle = G.ROOM.jiggle + math.min(30, math.log10(arrow) + math.log(mod, 1000))
-				end
-			return true end}))
-			may.hc(may.generate_arrow_text(display_arrow)..number_format(math.abs(mod)), true)
-		end
-		if multchips == 'mult' or multchips == 'multchips' then
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-				play_sound(may.get_operation_sound(arrow, 'mult'))
-				card:juice_up(0.3, 0.5)
-				if type(arrow) == 'number' and arrow > 2 then
-					G.ROOM.jiggle = G.ROOM.jiggle + math.min(30, math.log10(arrow) + math.log(mod, 1000))
-				end
-			return true end}))
-			may.hm(may.generate_arrow_text(display_arrow)..number_format(math.abs(mod)), true)
-		end
-		may.ch()
-		delay(0.5)
 	end
 end
 
-function may.hand_mod_score_all(arrow, mod, silent)
+-- deprecated
+function may.hand_mod_multchips_all(multchips, arrow, mod, silent, card, ignore)
+	may.hand_multchips_all(card, ignore, silent, (multchips == 'chips' or multchips == 'multchips') and {arrow, mod} or nil, (multchips == 'mult' or multchips == 'multchips') and {arrow, mod} or nil)
+	may.ch()
+end
+
+function may.hand_mod_score_all(card, arrow, mod, silent)
 	mod = to_big(mod)
 	for k, v in pairs(G.GAME.hands) do
-		v.score = to_big(v.score or 0)
-	end
-	if arrow >= 0 then
-		for k, v in pairs(G.GAME.hands) do
-			v.score = v.score:arrow(arrow, mod)
-		end
-	else
-		if arrow == -1 then
-			for k, v in pairs(G.GAME.hands) do
-				v.score = v.score:add(mod)
-			end
-		elseif arrow == -2 then
-			for k, v in pairs(G.GAME.hands) do
-				v.score = v.score:sub(mod)
-			end
-		elseif arrow == -3 then
-			for k, v in pairs(G.GAME.hands) do
-				v.score = v.score:div(mod)
-			end
-		end
+		may.hand_mod_score(card, k, true, arrow, mod)
 	end
 	if not silent then
-		local handarea = G.HUD:get_UIE_by_ID('hand_text_area')
-		delay(0.5)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			local text = 'All Hands '
-			if arrow >= 1 then
-				text = text..may.generate_arrow_text(arrow, 4)
-			elseif arrow == 0  then
-				text = text..'X'
-			elseif arrow == -1 then
-				text = text..'+'
-			elseif arrow == -2 then
-				text = text..'-'
-			elseif arrow <= -3 then
-				text = text..'/'
-			end
-			attention_text({
-				text = text..(to_number(mod) or 0),
-				scale = 1, 
-				hold = 1,
-				cover = handarea,
-				cover_colour = may.C.score,
-				align = 'cm',
-			})
-			play_sound('may_addscore')
-			play_sound('generic1')
+        G.GAME.may_override_monitor_colors = true
+		may.cosmetic_score_operator('', {0, 0, 0, 0})
+		G.E_MANAGER:add_event(Event({delay = 0.2, func = function()
+			ease_colour(G.C.UI_MULT, copy_table(may.C.score), 0.1)
+		return true end}))
+		may.h('All Hands', '---', '...', G.GAME.hands[hand].level)
+		local op = may.generate_arrow_text(arrow)
+		local op_num = arrow
+		if arrow == -1 and to_big(mod) < to_big(0) then
+			op = '-'
+			op_num = -2
+		end
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+			G.TAROT_INTERRUPT_PULSE = true
+			play_sound(may.get_operation_sound(op_num, 'score'))
+			if card then card:juice_up(0.8, 0.5) end
+		return true end}))
+		may.hm(op..math.abs(mod), true)
+		delay(1.3)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+			ease_colour(G.C.UI_MULT, G.C.RED, 0.1)
+			G.GAME.may_override_monitor_colors = nil
+		return true end}))
+		G.E_MANAGER:add_event(Event({func = function()
+			G.TAROT_INTERRUPT_PULSE = nil
 		return true end}))
 	end
 end
 
 function may.hand_mod_lvl_multchips_all(multchips, arrow, mod)
-	mod = to_big(mod)
+	may.hand_lvl_multchips_all(nil, false, (multchips == 'chips' or multchips == 'multchips') and {arrow, mod} or nil, (multchips == 'mult' or multchips == 'multchips') and {arrow, mod} or nil)
+end
+
+function may.hand_lvl_multchips_all(card, immediate, chips, mult, ignore)
 	for k, v in pairs(G.GAME.hands) do
-		v.l_mult = to_big(v.l_mult)
-		v.l_chips = to_big(v.l_chips)
-	end
-	if arrow >= 0 then
-		if multchips == 'mult' then
-			for k, v in pairs(G.GAME.hands) do
-				v.l_mult = v.l_mult:arrow(arrow, mod)
-			end
-		elseif multchips == 'chips' then
-			for k, v in pairs(G.GAME.hands) do
-				v.l_chips = v.l_chips:arrow(arrow, mod)
-			end
-		elseif multchips == 'multchips' then
-			for k, v in pairs(G.GAME.hands) do
-				v.l_mult = v.l_mult:arrow(arrow, mod)
-				v.l_chips = v.l_chips:arrow(arrow, mod)
-			end
-		end
-	else
-		if arrow == -1 then
-			if multchips == 'mult' then
-				for k, v in pairs(G.GAME.hands) do
-					v.l_mult = v.l_mult:add(mod)
-				end
-			elseif multchips == 'chips' then
-				for k, v in pairs(G.GAME.hands) do
-					v.l_chips = v.l_chips:add(mod)
-				end
-			elseif multchips == 'multchips' then
-				for k, v in pairs(G.GAME.hands) do
-					v.l_mult = v.l_mult:add(mod)
-					v.l_chips = v.l_chips:add(mod)
-				end
-			end
-		elseif arrow == -2 then
-			if multchips == 'mult' then
-				for k, v in pairs(G.GAME.hands) do
-					v.l_mult = v.l_mult:sub(mod)
-				end
-			elseif multchips == 'chips' then
-				for k, v in pairs(G.GAME.hands) do
-					v.l_chips = v.l_chips:sub(mod)
-				end
-			elseif multchips == 'multchips' then
-				for k, v in pairs(G.GAME.hands) do
-					v.l_mult = v.l_mult:sub(mod)
-					v.l_chips = v.l_chips:sub(mod)
-				end
-			end
-		elseif arrow == -3 then
-			if multchips == 'mult' then
-				for k, v in pairs(G.GAME.hands) do
-					v.l_mult = v.l_mult:div(mod)
-				end
-			elseif multchips == 'chips' then
-				for k, v in pairs(G.GAME.hands) do
-					v.l_chips = v.l_chips:div(mod)
-				end
-			elseif multchips == 'multchips' then
-				for k, v in pairs(G.GAME.hands) do
-					v.l_mult = v.l_mult:div(mod)
-					v.l_chips = v.l_chips:div(mod)
-				end
-			end
+		if k ~= (ignore or '') then
+		    may.hand_lvl_multchips(card, k, true, chips, mult)
 		end
 	end
-	if not silent then
-		local handarea = G.HUD:get_UIE_by_ID('hand_text_area')
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			local text = 'All Hands '
-			if arrow >= 1 then
-				text = text..may.generate_arrow_text(arrow, 4)
-			elseif arrow == 0  then
-				text = text..'X'
-			elseif arrow == -1 then
-				text = text..'+'
-			elseif arrow == -2 then
-				text = text..'-'
-			elseif arrow <= -3 then
-				text = text..'/'
+	if not immediate then
+	    may.h(ignore and 'Other Hands' or 'All Hands', '...', '...', '...')
+		delay(0.5)
+		may.cosmetic_score_operator('Lv.', G.C.UI.TEXT_LIGHT, 'may_lvl_multchips')
+		may.hcm(prev_chips, prev_mult, false)
+		delay(0.7)
+		if chips then 
+			local op = may.generate_arrow_text(chips[1])
+			local op_num = chips[1]
+			if chips[1] == -1 and to_big(chips[2]) < to_big(0) then
+				op = '-'
+				op_num = -2
 			end
-			local col 
-			if multchips == 'mult' then
-				col = G.C.MULT
-			elseif	multchips == 'chips' then
-				col = G.C.CHIPS
-			elseif	multchips == 'multchips' then
-				col = G.C.PURPLE
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+				G.TAROT_INTERRUPT_PULSE = true
+				play_sound(may.get_operation_sound(op_num, 'chips'))
+				if card then card:juice_up(0.8, 0.5) end
+			return true end}))
+			may.hc(op..math.abs(chips[2]), true)
+		end
+		if mult then 
+			local op = may.generate_arrow_text(mult[1])
+			local op_num = mult[1]
+			if mult[1] == -1 and to_big(mult[2]) < to_big(0) then
+				op = '-'
+				op_num = -2
 			end
-			attention_text({
-				text = text..(to_number(mod) or 0),
-				scale = 1, 
-				hold = 1,
-				cover = handarea,
-				cover_colour = col,
-				align = 'cm',
-			})
-			play_sound('may_lvl_multchips')
-			play_sound('generic1')
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+				G.TAROT_INTERRUPT_PULSE = true
+				play_sound(may.get_operation_sound(op_num, 'mult'))
+				if card then card:juice_up(0.8, 0.5) end
+			return true end}))
+			may.hm(op..math.abs(mult[2]), true)
+		end
+		delay(1.3)
+		G.E_MANAGER:add_event(Event({func = function()
+			G.TAROT_INTERRUPT_PULSE = nil
 		return true end}))
 	end
 end

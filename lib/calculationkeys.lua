@@ -15,12 +15,8 @@ if SMODS and SMODS.calculate_individual_effect then
 			if not effect.remove_default_message then
 				if from_edition then
 					card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "Y"..amount.." Chips", colour =  G.C.EDITION, edition = true})
-				elseif key ~= 'MDCchip_mod' then
-					if effect.echip_message then
-						card_eval_status_text_mdcchip(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.factchip_message)
-					else
-						card_eval_status_text_mdcchip(scored_card or effect.card or effect.focus, 'mdc_chip', amount, percent)
-					end
+				else
+					card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, {message = effect.message or "Y"..number_format(amount).." Chips", colour = effect.colour or G.C.CHIPS, sound = effect.sound or 'may_mdc_chip'})
 				end
 			end
 			return true
@@ -33,18 +29,14 @@ if SMODS and SMODS.calculate_individual_effect then
 			if not effect.remove_default_message then
 				if from_edition then
 					card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "Y"..amount.." Mult", colour =  G.C.EDITION, edition = true})
-				elseif key ~= 'MDCmult_mod' then
-					if effect.echip_message then
-						card_eval_status_text_mdcmult(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.factchip_message)
-					else
-						card_eval_status_text_mdcmult(scored_card or effect.card or effect.focus, 'mdc_mult', amount, percent)
-					end
+				else
+                    card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, {message = effect.message or "Y"..number_format(amount).." Mult", colour = effect.colour or G.C.MULT, sound = effect.sound or 'may_mdc_mult'})
 				end
 			end
 			return true
 		end
 		
-		if (key == 'fact_chip' or key == 'FACTchip_mod') and amount ~= 1 then 
+		--[[if (key == 'fact_chip' or key == 'FACTchip_mod') and amount ~= 1 then 
 			if effect.card then juice_card(effect.card) end
 			local chips = SMODS.Scoring_Parameters["chips"]
 			chips.current = mod_chips(chips.current:fact(amount))
@@ -79,7 +71,7 @@ if SMODS and SMODS.calculate_individual_effect then
 				end
 			end
 			return true
-		end
+		end]]
 		
 		if (key == 'eq_chip' or key == 'EQchip_mod') then 
 			if effect.card then juice_card(effect.card) end
@@ -89,12 +81,8 @@ if SMODS and SMODS.calculate_individual_effect then
 			if not effect.remove_default_message then
 				if from_edition then
 					card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "="..amount.." Chips", colour =  G.C.EDITION, edition = true})
-				elseif key ~= 'FACTchip_mod' then
-					if effect.echip_message then
-						card_eval_status_text_eqchip(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.eqchip_message)
-					else
-						card_eval_status_text_eqchip(scored_card or effect.card or effect.focus, 'eq_chip', amount, percent)
-					end
+				else
+					card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, {message = effect.message or "="..number_format(amount).." Chips", colour = effect.colour or G.C.CHIPS, sound = effect.sound or 'may_eqchip'})
 				end
 			end
 			return true
@@ -107,18 +95,14 @@ if SMODS and SMODS.calculate_individual_effect then
 			if not effect.remove_default_message then
 				if from_edition then
 					card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "="..amount.." Mult", colour =  G.C.EDITION, edition = true})
-				elseif key ~= 'FACTchip_mod' then
-					if effect.echip_message then
-						card_eval_status_text_eqmult(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.eqchip_message)
-					else
-						card_eval_status_text_eqmult(scored_card or effect.card or effect.focus, 'eq_mult', amount, percent)
-					end
+				else
+					card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, {message = effect.message or "="..number_format(amount).." Mult", colour = effect.colour or G.C.MULT, sound = effect.sound or 'may_eqmult'})
 				end
 			end
 			return true
 		end
 		
-		if (key == 'expofact_chip' or key == 'EXPOFACTchip_mod') and amount ~= 1 then 
+		--[[if (key == 'expofact_chip' or key == 'EXPOFACTchip_mod') and amount ~= 1 then 
 			if effect.card then juice_card(effect.card) end
 			local chips = SMODS.Scoring_Parameters["chips"]
 			chips.current = mod_chips(chips.current:expofact(amount))
@@ -153,17 +137,15 @@ if SMODS and SMODS.calculate_individual_effect then
 				end
 			end
 			return true
-		end
+		end]] 
 		
 		if key == 'eq_dollars' then 
 			ease_dollars(to_big(0):sub(to_big(G.GAME.dollars)):add(to_big(amount)))
 			if not effect.remove_default_message then
 				if from_edition then
 					card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "="..amount.."$", colour =  G.C.MONEY, edition = true})
-				elseif effect.echip_message then
-					card_eval_status_text_eqdollars(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.eqdollars_message)
 				else
-					card_eval_status_text_eqdollars(scored_card or effect.card or effect.focus, 'may_eqdollars', amount, percent)
+					card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, {message = effect.message or "="..number_format(amount).."$", colour = effect.colour or G.C.MONEY, sound = effect.sound or 'may_eqdollars'})
 				end
 			end
 			return true
@@ -173,10 +155,8 @@ if SMODS and SMODS.calculate_individual_effect then
 			if not effect.remove_default_message then
 				if from_edition then
 					card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "X"..amount.."$", colour =  G.C.MONEY, edition = true})
-				elseif effect.echip_message then
-					card_eval_status_text_xdollars(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.xdollars_message)
 				else
-					card_eval_status_text_xdollars(scored_card or effect.card or effect.focus, 'may_bigmoney', amount, percent)
+					card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, {message = effect.message or "X"..number_format(amount).."$", colour = effect.colour or G.C.MONEY, sound = effect.sound or 'may_bigmoney'})
 				end
 			end
 			return true
@@ -190,12 +170,8 @@ if SMODS and SMODS.calculate_individual_effect then
 			if not effect.remove_default_message then
 				if from_edition then
 					card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "="..amount.." Score", colour =  G.C.EDITION, edition = true})
-				elseif key ~= 'EQscore_mod' then
-					if effect.echip_message then
-						card_eval_status_text_eqscore(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.eqscore_message)
-					else
-						card_eval_status_text_eqscore(scored_card or effect.card or effect.focus, 'may_eqscore', amount, percent)
-					end
+				else
+					card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, {message = effect.message or "="..number_format(amount).." Score", colour = effect.colour or may.C.score, sound = effect.sound or 'may_eqscore'})					
 				end
 			end
 			return true
@@ -208,12 +184,8 @@ if SMODS and SMODS.calculate_individual_effect then
 			if not effect.remove_default_message then
 				if from_edition then
 					card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "+"..amount.." Score", colour =  G.C.EDITION, edition = true})
-				elseif key ~= 'score_mod' then
-					if effect.echip_message then
-						card_eval_status_text_addscore(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.addscore_message)
-					else
-						card_eval_status_text_addscore(scored_card or effect.card or effect.focus, 'may_addscore', amount, percent)
-					end
+				else
+					card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, {message = effect.message or "+"..number_format(amount).." Score", colour = effect.colour or may.C.score, sound = effect.sound or 'may_addscore'})
 				end
 			end
 			return true
@@ -226,12 +198,8 @@ if SMODS and SMODS.calculate_individual_effect then
 			if not effect.remove_default_message then
 				if from_edition then
 					card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "X"..amount.." Score", colour =  G.C.EDITION, edition = true})
-				elseif key ~= 'Xscore_mod' then
-					if effect.echip_message then
-						card_eval_status_text_xscore(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.xscore_message)
-					else
-						card_eval_status_text_xscore(scored_card or effect.card or effect.focus, 'may_xscore', amount, percent)
-					end
+				else
+					card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, {message = effect.message or "X"..number_format(amount).." Score", colour = effect.colour or may.C.score, sound = effect.sound or 'may_x_score'})
 				end
 			end
 			return true
@@ -244,12 +212,8 @@ if SMODS and SMODS.calculate_individual_effect then
 			if not effect.remove_default_message then
 				if from_edition then
 					card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "^"..amount.." Score", colour =  G.C.EDITION, edition = true})
-				elseif key ~= 'Escore_mod' then
-					if effect.echip_message then
-						card_eval_status_text_escore(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.escore_message)
-					else
-						card_eval_status_text_escore(scored_card or effect.card or effect.focus, 'may_escore', amount, percent)
-					end
+				else
+					card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, {message = effect.message or "^"..number_format(amount).." Score", colour = effect.colour or may.C.score, sound = effect.sound or 'may_escore'})
 				end
 			end
 			return true
@@ -262,12 +226,8 @@ if SMODS and SMODS.calculate_individual_effect then
 			if not effect.remove_default_message then
 				if from_edition then
 					card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "^^"..amount.." Score", colour =  G.C.EDITION, edition = true})
-				elseif key ~= 'EEscore_mod' then
-					if effect.echip_message then
-						card_eval_status_text_eescore(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.eescore_message)
-					else
-						card_eval_status_text_eescore(scored_card or effect.card or effect.focus, 'may_eescore', amount, percent)
-					end
+				else
+					card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, {message = effect.message or "^^"..number_format(amount).." Score", colour = effect.colour or may.C.score, sound = effect.sound or 'may_eescore'})
 				end
 			end
 			return true
@@ -280,12 +240,8 @@ if SMODS and SMODS.calculate_individual_effect then
 			if not effect.remove_default_message then
 				if from_edition then
 					card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = "^^^"..amount.." Score", colour =  G.C.EDITION, edition = true})
-				elseif key ~= 'EEEscore_mod' then
-					if effect.echip_message then
-						card_eval_status_text_eeescore(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.eeescore_message)
-					else
-						card_eval_status_text_eeescore(scored_card or effect.card or effect.focus, 'may_eeescore', amount, percent)
-					end
+				else
+					card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, {message = effect.message or "^^^"..number_format(amount).." Score", colour = effect.colour or may.C.score, sound = effect.sound or 'may_eeescore'})
 				end
 			end
 			return true
@@ -298,12 +254,8 @@ if SMODS and SMODS.calculate_individual_effect then
 			if not effect.remove_default_message then
 				if from_edition then
 					card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = may.generate_arrow_text(amount[1])..amount[2].." Score", colour =  G.C.EDITION, edition = true})
-				elseif key ~= 'Hscore_mod' then
-					if effect.echip_message then
-						card_eval_status_text_hyper_score(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, effect.hyper_score_message)
-					else
-						card_eval_status_text_hyper_score(scored_card or effect.card or effect.focus, 'may_hyperscore', amount, percent)
-					end
+				else
+					card_eval_status_text(scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, {message = effect.message or may.generate_arrow_text(amount[1])..number_format(amount).." Score", colour = effect.colour or may.C.score, sound = effect.sound or may.get_operation_sound('score', amount[1])})
 				end
 			end
 			return true
@@ -311,6 +263,7 @@ if SMODS and SMODS.calculate_individual_effect then
 	end
 end
 
+-- Good riddance.
 --[[function card_eval_status_text_hyper_mult(card, eval_type, amt, percent, dir, extra)
 	percent = percent or (0.9 + 0.2*math.random())
 	if dir == 'down' then 
@@ -471,7 +424,7 @@ function card_eval_status_text_hyper_chips(card, eval_type, amt, percent, dir, e
 	if extra and extra.playing_cards_created then 
 		playing_card_joker_effects(extra.playing_cards_created)
 	end
-end]]
+end
 
 function card_eval_status_text_eqmult(card, eval_type, amt, percent, dir, extra)
 	percent = percent or (0.9 + 0.2*math.random())
@@ -1992,4 +1945,4 @@ function card_eval_status_text_xdollars(card, eval_type, amt, percent, dir, extr
 	if extra and extra.playing_cards_created then 
 		playing_card_joker_effects(extra.playing_cards_created)
 	end
-end
+end]] 

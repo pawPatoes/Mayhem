@@ -2,19 +2,46 @@
 
 -- Unredeem vouchers 
 -- stolen from Cryptid
-function Card:unredeem()
+function Card:unredeem(silent)
 	if self.ability.set == "Voucher" then
-		stop_use()
-		if not self.config.center.discovered then
-			discover_card(self.config.center)
+		if not self then
+			return
 		end
-		self.states.hover.can = false
-		local top_dynatext = nil
-		local bot_dynatext = nil
-		G.E_MANAGER:add_event(Event({
-			trigger = "after",
-			delay = 0.4,
-			func = function()
+		local card = copy_card(self)
+		card.ability.extra = copy_table(self.ability.extra)
+		if not silent then
+		    local area
+		    if G.STATE == G.STATES.HAND_PLAYED then
+			    if not G.redeemed_vouchers_during_hand then
+				    G.redeemed_vouchers_during_hand = CardArea(G.play.T.x, G.play.T.y, G.play.T.w, G.play.T.h, { type = "play", card_limit = 5 })
+			    end
+			    area = G.redeemed_vouchers_during_hand
+		    else
+			    area = G.play
+		    end
+		    if card.facing == "back" then
+			    card:flip()
+		    end
+		    card:start_materialize()
+		    area:emplace(card)
+		end
+		card.cost = 0
+		card.shop_voucher = false
+		local current_round_voucher = G.GAME.current_round.voucher
+		if not self.debuff then
+		    self:unapply_to_run()
+		end
+		if not silent then
+		    stop_use()
+			card.no_ui = true
+			self.no_ui = true
+		    if not self.config.center.discovered then
+			    discover_card(self.config.center)
+		    end
+		    self.states.hover.can = false			
+			local top_dynatext = nil
+			local bot_dynatext = nil
+			G.E_MANAGER:add_event(Event({trigger = "after", delay = 0.4, func = function()
 				top_dynatext = DynaText({
 					string = localize({
 						type = "name_text",
@@ -46,64 +73,48 @@ function Card:unredeem()
 				play_sound("card1")
 				play_sound("timpani")
 				self.children.top_disp = UIBox({
-					definition = {
-						n = G.UIT.ROOT,
-						config = { align = "tm", r = 0.15, colour = G.C.CLEAR, padding = 0.15 },
-						nodes = {
-							{ n = G.UIT.O, config = { object = top_dynatext } },
-						},
-					},
+				    definition = {n = G.UIT.ROOT, config = { align = "tm", r = 0.15, colour = G.C.CLEAR, padding = 0.15 }, nodes = {
+						{n = G.UIT.O, config = { object = top_dynatext } },
+					}},
 					config = { align = "tm", offset = { x = 0, y = 0 }, parent = self },
 				})
 				self.children.bot_disp = UIBox({
-					definition = {
-						n = G.UIT.ROOT,
-						config = { align = "tm", r = 0.15, colour = G.C.CLEAR, padding = 0.15 },
-						nodes = {
-							{ n = G.UIT.O, config = { object = bot_dynatext } },
-						},
-					},
-					config = { align = "bm", offset = { x = 0, y = 0 }, parent = self },
+				    definition = {n = G.UIT.ROOT, config = { align = "tm", r = 0.15, colour = G.C.CLEAR, padding = 0.15 }, nodes = {
+						{ n = G.UIT.O, config = { object = bot_dynatext } },
+					}},
+				    config = { align = "bm", offset = { x = 0, y = 0 }, parent = self },
 				})
-				return true
-			end,
-		}))
-		if not self.debuff then
-			self:unapply_to_run()
-		end
-		delay(0.6)
-		G.E_MANAGER:add_event(Event({
-			trigger = "after",
-			delay = 2.6,
-			func = function()
+			return true end}))
+			delay(0.6)
+			G.E_MANAGER:add_event(Event({trigger = "after", delay = 2.6, func = function()
 				top_dynatext:pop_out(4)
 				bot_dynatext:pop_out(4)
-				return true
-			end,
-		}))
-		G.E_MANAGER:add_event(Event({
-			trigger = "after",
-			delay = 0.5,
-			func = function()
+			return true end}))
+			G.E_MANAGER:add_event(Event({trigger = "after", delay = 0.5, func = function()
 				self.children.top_disp:remove()
 				self.children.top_disp = nil
 				self.children.bot_disp:remove()
 				self.children.bot_disp = nil
-				return true
-			end,
-		}))
-	end
-	G.E_MANAGER:add_event(Event({
-		func = function()
+			return true end}))
+	    end
+		G.GAME.current_round.voucher = current_round_voucher
+		if not silent then
+		    G.E_MANAGER:add_event(Event({trigger = "after", delay = 0, func = function()
+				card:start_dissolve()
+			    self:start_dissolve()
+		    return true end}))
+		end
+		G.E_MANAGER:add_event(Event({func = function()
 			if G and G.GAME and G.vouchers then
-				G.GAME.used_vouchers = {}
-				for i, v in ipairs(G.vouchers.cards) do
-					G.GAME.used_vouchers[v.config.center_key] = true
+			    G.GAME.used_vouchers = {}
+			    for i, v in ipairs(G.vouchers.cards) do
+					if v ~= (card or {}) and v ~= (self or {}) then
+						G.GAME.used_vouchers[v.config.center_key] = true
+					end
 				end
-			end
-			return true
-		end,
-	}))
+            end
+		return true end})) 
+	end
 end
 
 function Card:unapply_to_run(center)
@@ -267,8 +278,6 @@ function Card:is_playing_card()
     end
 end
 
--- CCD stuff
--- copy and paste from cryptid (please add these to cryptlib)
 if #SMODS.find_mod('Cryptid') == 0 then
 
 local cuc = Card.can_use_consumeable
@@ -279,24 +288,10 @@ function Card:can_use_consumeable(any_state, skip_check)
 	return cuc(self, any_state, skip_check)
 end
 
-local interceptorSprite = nil
-SMODS.DrawStep({
-	key = "ccd_interceptor",
-	order = -5,
-	func = function(self)
-		local card_type = self.ability.set or "None"
-		if card_type ~= "Default" and card_type ~= "Enhanced" and self.playing_card and self.facing == "front" then
-			interceptorSprite = interceptorSprite or Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["may_ccd_thing"], { x = 0, y = 0 })
-			interceptorSprite.role.draw_major = self
-			interceptorSprite:draw_shader("dissolve", nil, nil, nil, self.children.center)
-		end
-	end,
-})
-
 end
 
 function may.generate_arrow_text(arrow, threshold)
-	arrow = to_number(arrow)
+	arrow = type(arrow) ~= 'string' and to_number(to_big(arrow)) or arrow
 	if arrow == 'eq' then
 		return '='
 	elseif arrow == 0 then
@@ -310,9 +305,7 @@ function may.generate_arrow_text(arrow, threshold)
 	end
 	local str = ""
 	if arrow < (threshold or 5) then
-		for i=1, arrow, 1 do
-			str = str .. '^'
-		end
+		str = string.rep('^', arrow)
 	else
 		str = '{'..arrow..'}'
 	end
@@ -355,8 +348,19 @@ function may.get_joker_count(rarity)
 	return num
 end
 
+may.score_operator_colors = {
+	'may_col_interdimensional', 
+	'may_col_ethereal',
+	'may_col_surreal', 
+	'may_col_instability', 
+	'may_col_e_otherworldly', 
+	'may_col_hyperascendant', 
+	'may_col_big_operator',
+	'may_col_huge_operator', 
+}
+
 -- Mass redeem Vouchers
--- based on may.voucher
+-- based on jl.voucher from jenlib
 -- can take in table of keys, or number of random vouchers
 function may.massvoucher(keys, amount, nobundle)
 	if keys and type(keys) == 'table' then
@@ -437,21 +441,13 @@ function may.ease_interest(arrow, mod, silent)
 		local handarea = G.HUD:get_UIE_by_ID('hand_text_area')
 		delay(0.5)
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			local text 
-			if arrow >= 1 then
-				text = may.generate_arrow_text(arrow, 4)
-			elseif arrow == 0  then
-				text = 'X'
-			elseif arrow == -1 then
-				text = '+'
-			elseif arrow == -2 then
-				text = '-'
-			elseif arrow <= -3 then
-				text = '/'
+			local op = may.generate_arrow_text(arrow)
+			if arrow == -1 and to_big(mod) < to_big(mod) then
+				op = '-'
 			end
 			attention_text({
-				text = text..(to_number(mod) or 0)..' Interest',
-				scale = 1, 
+				text = op..(number_format(math.abs(mod or 0)))..' Interest',
+				scale = 0.85, 
 				hold = 1,
 				cover = handarea,
 				cover_colour = G.C.MONEY,
@@ -482,21 +478,13 @@ function may.ease_interest_cap(arrow, mod, silent)
 		local handarea = G.HUD:get_UIE_by_ID('hand_text_area')
 		delay(0.5)
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			local text 
-			if arrow >= 1 then
-				text = may.generate_arrow_text(arrow, 4)
-			elseif arrow == 0  then
-				text = 'X'
-			elseif arrow == -1 then
-				text = '+'
-			elseif arrow == -2 then
-				text = '-'
-			elseif arrow <= -3 then
-				text = '/'
+			local op = may.generate_arrow_text(arrow)
+			if arrow == -1 and to_big(mod) < to_big(mod) then
+				op = '-'
 			end
 			attention_text({
-				text = text..(to_number(mod) or 0)..' Interest Cap',
-				scale = 1, 
+				text = op..(number_format(math.abs(mod or 0)))..' Interest Cap',
+				scale = 0.85, 
 				hold = 1,
 				cover = handarea,
 				cover_colour = G.C.MONEY,
@@ -678,44 +666,6 @@ end
 SMODS.Scoring_Parameter:take_ownership('mult', {level_up_hand = function(self, amount, hand) hand[self.key] = math.max(hand[self.key] + (hand['l_'..self.key]*(amount)), 1) end})
 SMODS.Scoring_Parameter:take_ownership('chips', {level_up_hand = function(self, amount, hand) hand[self.key] = math.max(hand[self.key] + (hand['l_'..self.key]*(amount)), 1) end, juice_on_update = true})
 
--- Reserving functionality 
--- Mostly taken from Entropy 
-G.FUNCS.may_can_reserve = function(e)
-	local card = e.config.ref_table
-	if (#G.consumeables.cards < G.consumeables.config.card_limit) or (card.edition and card.edition.key == 'e_negative') then
-		e.config.colour = G.C.GREEN
-		e.config.button = "may_reserve"
-	else
-		e.config.colour = G.C.UI.BACKGROUND_INACTIVE
-		e.config.button = nil
-	end
-end
-
-G.FUNCS.may_reserve = function(e)
-	local card = e.config.ref_table
-	G.E_MANAGER:add_event(Event({trigger = "after", delay = 0.1, func = function()
-		local area = card.area
-		card.area:remove_card(card)
-		card:add_to_deck()
-		if card.children.price then
-			card.children.price:remove()
-		end
-		card.children.price = nil
-		if card.children.buy_button then
-			card.children.buy_button:remove()
-		end
-		card.children.buy_button = nil
-		G.consumeables:emplace(card)
-		if area == G.pack_cards then
-		    G.GAME.pack_choices = G.GAME.pack_choices - 1
-		    if G.GAME.pack_choices <= 0 then
-			    G.FUNCS.end_consumeable(nil, delay_fac)
-		    end
-		end
-		play_sound('generic1') 
-	return true end}))
-end 
-
 local randtext = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"," ","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9","+","-","?","!","$","%","[","]","(",")",}
 
 function may.obfuscatedtext(length)
@@ -726,34 +676,14 @@ function may.obfuscatedtext(length)
 	return str
 end
 
--- Automated Fusion notice generator
-function may.add_fusion_text(joker1, joker2, condition)
-	condition = condition or 'ERROR'
-	if may.conf.short_fusion then
-		return {
-			"{C:dark_edition}FUSION:{} {C:attention}"..joker1.."{} {C:chips}>>{} {C:attention}"..joker2.."{}",
-			"{C:may_surreal,s:1.1,u:may_surreal}CONDITION{}",
-			condition
-		}
-	else
-	    return {
-		    "This Joker can {C:dark_edition}fuse{} with", 
-			"{C:attention}"..joker1.."{} to create {C:attention}"..joker2.."{}", 
-		    may.pager(math.max(string.len(condition), string.len("This Joker can {C:dark_edition}fuse{} with")) * 0.6), 
-		    '{C:may_surreal,s:1.2,u:may_surreal}Fusion Condition{}', 
-		    condition
-	    }
-	end
-end
-
 function may.get_operation_sound(operation, chipsmult)
-	operation = to_number(operation)
+	operation = type(operation) ~= 'string' and to_number(to_big(operation)) or operation
 	if may.conf.CustomHyperoperations then
 		if chipsmult == 'chips' then
 			if operation == 'eq' then
 				return 'may_eqchip'
 			elseif operation == -1 then
-				return 'chips'..math.random(1, 2)
+				return 'chips1'
 			elseif operation == 0 then
 				return 'talisman_xchip'
 			elseif operation == 1 then
@@ -814,7 +744,7 @@ function may.get_operation_sound(operation, chipsmult)
 				return 'may_eqdollars'
 			elseif operation == -1 then
 				return 'coin3'
-			elseif operation == 0 then
+			elseif operation >= 0 then
 				return 'may_bigmoney'
 			end
 		elseif chipsmult == 'score' then
@@ -837,7 +767,7 @@ function may.get_operation_sound(operation, chipsmult)
 	else
 		if chipsmult == 'chips' then
 			if operation == -1 then
-				return 'chips'..math.random(1, 2)
+				return 'chips1'
 			elseif operation == 0 then
 				return 'talisman_xchip'
 			elseif operation == 1 then
@@ -881,235 +811,6 @@ function may.get_operation_sound(operation, chipsmult)
 			end
 		end
 	end
-end
-
--- Midground sprites
--- Taken from Cryptid
-if #SMODS.find_mod('Cryptid') == 0 then
-
-local set_spritesref = Card.set_sprites
-function Card:set_sprites(_center, _front)
-    set_spritesref(self, _center, _front)
-    if _center and _center.soul_pos and _center.soul_pos.extra then
-        self.children.floating_sprite2 = Sprite(
-            self.T.x,
-            self.T.y,
-            self.T.w,
-            self.T.h,
-            G.ASSET_ATLAS[_center.atlas or _center.set],
-            _center.soul_pos.extra
-        )
-        self.children.floating_sprite2.role.draw_major = self
-        self.children.floating_sprite2.states.hover.can = false
-        self.children.floating_sprite2.states.click.can = false
-    end
-end
-
-SMODS.DrawStep({
-	key = 'upsd_spectral_laminate',
-	order = 0,
-	func = function(self)
-		if self.config.center.set == 'upside_down_spectrals' and self.sprite_facing == 'front' then
-            self.children.center:draw_shader('booster', nil, self.ARGS.send_to_shader)
-        end
-	end
-})
-
-SMODS.DrawStep({
-	key = "floating_sprite2",
-	order = 59,
-	func = function(self)
-		if self.config.center.soul_pos and self.config.center.soul_pos.extra and (self.config.center.discovered or self.bypass_discovery_center) then
-			local scale_mod = 0.07 -- + 0.02*math.cos(1.8*G.TIMERS.REAL) + 0.00*math.cos((G.TIMERS.REAL - math.floor(G.TIMERS.REAL))*math.pi*14)*(1 - (G.TIMERS.REAL - math.floor(G.TIMERS.REAL)))^3
-			local rotate_mod = 0 --0.05*math.cos(1.219*G.TIMERS.REAL) + 0.00*math.cos((G.TIMERS.REAL)*math.pi*5)*(1 - (G.TIMERS.REAL - math.floor(G.TIMERS.REAL)))^2
-			if self.children.floating_sprite2 then
-				self.children.floating_sprite2:draw_shader(
-					"dissolve",
-					0,
-					nil,
-					nil,
-					self.children.center,
-					scale_mod,
-					rotate_mod,
-					nil,
-					0.1 --[[ + 0.03*math.cos(1.8*G.TIMERS.REAL)--]],
-					nil,
-					0.6
-				)
-				self.children.floating_sprite2:draw_shader(
-					"dissolve",
-					nil,
-					nil,
-					nil,
-					self.children.center,
-					scale_mod,
-					rotate_mod
-				)
-			else
-				local center = self.config.center
-				if _center and _center.soul_pos and _center.soul_pos.extra then
-					self.children.floating_sprite2 = Sprite(
-						self.T.x,
-						self.T.y,
-						self.T.w,
-						self.T.h,
-						G.ASSET_ATLAS[_center.atlas or _center.set],
-						_center.soul_pos.extra
-					)
-					self.children.floating_sprite2.role.draw_major = self
-					self.children.floating_sprite2.states.hover.can = false
-					self.children.floating_sprite2.states.click.can = false
-				end
-			end
-		end
-	end,
-	conditions = { vortex = false, facing = "front" },
-})
-SMODS.draw_ignore_keys.floating_sprite2 = true
-
-end
-
--- Custom soul effects 
--- Taken from Grim
-
-SMODS.Atlas({ key = "special_spectral", atlas_table = "ASSET_ATLAS", path = "spectral.png", px = 71, py = 95,
-	inject = function(self)
-		local file_path = type(self.path) == 'table' and
-			(self.path[G.SETTINGS.language] or self.path['default'] or self.path['en-us']) or self.path
-		if file_path == 'DEFAULT' then return end
-		-- language specific sprites override fully defined sprites only if that language is set
-		if self.language and not (G.SETTINGS.language == self.language) then return end
-		if not self.language and self.obj_table[('%s_%s'):format(self.key, G.SETTINGS.language)] then return end
-		self.full_path = (self.mod and self.mod.path or SMODS.path) ..
-			'assets/' .. G.SETTINGS.GRAPHICS.texture_scaling .. 'x/' .. file_path
-		local file_data = assert(NFS.newFileData(self.full_path),
-			('Failed to collect file data for Atlas %s'):format(self.key))
-		self.image_data = assert(love.image.newImageData(file_data),
-			('Failed to initialize image data for Atlas %s'):format(self.key))
-		self.image = love.graphics.newImage(self.image_data,
-			{ mipmaps = true, dpiscale = G.SETTINGS.GRAPHICS.texture_scaling })
-		G[self.atlas_table][self.key_noloc or self.key] = self
-		G.macrocosm = Sprite(0, 0, G.CARD_W, G.CARD_H, G[self.atlas_table][self.key_noloc or self.key], {x = 3,y = 2})
-		G.genesis = Sprite(0, 0, G.CARD_W, G.CARD_H, G[self.atlas_table][self.key_noloc or self.key], {x = 1,y = 2})
-	end
-})
-
-SMODS.Atlas({ key = "special_upside_down", atlas_table = "ASSET_ATLAS", path = "upside_down.png", px = 71, py = 95,
-	inject = function(self)
-		local file_path = type(self.path) == 'table' and
-			(self.path[G.SETTINGS.language] or self.path['default'] or self.path['en-us']) or self.path
-		if file_path == 'DEFAULT' then return end
-		-- language specific sprites override fully defined sprites only if that language is set
-		if self.language and not (G.SETTINGS.language == self.language) then return end
-		if not self.language and self.obj_table[('%s_%s'):format(self.key, G.SETTINGS.language)] then return end
-		self.full_path = (self.mod and self.mod.path or SMODS.path) ..
-			'assets/' .. G.SETTINGS.GRAPHICS.texture_scaling .. 'x/' .. file_path
-		local file_data = assert(NFS.newFileData(self.full_path),
-			('Failed to collect file data for Atlas %s'):format(self.key))
-		self.image_data = assert(love.image.newImageData(file_data),
-			('Failed to initialize image data for Atlas %s'):format(self.key))
-		self.image = love.graphics.newImage(self.image_data,
-			{ mipmaps = true, dpiscale = G.SETTINGS.GRAPHICS.texture_scaling })
-		G[self.atlas_table][self.key_noloc or self.key] = self
-		G.soul_upsd = Sprite(0, 0, G.CARD_W, G.CARD_H, G[self.atlas_table][self.key_noloc or self.key], {x = 3,y = 0})
-	end
-})
-
-local vanf_soul = SMODS.DrawSteps['soul'].func
-SMODS.DrawSteps['soul'].func = function(self)
-    if self.ability.name == 'Macrocosm' and (self.config.center.discovered or self.bypass_discovery_center) then
-		local scale_mod = 0
-		local rotate_mod = 0
-
-		G.macrocosm.role.draw_major = self
-		G.macrocosm:draw_shader('dissolve',0, nil, nil, self.children.center,scale_mod, rotate_mod,nil, 0.1 + 0.03*math.sin(1.8*G.TIMERS.REAL),nil, 0.6)
-        G.macrocosm:draw_shader('dissolve', nil, nil, nil, self.children.center, scale_mod+(math.sin(G.TIMERS.REAL/3)/9), rotate_mod)
-	end
-	if self.ability.name == 'Genesis' and (self.config.center.discovered or self.bypass_discovery_center) then
-		local scale_mod = math.sin(G.TIMERS.REAL/3)/6
-		local rotate_mod = 0.1*math.sin(1.219*G.TIMERS.REAL) + 0.07*math.sin((G.TIMERS.REAL)*math.pi*5)*(1 - (G.TIMERS.REAL - math.floor(G.TIMERS.REAL)))^2 + (math.random(-500, 500)/10000)
-
-		G.genesis.role.draw_major = self
-		G.genesis:draw_shader('dissolve',0, nil, nil, self.children.center,scale_mod, rotate_mod,nil, 0.1 + 0.03*math.sin(1.8*G.TIMERS.REAL),nil, 0.6)
-        G.genesis:draw_shader('dissolve', nil, nil, nil, self.children.center, scale_mod, rotate_mod)
-	end
-    if self.ability.name == 'SooS' and (self.config.center.discovered or self.bypass_discovery_center) then
-		local scale_mod = 0.05 - 0.05*math.sin(1.8*G.TIMERS.REAL) - 0.07*math.sin(0.5 * (G.TIMERS.REAL - math.floor(G.TIMERS.REAL))*math.pi*14)*(1 + (G.TIMERS.REAL - math.floor(G.TIMERS.REAL)))^1.5
-        local rotate_mod = 0.1*math.sin(1.219*G.TIMERS.REAL) - 0.07*math.sin((G.TIMERS.REAL)*math.pi*5)*(1 + (G.TIMERS.REAL - math.floor(G.TIMERS.REAL)))^1.7
-
-        G.soul_upsd.role.draw_major = self
-        G.soul_upsd:draw_shader('dissolve',0, nil, nil, self.children.center,scale_mod, rotate_mod,nil, 0.1 + 0.03*math.sin(1.8*G.TIMERS.REAL),nil, 0.6)
-        G.soul_upsd:draw_shader('dissolve', nil, nil, nil, self.children.center, scale_mod, rotate_mod)
-	end
-    vanf_soul(self)
-end
-
--- Score shakiness 
--- slightly modified code from POLTERWORX
-
-function DynaText:pulse(amt, shake)
-	self.config.pulse = {
-		speed = 40,
-		width = 2.5,
-		start = G.TIMERS.REAL, 
-		amount = (amt or 0.2) * may.conf.Shakiness.pulsemult,
-		silent = false,
-		shake_screen = shake
-	}
-end
-
-function DynaText:set_quiver(amt)
-    self.config.quiver = {
-        speed = 0.5,
-        amount = (amt or 0.7) * may.conf.Shakiness.quivermult,
-        silent = false
-    }
-end
-
-function G.FUNCS.tsj_specific(e, quiver, pulse, juice, shake_screen)
-	if e and e.config and e.config.object and next(e.config.object) then
-		if may.conf.Shakiness.unlimitquiver then
-			e.config.object:set_quiver(quiver)
-		else
-			e.config.object:set_quiver(math.min(may.conf.Shakiness.quiverlimit, quiver))
-		end
-		if may.conf.Shakiness.unlimitpulse then
-			e.config.object:pulse(pulse, shake_screen)
-		else
-			e.config.object:pulse(math.min(may.conf.Shakiness.pulselimit, pulse), shake_screen)
-		end
-		e.config.object:update_text()
-		e.config.object:align_letters()
-		e:update_object()
-		if juice then
-			e.config.object:juice_up()
-		end
-	end
-end
-
-may.vanilla_planets = {'c_mercury', 'c_venus', 'c_earth', 'c_mars', 'c_jupiter', 'c_saturn', 'c_uranus', 'c_neptune', 'c_pluto', 'c_eris', 'c_ceres', 'c_planet_x'}
-
--- Get a random Vanilla Planet Card 
-function may.get_rnd_vp(seed, ignore_hidden, ignore_copy)
-    local list = may.vanilla_planets 
-    local pick = pseudorandom_element(list, pseudoseed(seed or 'may_get_rnd_vp'))
-    if not ignore_hidden then
-		while ((pick == 'c_eris' and not SMODS.is_poker_hand_visible('Flush Five')) or (pick == 'c_ceres' and not SMODS.is_poker_hand_visible('Flush House')) or (pick == 'c_planet_x' and not SMODS.is_poker_hand_visible('Five of a Kind'))) do
-			table.remove(list, may.get_position(list, pick))
-			pick = pseudorandom_element(list, pseudoseed(seed or 'may_get_rnd_vp'))
-		end
-	end
-    if not ignore_copy then
-		while next(SMODS.find_card(pick)) do
-			table.remove(list, may.get_position(list, pick))
-            if #list == 0 then 
-                pick = 'c_pluto'
-                break
-            end
-            pick = pseudorandom_element(list, pseudoseed(seed or 'may_get_rnd_vp')) 
-        end
-    end
-	return pick
 end
 
 -- Gets the Tag corresponding to an Edition. Returns default if none is found. Key must have e_ prefix
@@ -1238,7 +939,7 @@ end
 
 -- Gets the Nominal Chips of a playing card
 function Card:may_get_nominal_chips()
-    return self.base.nominal * (G.GAME.playing_card_multiplier or 1) * (self.ability.nominal_multiplier or 1)
+    return (not SMODS.has_no_rank(self)) and self.base.nominal * (G.GAME.playing_card_multiplier or 1) * (self.ability.nominal_multiplier or 1)
 end
 
 -- Plays the composite gong sound, like when balancing with Plasma Deck
@@ -1270,73 +971,6 @@ function may.random_tag(boss)
 		tag.ability.orbital_hand = pseudorandom_element(_poker_hands, pseudoseed("may_bag_of_fortune"))
 	end
 	add_tag(tag)
-end
-
--- why
-function Card:getEvalQty()
-	return ((self.ability or { immutable = { overflow_amount = 1 } }).immutable or { overflow_amount = 1 }).overflow_amount or 1
-end
-
--- Creates the pagers that split up really long joker descriptions
-function may.pager(length)
-	return may.conf.pagers and '{C:inactive,s:0.8}'..string.rep('-', length or 60)..'{}' or ''
-end
-
--- Returns appropriate hyperoperational Mult/Chips formatting for anything above X
-function may.hyp(arrow, multchips)
-	if may.conf.simple_hyper then
-		if multchips == 'mult' then
-			return '{X:mult,C:white}'
-		elseif multchips == 'chips' then
-			return '{X:chips,C:white}'
-		elseif multchips == 'multchips' then
-			return '{X:purple,C:white}'
-		elseif multchips == 'score' then
-			return '{X:may_score,C:white}'
-		end
-	else
-		if multchips == 'mult' then
-			if arrow == 1 then
-				return '{X:mult,C:black}'
-			elseif arrow == 2 then
-				return '{X:black,C:mult}'
-			elseif arrow == 3 then
-				return '{X:may_interdimensional,C:mult}'
-			else
-				return '{X:may_surreal,C:mult}'
-			end
-		elseif multchips == 'chips' then
-			if arrow == 1 then
-				return '{X:chips,C:black}'
-			elseif arrow == 2 then
-				return '{X:black,C:chips}'
-			elseif arrow == 3 then
-				return '{X:may_interdimensional,C:chips}'
-			else
-				return '{X:may_surreal,C:chips}'
-			end
-		elseif multchips == 'multchips' then
-			if arrow == 1 then
-				return '{X:purple,C:black}'
-			elseif arrow == 2 then
-				return '{X:black,C:purple}'
-			elseif arrow == 3 then
-				return '{X:may_interdimensional,C:purple}'
-			else
-				return '{X:may_surreal,C:purple}'
-			end
-		elseif multchips == 'score' then
-			if arrow == 1 then
-				return '{X:may_score,C:black}'
-			elseif arrow == 2 then
-				return '{X:black,C:may_score}'
-			elseif arrow == 3 then
-				return '{X:may_interdimensional,C:may_score}'
-			else
-				return '{X:may_surreal,C:may_score}'
-			end
-		end
-	end
 end
 
 function Card:may_explode(dissolve_colours, explode_time_fac, no_sound)
@@ -1598,163 +1232,9 @@ function may.redeem_specific(card)
     return true end}))
 end
 
--- Allow Vouchers and Booster Packs in Consumable Slots
--- Code mostly from Entropy
-
-G.FUNCS.can_open_pack = function(e)
-    local card = e.config.ref_table
-    if not may.canuse() then 
-        e.config.colour = G.C.UI.BACKGROUND_INACTIVE
-        e.config.button = nil
-    else
-        e.config.colour = G.C.MULT
-        e.config.button = 'open_pack'
-    end
-end
-
-G.FUNCS.open_pack = function(e)
-    local card = e.config.ref_table
-    --[[G.GAME.DefineBoosterState = G.STATE
-    delay(0.1)
-    local area = card.area
-    if card.ability.booster_pos then G.GAME.current_round.used_packs[card.ability.booster_pos] = 'USED' end
-	--G.hand:remove()
-    if not card.from_tag then 
-      G.GAME.round_scores.cards_purchased.amt = G.GAME.round_scores.cards_purchased.amt + 1
-    end
-    if card.RPerkeoPack then
-        G.RPerkeoPack = true
-    end
-    if G.shop and not G.shop.alignment.offset.py then
-        G.shop.alignment.offset.py = G.shop.alignment.offset.y
-        G.shop.alignment.offset.y = G.ROOM.T.y + 29
-    end
-    if G.blind_select and not G.blind_select.alignment.offset.py then
-        G.blind_select.alignment.offset.py = G.blind_select.alignment.offset.y
-        G.blind_select.alignment.offset.y = G.ROOM.T.y + 39
-    end
-    if G.round_eval and not G.round_eval.alignment.offset.py then
-        G.round_eval.alignment.offset.py = G.round_eval.alignment.offset.y
-        G.round_eval.alignment.offset.y = G.ROOM.T.y + 29
-    end
-    e.config.ref_table.cost = 0
-    e.config.ref_table:open()]] 
-	if #G.hand.cards > 0 then
-		for k, v in ipairs(G.hand.cards) do
-		    draw_card(G.hand, G.discard, 1, 'up', true, v, nil, true)
-			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-				play_sound('card1')
-			return true end}))
-		end
-	end
-	card.from_tag = true
-	card.cost = 0
-	if card.area then
-		card.area:remove_card(card)
-        draw_card(card.area, G.play, 1, 'up', true, card, nil, true) 
-	end
-	G.E_MANAGER:add_event(Event({delay = 0.4, trigger = 'after', func = function()
-		G.CONTROLLER.locks.use = nil
-		if card.ability.name:find('Arcana') then 
-            G.STATE = G.STATES.TAROT_PACK
-        elseif card.ability.name:find('Celestial') then
-            G.STATE = G.STATES.PLANET_PACK
-        elseif card.ability.name:find('Spectral') then
-            G.STATE = G.STATES.SPECTRAL_PACK
-        elseif card.ability.name:find('Standard') then
-            G.STATE = G.STATES.STANDARD_PACK
-        elseif card.ability.name:find('Buffoon') then
-            G.STATE = G.STATES.BUFFOON_PACK
-		else
-			G.STATE = G.STATES.SMODS_BOOSTER_OPENED
-        end
-		card:remove()
-	return true end}))
-	G.FUNCS.use_card({ config = { ref_table = card } }) 
-	-- cryptid.
-    if card.ability.cry_multiuse and to_big(card.ability.cry_multiuse) > to_big(1) then
-        local card = card
-        card.ability.cry_multiuse = card.ability.cry_multiuse - 1
-        card.ability.extra_value = -1 * math.max(1, math.floor(card.cost/2))
-        card:set_cost()
-        delay(0.4)
-        card:juice_up()
-        play_sound('generic1')
-        attention_text({
-            text = format_ui_value(card.ability.cry_multiuse),
-            scale = 1.1,
-            hold = 0.6,
-            major = card,
-            backdrop_colour = G.C.SET[card.config.center.set],
-            align = 'bm',
-            offset = {x = 0, y = 0.2}
-        })
-        local c2 = copy_card(card)
-        c2:add_to_deck()
-        area:emplace(c2)
-    end
-end
-
-G.FUNCS.can_redeem_voucher = function(e)
-    local card = e.config.ref_table
-    if not may.canuse() then 
-        e.config.colour = G.C.UI.BACKGROUND_INACTIVE
-        e.config.button = nil
-    else
-        e.config.colour = G.C.MULT
-        e.config.button = 'redeem_voucher'
-    end
-end
-
-G.FUNCS.redeem_voucher = function(e)
-    local card = e.config.ref_table
-	if card.config.center.set == 'Voucher' then
-		may.redeem_specific(card)
-	end
-end
-
-G.FUNCS.may_can_sell_voucher = function(e)
-    local card = e.config.ref_table
-    if not may.canuse() or not card:gc().voucher_sellable then 
-        e.config.colour = G.C.UI.BACKGROUND_INACTIVE
-        e.config.button = nil
-    else
-        e.config.colour = G.C.GREEN
-        e.config.button = 'may_sell_voucher'
-    end
-end
-
-G.FUNCS.may_sell_voucher = function(e)
-    local card = e.config.ref_table
-	local key = card:gc().key
-	G.E_MANAGER:add_event(Event({func = function()
-		if G and G.GAME and G.vouchers then
-			G.GAME.used_vouchers = G.GAME.used_vouchers or {}
-			for i, v in ipairs(G.vouchers.cards) do
-				if v:gc().key == key then
-				    G.GAME.used_vouchers[key] = false
-				end
-			end
-		end
-	return true end})) 
-	G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2,func = function()
-        play_sound('coin2')
-        card:juice_up(0.3, 0.4)
-        return true
-    end}))
-    delay(0.2)
-    G.E_MANAGER:add_event(Event({trigger = 'immediate',func = function()
-        ease_dollars(card.sell_cost)
-		card:unapply_to_run()
-        card:start_dissolve({G.C.GOLD})
-		card:remove()
-        delay(0.3)
-	return true end})) 
-end
-
 -- Fix naneinf flames
 -- Taken from Entropy
-G.FUNCS.flame_handler = function(e)
+--[[G.FUNCS.flame_handler = function(e)
 	if (type(SMODS.get_scoring_parameter('chips', true)) == 'number' or type(SMODS.get_scoring_parameter('chips', true)) == 'table') and (type(SMODS.get_scoring_parameter('mult', true)) == 'number' or type(SMODS.get_scoring_parameter('mult', true)) == 'table') then
 		G.ARGS.score_intensity.true_score = to_big(G.GAME.current_scoring_calculation:func(SMODS.get_scoring_parameter('chips', true), SMODS.get_scoring_parameter('mult', true), true))
 	else
@@ -1763,21 +1243,21 @@ G.FUNCS.flame_handler = function(e)
     G.C.UI_CHIPLICK = G.C.UI_CHIPLICK or {1, 1, 1, 1}
     G.C.UI_MULTLICK = G.C.UI_MULTLICK or {1, 1, 1, 1}
     for i=1, 3 do
-        G.C.UI_CHIPLICK[i] = math.min(math.max(((G.C.UI_CHIPS[i]*0.5+G.C[(may.transcendence or 0) > 4 and 'BLACK' or 'YELLOW'][i]*0.5) + 0.1)^2, 0.1), 1)
-        G.C.UI_MULTLICK[i] = math.min(math.max(((G.C.UI_MULT[i]*0.5+G.C[(may.transcendence or 0) > 4 and 'BLACK' or 'YELLOW'][i]*0.5) + 0.1)^2, 0.1), 1)
+        G.C.UI_CHIPLICK[i] = math.min(math.max(((((may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.get_transcendence_color(may.transcendence) or G.C.BLUE)[i]*0.5+G.C[(may.transcendence or 0) > 4 and 'BLACK' or 'YELLOW'][i]*0.5) + 0.1)^2, 0.1), 1)
+        G.C.UI_MULTLICK[i] = math.min(math.max(((((may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.get_transcendence_color(may.transcendence) or G.C.RED)[i]*0.5+G.C[(may.transcendence or 0) > 4 and 'BLACK' or 'YELLOW'][i]*0.5) + 0.1)^2, 0.1), 1)
     end
 
     G.ARGS.flame_handler = G.ARGS.flame_handler or {
         chips = {
             id = 'flame_chips', 
             arg_tab = 'chip_flames',
-            colour = G.C.UI_CHIPS,
+            colour = (may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.get_transcendence_color(may.transcendence) or G.C.BLUE,
             accent = G.C.UI_CHIPLICK
         },
         mult = {
             id = 'flame_mult', 
             arg_tab = 'mult_flames',
-            colour = G.C.UI_MULT,
+            colour = (may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.get_transcendence_color(may.transcendence) or G.C.RED,
             accent = G.C.UI_MULTLICK
         }
     }
@@ -1802,16 +1282,17 @@ G.FUNCS.flame_handler = function(e)
                 xy_bond = 'Weak'
             })
             e.config.object:define_draw_steps({{
-            shader = 'flame',
-            send = {
-                {name = 'time', ref_table = G.ARGS[v.arg_tab], ref_value = 'timer'},
-                {name = 'amount', ref_table = G.ARGS[v.arg_tab], ref_value = 'real_intensity'},
-                {name = 'image_details', ref_table = e.config.object, ref_value = 'image_dims'},
-                {name = 'texture_details', ref_table = e.config.object.RETS, ref_value = 'get_pos_pixel'},
-                {name = 'colour_1', ref_table =  G.ARGS[v.arg_tab], ref_value = 'colour_1'},
-                {name = 'colour_2', ref_table =  G.ARGS[v.arg_tab], ref_value = 'colour_2'},
-                {name = 'id', val =  e.config.object.ID},
-            }}})
+				shader = 'flame',
+				send = {
+					{name = 'time', ref_table = G.ARGS[v.arg_tab], ref_value = 'timer'},
+					{name = 'amount', ref_table = G.ARGS[v.arg_tab], ref_value = 'real_intensity'},
+					{name = 'image_details', ref_table = e.config.object, ref_value = 'image_dims'},
+					{name = 'texture_details', ref_table = e.config.object.RETS, ref_value = 'get_pos_pixel'},
+					{name = 'colour_1', ref_table =  G.ARGS[v.arg_tab], ref_value = 'colour_1'},
+					{name = 'colour_2', ref_table =  G.ARGS[v.arg_tab], ref_value = 'colour_2'},
+					{name = 'id', val =  e.config.object.ID},
+				}
+			}})
             e.config.object:get_pos_pixel()
         end
         local _F = G.ARGS[v.arg_tab]
@@ -1843,7 +1324,7 @@ G.FUNCS.flame_handler = function(e)
         _F.change = (G.cry_flame_override and G.cry_flame_override['duration'] > 0) and ((_F.change + G.cry_flame_override['intensity'])/2) or _F.change
         end
     end
-end
+end]]
 
 -- Overriding because i have no idea how a lovely patch could do what this does (cards drawn inside celetsial packs, code injected in a very specific spot)
 function Game:update_celestial_pack(dt)
@@ -1907,4 +1388,68 @@ function Game:update_celestial_pack(dt)
             end
         }))  
     end
+end
+
+-- Custom ease_colour intended for Transcendence, does not add events unless smooth_ease is set to true, and has other optimizations
+function may.ease_colour(col, target, smooth_ease)
+	if smooth_ease and may.transcendence < 13 then
+		local function EASE(ref_table, ref_value, mod)
+			G.E_MANAGER:add_event(Event({
+                trigger = 'ease',
+                blockable = true,
+                blocking = false,
+                ref_table = ref_table,
+                ref_value = ref_value,
+                ease_to = ref_table[ref_value] + mod,
+                timer = 'REAL',
+				delay = 0.25, 
+                func = (function(t) return t end)
+            }), 'other')
+		end
+		EASE(col, 1, target[1] - col[1])
+        EASE(col, 2, target[2] - col[2])
+    	EASE(col, 3, target[3] - col[3])
+	else
+	    col[1] = target[1]
+		col[2] = target[2]
+		col[3] = target[3]
+	end
+end
+
+-- why isn't this in smods, and if it is why haven't i heard of it yet
+function may.has_card(key)
+	return #SMODS.find_card(key) ~= 0
+end
+
+-- Spawns in applicable Special Vouchers
+function may.handle_special_vouchers(round)
+	round = round or G.GAME.round
+	if G.GAME.may_endless_mode then
+		if round % 9 == 0 then
+			if not may.has_card('v_may_astronomy_1') then
+				SMODS.add_voucher_to_shop('v_may_astronomy_1')
+				G.E_MANAGER:add_event(Event({func = function()
+					play_sound('may_positive')
+				return true end}))
+			elseif not may.has_card('v_may_astronomy_2') then
+				SMODS.add_voucher_to_shop('v_may_astronomy_2')
+				G.E_MANAGER:add_event(Event({func = function()
+				    play_sound('may_positive')
+				return true end}))
+			elseif not may.has_card('v_may_astronomy_3') then
+				SMODS.add_voucher_to_shop('v_may_astronomy_3')
+				G.E_MANAGER:add_event(Event({func = function()
+				    play_sound('may_positive')
+				return true end}))
+			end
+		end
+		if round % 15 == 0 then
+			if not may.has_card('v_may_reconfigure') then
+			    SMODS.add_voucher_to_shop('v_may_reconfigure')
+			    G.E_MANAGER:add_event(Event({func = function()
+					play_sound('may_positive')
+			    return true end}))
+			end
+		end
+	end
 end

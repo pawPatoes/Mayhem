@@ -409,7 +409,7 @@ SMODS.Enhancement {
 		name = 'Geometric Card',
 		text = {
             {
-			    "Gives half the {C:attention}square-root{}", 
+			    "Gives a quarter of the {C:attention}square-root{}", 
                 "of played {C:purple}Poker Hand{} {C:planet}level{}", 
                 "as {X:mult,C:white}XMult{}"
             }, 
@@ -426,7 +426,7 @@ SMODS.Enhancement {
 	calculate = function(self, card, context)
 		if context.cardarea == G.play and context.main_scoring then
 			return {
-				x_mult = math.sqrt(G.GAME.hands[context.scoring_name].mult) * 0.5
+				x_mult = math.sqrt(G.GAME.hands[context.scoring_name].mult) * 0.25
 			}
 		end
 	end
@@ -437,14 +437,14 @@ SMODS.Enhancement {
 	loc_txt = {
 		name = 'Fortune Card',
 		text = {
-			'{X:money,C:white}X0.02${} per held', 
+			'{X:money,C:white}+X0.03${} per held', 
             '{C:mult}non-{}{C:dark_edition}Negative{} {C:purple}Tarot Card{}', 
+			'before scoring if {C:attention}card{} scores',
             '{C:inactive}Currently X#1#${}'
 		}
 	},
 	pos = { x = 12, y = 0 },
 	unlocked = true,
-	replace_base_card = false,
 	weight = 0,
 	discovered = true,
 	atlas = 'enhancement',
@@ -457,10 +457,10 @@ SMODS.Enhancement {
                 end
             end
         end
-        return { vars = { 1 + (amount * 0.02) } }
+        return { vars = { 1 + (amount * 0.03) } }
     end, 
 	calculate = function(self, card, context)
-		if context.cardarea == G.play and context.main_scoring then
+		if context.cardarea == G.play and context.before and table_hasvalue(context.scoring_hand, card) then
             local amount = 0
 			for k, v in pairs(G.consumeables.cards) do
                 if v:gc().set == 'Tarot' and ((not v.edition) or (v.edition and v.edition.key ~= 'e_negative')) then 
@@ -468,7 +468,7 @@ SMODS.Enhancement {
                 end
             end
 			return {
-				x_dollars = 1 + (amount * 0.02), 
+				x_dollars = 1 + (amount * 0.03), 
                 card = card,
 			}
 		end

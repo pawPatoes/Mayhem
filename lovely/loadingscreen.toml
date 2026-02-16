@@ -57,7 +57,7 @@ payload = '''
 	
 	table.insert(may.fun_facts, "Including this one, there are currently "..(#may.fun_facts + 2).." possible fun facts here.")
 	if math.random(1000) == 100 then 
-	    may.fun_fact("This fun fact has a 1 in 1000 chance of appearing.")
+	    may.fun_fact = "This fun fact has a 1 in 1000 chance of appearing."
 	else
 	    may.fun_fact = may.fun_facts[math.random(#may.fun_facts)]
 	end
@@ -80,7 +80,7 @@ payload = '''
     end 
 	
 	centered_text(0, -65, realw, realh, "MAYHEM", 1)
-	centered_text(0, 120, realw, realh, "FUN FACT: "..may.fun_fact, 1)
+	centered_text(0, 120, realw, realh, "FUN FACT: "..(may.fun_fact or may.fun_facts and may.fun_facts[1] or "ERROR (something actually broke, please report this)") , 1)
 	
 	if not Talisman then
 	    error("MAYHEM: Missing dependency: Talisman | Make sure it is installed properly and is on a supported version. (>=2.4.0)")

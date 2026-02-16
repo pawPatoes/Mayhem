@@ -68,8 +68,8 @@ target = "engine/text.lua"
 pattern = "letter.r = letter.r + (G.SETTINGS.reduced_motion and 0 or 1)*(letter.scale - 1)*(0.02*(-#self.strings[self.focused_string].letters/2 - 0.5 + k))"
 position = "after"
 payload = '''
-if to_number(letter.scale) > 8 then
-	G.ROOM.jiggle = G.ROOM.jiggle + to_number(math.min(to_big(10), ((letter.scale/24) * may.conf.Shakiness.screen_shake)))
+if to_number(letter.scale) > 8 and not may.invalid_number(letter.scale) and to_big(letter.scale) ~= R.NaN and to_big(letter.scale) ~= R.POSITIVEINFINITY and to_big(letter.scale) ~= R.NEGATIVEINFINITY then
+	G.ROOM.jiggle = math.min(G.ROOM.jiggle + to_number(math.min(to_big(10), ((letter.scale/24) * may.conf.Shakiness.screen_shake))), 250)
 end
 '''
 match_indent = true
@@ -183,6 +183,7 @@ payload = '''
     for i=1, (G.GAME.may_mega_boosters or 0) do 
         SMODS.add_booster_to_shop('p_buffoon_mega_1')
     end
+	may.handle_special_vouchers()
 '''
 
 # why
@@ -237,6 +238,22 @@ payload = '''
 		    end 
 		return true end}))
 	end
+	may.ch()
+	may.refresh_score_operator(nil, true)
+	if may.conf.TrParticles then
+        G.transcendence_particles = Particles(1, 1, 0, 0, {
+            timer = 0.015,
+            scale = 0.3,
+            initialize = true,
+            lifespan = 3,
+            speed = 5,
+            padding = -1,
+            attach = G.ROOM_ATTACH,
+            colours = { G.C.BLACK, G.C.DARK_EDITION },
+            fill = true
+        })
+        G.transcendence_particles.fade_alpha = 1
+	end
 '''
 match_indent = true
 
@@ -256,7 +273,7 @@ overwrite = true
 target = '''card.lua'''
 pattern = '''if self.ability.consumeable or self.ability.set == 'Joker' or (self.area and self.area == G.pack_cards) then'''
 position = "at"
-payload = '''if (self.area and self.area.config.type == 'joker') or (self.area == G.hand and self.ability.consumeable) or (self.area and self.area == G.pack_cards) or (self.area and self.area.config.type == 'voucher' and self:gc().voucher_sellable) then'''
+payload = '''if (self.area and self.area.config.type == 'joker') or (self.area == G.hand and self.ability.consumeable) or (self.area and self.area == G.pack_cards) or (self.area and self.area.config.type == 'voucher' and may.has_card('v_may_reconfigure')) then'''
 match_indent = true
 
 # Allow Vouchers to be selected in Run Info tab
@@ -346,4 +363,21 @@ target = 'functions/button_callbacks.lua'
 pattern = "local dont_dissolve = nil"
 position = 'at'
 payload = '''local dont_dissolve = card:gc().may_persist_after_use or G.GAME.may_no_dissolve_after_use'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = "if G.shop_vouchers and G.shop_vouchers.cards then"
+position = 'before'
+payload = '''
+if G.vouchers then
+    for k2, v2 in pairs(G.vouchers.cards) do
+	    if v2:gc().key == v.key then
+		    include = false
+			break
+		end
+	end
+end 
+'''
 match_indent = true

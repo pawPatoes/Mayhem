@@ -167,10 +167,8 @@ SMODS.Joker {
 			end
 		end
 		if context.setting_blind then
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-				G.GAME.blind.chips = to_big(G.GAME.blind.chips):arrow(3, card.ability.extra.blindmult)
-				G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-			return true end}))
+			G.GAME.blind.chips = to_big(G.GAME.blind.chips):arrow(3, card.ability.extra.blindmult):normalize()
+			G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 		end
 	end
 }
@@ -249,6 +247,7 @@ SMODS.Joker {
 	atlas = 'joker1',
 	blueprint_compat = true,
 	demicoloncompat = true,
+	custom_soul_anim = 'diskus_spin_fast',
     loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_wheel_of_fortune
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
@@ -388,7 +387,7 @@ SMODS.Joker {
 			    }
             end
 		end
-		if context.end_of_round and context.cardarea == G.jokers then
+		if context.end_of_round and context.cardarea == G.jokers and not context.blueprint  then
             local amount = 0
 			for k, v in pairs(G.consumeables.cards) do 
                 if v:gc().set == 'Planet' then 

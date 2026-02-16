@@ -117,9 +117,11 @@ SMODS.Edition {
 				end
 			end
 		end
-        if Engulf and card and card.gc and card:gc().set == 'Planet' then 
-		    info_queue[#info_queue + 1] = { key = "may_enf_laminated", set = "Other" } 
-        end
+		if Engulf and card and card.gc then
+			if Engulf.table_contains(Engulf.AllowedSets, card:gc().set) or Engulf.table_contains(Engulf.AllowedKeys, card:gc().key) and not Engulf.table_contains(Engulf.CardBlacklist, card:gc().key) then 
+				info_queue[#info_queue + 1] = { key = "may_enf_laminated", set = "Other" } 
+			end
+		end
 		return { vars = { self.config.mult * amount, self.config.chips * amount }, }
 	end,
 	calculate = function(self, card, context)
@@ -375,9 +377,11 @@ SMODS.Edition {
 	apply_to_float = true,
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
-        if Engulf and card and card.gc and card:gc().set == 'Planet' then 
-		    info_queue[#info_queue + 1] = { key = "may_enf_inverted", set = "Other" } 
-        end 
+		if Engulf and card and card.gc then
+			if Engulf.table_contains(Engulf.AllowedSets, card:gc().set) or Engulf.table_contains(Engulf.AllowedKeys, card:gc().key) and not Engulf.table_contains(Engulf.CardBlacklist, card:gc().key) then 
+				info_queue[#info_queue + 1] = { key = "may_enf_inverted", set = "Other" } 
+			end 
+		end
 		return {}
     end,
 	calculate = function(self, card, context)
@@ -589,12 +593,17 @@ SMODS.Edition {
 	sound = { sound = "may_e_twilight", per = 1, vol = 1 },
 	unlocked = true,
 	loc_vars = function(self, info_queue, card)
+		if Engulf and card and card.gc then
+			if Engulf.table_contains(Engulf.AllowedSets, card:gc().set) or Engulf.table_contains(Engulf.AllowedKeys, card:gc().key) and not Engulf.table_contains(Engulf.CardBlacklist, card:gc().key) then
+				info_queue[#info_queue + 1] = { key = "may_enf_twilight", set = "Other" } 
+			end
+		end
 		return { vars = { G.GAME.may_twilight_amount or 5 } }
 	end,
 	calculate = function(self, card, context)
 		if context.pre_joker or (context.main_scoring and context.cardarea == G.play) then
 			local previous = G.GAME.may_twilight_amount or 5
-			G.GAME.may_twilight_amount = ((G.GAME.may_twilight_amount or 5) * 1.2) ^ 1.075
+			G.GAME.may_twilight_amount = ((G.GAME.may_twilight_amount or 5) * 1.1) ^ 1.05
 			return {
 				mult = previous,
 				chips = previous,
@@ -623,9 +632,11 @@ SMODS.Edition {
 	sound = { sound = "may_e_cosmic", per = 1, vol = 0.9 },
 	unlocked = true,
     loc_vars = function(self, info_queue, card)
-        if Engulf and card and card.gc and card:gc().set == 'Planet' then 
-		    info_queue[#info_queue + 1] = { key = "may_enf_cosmic", set = "Other" } 
-        end
+		if Engulf and card and card.gc then
+			if Engulf.table_contains(Engulf.AllowedSets, card:gc().set) or Engulf.table_contains(Engulf.AllowedKeys, card:gc().key) and not Engulf.table_contains(Engulf.CardBlacklist, card:gc().key) then 
+				info_queue[#info_queue + 1] = { key = "may_enf_cosmic", set = "Other" } 
+			end
+		end
         return {}
     end, 
 	calculate = function(self, card, context)

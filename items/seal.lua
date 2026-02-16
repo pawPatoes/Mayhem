@@ -69,7 +69,7 @@ SMODS.Seal {
 		name = 'Inverted Seal',
 		label = 'Inverted Seal',
 		text = {
-			"{C:green}#1# in 5{} chance to",
+			"{C:green}#1# in 8{} chance to",
 			"{C:attention}create{} a {C:dark_edition}Negative{} {C:attention}copy{} of a {C:attention}random{}",
 			"held {C:attention}consumable{} at the {C:attention}end of round{}",
 			"if this card is {C:attention}held in hand{}"
@@ -84,7 +84,7 @@ SMODS.Seal {
 	end, 
 	calculate = function(self, card, context)
 		if context.end_of_round and context.cardarea == G.hand and #G.consumeables.cards > 0 then
-			if pseudorandom('may_inverted_seal') < G.GAME.probabilities.normal / 5 then
+			if pseudorandom('may_inverted_seal') < G.GAME.probabilities.normal / 8 then
                 local targets = {}
                 for k, v in pairs(G.consumeables.cards) do 
                     if (not v:gc().hidden) and (not v:gc().no_doe) and (not v:gc().no_grc) then 
@@ -95,9 +95,7 @@ SMODS.Seal {
 				    local target = pseudorandom_element(targets, pseudoseed("may_inverted_seal"))
 				    G.E_MANAGER:add_event(Event({func = function()
 					    local card_copy = copy_card(target, nil)
-					    if Overflow then
-						    card_copy:setQty(1)
-					    end
+						card_copy:setQty(1)
 					    card_copy:set_edition({negative = true}, true)
 					    card_copy:add_to_deck()
 					    G.consumeables:emplace(card_copy)
@@ -152,7 +150,7 @@ SMODS.Seal {
 		text = {
 			"{X:planet,C:white}X1.25{} level of {C:attention}played{}", 
 			"{C:purple}Poker Hand{} but {X:money,C:white}X0.85${}", 
-			"when {C:attention}scored{}"
+			"after {C:attention}scoring{} if played"
 		}
 	},
 	atlas = 'seal',
@@ -160,7 +158,7 @@ SMODS.Seal {
 	badge_colour = HEX('ff00ea'),
 	sound = { sound = 'gold_seal', per = 1.2, vol = 0.4 },
 	calculate = function(self, card, context)
-		if context.cardarea == G.play and context.main_scoring then
+		if context.cardarea == G.play and context.after then
 			may.level_up_hand_hyper(card, context.scoring_name, nil, 1.25, 0)
 			return {
 				x_dollars = 0.85
@@ -257,7 +255,7 @@ SMODS.Seal {
 				if pseudorandom('may_yellow_seal') < G.GAME.probabilities.normal / 3 then
 					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
 						if G.consumeables.config.card_limit > #G.consumeables.cards then
-							play_sound('timpani', 0.5)
+							play_sound('timpani')
 							local card2 = create_card('Spectral', G.consumeables, nil, nil, nil, nil, nil, 'may_yellow_seal')
 							card2:add_to_deck()
 							G.consumeables:emplace(card2)

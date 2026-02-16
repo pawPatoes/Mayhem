@@ -184,7 +184,7 @@ SMODS.Consumable {
 	end
 }
 
-SMODS.Consumable {
+--[[SMODS.Consumable {
 	key = 'savescum',
 	config = { extra = { copies = 1, consumables = 35, } },
 	loc_txt = {
@@ -256,7 +256,7 @@ SMODS.Consumable {
 			card:juice_up(0.3, 0.5)
 		return true end}))
 	end
-}
+}]] 
 
 SMODS.Consumable {
 	key = 'gamble',

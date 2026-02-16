@@ -88,6 +88,8 @@ SMODS.Voucher {
 		return { vars = {} }
 	end,
 	redeem = function(self, card)
-		may.hand_mod_lvl_multchips_all('multchips', 0, 5)
+		may.hand_lvl_multchips_all(card, false, {0, 5}, {0, 5})
+		may.ch()
+		may.refresh_score_operator()
 	end
 }

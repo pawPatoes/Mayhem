@@ -1200,13 +1200,7 @@ SMODS.Booster {
 	draw_hand = false,
 	endless = true,
 	create_card = function(self, card)
-		local pool = {}
-		for k, v in pairs(G.P_CENTER_POOLS.Joker) do
-			if may.is_fusable(v) and not may.is_fusion(v) and v.key ~= 'j_blueprint' then 
-				table.insert(pool, v)
-			end 
-		end
-		return create_card("Joker", G.pack_cards, nil, nil, true, true, may.random_consumable('may_fpack', nil, nil, pool or G.P_CENTER_POOLS.Joker, true).key, "may_fpack")
+		return create_card("Fusable_NOBP", G.pack_cards, nil, nil, true, true, nil, "may_fpack")
 	end,
 	ease_background_colour = function(self)
 		ease_colour(G.C.DYN_UI.MAIN, G.C.BLACK)

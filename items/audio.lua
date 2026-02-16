@@ -87,6 +87,7 @@ SMODS.Sound({key = 'interdimensional_joker', path = 'rarity/interdimensional_jok
 SMODS.Sound({key = 'ethereal_joker', path = 'rarity/ethereal_joker.ogg'})
 SMODS.Sound({key = 'hyperascendant_joker', path = 'rarity/hyperascendant_joker.ogg'})
 
+SMODS.Sound({key = 'tran0', path = 'tran/tran0.ogg'})
 if may.conf.LegacyTr1 then
 	SMODS.Sound({key = 'tran1', path = 'tran/tran1_old.ogg'})
 else

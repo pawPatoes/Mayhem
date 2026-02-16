@@ -20,7 +20,7 @@ may = may or {}
 
 may.version = SMODS.current_mod.version
 
-may.info = { branch = 'main' }
+may.info = { branch = 'main', from_source = false }
 
 -- Config
 -- global for convenience and cross-mod whatevers
@@ -45,7 +45,7 @@ function may.get_position(tab, item)
     return 0
 end
 
-SMODS.current_mod.debug_info = { Branch = may.info.branch } 
+SMODS.current_mod.debug_info = { Branch = may.info.branch, FromSource = may.info.from_source } 
 
 -- Bulk load modules
 
@@ -56,10 +56,10 @@ may.libs = {
 	'fusion.lua', 'jenlib.lua', 'modtabs.lua', 'hooks.lua', 'miscbadges.lua', 'consumablevariants.lua',
     'hands.lua', 'timers.lua', 'calculationkeys.lua', 'omeganum.lua', 'areahighlight.lua', 'pools.lua',
     'menu.lua', 'misc.lua', 'transcendence.lua', 'ability.lua', 'display.lua', 'notification.lua', 
-	'morespeeds.lua', 'noituus.lua'
+	'morespeeds.lua', 'noituus.lua', 'ui.lua', 'drawstep.lua'
 }
 
-for k, v in pairs(may.libs) do
+for k, v in ipairs(may.libs) do
 	assert(SMODS.load_file("lib/"..v))()
 	print('MAYHEM: LIB '..v..' loaded!')
 end
@@ -84,7 +84,7 @@ if #SMODS.find_mod('GRM') ~= 0 and may.conf.CM.Grim then table.insert(may.items,
 if #SMODS.find_mod('BlindEditions') ~= 0 and may.conf.CM.BlindEditions then table.insert(may.items, 'cm/BlindEditions.lua') end
 if #SMODS.find_mod('CardSleeves') ~= 0 then table.insert(may.items, 'cm/CardSleeves.lua') end
 
-for k, v in pairs(may.items) do
+for k, v in ipairs(may.items) do
 	assert(SMODS.load_file("items/"..v))()
 	print('MAYHEM: ITEM '..v..' loaded!')
 end

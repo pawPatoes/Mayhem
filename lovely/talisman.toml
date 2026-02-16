@@ -13,6 +13,7 @@ pattern = '''elseif eval_type == 'hyper_chips' then
 position = "at"
 payload = '''
 elseif eval_type == 'hyper_chips' then
+    amt[1] = math.max(amt[1], -3)
 	sound = may.get_operation_sound(amt[1], 'chips')
 '''
 match_indent = true
@@ -25,6 +26,7 @@ pattern = '''elseif eval_type == 'hyper_mult' then
 position = "at"
 payload = '''
 elseif eval_type == 'hyper_mult' then
+    amt[1] = math.max(amt[1], -3)
 	sound = may.get_operation_sound(amt[1], 'mult')
 '''
 match_indent = true
@@ -160,4 +162,13 @@ pattern = '''text = (amt <-0.01 and '-' or '')..localize("$")..tostring(math.abs
 position = "at"
 payload = '''text = (to_big(amt) < to_big(-0.01) and '-' or '')..localize("$")..tostring(math.abs(amt))
         colour = to_big(amt) < to_big(-0.01) and G.C.RED or G.C.MONEY'''
+match_indent = true
+
+# ??????????????????
+[[patches]]
+[patches.pattern]
+target = "main.lua"
+pattern = '''function math.log(x, y)'''
+position = "after"
+payload = '''if not x then return (y or 2.718281828459045) end'''
 match_indent = true

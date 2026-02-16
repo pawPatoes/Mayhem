@@ -87,8 +87,12 @@ Game.main_menu = function(change_context)
 		G.E_MANAGER:add_event(Event({func = function()
 			G.P_CENTER_POOLS.HandSpecific = G.P_CENTER_POOLS.HandSpecific or {}
 			G.P_CENTER_POOLS.Food = G.P_CENTER_POOLS.Food or {}
+			G.P_CENTER_POOLS.Fusable = G.P_CENTER_POOLS.Fusable or {}
+			G.P_CENTER_POOLS.Fusable_NOBP = G.P_CENTER_POOLS.Fusable_NOBP or {}
 			SMODS.ObjectTypes.Food = { default = 'j_ice_cream' }
 			SMODS.ObjectTypes.HandSpecific = { default = 'c_pluto' }
+			SMODS.ObjectTypes.Fusable = { default = 'j_may_nebula' }
+			SMODS.ObjectTypes.Fusable_NOBP = { default = 'j_may_nebula' }
 			for k, v in pairs(G.P_CENTERS) do
 				if v.pools then 
 					for k2, v2 in pairs(v.pools) do
@@ -101,6 +105,12 @@ Game.main_menu = function(change_context)
 				end
 				if may.is_pool_center(v, 'Food') then
 					table.insert(G.P_CENTER_POOLS.Food, v)
+				end
+				if may.is_pool_center(v, 'Fusable') then
+					table.insert(G.P_CENTER_POOLS.Fusable, v)
+				end
+				if may.is_pool_center(v, 'Fusable_NOBP') then
+					table.insert(G.P_CENTER_POOLS.Fusable_NOBP, v)
 				end
 			end
 		return true end}))
@@ -122,7 +132,7 @@ Game.main_menu = function(change_context)
 		G.may_titlecard:set_alignment({major = G.title_top, type = 'cm', bond = 'Strong', offset = { x = 5, y = 3.5 }})
 		G.may_titlecard:define_draw_steps({{shader = 'dissolve'}})
 		G.may_titlecard.tilt_var = { mx = 0.2, my = 0, dx = 0, dy = 0, amt = 0.1 }
-		G.may_titlecard.dissolve_colours = { SMODS.Gradients[may.conf.Mode == 1 and 'may_col_mayhem_gradient' or 'may_col_eternum_green'], G.C.BLACK}
+		G.may_titlecard.dissolve_colours = { SMODS.Gradients[may.conf.Mode == 1 and 'may_col_mayhem_gradient' or 'may_col_eternum_green'], G.C.BLACK }
 		G.may_titlecard.dissolve = 1
 		G.may_titlecard.states.collide.can = true
 		function G.may_titlecard:click()
@@ -218,7 +228,7 @@ Game.main_menu = function(change_context)
     end
 	-- Cryptid notice
 	if (not may.conf.notices.cry) and #SMODS.find_mod('Cryptid') ~= 0 then
-		may.display_notification('cry', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
+		may.display_notification('cryptid', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
 		may.conf.notices.cry = true 
 		G:save_settings()
    end

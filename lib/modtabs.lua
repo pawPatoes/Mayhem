@@ -166,7 +166,7 @@ SMODS.current_mod.extra_tabs = function()
 									label = "Transcendence Effects",
 									scale = 0.7,
 									w = 10,
-									options = {"Disabled", "Low", "Medium", "High"},
+									options = {"Disabled", "Low", "Medium", "High", "Extreme"},
 									opt_callback = 'may_upd_treffects',
 									current_option = may.conf.TrEffects,
 								})

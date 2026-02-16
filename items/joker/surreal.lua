@@ -181,7 +181,7 @@ SMODS.Joker {
                     end 
                 end
             end 
-            if 1 + (card.ability.extra.EEmult * amount) > 1 then 
+            if 1 + (card.ability.extra.HEXmult * amount) > 1 then 
 			    return {
 				    hyper_mult = {4, 1 + (card.ability.extra.HEXmult * amount)},
 				    card = card

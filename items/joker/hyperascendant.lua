@@ -10,14 +10,12 @@ SMODS.Joker {
 			may.pager(),
 			"{C:attention}Arrows increase{} by {C:attention}#5#{} when a {C:planet}planet card{} is {C:attention}used{} during a {C:attention}blind{}",
 			may.pager(),
-			"Arrows {C:mult}halve{} at the end of round",
-			may.pager(),
 			"When {C:attention}Blind{} is {C:attention}selected{}, turn {C:attention}all{} cards in deck into {C:attention}Aces{}",
 			may.pager(),
 			"{C:inactive}Arrows round up{}"
 		}
 	},
-	config = { extra = { arrow = 4, repetitions = 11, arrow_gain = 1, reset = 4 } },
+	config = { extra = { arrow = 4, repetitions = 11, arrow_gain = 1 } },
 	rarity = "may_hyperascendant",
 	atlas = 'joker1',
 	blueprint_compat = true,
@@ -58,15 +56,6 @@ SMODS.Joker {
 			return {
 				message = "ACVM",
 				colour = G.C.DARK_EDITION,
-			}
-		end
-		if context.end_of_round and context.cardarea == G.jokers and not context.blueprint then
-			card.ability.extra.arrow = math.ceil(card.ability.extra.arrow * 0.5)
-			return {
-				message = 'Downgraded!',
-				colour = G.C.DARK_EDITION,
-				card = card,
-				sound = 'may_hyperoperator',
 			}
 		end
 		if context.using_consumeable and not context.blueprint then 
@@ -164,9 +153,6 @@ SMODS.Joker {
 			    "{C:attention}Jokers{} with an {C:dark_edition}Edition{} have a {C:mult}fixed{} {C:green}#4# in #5#{} chance to {C:green}increase{} {C:dark_edition}Score Operator{} level", 
 			    "by {C:attention}#6#{} after scoring and give {X:chips,C:white}#3#{} Chips",
 			    may.pager(),
-			    "{C:mult}Decrease{} {C:dark_edition}Score Operator{} level by {C:attention}#7#{} per owned Joker at the {C:attention}end of round{},",
-				"rounded up", 
-			    may.pager(),
 				"{C:inactive}#3# is currently #8#, hyperoperator will decrease by #9#{}",
 			},
 			{
@@ -180,6 +166,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	immutable = true,
+	custom_soul_anim = 'diskus_spin_fast',
 	pos = { x = 0, y = 5 },
 	soul_pos = { x = 1, y = 5 },
 	cost = 1e100,
@@ -253,7 +240,7 @@ SMODS.Joker {
 				else
                     if amount > 0 then
 					    return {
-                            hyper_chips = {op + 1, amount},
+                            hyper_chips = {math.max(op + 1, -2), amount},
 						    card = card
 					    }
                     end
@@ -276,7 +263,7 @@ SMODS.Joker {
             end
             if amount > 0 then
 			    return {
-				    hyper_chips = {op + 1, amount},
+				    hyper_chips = {math.max(op + 1, -2), amount},
 				    card = card
 			    }
             end
@@ -284,15 +271,12 @@ SMODS.Joker {
         if context.end_of_round and context.cardarea == G.jokers and not context.blueprint then
 			for k, v in pairs(G.jokers.cards) do 
                 if v.edition and SMODS.pseudorandom_probability(card, "may_rondo_discoteca", 1, 3, "Rondo Discoteca") then 
-                    G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function()
+                    G.E_MANAGER:add_event(Event({func = function()
                         change_operator(card.ability.extra.mod)
                     return true end}))
                     card_eval_status_text(v, 'extra', nil, nil, nil, { message = {'Upgraded!'}, colour = G.C.GREEN, delay = 0.45})
                 end
             end
-            G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-                change_operator(-math.ceil(math.abs(card.ability.extra.decrease) * #G.jokers.cards))
-            return true end}))
 		end
 	end
 }
@@ -314,7 +298,6 @@ SMODS.Joker {
 				may.pager(), 
 				"Played {C:dark_edition}Stone Cards{} increase", 
 				"{X:chips,C:white}HChips{} gain by {X:chips,C:white}+H#4#{} before scoring",
-				"and give {C:mult}#5#{} {C:dark_edition}hyperoperator{} after scoring", 
 				may.pager(),
 				"{C:planet}Deimos{} {C:green}no longer{} {C:mult}destroys{} cards", 
 				"and gives this Joker's {X:chips,C:white}HChips{}",
@@ -322,7 +305,7 @@ SMODS.Joker {
 				"{C:attention}+#6#{} {C:dark_edition}hyperoperator{} every {C:attention}#7#{}", 
 				"{C:tarot}Tarot Cards{} used, {C:mult}max{} {C:attention}+#8#{} per round", 
 				may.pager(), 
-				"{C:inactive}Currently #9# Chips, hyperoperator rounds up{}"
+				"{C:inactive}Currently #9# Chips{}"
 			},
 		}
 	},
@@ -332,7 +315,7 @@ SMODS.Joker {
 	demicoloncompat = true,
 	immutable = true,
 	pos = { x = 0, y = 0 },
-	config = { extra = { hyperoperator = 4, hyper_chips = 1, hyper_chips_gain = 1, hyper_chips_gain2 = 0.5, hyperop_decrease = -0.25, hyperop_increase = 1, tarots = 3, max = 10, increased = 0, used = 0 } },
+	config = { extra = { hyperoperator = 4, hyper_chips = 1, hyper_chips_gain = 1, hyper_chips_gain2 = 0.5, hyperop_decrease = -0.25, hyperop_increase = 1, tarots = 3, max = 5, increased = 0, used = 0 } },
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_medusa
@@ -388,21 +371,6 @@ SMODS.Joker {
                     })
                 end 
             end 
-			for k, v in pairs(G.play.cards) do
-                if SMODS.has_enhancement(v, 'm_stone') then 
-                    SMODS.scale_card(card, {
-                        ref_table = card.ability.extra,
-                        ref_value = "hyperoperator",
-                        scalar_value = "hyperop_decrease",
-						scaling_message = {
-                            colour = G.C.DARK_EDITION, 
-							message = 'Downgraded!', 
-							sound = 'may_hyperoperator'
-						}
-                    })
-                end 
-            end 
-			card.ability.extra.hyperoperator = math.ceil(math.max(card.ability.extra.hyperoperator, -4)) 
         end
 		if context.before and not context.blueprint then
 			for k, v in pairs(G.play.cards) do
@@ -419,17 +387,19 @@ SMODS.Joker {
                 end 
             end
 		end
-        if (context.joker_main or context.forcetrigger) and card.ability.extra.hyper_chips > 1 then
+        if context.joker_main or context.forcetrigger then
 			local amount = 0
 			for k, v in pairs(G.consumeables.cards) do
 				if v:gc().set == 'Planet' then 
 					amount = amount + v:getQty()
 				end
 			end
-            return {
-                hyper_chips = {card.ability.extra.hyperoperator, card.ability.extra.hyper_chips * (amount + 1)}, 
-                card = card, 
-            }
+			if card.ability.extra.hyper_chips * (amount + 1) > 1 then
+				return {
+					hyper_chips = {card.ability.extra.hyperoperator, card.ability.extra.hyper_chips * (amount + 1)}, 
+					card = card, 
+				}
+			end
         end
 		if context.using_consumeable then 
 			if context.consumeable:gc().key == 'c_may_deimos' then

@@ -5,11 +5,16 @@ return {
 			mayhem = {
 				name = 'Mayhem', 
 				text = {
-					"{C:dark_edition}Fuse{} compatible {C:attention}Jokers{} in {C:attention}big fusion chains{}", 
+					--[["{C:dark_edition}Fuse{} compatible {C:attention}Jokers{} in {C:attention}long fusion chains{}", 
 					"to get new {C:may_ethereal,E:1}much more powerful{} Jokers and {C:mult,E:1}break Balatro{}",
-					"Be {C:green}careful{}, though! {C:may_col_mayhem_gradient}Mayhem{} {C:mult,E:1}will fight back{}", 
+					"{C:may_col_mayhem_gradient}Mayhem{} {C:mult,E:1}will however fight back{}", 
 					"Play on {C:may_col_eternum_green,E:1}Eternum Mode{} if you want to", 
-					"{C:mult,E:1}watch the game crumble{} {C:dark_edition,E:1}unimpeded{}",
+					"{C:mult,E:1}watch the game crumble{} {C:dark_edition,E:1}unimpeded{}",]] 
+					"Ever thought {C:attention,E:1}Balatro{} runs are {C:mult}too short{}?", 
+					"{C:may_col_mayhem_gradient,E:1}Mayhem{} adds {C:green}elaborate{} {C:attention}Joker{} {C:may_col_instability}fusion chains{}, resulting in", 
+					"{C:may_surreal,E:1}omnipotent{} {C:attention}Jokers{} capable of scoring {C:may_interdimensional,E:1}incomprehensibly large numbers{}",
+					"That, however, {C:mult}doesn't{} mean you will not face any {C:mult,E:1}challenges{}",
+					"Play on {C:may_col_eternum_green,E:1}Eternum{} mode if you just want to watch the game {C:attention,E:1}burn{}", 
 					" ",
 					"{C:green,E:1,s:2}Thanks for playing!{}", 
 				} 
@@ -22,7 +27,7 @@ return {
 					"Create a card",
 					"of {C:cry_code}your choice",
 					"{C:inactive,s:0.8}(Mythic and above Jokers, Yotta Cards and",
-					"Empowered Consumables excluded)",
+					"{C:inactive,s:0.8}Empowered Consumables excluded){}",
 				},
 			},
 		},
@@ -396,7 +401,7 @@ return {
 				name = "Poker Hand Score",
 				text = {
 					"If a {C:purple}Poker Hand{} has",
-					"{C:score}Score{}, it is",
+					"{C:may_score}Score{}, it is",
 					"applied {C:attention}after scoring{},",
 					"adding it over the {C:attention}initial{}",
 					"{C:attention}points{} you earned"
@@ -433,7 +438,7 @@ return {
 			},
 			
 			may_enf_cosmic = {
-				name = "Planet Card Cosmic Ability",
+				name = "Consumable Cosmic Ability",
 				text = {
 					"Creates {C:dark_edition}Negative{} copies of the {C:planet}Planet Cards{}", 
 					"corresponding to the {C:purple}Poker Hands{}", 
@@ -441,20 +446,19 @@ return {
 				},
 			},
 			may_enf_inverted = {
-				name = "Planet Card Inverted Ability",
+				name = "Consumable Inverted Ability",
 				text = {
 					"{C:money}+0.01 Interest{}"
 				},
 			},
 			may_enf_twilight = {
-				name = "Planet Card Twilight Ability",
+				name = "Consumable Twilight Ability",
 				text = {
-					"{C:mult}=Mult{} or {X:money,C:white}XDollars{}",
-					"is {C:mult}not{} applied",
+					"{C:purple}Mult & Chips{} will {C:mult}not{} {C:green}scale{}"
 				},
 			},
 			may_enf_laminated = {
-				name = "Planet Card Laminated Ability",
+				name = "Consumable Laminated Ability",
 				text = {
 					"Considered {C:attention}card area{} is", 
 					"your {C:attention}Consumable Slots{}"
@@ -477,6 +481,13 @@ return {
 			},
 			may_enf_satellite = {
 				name = "Satellite Edition Ability",
+				text = {
+					"Created {C:attention}cards{} have", 
+					"{C:attention}this cards{} {C:dark_edition}Edition{}"
+				},
+			},
+			may_enf_galileo = {
+				name = "Galileo Edition Ability",
 				text = {
 					"Created {C:attention}cards{} have", 
 					"{C:attention}this cards{} {C:dark_edition}Edition{}"
@@ -517,6 +528,20 @@ return {
 					"to {C:attention}card's{} {C:dark_edition}Edition{}", 
 				},
 			}, 
+			may_enf_gersemi = {
+				name = "Gersemi Edition Ability",
+				text = {
+					"Enhanced {C:attention}cards{} will gain", 
+					"{C:attention}this cards{} {C:dark_edition}Edition{}"
+				},
+			},
+			may_enf_rings = {
+				name = "Ring Systems Edition Ability",
+				text = {
+					"{C:dark_edition}Edition{} will be {C:green}applied{}",
+					"to next {C:purple}Poker Hand{} {C:planet}leveled up{}",
+				},
+			},
 		},
 	},
 	dictionary = {
@@ -541,7 +566,7 @@ return {
 			may_notif_stj_d4 = 'You may also want to check the "For content creators" section on Mayhem\'s repository.',
 			
 			may_notif_cryptid_1 = 'Cryptid notice', 
-		    may_notif_cry_d1 = 'Mayhem may not work as intended with Cryptid.', 
+		    may_notif_cry_d1 = 'Mayhem may not work as intended with Cryptid, expect bugs and crashes.', 
 		    may_notif_cry_d2 = 'Playing both at the same time is also not recommended', 
 		    may_notif_cry_d3 = 'if you want the intended experience, despite the cross-mod.',
 			
@@ -552,13 +577,8 @@ return {
 			
 			may_notif_smods_1 = 'Steamodded notice', 
 		    may_notif_smods_d1 = 'Mayhem is incredibly unstable with Steamodded 1221a.', 
-		    may_notif_smods_d2 = 'It is recommended you use SMODS 1224a and above or a', 
-		    may_notif_smods_d3 = 'prior supported version instead.',
-			
-			may_notif_futils_1 = 'Frost\'s Util notice', 
-		    may_notif_smods_d1 = 'Frost\'s Util\' s Event V2 functionality overrides', 
-		    may_notif_smods_d2 = 'Mayhem\' s extended speed options. You will have to', 
-		    may_notif_smods_d3 = 'increase the Event V2 acceleration to make the game faster.',
+		    may_notif_smods_d2 = 'It is recommended you use SMODS 1224a and above,', 
+		    may_notif_smods_d3 = 'as crashes will be frequent.',
 			
 			may_notif_welcome_1 = 'Welcome to Mayhem!', 
 		    may_notif_welcome_d1 = 'This is your first time playing Mayhem! Thanks!', 

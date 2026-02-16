@@ -29,7 +29,7 @@ SMODS.Joker {
 				card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_gain
 				return {
 					colour = G.C.CHIPS,
-					card = card,
+					message_card = card,
 					message = "Upgraded!"
 				}
 			end
@@ -37,7 +37,7 @@ SMODS.Joker {
 		if context.cardarea == G.jokers and context.joker_main then
 			return {
 				chip_mod = card.ability.extra.chips,
-				card = card,
+				message_card = card,
 				colour = G.C.CHIPS,
 				message = '+'.. card.ability.extra.chips .. ' Chips',
 			}
@@ -46,7 +46,7 @@ SMODS.Joker {
 			card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_gain
 			return {
 				colour = G.C.CHIPS,
-				card = card,
+				message_card = card,
 				message = "Upgraded!"
 			}
 		end
@@ -62,7 +62,7 @@ SMODS.Joker {
 			"{C:mult}Self destructs{} after {C:attention}#2#{} rounds"
 		}
 	},
-	config = { extra = { Xmult = 3, rounds = 3} },
+	config = { extra = { Xmult = 3, rounds = 3 } },
 	rarity = 1,
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.Xmult, card.ability.extra.rounds} }
@@ -79,7 +79,7 @@ SMODS.Joker {
 				card = card,
 				colour = G.C.RED,
 				message = 'X'.. card.ability.extra.Xmult .. ' Mult',
-        }
+            }
 		end
 		if context.end_of_round and context.cardarea == G.jokers and not context.blueprint then
 			card.ability.extra.rounds = card.ability.extra.rounds - 1
@@ -87,7 +87,6 @@ SMODS.Joker {
 				G.E_MANAGER:add_event(Event({func = function()
 					self = card
                     play_sound('tarot1')
-					message = "Faded!"
 					self:juice_up(0.3, 0.4)
 					self.states.drag.is = true
 					self.children.center.pinch.x = true

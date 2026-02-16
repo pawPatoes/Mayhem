@@ -43,10 +43,6 @@ may.misc_badges = {
 		text = {'Indestructible', '(Fusing excluded)'}, 
 		col = G.C.BLACK
 	}, 
-	voucher_sellable = {
-		text = {'Sellable'}, 
-		col = G.C.GREEN
-	},
 }
 
 local smcmb = SMODS.create_mod_badges

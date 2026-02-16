@@ -357,7 +357,7 @@ may.fusions.conditions.infinity_stone = '{C:mult}Destroyed{} at least {C:attenti
 
 may.fusions.conditions.spadus = 'Have a {C:purple}Poker Hand{} with at least {C:planet}level{} {C:attention}25,000{}'
 may.fusions.conditions.rondo_discoteca = 'Used at least {C:attention}100{} {C:planet}Planet Cards{} & {C:dark_edition}Score Operator{} level is {C:attention}3{} or above'
-may.fusions.conditions.zodium_calamitas = 'Used at least {C:attention}100{} {C:tarot}Tarot Cards{} & {C:mult}destroyed{} at least {C:attention}250{} {C:dark_edition}Stone Cards{}'
+may.fusions.conditions.zodium_calamitas = 'Used at least {C:attention}100{} {C:tarot}Tarot Cards{} & {C:mult}destroyed{} at least {C:attention}400{} {C:dark_edition}Stone Cards{}'
 
 function may.get_condition(key)
 	return may.fusions.conditions[key]

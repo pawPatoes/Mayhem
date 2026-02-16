@@ -1044,7 +1044,7 @@ SMODS.Blind {
 		return false
 	end,
 	get_loc_debuff_text = function(self)
-		return "Can only play "..localize(may.lphand(), 'poker_hands')
+		return "Can only play "..localize(lphand(), 'poker_hands')
 	end,
 	in_pool = function(self, args)
 		return G.GAME.may_endless_mode and G.GAME.bosses_used['bl_eye'] >= 1, { allow_duplicates = true }

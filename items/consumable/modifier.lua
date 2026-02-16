@@ -65,8 +65,9 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..card.ability.extra.chips}, colour = G.C.CHIPS, delay = 0.45})
-			may.hand_mod_multchips_all('chips', -1, card.ability.extra.chips, false, v)
+			may.hand_multchips_all(v, nil, false, {-1, card.ability.extra.chips})
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -91,8 +92,9 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..(card.ability.extra.chips*number)}, colour = G.C.CHIPS, delay = 0.45})
-			may.hand_mod_multchips_all('chips', -1, card.ability.extra.chips*number, false, v)
+			may.hand_multchips_all(v, nil, false, {-1, card.ability.extra.chips * number})
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -164,8 +166,9 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..card.ability.extra.mult}, colour = G.C.MULT, delay = 0.45})
-			may.hand_mod_multchips_all('mult', -1, card.ability.extra.mult, false, v)
+			may.hand_multchips_all(v, nil, false, nil, {-1, card.ability.extra.mult})
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -190,8 +193,9 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..(card.ability.extra.mult*number)}, colour = G.C.MULT, delay = 0.45})
-			may.hand_mod_multchips_all('mult', -1, card.ability.extra.mult*number, false, v)
+			may.hand_multchips_all(v, nil, false, nil, {-1, card.ability.extra.mult * number})
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -266,11 +270,12 @@ SMODS.Consumable {
 		for k, v in pairs(targets) do 
 			local mult = pseudorandom('may_wild_card', card.ability.extra.min_mult, card.ability.extra.max_mult)
 			local chips = pseudorandom('may_wild_card', card.ability.extra.min_chips, card.ability.extra.max_chips)
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..mult}, colour = G.C.MULT, delay = 0.45})
-			may.hand_mod_multchips_all('mult', -1, mult, false, v)
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..chips}, colour = G.C.CHIPS, delay = 0.45})
-			may.hand_mod_multchips_all('chips', -1, chips, false, v)
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..chips}, colour = G.C.CHIPS, delay = 0.45}) 
+			may.hand_multchips_all(v, nil, false, {-1, chips})
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..mult}, colour = G.C.MULT, delay = 0.45}) 
+			may.hand_multchips_all(v, nil, false, nil, {-1, mult})
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -300,11 +305,12 @@ SMODS.Consumable {
 				mult = mult + pseudorandom('may_wild_card', card.ability.extra.min_mult, card.ability.extra.max_mult)
 				chips = chips + pseudorandom('may_wild_card', card.ability.extra.min_chips, card.ability.extra.max_chips)
 			end
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..mult}, colour = G.C.MULT, delay = 0.45})
-			may.hand_mod_multchips_all('mult', -1, mult, false, v)
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..chips}, colour = G.C.CHIPS, delay = 0.45})
-			may.hand_mod_multchips_all('chips', -1, chips, false, v)
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..chips}, colour = G.C.CHIPS, delay = 0.45}) 
+			may.hand_multchips_all(v, nil, false, {-1, chips})
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..mult}, colour = G.C.MULT, delay = 0.45}) 
+			may.hand_multchips_all(v, nil, false, nil, {-1, mult})
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -371,16 +377,14 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			if SMODS.pseudorandom_probability(card, "may_glass_card", G.GAME.probabilities.normal, card.ability.extra.odds, "Glass Card") then 
-				card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..card.ability.extra.x_mult2}, colour = G.C.MULT, delay = 0.45})
-				may.hand_mod_multchips_all('mult', 0, card.ability.extra.x_mult2, false, v)
-				G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-					play_sound('may_error')
-				return true end}))
+				card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..card.ability.extra.x_mult2}, colour = G.C.MULT, delay = 0.45, sound = 'may_error'})
+				may.hand_multchips_all(v, nil, false, nil, {0, card.ability.extra.x_mult2})
 			else
 				card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..card.ability.extra.x_mult1}, colour = G.C.MULT, delay = 0.45})
-				may.hand_mod_multchips_all('mult', 0, card.ability.extra.x_mult1, false, v)
+				may.hand_multchips_all(v, nil, false, nil, {0, card.ability.extra.x_mult1})
 			end
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -415,8 +419,9 @@ SMODS.Consumable {
 			end
 			local total = (card.ability.extra.x_mult1 ^ fails) * (card.ability.extra.x_mult2 ^ fails)
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..total}, colour = G.C.MULT, delay = 0.45})
-			may.hand_mod_multchips_all('mult', 0, total, false, v)
+			may.hand_multchips_all(v, nil, false, nil, {0, total})
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -489,8 +494,10 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..card.ability.extra.x_mult}, colour = G.C.MULT, delay = 0.45})
-			may.hand_mod_lvl_multchips_all('mult', 0, card.ability.extra.x_mult)
+			may.hand_lvl_multchips_all(v, false, nil, {0, card.ability.extra.x_mult})
 		end
+		may.refresh_score_operator()
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -515,8 +522,10 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..card.ability.extra.x_mult ^ number}, colour = G.C.MULT, delay = 0.45})
-			may.hand_mod_lvl_multchips_all('mult', 0, card.ability.extra.x_mult ^ number)
+			may.hand_lvl_multchips_all(v, false, nil, {0, card.ability.extra.x_mult ^ number})
 		end
+		may.refresh_score_operator()
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -589,8 +598,9 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..card.ability.extra.chips}, colour = G.C.CHIPS, delay = 0.45})
-			may.hand_mod_multchips_all('chips', -1, card.ability.extra.chips, false, v, may.favhand())
+			may.hand_multchips_all(v, may.favhand(), false, {-1, card.ability.extra.chips})
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -615,7 +625,7 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..(card.ability.extra.chips*number)}, colour = G.C.CHIPS, delay = 0.45})
-			may.hand_mod_multchips_all('chips', -1, card.ability.extra.chips*number, false, v, may.favhand())
+			may.hand_multchips_all(v, may.favhand(), false, {-1, card.ability.extra.chips * number})
 		end
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
@@ -689,8 +699,10 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..card.ability.extra.dollars}, colour = G.C.MONEY, delay = 0.45})
-			may.hand_mod_dollars_all(-1, card.ability.extra.dollars)
+			may.hand_mod_dollars_all(v, false, -1, card.ability.extra.dollars)
 		end
+		may.refresh_score_operator()
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -715,8 +727,10 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..(card.ability.extra.dollars*number)}, colour = G.C.MONEY, delay = 0.45})
-			may.hand_mod_dollars_all(-1, card.ability.extra.dollars*number)
+			may.hand_mod_dollars_all(v, false, -1, card.ability.extra.dollars*number)
 		end
+		may.refresh_score_operator()
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -787,17 +801,19 @@ SMODS.Consumable {
 			if SMODS.pseudorandom_probability(card, "may_lucky_card", G.GAME.probabilities.normal, card.ability.extra.odds1, "Lucky Card") then 
 				hit = true 
 				card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..card.ability.extra.mult}, colour = G.C.MULT, delay = 0.45})
-				may.hand_mod_multchips_all('mult', -1, card.ability.extra.mult, false, v)
+				may.hand_multchips_all(v, nil, false, nil, {-1, card.ability.extra.mult})
 			end
 			if SMODS.pseudorandom_probability(card, "may_lucky_card", G.GAME.probabilities.normal, card.ability.extra.odds2, "Lucky Card") then 
 				hit = true 
 				card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..card.ability.extra.p_dollars}, colour = G.C.MONEY, delay = 0.45})
-				may.hand_mod_dollars_all(-1, card.ability.extra.p_dollars)
+				may.hand_mod_dollars_all(v, false, -1, card.ability.extra.p_dollars)
 			end
 			if not hit then 
 				card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'Nope!'}, colour = G.C.MULT, delay = 0.45})
 			end
 		end
+		may.refresh_score_operator()
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -839,14 +855,16 @@ SMODS.Consumable {
 			else 
 				if mult > 0 then 
 					card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..mult}, colour = G.C.MULT, delay = 0.45})
-					may.hand_mod_multchips_all('mult', -1, mult, false, v) 
+					may.hand_multchips_all(v, nil, false, nil, {-1, card.ability.extra.nult})
 				end 
 				if dollars > 0 then
 					card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..dollars}, colour = G.C.MONEY, delay = 0.45})
-					may.hand_mod_dollars_all(-1, dollars)
+					may.hand_mod_dollars_all(v, false, -1, dollars)
 				end
 			end 
 		end
+		may.refresh_score_operator()
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -858,7 +876,7 @@ SMODS.Consumable {
 }
 
 SMODS.Consumable {
-	key = 'sup_card',
+	key = 'magma_card',
 	config = { extra = { x_mult = 1.75, target = 'm_may_magma' } },
 	loc_txt = {
 		name = 'Magma Card',
@@ -918,8 +936,9 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..card.ability.extra.x_mult}, colour = G.C.MULT, delay = 0.45})
-			may.hand_mod_multchips_all('mult', 0, card.ability.extra.x_mult, false, v)
+			may.hand_multchips_all(v, nil, false, nil, {0, card.ability.extra.x_mult})
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -944,8 +963,9 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..card.ability.extra.x_mult ^ number}, colour = G.C.MULT, delay = 0.45})
-			may.hand_mod_multchips_all('mult', 0, card.ability.extra.x_mult ^ number, false, v)
+			may.hand_multchips_all(v, nil, false, nil, {0, card.ability.extra.x_mult})
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -1017,8 +1037,9 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..card.ability.extra.bonus}, colour = G.C.CHIPS, delay = 0.45})
-			may.hand_mod_multchips_all('chips', 0, card.ability.extra.bonus, false, v)
+			may.hand_multchips_all(v, nil, false, {0, card.ability.extra.bonus})
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -1043,8 +1064,9 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..card.ability.extra.bonus ^ number}, colour = G.C.CHIPS, delay = 0.45})
-			may.hand_mod_multchips_all('chips', 0, card.ability.extra.bonus ^ number, false, v)
+			may.hand_multchips_all(v, nil, false, {0, card.ability.extra.bonus ^ number}) 
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -1116,8 +1138,9 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'^'..card.ability.extra.bonus}, colour = G.C.MULT, delay = 0.45})
-			may.hand_mod_multchips_all('mult', 1, card.ability.extra.bonus, false, v)
+			may.hand_multchips_all(v, nil, false, nil, {1, card.ability.extra.bonus})
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -1141,9 +1164,11 @@ SMODS.Consumable {
 			return true end})) 
 		end
 		for k, v in pairs(targets) do 
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'^'..to_big(card.ability.extra.bonus):arrow(2, number) }, colour = G.C.MULT, delay = 0.45})
-			may.hand_mod_multchips_all('mult', 1, to_big(card.ability.extra.bonus):arrow(2, number), false, v)
+			local factor = math.abs(number) == 1 and card.ability.extra.bonus or to_big(card.ability.extra.bonus) ^ math.abs(number)
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'^'..factor }, colour = G.C.MULT, delay = 0.45})
+			may.hand_multchips_all(v, nil, false, nil, {1, factor})
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -1215,8 +1240,9 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..card.ability.extra.bonus * (v.ability.grid_mult or 0)}, colour = G.C.MULT, delay = 0.45})
-			may.hand_mod_multchips_all('mult', -1, card.ability.extra.bonus * (v.ability.grid_mult or 0), false, v)
+			may.hand_multchips_all(v, nil, false, nil, {-1, card.ability.extra.bonus * (v.ability.grid_mult or 0)})
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -1241,8 +1267,9 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..card.ability.extra.bonus * (v.ability.grid_mult or 0) * number}, colour = G.C.MULT, delay = 0.45})
-			may.hand_mod_multchips_all('mult', -1, card.ability.extra.bonus * (v.ability.grid_mult or 0) * number, false, v)
+			may.hand_multchips_all(v, nil, false, nil, {-1, card.ability.extra.bonus * (v.ability.grid_mult or 0) * number})
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -1315,8 +1342,10 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+%+'..(v.ability.crystal_percent or 0)}, colour = G.C.MONEY, delay = 0.45})
-			may.hand_mod_dollars_all(0, 1 + ((100 / v.ability.crystal_percent) * 0.1), false)
+			may.hand_mod_dollars_all(v, false, 0, 1 + ((100 / v.ability.crystal_percent) * 0.1), false)
 		end
+		may.refresh_score_operator()
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -1340,9 +1369,11 @@ SMODS.Consumable {
 			return true end})) 
 		end
 		for k, v in pairs(targets) do 
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+%+'..(v.ability.crystal_percent or 0) * number}, colour = G.C.MONEY, delay = 0.45})
-			may.hand_mod_dollars_all(0, 1 + ((100 / v.ability.crystal_percent) * 0.1 * number), false)
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+%+'..((v.ability.crystal_percent or 0) ^ number)}, colour = G.C.MONEY, delay = 0.45})
+			may.hand_mod_dollars_all(0, 1 + ((100 / v.ability.crystal_percent) * 0.1) ^ number, false)
 		end
+		may.refresh_score_operator()
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -1415,8 +1446,9 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..card.ability.extra.bonus * #G.hand.cards}, colour = G.C.MULT, delay = 0.45})
-			may.hand_mod_multchips_all('mult', -1, card.ability.extra.bonus * #G.hand.cards, false, v)
+			may.hand_multchips_all(v, nil, false, nil, {-1, card.ability.extra.bonus * #G.hand.cards})
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -1441,8 +1473,9 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..card.ability.extra.bonus * #G.hand.cards * number}, colour = G.C.MULT, delay = 0.45})
-			may.hand_mod_multchips_all('mult', -1, card.ability.extra.bonus * #G.hand.cards * number, false, v)
+			may.hand_multchips_all(v, nil, false, nil, {-1, card.ability.extra.bonus * #G.hand.cards})
 		end
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -1518,7 +1551,7 @@ SMODS.Consumable {
 				play_sound('multhit2')
 				v:juice_up(1, 1)
 			return true end}))
-			may.hm('X(1+(sqrt(level) * 0.5))', true)
+			may.hm('X...', true)
 			may.ch()
 		end
 		for k, v in pairs(targets) do 
@@ -1557,7 +1590,7 @@ SMODS.Consumable {
 				play_sound('multhit2')
 				v:juice_up(1, 1)
 			return true end}))
-			may.hm('X(1+(sqrt(level) * 0.5)) (X'..number..')', true)
+			may.hm('X...', true)
 			may.ch()
 		end
 		for k, v in pairs(targets) do 
@@ -1633,8 +1666,10 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..card.ability.extra.bonus}, colour = G.C.MONEY, delay = 0.45})
-			may.hand_mod_dollars_all(0, card.ability.extra.bonus, false)
+			may.hand_mod_dollars_all(v, false, 0, card.ability.extra.bonus, false)
 		end
+		may.refresh_score_operator()
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -1659,8 +1694,10 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..card.ability.extra.bonus ^ number}, colour = G.C.MONEY, delay = 0.45})
-			may.hand_mod_dollars_all(0, card.ability.extra.bonus ^ number, false)
+			may.hand_mod_dollars_all(v, false, 0, card.ability.extra.bonus ^ number, false)
 		end
+		may.refresh_score_operator()
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -1756,8 +1793,10 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..1 + (card.ability.extra.bonus * tarots)}, colour = G.C.MONEY, delay = 0.45})
-			may.hand_mod_dollars_all(0, 1 + (card.ability.extra.bonus * tarots), false)
+			may.hand_mod_dollars_all(v, false, 0, 1 + (card.ability.extra.bonus * tarots), false)
 		end
+		may.refresh_score_operator()
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -1788,8 +1827,10 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..(1 + (card.ability.extra.bonus * tarots)) ^ number}, colour = G.C.MONEY, delay = 0.45})
-			may.hand_mod_dollars_all(0, (1 + (card.ability.extra.bonus * tarots)) ^ number, false)
+			may.hand_mod_dollars_all(v, false, 0, (1 + (card.ability.extra.bonus * tarots)) ^ number, false)
 		end
+		may.refresh_score_operator()
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -1867,9 +1908,11 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..card.ability.extra.bonus1}, colour = G.C.MONEY, delay = 0.45})
-			may.hand_mod_dollars_all(0, card.ability.extra.bonus1, false)
 			may.level_up_all_hands_hyper(card, false, card.ability.extra.bonus2, 0)
+			may.hand_mod_dollars_all(v, false, 0, card.ability.extra.bonus1, false) 
 		end
+		may.refresh_score_operator()
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -1893,10 +1936,12 @@ SMODS.Consumable {
 			return true end})) 
 		end
 		for k, v in pairs(targets) do 
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..card.ability.extra.bonus1 ^ amount}, colour = G.C.MONEY, delay = 0.45})
-			may.hand_mod_dollars_all(0, card.ability.extra.bonus1 ^ amount, false)
-			may.level_up_all_hands_hyper(card, false, card.ability.extra.bonus2 ^ amount, 0)
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..card.ability.extra.bonus1 ^ number}, colour = G.C.MONEY, delay = 0.45})
+			may.level_up_all_hands_hyper(card, false, card.ability.extra.bonus2 ^ number, 0)
+			may.hand_mod_dollars_all(v, false, 0, card.ability.extra.bonus1 ^ number, false) 
 		end
+		may.refresh_score_operator()
+		may.ch()
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
@@ -2703,7 +2748,7 @@ SMODS.Consumable {
 		if G.hand then
 			for k, v in pairs(G.hand.cards) do 
 				if v.edition and v.edition.key == card.ability.extra.target then
-					amount = amount + 1
+					amount1 = amount1 + 1
 				end
 			end
 		end 

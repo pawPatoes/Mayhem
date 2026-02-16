@@ -124,7 +124,7 @@ SMODS.Joker {
 	end
 }
 
-SMODS.Joker {
+--[[SMODS.Joker {
 	key = 'ultimate_hurley',
 	loc_txt = {
 		name = {'Ultimate Hurley', "{C:inactive,s:0.5}Hurley + Universal Collapse{}"},
@@ -169,7 +169,7 @@ SMODS.Joker {
 			}
 		end
 	end
-}
+}]] 
 
 SMODS.Joker {
 	key = 'acum',
@@ -302,7 +302,7 @@ SMODS.Joker {
 			    }
             end
 		end
-		if context.end_of_round and context.cardarea == G.jokers then
+		if context.end_of_round and context.cardarea == G.jokers and not context.blueprint then
             local amount = 0
 			for k, v in pairs(G.consumeables.cards) do 
                 if v:gc().set == 'Planet' then 
@@ -352,7 +352,7 @@ SMODS.Joker {
 			return {
 				Emult_mod = to_big(math.min(1e300, G.GAME.hands[context.scoring_name].level)),
 				card = card,
-				message = '^'.. card.ability.extra.Emult .. ' Mult',
+				message = '^'..number_format(math.min(1e300, G.GAME.hands[context.scoring_name].level))..' Mult',
 				colour = G.C.MULT,
 			}
 		end
@@ -360,7 +360,7 @@ SMODS.Joker {
 			return {
 				Emult_mod = to_big(math.min(1e300, G.GAME.hands[context.scoring_name].level)),
 				card = card,
-				message = '^'.. card.ability.extra.Emult .. ' Mult',
+				message = '^'..number_format(math.min(1e300, G.GAME.hands[context.scoring_name].level))..' Mult',
 				colour = G.C.MULT,
 			}
 		end
@@ -388,6 +388,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	immutable = true,
+	custom_soul_anim = 'diskus_spin',
 	pos = { x = 3, y = 12 },
 	soul_pos = { x = 0, y = 13 },
 	cost = 1000,
@@ -546,7 +547,7 @@ SMODS.Joker {
 SMODS.Joker {
 	key = 'schematicum',
 	loc_txt = {
-		name = {'Schematicum', "{C:inactive,s:0.5}Universal Collapse + Bleuprint{}"},
+		name = {'Schematicum', "{C:inactive,s:0.5}Universal Collapse + Blueprint{}"},
 		text = {
 			{
 				"{C:attention}Copies{} the abilities of {C:attention}adjacent Jokers{}",

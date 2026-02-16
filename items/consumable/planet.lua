@@ -194,7 +194,7 @@ SMODS.Consumable {
 		for i = 1, math.min(card.ability.extra.cards, G.consumeables.config.card_limit - #G.consumeables.cards) do
 			if (G.GAME.last_planet or 'c_may_dysnomia') ~= 'c_may_dysnomia' then
 			    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-				    if G.consumeables.config.card_limit > #G.consumeables.cards then
+				    if G.consumeables.config.card_limit > #G.consumeables.cards and (G.GAME.last_planet or 'c_may_dysnomia') ~= 'c_may_dysnomia' then
 					    play_sound('timpani')
 					    local card2 = create_card('Planet', G.consumeables, nil, nil, nil, nil, G.GAME.last_planet, 'may_dysnomia')
 					    card2:add_to_deck()
@@ -318,36 +318,39 @@ SMODS.Consumable {
 		local hand = may.rndhand()
 		local amount = 0
 		for k, v in pairs(G.hand.cards) do
-			amount = amount + v:may_get_nominal_chips()
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = (v:may_get_nominal_chips() > 0 and '+' or '-')..number_format(math.abs(v:may_get_nominal_chips())), colour = G.C.CHIPS, delay = 0.1, sound = 'chips1'})
-			G.E_MANAGER:add_event(Event({func = function()
-				v:juice_up(0.3, 0.4)
-			return true end}))
+			if v:may_get_nominal_chips() then
+			    amount = amount + v:may_get_nominal_chips()
+			    card_eval_status_text(card, 'extra', nil, nil, nil, { message = (v:may_get_nominal_chips() > 0 and '+' or '-')..number_format(math.abs(v:may_get_nominal_chips())), colour = G.C.CHIPS, delay = 0.1, sound = 'chips1'})
+			    G.E_MANAGER:add_event(Event({func = function()
+				    v:juice_up(0.3, 0.4)
+			    return true end}))
+			end
 		end
 		may.a((amount > 0 and '+' or '-')..number_format(math.abs(amount)), 2, 1.5, G.C.CHIPS, 'may_positive')
-		may.hand_mod_multchips(hand, 'chips', -1, amount, false, card)
+		may.hand_multchips(card, hand, false, {-1, amount})
 		if Engulf and card.edition then 
 			Engulf.EditionHand(card, hand, card.edition, 1)
-			may.ch()
 		end
 		delay(0.2)
+		may.ch()
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local amount = 0
 		for k, v in pairs(G.hand.cards) do
-			amount = amount + v:may_get_nominal_chips()
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = (v:may_get_nominal_chips() > 0 and '+' or '-')..math.abs(v:may_get_nominal_chips()), colour = G.C.CHIPS, delay = 0.1, sound = 'chips1'})
-			G.E_MANAGER:add_event(Event({func = function()
-				v:juice_up(0.3, 0.4)
-			return true end}))
+			if v:may_get_nominal_chips() then
+			    amount = amount + v:may_get_nominal_chips()
+			    card_eval_status_text(card, 'extra', nil, nil, nil, { message = (v:may_get_nominal_chips() > 0 and '+' or '-')..math.abs(v:may_get_nominal_chips()), colour = G.C.CHIPS, delay = 0.1, sound = 'chips1'})
+			    G.E_MANAGER:add_event(Event({func = function()
+				    v:juice_up(0.3, 0.4)
+			    return true end}))
+			end
 		end
 		may.a((amount > 0 and '+' or '-')..math.abs(number_format(amount)), 2, 1.5, G.C.CHIPS, 'may_positive')
 		for i = 1, number do
 			local hand = may.rndhand()
-			may.hand_mod_multchips(hand, 'chips', -1, amount, true, card)
+			may.hand_multchips(card, hand, true, {-1, amount})
 			if Engulf and card.edition then 
 				Engulf.EditionHand(card, hand, card.edition, 1)
-				may.ch()
 			end
 		end
 		may.h('Random Hands', '...', '...', '')
@@ -732,7 +735,7 @@ SMODS.Consumable {
 		G.GAME.may_namaka_amount = G.GAME.may_namaka_amount or 30
 		for k, v in pairs(G.GAME.hands) do
 			if to_big(v.chips) < to_big(G.GAME.may_namaka_amount) then 
-				may.hand_mod_multchips(k, 'chips', 'eq', G.GAME.may_namaka_amount, true, card)
+				may.hand_multchips(card, k, true, {'eq', G.GAME.may_namaka_amount})
 				if Engulf and card.edition then 
 					Engulf.EditionHand(card, k, card.edition, 1, true)
 				end
@@ -767,7 +770,7 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(G.GAME.hands) do
 			if to_big(v.chips) < to_big(G.GAME.may_namaka_amount) then 
-				may.hand_mod_multchips(k, 'chips', 'eq', G.GAME.may_namaka_amount, true, card)
+				may.hand_multchips(card, k, true, {'eq', G.GAME.may_namaka_amount})
 				if Engulf and card.edition then 
 					Engulf.EditionHand(card, k, card.edition, 1, true)
 				end
@@ -875,11 +878,11 @@ SMODS.Consumable {
 				found = found + 1
 			end
 		end
-		may.hand_mod_multchips(may.favhand(), 'chips', 0, 1 + (found * card.ability.extra.Xchips), false, card)
+		may.hand_multchips(card, may.favhand(), {0, 1 + (found * card.ability.extra.Xchips)})
 		if Engulf and card.edition then 
 			Engulf.EditionHand(card, may.favhand(), card.edition, 1)
-			may.ch()
 		end
+		may.ch()
 	end,
 	--[[bulk_use = function(self, card, area, copier, number)
 		local found = 0
@@ -968,8 +971,8 @@ SMODS.Consumable {
 		delay(0.5)
 		for i=1, number*2, 1 do
 			local hand2 = may.rndhand(hand)
-			if to_number(G.GAME.hands[hand2].level) > 1 then
-				level_up_hand(card, hand2, nil, card.ability.extra.other)
+			if to_big(G.GAME.hands[hand2].level) > to_big(1) then
+				level_up_hand(card, hand2, true, card.ability.extra.other)
 			end
 		end
 		may.h('Other Hands', '...', '...', '')
@@ -1032,6 +1035,9 @@ SMODS.Consumable {
 		return false
 	end,
 	loc_vars = function(self, info_queue, card)
+		if Engulf and card.edition then
+			info_queue[#info_queue + 1] = { key = "may_enf_gersemi", set = "Other" } 
+		end
 		return { vars = { card.ability.extra.planets } }
 	end,
 	use = function(self, card)
@@ -1099,6 +1105,9 @@ SMODS.Consumable {
 		return may.canuse() and #G.hand.highlighted <= (card.ability.extra.targets + (card.area == G.hand and 1 or 0)) and #G.hand.highlighted > (card.area == G.hand and 1 or 0)
 	end,
 	loc_vars = function(self, info_queue, card)
+		if Engulf and card.edition then
+			info_queue[#info_queue + 1] = { key = "may_enf_gersemi", set = "Other" } 
+		end
 		return { vars = { card.ability.extra.targets } }
 	end,
 	use = function(self, card)
@@ -1130,7 +1139,10 @@ SMODS.Consumable {
             end
             local enhancement = pseudorandom_element(cen_pool, 'may_gersemi') 
 			local percent = 0.85 + (i-0.999)/(#targets-0.998)*0.3
-			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
+			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function()
+				if Engulf and card.edition then
+					targets[i]:set_edition(card.edition.key)
+				end
 				targets[i]:flip()
 				targets[i]:set_ability(enhancement, true, nil)
 				play_sound('tarot2', percent)
@@ -1250,17 +1262,17 @@ SMODS.Consumable {
 			end
 		end
 		may.h('Undiscovered Hands', '...', '...', '')
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 			play_sound('tarot1')
 			card:juice_up(0.8, 0.5)
 		return true end}))
 		may.hm('+', true)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 			play_sound('tarot1')
 			card:juice_up(0.8, 0.5)
 		return true end}))
 		may.hc('+', true)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 			play_sound('tarot1')
 			card:juice_up(0.8, 0.5)
 		return true end}))
@@ -1275,17 +1287,17 @@ SMODS.Consumable {
 			end
 		end
 		may.h('Undiscovered Hands', '...', '...', '')
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 			play_sound('tarot1')
 			card:juice_up(0.8, 0.5)
 		return true end}))
 		may.hm('+', true)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 			play_sound('tarot1')
 			card:juice_up(0.8, 0.5)
         return true end}))
 		may.hc('+', true)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 			play_sound('tarot1')
 			card:juice_up(0.8, 0.5)
 		return true end}))
@@ -1452,7 +1464,7 @@ SMODS.Consumable {
 	set = 'Planet',
 	key = 'moon',
 	pos = { x = 1, y = 3 },
-	config = { extra = { planets = 4 } },
+	config = { extra = { planets = 3 } },
 	atlas = 'planet',
 	ignore_allplanets = true,
 	loc_txt = {
@@ -1636,13 +1648,41 @@ SMODS.Consumable {
 		G.GAME.may_ring_bonuses = G.GAME.may_ring_bonuses or {}
 		G.GAME.may_ring_bonuses.lev_mult = (G.GAME.may_ring_bonuses.lev_mult or 0) + card.ability.extra.lev_mult
 		G.GAME.may_ring_bonuses.lev_chips = (G.GAME.may_ring_bonuses.lev_chips or 0) + card.ability.extra.lev_chips
-		card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'Activated!'}, colour = get_type_colour(self or card.config, card), delay = 0.45})
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = 'Activated!', colour = get_type_colour(self or card.config, card), delay = 0.45})
+		if Engulf and card.edition then
+			local added
+			G.GAME.may_ring_bonuses.editions = G.GAME.may_ring_bonuses.editions or {}
+			for k, v in pairs(G.GAME.may_ring_bonuses.editions) do
+				if v[1] == card.edition.key then
+					v[2] = v[2] + 1
+					added = true
+					break
+				end
+			end
+			if not added then
+				table.insert(G.GAME.may_ring_bonuses.editions, {card.edition.key, 1})
+			end
+		end
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		G.GAME.may_ring_bonuses = G.GAME.may_ring_bonuses or {}
 		G.GAME.may_ring_bonuses.lev_mult = (G.GAME.may_ring_bonuses.lev_mult or 0) + (card.ability.extra.lev_mult * number)
 		G.GAME.may_ring_bonuses.lev_chips = (G.GAME.may_ring_bonuses.lev_chips or 0) + (card.ability.extra.lev_chips * number)
-		card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'Activated!'}, colour = get_type_colour(self or card.config, card), delay = 0.45})
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = 'Activated!', colour = get_type_colour(self or card.config, card), delay = 0.45})
+		if Engulf and card.edition then
+			local added
+			G.GAME.may_ring_bonuses.editions = G.GAME.may_ring_bonuses.editions or {}
+			for k, v in pairs(G.GAME.may_ring_bonuses.editions) do
+				if v[1] == card.edition.key then
+					v[2] = v[2] + number
+					added = true
+					break
+				end
+			end
+			if not added then
+				table.insert(G.GAME.may_ring_bonuses.editions, {card.edition.key, number})
+			end
+		end
 	end
 }
 
@@ -1675,13 +1715,41 @@ SMODS.Consumable {
 		G.GAME.may_ring_bonuses = G.GAME.may_ring_bonuses or {}
 		G.GAME.may_ring_bonuses.score = (G.GAME.may_ring_bonuses.score or 0) + card.ability.extra.score
 		G.GAME.may_ring_bonuses.dollars = (G.GAME.may_ring_bonuses.dollars or 0) + card.ability.extra.dollars
-		card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'Activated!'}, colour = get_type_colour(self or card.config, card), delay = 0.45})
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = 'Activated!', colour = get_type_colour(self or card.config, card), delay = 0.45})
+		if Engulf and card.edition then
+			local added
+			G.GAME.may_ring_bonuses.editions = G.GAME.may_ring_bonuses.editions or {}
+			for k, v in pairs(G.GAME.may_ring_bonuses.editions) do
+				if v[1] == card.edition.key then
+					v[2] = v[2] + 1
+					added = true
+					break
+				end
+			end
+			if not added then
+				table.insert(G.GAME.may_ring_bonuses.editions, {card.edition.key, 1})
+			end
+		end
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		G.GAME.may_ring_bonuses = G.GAME.may_ring_bonuses or {}
 		G.GAME.may_ring_bonuses.score = (G.GAME.may_ring_bonuses.score or 0) + (card.ability.extra.score * number)
 		G.GAME.may_ring_bonuses.dollars = (G.GAME.may_ring_bonuses.dollars or 0) + (card.ability.extra.dollars * number)
-		card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'Activated!'}, colour = get_type_colour(self or card.config, card), delay = 0.45})
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = 'Activated!', colour = get_type_colour(self or card.config, card), delay = 0.45})
+		if Engulf and card.edition then
+			local added
+			G.GAME.may_ring_bonuses.editions = G.GAME.may_ring_bonuses.editions or {}
+			for k, v in pairs(G.GAME.may_ring_bonuses.editions) do
+				if v[1] == card.edition.key then
+					v[2] = v[2] + number
+					added = true
+					break
+				end
+			end
+			if not added then
+				table.insert(G.GAME.may_ring_bonuses.editions, {card.edition.key, number})
+			end
+		end
 	end
 }
 
@@ -1711,12 +1779,40 @@ SMODS.Consumable {
 	use = function(self, card)
 		G.GAME.may_ring_bonuses = G.GAME.may_ring_bonuses or {}
 		G.GAME.may_ring_bonuses.levels = (G.GAME.may_ring_bonuses.levels or 0) + card.ability.extra.levels
-		card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'Activated!'}, colour = get_type_colour(self or card.config, card), delay = 0.45})
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = 'Activated!', colour = get_type_colour(self or card.config, card), delay = 0.45})
+		if Engulf and card.edition then
+			local added
+			G.GAME.may_ring_bonuses.editions = G.GAME.may_ring_bonuses.editions or {}
+			for k, v in pairs(G.GAME.may_ring_bonuses.editions) do
+				if v[1] == card.edition.key then
+					v[2] = v[2] + 1
+					added = true
+					break
+				end
+			end
+			if not added then
+				table.insert(G.GAME.may_ring_bonuses.editions, {card.edition.key, 1})
+			end
+		end
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		G.GAME.may_ring_bonuses = G.GAME.may_ring_bonuses or {}
 		G.GAME.may_ring_bonuses.levels = (G.GAME.may_ring_bonuses.levels or 0) + (card.ability.extra.levels * number)
-		card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'Activated!'}, colour = get_type_colour(self or card.config, card), delay = 0.45})
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = 'Activated!', colour = get_type_colour(self or card.config, card), delay = 0.45})
+		if Engulf and card.edition then
+			local added
+			G.GAME.may_ring_bonuses.editions = G.GAME.may_ring_bonuses.editions or {}
+			for k, v in pairs(G.GAME.may_ring_bonuses.editions) do
+				if v[1] == card.edition.key then
+					v[2] = v[2] + number
+					added = true
+					break
+				end
+			end
+			if not added then
+				table.insert(G.GAME.may_ring_bonuses.editions, {card.edition.key, number})
+			end
+		end
 	end
 } 
 
@@ -1747,13 +1843,41 @@ SMODS.Consumable {
 		G.GAME.may_ring_bonuses = G.GAME.may_ring_bonuses or {}
 		G.GAME.may_ring_bonuses.mult = (G.GAME.may_ring_bonuses.mult or 0) + card.ability.extra.mult
 		G.GAME.may_ring_bonuses.chips = (G.GAME.may_ring_bonuses.chips or 0) + card.ability.extra.chips
-		card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'Activated!'}, colour = get_type_colour(self or card.config, card), delay = 0.45})
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = 'Activated!', colour = get_type_colour(self or card.config, card), delay = 0.45})
+		if Engulf and card.edition then
+			local added
+			G.GAME.may_ring_bonuses.editions = G.GAME.may_ring_bonuses.editions or {}
+			for k, v in pairs(G.GAME.may_ring_bonuses.editions) do
+				if v[1] == card.edition.key then
+					v[2] = v[2] + 1
+					added = true
+					break
+				end
+			end
+			if not added then
+				table.insert(G.GAME.may_ring_bonuses.editions, {card.edition.key, 1})
+			end
+		end
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		G.GAME.may_ring_bonuses = G.GAME.may_ring_bonuses or {}
 		G.GAME.may_ring_bonuses.mult = (G.GAME.may_ring_bonuses.mult or 0) + (card.ability.extra.mult * number)
 		G.GAME.may_ring_bonuses.chips = (G.GAME.may_ring_bonuses.chips or 0) + (card.ability.extra.chips * number)
-		card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'Activated!'}, colour = get_type_colour(self or card.config, card), delay = 0.45})
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = 'Activated!', colour = get_type_colour(self or card.config, card), delay = 0.45})
+		if Engulf and card.edition then
+			local added
+			G.GAME.may_ring_bonuses.editions = G.GAME.may_ring_bonuses.editions or {}
+			for k, v in pairs(G.GAME.may_ring_bonuses.editions) do
+				if v[1] == card.edition.key then
+					v[2] = v[2] + number
+					added = true
+					break
+				end
+			end
+			if not added then
+				table.insert(G.GAME.may_ring_bonuses.editions, {card.edition.key, number})
+			end
+		end
 	end
 }
 
@@ -1791,8 +1915,14 @@ for k, v in pairs(may.jovian_moons) do
 		loc_txt = {
 			name = v[2],
 			text = {
-				"Give {C:attention}#1#{} {C:mult}+#2#{} {C:may_ethereal}Level{} Mult", 
-				"and {C:chips}+#3#{} {C:may_ethereal}Level{} Chips"
+				{
+					"{C:purple,E:2,s:1.2}#1#{}",
+					"{X:chips,C:white,E:1}#4#{} {C:inactive,E:2}&{} {X:mult,C:white,E:1}#5#{}"
+				},
+				{
+				    "Give {C:attention}#1#{} {C:mult}+#2#{} {C:may_ethereal}Level{} Mult", 
+				    "and {C:chips}+#3#{} {C:may_ethereal}Level{} Chips"
+				},
 			}
 		},
 		pools = { JovianMoon = true }, 
@@ -1801,23 +1931,23 @@ for k, v in pairs(may.jovian_moons) do
 		end,
 		loc_vars = function(self, info_queue, card)
 			info_queue[#info_queue + 1] = { key = "may_level_multchips_tutorial", set = "Other" }
-			return { vars = { localize(card.ability.extra.hand, 'poker_hands'), card.ability.extra.lev_mult, card.ability.extra.lev_chips, } }
+			return { vars = { localize(card.ability.extra.hand, 'poker_hands'), card.ability.extra.lev_mult, card.ability.extra.lev_chips, G.GAME.hands[card.ability.extra.hand].l_chips, G.GAME.hands[card.ability.extra.hand].l_mult } }
 		end,
 		use = function(self, card)
-			may.hand_mod_lvl_multchips(card.ability.extra.hand, 'mult', -1, card.ability.extra.lev_mult)
-			may.hand_mod_lvl_multchips(card.ability.extra.hand, 'chips', -1, card.ability.extra.lev_chips)
+			may.hand_lvl_multchips(card, card.ability.extra.hand, false, {-1, card.ability.extra.lev_chips}, {-1, card.ability.extra.lev_mult})
 			if Engulf and card.edition then 
 				Engulf.EditionHand(card, card.ability.extra.hand, card.edition, 1)
-				may.ch()
 			end
+			may.ch()
+			may.refresh_score_operator()
 		end,
 		bulk_use = function(self, card, area, copier, number)
-			may.hand_mod_lvl_multchips(card.ability.extra.hand, 'mult', -1, card.ability.extra.lev_mult*number)
-			may.hand_mod_lvl_multchips(card.ability.extra.hand, 'chips', -1, card.ability.extra.lev_chips*number)
+			may.hand_lvl_multchips(card, card.ability.extra.hand, false, {-1, card.ability.extra.lev_chips * number}, {-1, card.ability.extra.lev_mult * number})
 			if Engulf and card.edition then 
-				Engulf.EditionHand(card, card.ability.extra.hand, card.edition, number)
-				may.ch()
-			end 
+				Engulf.EditionHand(card, card.ability.extra.hand, card.edition, 1)
+			end
+			may.ch()
+			may.refresh_score_operator()
 		end,
 		in_pool = function(self, args)
 			return to_big(G.GAME.hands[v[3]].level) >= to_big(6) and SMODS.is_poker_hand_visible(v[3]) and G.GAME.hands[v[3]].played >= 1, {allow_duplicates = false}
@@ -1858,8 +1988,14 @@ for k, v in pairs(may.saturnian_moons) do
 		loc_txt = {
 			name = v[2],
 			text = {
-				"Give {C:attention}#1#{} {C:money}+#2#{} Dollars",
-				"and {C:may_score}+#3#{} Score"
+				{
+					"{C:purple,E:2,s:1.2}#1#{}",
+					"{X:money,C:white,E:1}#4#{} {C:inactive,E:2}&{} {X:may_score,C:white,E:1}#5#{}"
+				}, 
+				{
+				    "Give {C:attention}#1#{} {C:money}+#2#{} Dollars",
+				    "and {C:may_score}+#3#{} Score"
+				},
 			}
 		},
 		pools = { SaturnianMoon = true }, 
@@ -1869,23 +2005,23 @@ for k, v in pairs(may.saturnian_moons) do
 		loc_vars = function(self, info_queue, card)
 			info_queue[#info_queue + 1] = { key = "may_hand_score_tutorial", set = "Other" }
 			info_queue[#info_queue + 1] = { key = "may_hand_dollars_tutorial", set = "Other" }
-			return { vars = { localize(card.ability.extra.hand, 'poker_hands'), card.ability.extra.dollars, card.ability.extra.score, } }
+			return { vars = { localize(card.ability.extra.hand, 'poker_hands'), card.ability.extra.dollars, card.ability.extra.score, (G.GAME.hands[card.ability.extra.hand].dollars or 0), (G.GAME.hands[card.ability.extra.hand].score or 0) } }
 		end,
 		use = function(self, card)
-			may.hand_mod_dollars(card.ability.extra.hand, -1, card.ability.extra.dollars)
-			may.hand_mod_score(card.ability.extra.hand, -1, card.ability.extra.score)
+			may.hand_mod_score_dollars_composite(card, card.ability.extra.hand, false, {-1, card.ability.extra.score}, {-1, card.ability.extra.dollars})
 			if Engulf and card.edition then 
 				Engulf.EditionHand(card, card.ability.extra.hand, card.edition, 1)
-				may.ch()
 			end
+			may.ch()
+			may.refresh_score_operator()
 		end,
 		bulk_use = function(self, card, area, copier, number)
-			may.hand_mod_dollars(card.ability.extra.hand, -1, card.ability.extra.dollars*number)
-			may.hand_mod_score(card.ability.extra.hand, -1, card.ability.extra.score*number)
+			may.hand_mod_score_dollars_composite(card, card.ability.extra.hand, false, {-1, card.ability.extra.score * number}, {-1, card.ability.extra.dollars * number})
 			if Engulf and card.edition then 
-				Engulf.EditionHand(card, card.ability.extra.hand, card.edition, number)
-				may.ch()
+				Engulf.EditionHand(card, card.ability.extra.hand, card.edition, 1)
 			end
+			may.ch()
+			may.refresh_score_operator()
 		end,
 		in_pool = function(self, args)
 			return to_big(G.GAME.hands[v[3]].level) >= to_big(12) and SMODS.is_poker_hand_visible(v[3]) and G.GAME.hands[v[3]].played >= 3 and G.GAME.may_endless_mode, {allow_duplicates = false}
@@ -1969,18 +2105,20 @@ SMODS.Consumable {
 		return { vars = { card.ability.extra.amount, localize(may.favhand(), 'poker_hands') } }
 	end,
 	use = function(self, card)
-		may.hand_mod_lvl_multchips(may.favhand(), 'multchips', 0, card.ability.extra.amount)
+		may.hand_lvl_multchips(card, may.favhand(), false, {0, card.ability.extra.amount}, {0, card.ability.extra.amount})
+		may.refresh_score_operator()
 		if Engulf and card.edition then 
 			Engulf.EditionHand(card, may.favhand(), card.edition, 1)
-			may.ch()
 		end
+		may.ch()
 	end,
 	bulk_use = function(self, card, area, copier, number)
-		may.hand_mod_lvl_multchips(may.favhand(), 'multchips', 0, card.ability.extra.amount ^ number)
+		may.hand_lvl_multchips(card, may.favhand(), false, {0, card.ability.extra.amount ^ number}, {0, card.ability.extra.amount ^ number})
+		may.refresh_score_operator()
 		if Engulf and card.edition then 
 			Engulf.EditionHand(card, may.favhand(), card.edition, number)
-			may.ch()
 		end
+		may.ch()
 	end,
 }
 
@@ -2061,55 +2199,19 @@ SMODS.Consumable {
 		return { vars = { localize(may.favhand(), 'poker_hands'), G.GAME.hands[may.favhand()].mult, G.GAME.hands[may.favhand()].chips } }
 	end,
 	use = function(self, card)
-		for k, v in pairs(G.GAME.hands) do
-			if G.GAME.hands[k] ~= G.GAME.hands[may.favhand()] then
-				G.GAME.hands[k].chips = G.GAME.hands[k].chips + to_big(G.GAME.hands[may.favhand()].chips)
-				G.GAME.hands[k].mult = G.GAME.hands[k].mult + to_big(G.GAME.hands[may.favhand()].mult)
-				if Engulf and card.edition then 
-					Engulf.EditionHand(card, k, card.edition, 1, true)
-					may.ch()
-				end
-			end
+		may.hand_multchips_all(card, may.favhand(), false, {-1, G.GAME.hands[may.favhand()].chips}, {-1, G.GAME.hands[may.favhand()].mult})
+		delay(0.5)
+		if Engulf and card.edition then 
+			Engulf.EditionHand(card, k, card.edition, number, true)
 		end
-		may.h('Other Hands', '...', '...', '')
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			play_sound('chips'..math.random(1, 2))
-			card:juice_up(0.8, 0.5)
-		return true end}))
-		may.hc('+'..number_format(to_big(G.GAME.hands[may.favhand()].chips)), true)
-		delay(0.5)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			play_sound('multhit1')
-			card:juice_up(0.8, 0.5)
-		return true end}))
-		may.hm('+'..number_format(to_big(G.GAME.hands[may.favhand()].mult)), true)
-		delay(0.5)
 		may.ch()
 	end,
 	bulk_use = function(self, card, area, copier, number)
-		for k, v in pairs(G.GAME.hands) do
-			if G.GAME.hands[k] ~= G.GAME.hands[may.favhand()] then
-				G.GAME.hands[k].chips = G.GAME.hands[k].chips + to_big(G.GAME.hands[may.favhand()].chips):mul(number)
-				G.GAME.hands[k].mult = G.GAME.hands[k].mult + to_big(G.GAME.hands[may.favhand()].mult):mul(number)
-				if Engulf and card.edition then 
-					Engulf.EditionHand(card, k, card.edition, number, true)
-					may.ch()
-				end
-			end
+		may.hand_multchips_all(card, may.favhand(), false, {-1, G.GAME.hands[may.favhand()].chips * number}, {-1, G.GAME.hands[may.favhand()].mult * number})
+		delay(0.5)
+		if Engulf and card.edition then 
+			Engulf.EditionHand(card, k, card.edition, number, true)
 		end
-		may.h('Other Hands', '...', '...', '')
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			play_sound('chips'..math.random(1, 2))
-			card:juice_up(0.8, 0.5)
-		return true end}))
-		may.hc('+'..number_format(to_big(G.GAME.hands[may.favhand()].chips):mul(number)), true)
-		delay(0.5)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			play_sound('multhit1')
-			card:juice_up(0.8, 0.5)
-		return true end}))
-		may.hm('+'..number_format(to_big(G.GAME.hands[may.favhand()].mult):mul(number)), true)
-		delay(0.5)
 		may.ch()
 	end,
 }
@@ -2153,55 +2255,29 @@ SMODS.Consumable {
 			chips = chips + G.GAME.hands[hand].chips
 			delay(0.3)
 		end
-		G.GAME.hands[may.favhand()].mult = G.GAME.hands[may.favhand()].mult + mult
-		G.GAME.hands[may.favhand()].chips = G.GAME.hands[may.favhand()].chips + chips
-		may.th(may.favhand())
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			play_sound('chips'..math.random(1, 2))
-			card:juice_up(0.8, 0.5)
-		return true end}))
-		may.hc('+'..number_format(chips), true)
-		delay(0.5)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			play_sound('multhit1')
-			card:juice_up(0.8, 0.5)
-		return true end}))
-		may.hm('+'..number_format(mult), true)
+		may.hand_multchips(card, may.favhand(), false, {-1, chips}, {-1, mult})
 		delay(0.5)
 		if Engulf and card.edition then 
 			Engulf.EditionHand(card, may.favhand(), card.edition, 1)
-			may.ch()
 		end
 		may.ch()
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local mult = 0
 		local chips = 0 
-		for i=1, 2*number, 1 do
+		for i=1, 2 * number, 1 do
 			local hand = may.rndhand(may.favhand())
-			may.th(hand)
+			if i < 10 then
+			    may.th(hand)
+			end
 			mult = mult + G.GAME.hands[hand].mult
 			chips = chips + G.GAME.hands[hand].chips
 			delay(0.3)
 		end
-		G.GAME.hands[may.favhand()].mult = G.GAME.hands[may.favhand()].mult + mult
-		G.GAME.hands[may.favhand()].chips = G.GAME.hands[may.favhand()].chips + chips
-		may.th(may.favhand())
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			play_sound('chips'..math.random(1, 2))
-			card:juice_up(0.8, 0.5)
-		return true end}))
-		may.hc('+'..number_format(chips), true)
-		delay(0.5)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			play_sound('multhit1')
-			card:juice_up(0.8, 0.5)
-		return true end}))
-		may.hm('+'..number_format(mult), true)
+		may.hand_multchips(card, may.favhand(), false, {-1, chips}, {-1, mult})
 		delay(0.5)
 		if Engulf and card.edition then 
 			Engulf.EditionHand(card, may.favhand(), card.edition, number)
-			may.ch()
 		end
 		may.ch()
 	end,
@@ -2291,13 +2367,16 @@ SMODS.Consumable {
 				amount = amount + v:may_get_nominal_chips()
 			end 
 		end
-		may.hand_mod_multchips_all('chips', - 1, amount, false, card)
-		may.hand_mod_lvl_multchips_all('chips', - 1, amount, false, card)
+		may.hand_multchips_all(card, nil, false, {-1, amount})
+		may.hand_lvl_multchips_all(card, false, {-1, amount})
+		may.refresh_score_operator()
 		if Engulf and card.edition then 
 			for k, v in pairs(G.GAME.hands) do
 				Engulf.EditionHand(card, k, card.edition, 1, true)
 			end 
 		end
+		may.refresh_score_operator()
+		may.ch()
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local amount = 0
@@ -2306,13 +2385,16 @@ SMODS.Consumable {
 				amount = amount + v:may_get_nominal_chips()
 			end 
 		end
-		may.hand_mod_multchips_all('chips', - 1, amount * number, false, card)
-		may.hand_mod_lvl_multchips_all('chips', - 1, amount * number, false, card)
+		may.hand_multchips_all(card, nil, false, {-1, amount * number})
+		may.hand_lvl_multchips_all(card, false, {-1, amount * number})
+		may.refresh_score_operator()
 		if Engulf and card.edition then 
 			for k, v in pairs(G.GAME.hands) do
 				Engulf.EditionHand(card, k, card.edition, number, true)
 			end 
 		end
+		may.refresh_score_operator()
+		may.ch()
 	end,
 	in_pool = function(self, args)
 		return #G.playing_cards >= 40, {allow_duplicates = false}
@@ -2353,54 +2435,16 @@ SMODS.Consumable {
 		return { vars = { localize(may.favhand(), 'poker_hands'), number_format(may.get_all_ph_mult(G.GAME.hands[may.favhand()]):mul(4)), number_format(may.get_all_ph_chips(G.GAME.hands[may.favhand()]):mul(4)) } }
 	end,
 	use = function(self, card)
-		G.GAME.hands[may.favhand()].mult = G.GAME.hands[may.favhand()].mult + may.get_all_ph_mult(G.GAME.hands[may.favhand()]):mul(4)
-		G.GAME.hands[may.favhand()].chips = G.GAME.hands[may.favhand()].chips + may.get_all_ph_chips(G.GAME.hands[may.favhand()]):mul(4)
-		may.th(may.favhand())
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('button')
-		return true end }))	
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('chips'..math.random(1, 2))
-			card:juice_up(1, 1)
-		return true end }))				
-		may.hc('+'..number_format(may.get_all_ph_mult(may.favhand()):mul(4)), true)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('button')
-		return true end }))	
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('multhit1')
-			card:juice_up(1, 1)
-		return true end }))				
-		may.hm('+'..number_format(may.get_all_ph_chips(may.favhand()):mul(4)), true)
+		may.hand_multchips(card, may.favhand(), false, {-1, may.get_all_ph_chips(G.GAME.hands[may.favhand()]):mul(4)}, {-1, may.get_all_ph_mult(G.GAME.hands[may.favhand()]):mul(4)})
 		if Engulf and card.edition then 
 			Engulf.EditionHand(card, may.favhand(), card.edition, 1)
-			may.ch()
 		end
 		may.ch()
 	end,
 	bulk_use = function(self, card, area, copier, number)
-		G.GAME.hands[may.favhand()].mult = G.GAME.hands[may.favhand()].mult + (may.get_all_ph_mult(G.GAME.hands[may.favhand()]):mul(4):mul(number))
-		G.GAME.hands[may.favhand()].chips = G.GAME.hands[may.favhand()].chips + (may.get_all_ph_chips(G.GAME.hands[may.favhand()]):mul(4):mul(number))
-		may.th(may.favhand())
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('button')
-		return true end }))	
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('chips'..math.random(1, 2))
-			card:juice_up(1, 1)
-		return true end }))				
-		may.hc('+'..number_format(may.get_all_ph_mult(may.favhand()):mul(4):mul(number)), true)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('button')
-		return true end }))	
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('multhit1')
-			card:juice_up(1, 1)
-		return true end }))				
-		may.hm('+'..number_format(may.get_all_ph_mult(may.favhand()):mul(4):mul(number)), true)
+		may.hand_multchips(card, may.favhand(), false, {-1, may.get_all_ph_chips(G.GAME.hands[may.favhand()]):mul(4 * number)}, {-1, may.get_all_ph_mult(G.GAME.hands[may.favhand()]):mul(4 * number)})
 		if Engulf and card.edition then 
 			Engulf.EditionHand(card, may.favhand(), card.edition, number)
-			may.ch()
 		end
 		may.ch()
 	end,
@@ -2579,8 +2623,8 @@ SMODS.Consumable {
 		return true end}))
 		may.hlv(balanced)
 		G.GAME.hands[may.favhand()].level = balanced
-		may.hand_mod_lvl_multchips(may.favhand(), 'mult', -1, balanced - G.GAME.hands[may.favhand()].l_mult)
-		may.hand_mod_lvl_multchips(may.favhand(), 'chips', -1, balanced - G.GAME.hands[may.favhand()].l_chips)
+		may.hand_lvl_multchips(card, may.favhand(), false, {-1, balanced - G.GAME.hands[may.favhand()].l_chips}, {-1, balanced - G.GAME.hands[may.favhand()].l_mult})
+		may.refresh_score_operator()
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 			play_sound('may_eqchip')
 		return true end}))
@@ -2711,18 +2755,20 @@ SMODS.Consumable {
 		return may.canuse()
 	end,
 	use = function(self, card)
-		may.hand_mod_lvl_multchips(may.favhand(), 'multchips', 1, 5)
+		may.hand_lvl_multchips(card, may.favhand(), false, {1, 5}, {1, 5})
+		may.refresh_score_operator()
 		if Engulf and card.edition then 
 			Engulf.EditionHand(card, may.favhand(), card.edition, 1)
-			may.ch()
 		end
+		may.ch()
 	end,
 	bulk_use = function(self, card, area, copier, number)
-		may.hand_mod_lvl_multchips(may.favhand(), 'multchips', 1, to_big(5):arrow(2, number))
+		may.hand_lvl_multchips(card, may.favhand(), false, {1, 5}, {1, 5})
+		may.refresh_score_operator()
 		if Engulf and card.edition then 
 			Engulf.EditionHand(card, may.favhand(), card.edition, 1)
-			may.ch()
 		end
+		may.ch()
 	end,
 	in_pool = function(self, args)
 		return G.GAME.may_endless_mode, { allow_duplicates = false }
@@ -2756,62 +2802,23 @@ SMODS.Consumable {
 		return may.canuse()
 	end,
 	use = function(self, card)
+		may.hand_multchips_all(card, nil, false, {1, 10}, {1, 10})
 		for k, v in pairs(G.GAME.hands) do
-			G.GAME.hands[k].chips = G.GAME.hands[k].chips:arrow(1, 10)
-			G.GAME.hands[k].mult = G.GAME.hands[k].mult:arrow(1, 10)
 			if Engulf and card.edition then 
 				Engulf.EditionHand(card, k, card.edition, 1, true)
 			end
 		end
-		delay(0.5)
-		Q(function() card:juice_up(.2, .3) return true end)
-		may.hn("All Hands")
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('button')
-		return true end }))
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('talisman_echip')
-			card:juice_up(1, 1)
-			G.ROOM.jiggle = G.ROOM.jiggle + 1.4
-		return true end }))
-		may.hc('^10', true)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('talisman_emult')
-			card:juice_up(1, 1)
-			G.ROOM.jiggle = G.ROOM.jiggle + 1
-		return true end }))
-		may.hm('^10', true)
 		may.ch()
-		delay(0.5)
 	end,
 	bulk_use = function(self, card, area, copier, number)
+		local factor = math.abs(number) == 1 and 10 or to_big(10) ^ math.abs(number)
+		may.hand_multchips_all(card, nil, false, {1, factor}, {1, factor})
 		for k, v in pairs(G.GAME.hands) do
-			G.GAME.hands[k].chips = G.GAME.hands[k].chips:arrow(1, to_big(10):arrow(2, number))
-			G.GAME.hands[k].mult = G.GAME.hands[k].mult:arrow(1, to_big(10):arrow(2, number))
 			if Engulf and card.edition then 
-				Engulf.EditionHand(card, k, card.edition, 1, true)
+				Engulf.EditionHand(card, k, card.edition, number, true)
 			end
 		end
-		delay(0.5)
-		Q(function() card:juice_up(.2, .3) return true end)
-		may.hn("All Hands")
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('button')
-		return true end }))
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('talisman_echip')
-			card:juice_up(1, 1)
-			G.ROOM.jiggle = G.ROOM.jiggle + 1.4
-		return true end }))
-		may.hc('^'..10*number, true)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('talisman_emult')
-			card:juice_up(1, 1)
-			G.ROOM.jiggle = G.ROOM.jiggle + 1
-		return true end }))
-		may.hm('^'..10*number, true)
 		may.ch()
-		delay(0.5)
 	end,
 	in_pool = function(self, args)
 		return G.GAME.may_endless_mode, { allow_duplicates = false }

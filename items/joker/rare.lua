@@ -677,7 +677,7 @@ SMODS.Joker {
 			may.add_fusion_text('Universal Collapse', 'Storm', may.get_condition('storm')),
 		}
 	},
-	config = { extra = { Xchips_gain = .2, Xchips = 0.2 } },
+	config = { extra = { Xchips_gain = .05, Xchips = 0.05 } },
 	pos = { x = 3, y = 7 },
 	cost = 6,
 	rarity = 3,
@@ -714,7 +714,7 @@ SMODS.Joker {
 			    }
             end
 		end
-		if context.end_of_round and context.cardarea == G.jokers then
+		if context.end_of_round and context.cardarea == G.jokers and not context.blueprint then
 			for k, v in pairs(G.consumeables.cards) do 
                 if v:gc().set == 'Planet' then 
                     G.E_MANAGER:add_event(Event({ func = function()
@@ -1047,7 +1047,7 @@ SMODS.Joker {
 	end
 }
 
-SMODS.Joker {
+--[[SMODS.Joker {
 	key = 'hurley',
 	loc_txt = {
 		name = 'Hurley',
@@ -1090,7 +1090,7 @@ SMODS.Joker {
 			}
 		end
 	end
-}
+}]] 
 
 SMODS.Joker {
 	key = 'bag_of_fortune',

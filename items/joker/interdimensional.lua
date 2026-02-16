@@ -56,7 +56,7 @@ SMODS.Joker {
 			    }
             end
 		end
-		if context.end_of_round and context.cardarea == G.jokers then
+		if context.end_of_round and context.cardarea == G.jokers and not context.blueprint then
             local amount = 0
 			for k, v in pairs(G.consumeables.cards) do 
                 if v:gc().set == 'Planet' then 
@@ -148,10 +148,8 @@ SMODS.Joker {
             end
 		end
 		if context.setting_blind then
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-				G.GAME.blind.chips = to_big(G.GAME.blind.chips):arrow(2, card.ability.extra.blindmult)
-				G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-			return true end}))
+			G.GAME.blind.chips = to_big(G.GAME.blind.chips):arrow(2, card.ability.extra.blindmult):normalize()
+			G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 		end
 	end
 }
@@ -168,7 +166,7 @@ SMODS.Joker {
 				"Played {C:attention}Aces{} are retriggered {C:attention}#1# times{}",
 				"and give {X:mult,C:white}^^#2#{} Mult",
 			},
-			may.add_fusion_text('Universal Collapse', 'Acum Universum', 'Have at least {C:attention}77 Aces{} in full deck'),
+			may.add_fusion_text('Universal Collapse', 'Acum Multiplexum', 'Have at least {C:attention}77 Aces{} in full deck'),
 		}
 	},
 	config = { extra = { repetitions = 4, ee_mult = 11 } },
@@ -289,6 +287,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	immutable = true,
+	custom_soul_anim = 'diskus_spin',
 	pos = { x = 4, y = 12 },
 	soul_pos = { x = 5, y = 12 },
 	cost = 100000,

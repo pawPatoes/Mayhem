@@ -3,7 +3,7 @@
 -- fix for 0 arrows = multiplication and others
 local vanf_ba = Big.arrow
 function Big:arrow(arrows, other)
-	if to_number(arrows) > 1 then
+	if to_number(to_big(arrows)) > 1 then
 		return vanf_ba(self, to_big(arrows), other)
 	else
 		if arrows == 1 then

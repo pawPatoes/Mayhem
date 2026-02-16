@@ -13,6 +13,25 @@ may.tr_constants = {
 	tr18 = to_big(to_big(1e100):arrow(1, 10)):arrow(1000000, to_big(to_big(1e100):arrow(1, 10))),
 }
 
+function may.get_transcendence_color(int)
+	if int > 0 then
+		if int >= 13 and math.random(20) == 1 and not may.conf.epileptic then
+			return int > 13 and HEX('ffffff') or HEX('edc8fa')
+		end
+		if int <= 10 then
+			return G.C.DARK_EDITION
+		elseif int == 11 then
+			return HEX('241345') --SMODS.Gradients.may_col_tran11
+		elseif int == 12 or int == 14 or int == 15 then
+			return HEX('000000')
+		elseif int == 13 then
+			return HEX('e9a8ff')
+		elseif int >= 16 then
+			return HEX('110000')
+		end
+	end
+end
+
 function may.get_transcendence(immediate, multchips)
 	if immediate then 
 		local score 
@@ -73,24 +92,28 @@ function may.calc_transcendence()
 		if may.transcendence > 0 and G.hand then
 			if ((type(SMODS.get_scoring_parameter('chips', true)) == 'number' or type(SMODS.get_scoring_parameter('chips', true)) == 'table') and (type(SMODS.get_scoring_parameter('mult', true)) == 'number' or type(SMODS.get_scoring_parameter('mult', true)) == 'table')) and to_big(G.GAME.current_scoring_calculation:func(SMODS.get_scoring_parameter('chips', true), SMODS.get_scoring_parameter('mult', true), true)) > to_big(0) then 
 				if may.transcendence > 0 then
+					if may.conf.TrParticles and G.transcendence_particles then
+						G.transcendence_particles.colours[2] = may.get_transcendence_color(may.transcendence)
+					end
 					if not G.GAME.may_override_monitor_colors then
-						ease_colour(G.C.UI_CHIPS, G.C.DARK_EDITION, 1)
-						ease_colour(G.C.UI_MULT, G.C.DARK_EDITION, 1)
+						may.ease_colour(G.C.UI_MULT, may.get_transcendence_color(may.transcendence), may.conf.TrEffects == 5)
+						may.ease_colour(G.C.UI_CHIPS, may.get_transcendence_color(may.transcendence), may.conf.TrEffects == 5)
 					end
 					if may.conf.TrEffects > 2 then
+						ease_background_colour({ new_colour = copy_table(may.get_transcendence_color(may.transcendence), may.conf.TrEffects == 5), special_colour = G.C.BLACK, contrast = 2 })
 						if may.conf.TrParticles then
 						    G.transcendence_particles.fade_alpha = 0.7 / may.transcendence
 						    G.transcendence_particles.speed = may.transcendence * 5
 						end
-						ease_colour(G.C.RED, G.C.DARK_EDITION, 1)
-						ease_colour(G.C.BLUE, G.C.DARK_EDITION, 1)
-						ease_colour(G.C.MONEY, G.C.DARK_EDITION, 1)
-						ease_colour(G.C.IMPORTANT, G.C.DARK_EDITION, 1)
-						ease_colour(G.C.GOLD, G.C.DARK_EDITION, 1)
-						ease_colour(G.C.ORANGE, G.C.DARK_EDITION, 1)
-						ease_colour(G.C.UI.BACKGROUND_DARK, G.C.DARK_EDITION, 1)
+						may.ease_colour(G.C.MONEY, may.get_transcendence_color(may.transcendence), may.conf.TrEffects == 5)	
+						may.ease_colour(G.C.RED, may.get_transcendence_color(may.transcendence), may.conf.TrEffects == 5)
+						may.ease_colour(G.C.BLUE, may.get_transcendence_color(may.transcendence), may.conf.TrEffects == 5)
+						may.ease_colour(G.C.IMPORTANT, may.get_transcendence_color(may.transcendence), may.conf.TrEffects == 5)
+						may.ease_colour(G.C.GOLD, may.get_transcendence_color(may.transcendence), may.conf.TrEffects == 5)
+						may.ease_colour(G.C.ORANGE, may.get_transcendence_color(may.transcendence), may.conf.TrEffects == 5)
+						may.ease_colour(G.C.UI.BACKGROUND_DARK, may.get_transcendence_color(may.transcendence), may.conf.TrEffects == 5)
 						if #SMODS.find_mod('GRM') ~= 0 then
-							ease_colour(G.C.PURPLE, G.C.DARK_EDITION, .6)
+							may.ease_colour(G.C.PURPLE, may.get_transcendence_color(may.transcendence), may.conf.TrEffects == 5)
 						end
 						G.ARGS.spin.real = -math.log10(may.transcendence) 
 					end
@@ -98,7 +121,7 @@ function may.calc_transcendence()
 						if may.conf.TrShakeScreen then
 							G.ROOM.may_permajiggle = (may.transcendence or 0)/4.5
 						end
-						if may.conf.TrEffects == 4 then
+						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
 							if #SMODS.find_mod('Cryptid') == 0 then
 								transcendence_glitch = may.transcendence
 							else
@@ -114,7 +137,7 @@ function may.calc_transcendence()
 						if may.conf.TrEffects > 2 then 
 							G.ARGS.spin.real = -2
 						end
-						if may.conf.TrEffects == 4 then
+						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
 							if #SMODS.find_mod('Cryptid') == 0 then
 								transcendence_glitch = 15
 							else
@@ -130,7 +153,7 @@ function may.calc_transcendence()
 						if may.conf.TrEffects > 2 then
 							G.ARGS.spin.real = -5
 						end
-						if may.conf.TrEffects == 4 then
+						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
 							if #SMODS.find_mod('Cryptid') == 0 then
 								transcendence_glitch = 70
 							else
@@ -148,7 +171,7 @@ function may.calc_transcendence()
 							G.ARGS.spin.amount = 0
 							G.ARGS.spin.eased = 0
 						end
-						if may.conf.TrEffects == 4 then
+						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
 							if #SMODS.find_mod('Cryptid') == 0 then
 								transcendence_glitch = 100
 							else
@@ -166,7 +189,7 @@ function may.calc_transcendence()
 						if may.conf.TrShakeScreen then
 							G.ROOM.may_permajiggle = 5
 						end
-						if may.conf.TrEffects == 4 then
+						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
 							if #SMODS.find_mod('Cryptid') == 0 then
 								transcendence_glitch = 50
 							else
@@ -184,7 +207,7 @@ function may.calc_transcendence()
 						if may.conf.TrShakeScreen then
 							G.ROOM.may_permajiggle = 20
 						end
-						if may.conf.TrEffects == 4 then
+						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
 							if #SMODS.find_mod('Cryptid') == 0 then
 								transcendence_glitch = 90
 							else
@@ -202,7 +225,7 @@ function may.calc_transcendence()
 							G.ARGS.spin.amount = 1
 							G.ARGS.spin.eased = 1
 						end
-						if may.conf.TrEffects == 4 then
+						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
 							if #SMODS.find_mod('Cryptid') == 0 then
 								transcendence_glitch = 1
 							else
@@ -220,7 +243,7 @@ function may.calc_transcendence()
 							G.ARGS.spin.amount = 3
 							G.ARGS.spin.eased = 3
 						end
-						if may.conf.TrEffects == 4 then
+						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
 							if #SMODS.find_mod('Cryptid') == 0 then
 								transcendence_glitch = 200
 							else
@@ -238,7 +261,7 @@ function may.calc_transcendence()
 							G.ARGS.spin.amount = 2
 							G.ARGS.spin.eased = 2
 						end
-						if may.conf.TrEffects == 4 then
+						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
 							if #SMODS.find_mod('Cryptid') == 0 then
 								transcendence_glitch = 500
 							else
@@ -250,31 +273,36 @@ function may.calc_transcendence()
 					end
 				else
 					if not G.GAME.may_override_monitor_colors then
-						ease_colour(G.C.UI_CHIPS, HEX("009dff"), 1)
-						ease_colour(G.C.UI_MULT, HEX('FE5F55'), 1)
+						may.ease_colour(G.C.UI_CHIPS, HEX("009dff"), may.conf.TrEffects == 5)
+						may.ease_colour(G.C.UI_MULT, HEX('FE5F55'), may.conf.TrEffects == 5)
+						may.ease_colour(G.C.RED, HEX('FE5F55'), may.conf.TrEffects == 5)
+						may.ease_colour(G.C.BLUE, HEX("009dff"), may.conf.TrEffects == 5)
 					end
-					ease_colour(G.C.RED, HEX('FE5F55'), 1)
-					ease_colour(G.C.BLUE, HEX("009dff"), 1)
-					ease_colour(G.C.MONEY, HEX('f3b958'), 1)
-					ease_colour(G.C.IMPORTANT, HEX('ff9a00'), 1)
-					ease_colour(G.C.GOLD, HEX('eac058'), 1)
-					ease_colour(G.C.ORANGE, HEX('fda200'), 1)
-					ease_colour(G.C.UI.BACKGROUND_DARK, HEX("7A9E9F"), 1)
+					may.ease_colour(G.C.BLUE, HEX("009dff"), may.conf.TrEffects == 5)
+					may.ease_colour(G.C.MONEY, HEX('f3b958'), may.conf.TrEffects == 5)
+					may.ease_colour(G.C.RED, HEX('f3b958'), may.conf.TrEffects == 5)
+					may.ease_colour(G.C.IMPORTANT, HEX('ff9a00'), may.conf.TrEffects == 5)
+					may.ease_colour(G.C.GOLD, HEX('eac058'), may.conf.TrEffects == 5)
+					may.ease_colour(G.C.ORANGE, HEX('fda200'), may.conf.TrEffects == 5)
+					may.ease_colour(G.C.UI.BACKGROUND_DARK, HEX("7A9E9F"), may.conf.TrEffects == 5)
 					G.C.DARK_EDITION[1] = 0.6+0.2*math.sin(G.TIMERS.REAL*1.3)
 					G.C.DARK_EDITION[3] = 0.6+0.2*(1- math.sin(G.TIMERS.REAL*1.3))
 					G.C.DARK_EDITION[2] = math.min(G.C.DARK_EDITION[3], G.C.DARK_EDITION[1])
 					G.ARGS.LOC_COLOURS.dark_edition = G.C.DARK_EDITION
 					if #SMODS.find_mod('GRM') ~= 0 then
-						ease_colour(G.C.PURPLE, HEX('8867a5'), .6)
+						may.ease_colour(G.C.PURPLE, HEX('8867a5'), may.conf.TrEffects == 5)
 					end
 					if #SMODS.find_mod('Cryptid') == 0 then
 						transcendence_glitch = 0
 					else
 						glitched_intensity = 0
 					end
-					transcendence_noise = 0.001*(G.SETTINGS.GRAPHICS.crt*0.3)/100
-					transcendence_crt = 0.16*(G.SETTINGS.GRAPHICS.crt*0.3)/100
-					transcendence_bloom = G.SETTINGS.GRAPHICS.bloom - 1
+					if not G.ROOM.may_override_crt then
+					    transcendence_noise = 0.001*(G.SETTINGS.GRAPHICS.crt*0.3)/100
+					    transcendence_crt = 0.16*(G.SETTINGS.GRAPHICS.crt*0.3)/100
+					    transcendence_bloom = G.SETTINGS.GRAPHICS.bloom - 1
+						transcendence_glitch = 0
+					end
 					G.transcendence_particles.fade_alpha = 0
                     G.transcendence_particles:fade(0, 0)
 				end
@@ -282,37 +310,41 @@ function may.calc_transcendence()
 		end
 		if may.transcendence == 0 or not G.hand then 
 			if not G.GAME.may_override_monitor_colors then
-				ease_colour(G.C.UI_CHIPS, HEX("009dff"), 1)
-				ease_colour(G.C.UI_MULT, HEX('FE5F55'), 1)
+				may.ease_colour(G.C.UI_CHIPS, HEX("009dff"), may.conf.TrEffects == 5)
+				may.ease_colour(G.C.UI_MULT, HEX('FE5F55'), may.conf.TrEffects == 5)
+				may.ease_colour(G.C.RED, HEX('FE5F55'), may.conf.TrEffects == 5)
+				may.ease_colour(G.C.BLUE, HEX("009dff"), may.conf.TrEffects == 5)
 			end
-			ease_colour(G.C.RED, HEX('FE5F55'), 1)
-			ease_colour(G.C.BLUE, HEX("009dff"), 1)
-			ease_colour(G.C.MONEY, HEX('f3b958'), 1)
-			ease_colour(G.C.IMPORTANT, HEX('ff9a00'), 1)
-			ease_colour(G.C.GOLD, HEX('eac058'), 1)
-			ease_colour(G.C.ORANGE, HEX('fda200'), 1)
-			ease_colour(G.C.UI.BACKGROUND_DARK, HEX("7A9E9F"), 1)
+			may.ease_colour(G.C.MONEY, HEX('f3b958'), may.conf.TrEffects == 5)
+			may.ease_colour(G.C.RED, HEX('FE5F55'), may.conf.TrEffects == 5)
+			may.ease_colour(G.C.IMPORTANT, HEX('ff9a00'), may.conf.TrEffects == 5)
+			may.ease_colour(G.C.GOLD, HEX('eac058'), may.conf.TrEffects == 5)
+			may.ease_colour(G.C.ORANGE, HEX('fda200'), may.conf.TrEffects == 5)
+			may.ease_colour(G.C.UI.BACKGROUND_DARK, HEX("7A9E9F"), may.conf.TrEffects == 5)
 			G.C.DARK_EDITION[1] = 0.6+0.2*math.sin(G.TIMERS.REAL*1.3)
 			G.C.DARK_EDITION[3] = 0.6+0.2*(1- math.sin(G.TIMERS.REAL*1.3))
 			G.C.DARK_EDITION[2] = math.min(G.C.DARK_EDITION[3], G.C.DARK_EDITION[1])
 			G.ARGS.LOC_COLOURS.dark_edition = G.C.DARK_EDITION
 			G.ROOM.may_permajiggle = 0
 			if #SMODS.find_mod('GRM') ~= 0 then
-				ease_colour(G.C.PURPLE, HEX('8867a5'), .6)
+				may.ease_colour(G.C.PURPLE, HEX('8867a5'), may.conf.TrEffects == 5)
 			end
 			if #SMODS.find_mod('Cryptid') == 0 then
 				transcendence_glitch = 0
 			else
 				glitched_intensity = 0
 			end
-			transcendence_noise = 0.001*(G.SETTINGS.GRAPHICS.crt*0.3)/100
-			transcendence_crt = 0.16*(G.SETTINGS.GRAPHICS.crt*0.3)/100
-			transcendence_bloom = G.SETTINGS.GRAPHICS.bloom - 1
+			if not G.ROOM.may_override_crt then
+			    transcendence_noise = 0.001*(G.SETTINGS.GRAPHICS.crt*0.3)/100
+			    transcendence_crt = 0.16*(G.SETTINGS.GRAPHICS.crt*0.3)/100
+			    transcendence_bloom = G.SETTINGS.GRAPHICS.bloom - 1
+				transcendence_glitch = 0
+			end
 			ease_background_colour_blind(G.STATES.DRAW_TO_HAND)
 			if G.transcendence_particles then
 			    G.transcendence_particles.fade_alpha = 1
 			end
-		end 
+		end
 	end
 end
 
@@ -325,48 +357,48 @@ G.FUNCS.hand_type_UI_set = function(e)
 		e.config.object:update_text()
 		local comparison = to_big(G.GAME.current_round.current_hand[e.config.type])
 		if not G.TAROT_INTERRUPT_PULSE then
-			if comparison > Big:create(1e308):arrow(4000, 2) then
+			if to_big(comparison) > Big:create(1e308):arrow(4000, 2) then
 				G.FUNCS.tsj_specific(e, 10, 640, false, true)
-			elseif comparison > Big:create(1e308):arrow(3000, 2) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(3000, 2) then
 				G.FUNCS.tsj_specific(e, 10, 320, false, true)
-			elseif comparison > Big:create(1e308):arrow(2000, 2) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(2000, 2) then
 				G.FUNCS.tsj_specific(e, 10, 160, false, true)
-			elseif comparison > Big:create(1e308):arrow(1000, 2) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(1000, 2) then
 				G.FUNCS.tsj_specific(e, 10, 80, false, true)
-			elseif comparison > Big:create(1e308):arrow(100, 10) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(100, 10) then
 				G.FUNCS.tsj_specific(e, 7.5, 40, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(10, 3) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(10, 3) then
 				G.FUNCS.tsj_specific(e, 5.5, 26, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(9, 3) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(9, 3) then
 				G.FUNCS.tsj_specific(e, 5, 24, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(8, 3) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(8, 3) then
 				G.FUNCS.tsj_specific(e, 4.5, 22, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(7, 3) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(7, 3) then
 				G.FUNCS.tsj_specific(e, 4, 20, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(6, 3) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(6, 3) then
 				G.FUNCS.tsj_specific(e, 3.5, 18, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(5, 3) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(5, 3) then
 				G.FUNCS.tsj_specific(e, 3, 16, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(4, 3) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(4, 3) then
 				G.FUNCS.tsj_specific(e, 2.5, 14, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(3, 3) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(3, 3) then
 				G.FUNCS.tsj_specific(e, 2, 12, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(2, 2) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(2, 2) then
 				G.FUNCS.tsj_specific(e, 1.35, 9, false, true)
-			elseif comparison > Big:create(1e308) ^ 2 then
+			elseif to_big(comparison) > Big:create(1e308) ^ 2 then
 				G.FUNCS.tsj_specific(e, 1, 5, false, true)
-			elseif comparison > Big:create(1e308) then
+			elseif to_big(comparison) > Big:create(1e308) then
 				G.FUNCS.tsj_specific(e, 0.75, 3, false, true)
-			elseif comparison > Big:create(1e100) then
+			elseif to_big(comparison) > Big:create(1e100) then
 				G.FUNCS.tsj_specific(e, 0.5, 1.5, false, true)
 			else
 				G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10((type(G.GAME.current_round.current_hand[e.config.type]) == 'number' or type(G.GAME.current_round.current_hand[e.config.type]) == 'table') and G.GAME.current_round.current_hand[e.config.type] or 1))))
@@ -390,78 +422,78 @@ G.FUNCS.hand_chip_total_UI_set = function(e)
 			elseif type(comparison) == 'string' then
 				comparison = Big:create(1)
 			end
-			if comparison > Big:create(1e100):arrow(1, 100) then
+			if to_big(comparison) > Big:create(1e100):arrow(1, 100) then
 				G.ROOM.jiggle = 40
-			elseif comparison > Big:create(1e100):arrow(2, 100) then
+			elseif to_big(comparison) > Big:create(1e100):arrow(2, 100) then
 				G.ROOM.jiggle = 80
-			elseif comparison > Big:create(1e100):arrow(3, 100) then
+			elseif to_big(comparison) > Big:create(1e100):arrow(3, 100) then
 				G.ROOM.jiggle = 120
-			elseif comparison > Big:create(1e100):arrow(4, 100) then
+			elseif to_big(comparison) > Big:create(1e100):arrow(4, 100) then
 				G.ROOM.jiggle = 200
-			elseif comparison > Big:create(1e100):arrow(5, 100) then
+			elseif to_big(comparison) > Big:create(1e100):arrow(5, 100) then
 				G.ROOM.jiggle = 280
-			elseif comparison > Big:create(1e100):arrow(6, 100) then
+			elseif to_big(comparison) > Big:create(1e100):arrow(6, 100) then
 				G.ROOM.jiggle = 360
-			elseif comparison > Big:create(1e100):arrow(7, 100) then
+			elseif to_big(comparison) > Big:create(1e100):arrow(7, 100) then
 				G.ROOM.jiggle = 560
-			elseif comparison > Big:create(1e100):arrow(8, 100) then
+			elseif to_big(comparison) > Big:create(1e100):arrow(8, 100) then
 				G.ROOM.jiggle = 760
-			elseif comparison > Big:create(1e100):arrow(10, 100) then
+			elseif to_big(comparison) > Big:create(1e100):arrow(10, 100) then
 				G.ROOM.jiggle = 1160
-			elseif comparison > Big:create(1e100):arrow(30, 100) then
+			elseif to_big(comparison) > Big:create(1e100):arrow(30, 100) then
 				G.ROOM.jiggle = 1600
-			elseif comparison > Big:create(1e100):arrow(150, 100) then
+			elseif to_big(comparison) > Big:create(1e100):arrow(150, 100) then
 				G.ROOM.jiggle =  2400
-			elseif comparison > Big:create(1e100):arrow(800, 100) then
+			elseif to_big(comparison) > Big:create(1e100):arrow(800, 100) then
 				G.ROOM.jiggle = 3200
-			elseif comparison > Big:create(1e100):arrow(5000, 100) then
+			elseif to_big(comparison) > Big:create(1e100):arrow(5000, 100) then
 				G.ROOM.jiggle = 4000
 			end
-			if comparison > Big:create(1e100):arrow(30, 100) then 
+			if to_big(comparison) > Big:create(1e100):arrow(30, 100) then 
 				play_sound('may_big_score3', 1, 2)
-			elseif comparison > Big:create(1e100):arrow(7, 100) then
+			elseif to_big(comparison) > Big:create(1e100):arrow(7, 100) then
 				play_sound('may_big_score2', 1, 2)
-			elseif comparison > Big:create(1e100):arrow(2, 100) then
+			elseif to_big(comparison) > Big:create(1e100):arrow(2, 100) then
 				play_sound('may_big_score1', 1, 2)
 			end
-			if comparison > Big:create(1e308):arrow(2000, 2) then
+			if to_big(comparison) > Big:create(1e308):arrow(2000, 2) then
 				G.FUNCS.tsj_specific(e, 10, 200, false, true)
-			elseif comparison > Big:create(1e308):arrow(1000, 2) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(1000, 2) then
 				G.FUNCS.tsj_specific(e, 10, 100, false, true)
-			elseif comparison > Big:create(1e308):arrow(100, 10) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(100, 10) then
 				G.FUNCS.tsj_specific(e, 7.5, 60, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(10, 3) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(10, 3) then
 				G.FUNCS.tsj_specific(e, 5.5, 33, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(9, 3) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(9, 3) then
 				G.FUNCS.tsj_specific(e, 5, 30, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(8, 3) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(8, 3) then
 				G.FUNCS.tsj_specific(e, 4.5, 27, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(7, 3) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(7, 3) then
 				G.FUNCS.tsj_specific(e, 4, 24, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(6, 3) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(6, 3) then
 				G.FUNCS.tsj_specific(e, 3.5, 21, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(5, 3) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(5, 3) then
 				G.FUNCS.tsj_specific(e, 3, 18, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(4, 3) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(4, 3) then
 				G.FUNCS.tsj_specific(e, 2.5, 15, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(3, 3) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(3, 3) then
 				G.FUNCS.tsj_specific(e, 2, 12, false, true)
 				--play_sound('may_big_number_set')
-			elseif comparison > Big:create(1e308):arrow(2, 2) then
+			elseif to_big(comparison) > Big:create(1e308):arrow(2, 2) then
 				G.FUNCS.tsj_specific(e, 1.35, 9, false, true)
-			elseif comparison > Big:create(1e308) ^ 2 then
+			elseif to_big(comparison) > Big:create(1e308) ^ 2 then
 				G.FUNCS.tsj_specific(e, 1, 5, false, true)
-			elseif comparison > Big:create(1e308) then
+			elseif to_big(comparison) > Big:create(1e308) then
 				G.FUNCS.tsj_specific(e, 0.75, 3, false, true)
-			elseif comparison > Big:create(1e100) then
+			elseif to_big(comparison) > Big:create(1e100) then
 				G.FUNCS.tsj_specific(e, 0.5, 1.5, false, true)
 				G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log((type(G.GAME.current_round.current_hand.chip_total) == 'number' or type(G.GAME.current_round.current_hand.chip_total) == 'table') and G.GAME.current_round.current_hand.chip_total or 1))))
 			end
@@ -519,6 +551,15 @@ SMODS.DrawStep {
 local upd = Game.update
 function Game:update(dt)
 	upd(self, dt)
+	if G and G.GAME then
+		if G.GAME.blind and G.hand and #G.hand.cards > 0 and (not may.booster()) and (not G.TAROT_INTERRUPT_PULSE) then
+			if (dt > 0 and math.ceil(G.TIMERS.REAL) * 10 % 2 == 0) then
+				G.E_MANAGER:add_event(Event({trigger = 'before', blocking = false, func = function()
+					may.calc_transcendence()
+				return true end}), 'other')
+			end
+		end
+	end
 	if not G.GAME then
 		if #SMODS.find_mod('Cryptid') == 0 then
 			transcendence_glitch = 0
@@ -533,10 +574,6 @@ function Game:update(dt)
 		G.ROOM.jiggle = G.ROOM.jiggle + G.ROOM.may_permajiggle
 	end
 	if G.hand and may.transcendence then 
-		G.ROOM.may_tr_flashing = math.ceil(G.TIMERS.REAL) % (3 + math.random(-2, 2)) == 0
-		if may.transcendence > 0 and may.conf.TrEffects > 2 then 
-			ease_background_colour({ new_colour = copy_table(G.C.DARK_EDITION), special_colour = G.C.BLACK, contrast = 2 })
-		end
 		if may.transcendence < 10 and may.conf.TrEffects > 2 then
 			if may.conf.TrShakeUI then 
 			    G.hand_text_area.blind_chips:juice_up(0.01, math.random(-(may.transcendence or 0)/9, (may.transcendence or 0))/9)
@@ -561,18 +598,11 @@ function Game:update(dt)
 			    G.hand_text_area.handname:juice_up(0.01, 400)
 			    G.hand_text_area.hand_level:juice_up(0.01, 400)
 			end
-			ease_colour(G.C.DARK_EDITION, SMODS.Gradients.may_col_asc_yotta, 1)
-		elseif may.transcendence == 13 then 
-			ease_colour(G.C.DARK_EDITION, HEX('ffd9fb'), 1)
-		elseif may.transcendence > 13 and may.transcendence < 16 then 
-			ease_colour(G.C.DARK_EDITION, HEX('111111'), 1)
-		elseif may.transcendence > 15 then
-			ease_colour(G.C.DARK_EDITION, HEX('550000'), 1)
 		end
-		if not may.conf.epileptic and may.transcendence >= 10 and (G.ROOM.may_tr_flashing == true) then
+		--[[if not may.conf.epileptic and may.transcendence >= 10 and (G.ROOM.may_tr_flashing == true) then
 			G.C.DARK_EDITION = HEX('ffffff')
 			G.ROOM.may_tr_flashing = false
-		end
+		end]] 
 	end
 end
 
@@ -581,7 +611,7 @@ local vanf_sb = G.FUNCS.select_blind
 function G.FUNCS.select_blind(e)
 	vanf_sb(e)
 	if may.conf.TrParticles then
-	    G.transcendence_particles = Particles(1, 1, 0, 0, {
+        G.transcendence_particles = Particles(1, 1, 0, 0, {
             timer = 0.015,
             scale = 0.3,
             initialize = true,

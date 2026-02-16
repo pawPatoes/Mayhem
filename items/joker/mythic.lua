@@ -12,15 +12,19 @@ SMODS.Joker {
 				may.pager(),
 				"Played {C:attention}cards{} with {C:dark_edition}Editions{} give {X:chips,C:white}^#1#{} Chips",
 			},
-            may.add_fusion_text('Aurora Rave', 'Planet Ibiza', may.get_condition('planet_ibiza'))
+            may.add_fusion_text('Aurora Rave', 'Planet Ibiza', may.get_condition('planet_ibiza')), 
+			{
+				"{C:inactive,E:1}Art by XZ0204{}"
+			}
 		}
 	},
 	rarity = "may_mythic",
-	atlas = 'placeholder',
+	atlas = 'joker2',
 	blueprint_compat = true,
 	demicoloncompat = true,
 	immutable = true,
-	pos = { x = 0, y = 0 },
+	pos = { x = 7, y = 3 },
+	soul_pos = { x = 8, y = 3 },
 	config = { extra = { Echip = 1.5 } },
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.Echip } }
@@ -85,6 +89,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	immutable = true,
+	custom_soul_anim = 'diskus_spin',
 	pos = { x = 0, y = 0 },
 	soul_pos = { x = 1, y = 0 },
 	cost = 100,
@@ -183,15 +188,19 @@ SMODS.Joker {
 				"{C:dark_edition}Stone Cards{} {C:attention}held in hand{} and gain", 
 				"{X:chips,C:white}+^#2#{} Chips per destroyed card",
 			},
-            may.add_fusion_text('Stone Joker', 'Bismuth Joker', may.get_condition('bismuth_joker'))
+            may.add_fusion_text('Stone Joker', 'Bismuth Joker', may.get_condition('bismuth_joker')), 
+			{
+				"{C:inactive,E:1}Art by Sertinho{}"
+			}
 		}
 	},
 	rarity = "may_mythic",
-	atlas = 'placeholder',
+	atlas = 'joker2',
 	blueprint_compat = true,
 	demicoloncompat = true,
 	immutable = true,
-	pos = { x = 0, y = 0 },
+	pos = { x = 7, y = 4 },
+	soul_pos = { x = 8, y = 4 },
 	config = { extra = { Echip = 1, Echip_gain = 0.075, } },
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }

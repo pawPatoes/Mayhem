@@ -505,7 +505,7 @@ SMODS.Consumable {
 	loc_txt = {
 		name = "Terminal Lucidity",
 		text = {
-			"Add a {C:may_ethereal,E:1}?????{}",
+			"Add an {C:may_ethereal,E:1}ERROR Seal{}",
 			"to {C:attention}#1#{} selected",
 			"card in your hand"
 		}
@@ -517,13 +517,14 @@ SMODS.Consumable {
 	misc_badge = may_rare_badge,
 	cost = 8,
 	hidden = true,
-	soul_rate = 0.02,
+	soul_rate = 0.005,
 	unlocked = true,
 	can_use = function(self, card)
 		return may.canuse() and #G.hand.highlighted <= (card.ability.max_highlighted + (card.area == G.hand and 1 or 0)) and #G.hand.highlighted > (card.area == G.hand and 1 or 0)
 	end,
 	discovered = true,
 	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = SMODS.Seals[card.ability.extra]
 		return { vars = { card.ability.max_highlighted or self.config.max_highlighted } }
 	end,
 	use = function(self, card, area, copier)
@@ -756,7 +757,7 @@ SMODS.Consumable {
 			"{C:attention}corresponding{} to its {C:dark_edition}modifiers{},", 
 			"then {C:mult}remove{} them", 
 			may.pager(45),
-			"{C:inactive,s:0.7}Modifier Cards are still WIP, so some modifiers (mainly Seals){}", 
+			"{C:inactive,s:0.7}Modifier Cards are still WIP, so some modifiers{}", 
 			"{C:inactive,s:0.7}will not be converted!{}"
 		}
 	},
@@ -794,6 +795,37 @@ SMODS.Consumable {
 	discovered = true,
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
+		if G.GAME.blind and G.hand then
+		    local other
+		    for k, v in pairs(G.hand.highlighted) do 
+			    if v ~= card then 
+				    other = v
+			    end 
+		    end
+		    local edition 
+		    local enhancement 
+		    local seal
+		    if other then
+			    if other.edition then
+				    edition = may.get_modifier_card(other.edition.key)
+			    end
+			    if other.config.center ~= G.P_CENTERS.c_base then
+				    enhancement = may.get_modifier_card(other.config.center.key)
+			    end
+			    if other.seal then 
+				    seal = may.get_modifier_card(other.seal.key)
+			    end
+			    if edition then
+				    info_queue[#info_queue + 1] = G.P_CENTERS[edition]
+			    end
+			    if enhancement then
+				    info_queue[#info_queue + 1] = G.P_CENTERS[enhancement]
+			    end
+			    if seal then
+				    info_queue[#info_queue + 1] = G.P_CENTERS[seal]
+			    end
+		    end
+		end
 	end,
 	use = function(self, card, area, copier)
 		local other
@@ -909,10 +941,10 @@ SMODS.Consumable {
 			return true end}))
 		end
 		for i=1, #G.hand.cards, 1 do
-			local percent = 1.15 - (i - 0.999) / (#G.hand.cards - 0.998) * 0.3
+			local percent = 0.85 + (i-0.999)/(#G.hand.cards-0.998)*0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function() 
 				G.hand.cards[i]:flip()
-				play_sound('tarot1', percent)
+				play_sound('tarot2', percent)
 				G.hand.cards[i]:juice_up(0.3, 0.3)
 			return true end}))
 		end
@@ -989,7 +1021,7 @@ SMODS.Consumable {
 	loc_txt = {
 		name = "Finalize",
 		text = {
-			"Apply {C:dark_edition}Alloy{}, {C:dark_edition}Vignette{}",
+			"Apply {C:dark_edition}Alloy{}, {C:dark_edition}Dichromatic{}",
 			"or {C:dark_edition}Inverted{} to {C:attention}#1#{} selected",
 			"{C:attention}playing card{}"
 		}
@@ -1010,14 +1042,14 @@ SMODS.Consumable {
 	end,
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS.e_may_alloy
-		info_queue[#info_queue + 1] = G.P_CENTERS.e_may_vignette
+		info_queue[#info_queue + 1] = G.P_CENTERS.e_may_dichromatic
 		info_queue[#info_queue + 1] = G.P_CENTERS.e_may_inverted
 		return { vars = { card.ability.extra.cards } }
 	end,
 	discovered = true,
 	use = function(self, card, area, copier)
 		for k, v in pairs(G.hand.highlighted) do
-			v:set_edition(pseudorandom_element({'e_may_alloy', 'e_may_vignette', 'e_may_inverted'}, pseudoseed('may_finalize')))
+			v:set_edition(pseudorandom_element({'e_may_alloy', 'e_may_dichromatic', 'e_may_inverted'}, pseudoseed('may_finalize')))
 		end
 		G.E_MANAGER:add_event(Event({trigger = "after", delay = 0.2, func = function()
 			G.hand:unhighlight_all()
@@ -1085,6 +1117,7 @@ SMODS.Consumable {
 	atlas = 'may_spectral',
 	cost = 4,
 	config = { extra = { copies = 1 } },
+	endless = true,
 	unlocked = true,
 	can_use = function(self, card)
 		local found = 0
@@ -1126,7 +1159,10 @@ SMODS.Consumable {
 			end 
 		end 
 		return true, { allow_duplicates = false }
-	end
+	end, 
+	in_pool = function(self, args)
+        return G.GAME.may_endless_mode, { allow_duplicates = false }
+    end
 }
 if may.conf.Mode == 2 then
 	
@@ -1416,7 +1452,9 @@ SMODS.Consumable {
 	end,
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
-		return { vars = { } }
+		if Engulf and card.edition then 
+			info_queue[#info_queue + 1] = { key = "may_enf_galileo", set = "Other" } 
+		end
 	end,
 	discovered = true,
 	use = function(self, card, area, copier)
@@ -1427,7 +1465,7 @@ SMODS.Consumable {
 				card2:add_to_deck()
 				G.consumeables:emplace(card2)
 				card:juice_up(0.3, 0.5)
-				card2:set_edition('e_negative')
+				card2:set_edition((Engulf and card.edition) and card.edition.key or 'e_negative')
 			return true end}))
 		end
 	end,
@@ -1448,7 +1486,8 @@ SMODS.Consumable {
 			"{C:chips}C{} is the card's total {C:chips}+Chips{}", 
             "{X:attention,C:white}X0.02{}",
 			may.pager(50),
-			"{C:inactive}R for modded ranks is 15{}"
+			"{C:inactive}R for modded ranks is 15{}", 
+			"{C:inactive}Ignores rankless cards{}"
 		}
 	},
 	pos = { x = 4, y = 2 },
@@ -1467,71 +1506,75 @@ SMODS.Consumable {
 	discovered = true,
 	use = function(self, card, area, copier)
 		for k, v in pairs(G.hand.cards) do
-			local R = v:get_id() or 15
-			if type(R) ~= 'number' then 
-				R = 15
+			if v:may_get_nominal_chips() then
+			    local R = v:get_id() or 15
+			    if type(R) ~= 'number' then 
+				    R = 15
+			    end
+			    local C = (v:may_get_nominal_chips() + (v.ability.perma_bonus or 0)) * 0.02
+			    for i = 1, R do
+				    level_up_hand(v, may.rndhand(), true, C)
+			    end
+			    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+				    play_sound('generic1')
+				    card:juice_up(0.3, 0.5)
+			    return true end}))
+			    may.h(number_format(R)..' Hands', '...', '...', '')
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+					play_sound('tarot1')
+					v:juice_up(0.8, 0.5)
+				return true end}))
+				may.hm('+', true)
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+					play_sound('tarot1')
+					v:juice_up(0.8, 0.5)
+				return true end}))
+				may.hc('+', true)
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+					play_sound('tarot1')
+					v:juice_up(0.8, 0.5)
+				return true end}))
+				may.hlv('+'..number_format(C), true)
+				delay(1.3)
+				may.ch()
 			end
-			local C = (v:may_get_nominal_chips() + (v.ability.perma_bonus or 0)) * 0.02
-			for i = 1, R do
-				level_up_hand(v, may.rndhand(), true, C)
-			end
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-				play_sound('generic1')
-				card:juice_up(0.3, 0.5)
-			return true end}))
-			may.h(number_format(R)..' Hands', '...', '...', '')
-		    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			    play_sound('tarot1')
-			    v:juice_up(0.8, 0.5)
-		    return true end}))
-		    may.hm('+', true)
-		    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			    play_sound('tarot1')
-			    v:juice_up(0.8, 0.5)
-		    return true end}))
-		    may.hc('+', true)
-		    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			    play_sound('tarot1')
-			    v:juice_up(0.8, 0.5)
-		    return true end}))
-		    may.hlv('+'..number_format(C), true)
-		    delay(1.3)
-		    may.ch()
 		end
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		for k, v in pairs(G.hand.cards) do
-			local R = v:get_id() or 15
-			if type(R) ~= 'number' then 
-				R = 15
-			end
-            R = R * number
-			local C = (v:may_get_nominal_chips() + (v.ability.perma_bonus or 0)) * 0.02
-			for i = 1, R do
-				level_up_hand(v, may.rndhand(), true, C)
-			end
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-				play_sound('generic1')
-				card:juice_up(0.3, 0.5)
-			return true end}))
-			may.h(number_format(R)..' Hands', '...', '...', '')
-		    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			    play_sound('tarot1')
-			    v:juice_up(0.8, 0.5)
-		    return true end}))
-		    may.hm('+', true)
-		    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			    play_sound('tarot1')
-			    v:juice_up(0.8, 0.5)
-		    return true end}))
-		    may.hc('+', true)
-		    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			    play_sound('tarot1')
-			    v:juice_up(0.8, 0.5)
-		    return true end}))
-		    may.hlv('+'..number_format(C), true)
-		    delay(1.3)
-		    may.ch()
+			if v:may_get_nominal_chips() then
+			    local R = v:get_id() or 15
+			    if type(R) ~= 'number' then 
+				    R = 15
+			    end
+                R = R * number
+			    local C = (v:may_get_nominal_chips() + (v.ability.perma_bonus or 0)) * 0.02
+			    for i = 1, R do
+				    level_up_hand(v, may.rndhand(), true, C)
+			    end
+			    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+				    play_sound('generic1')
+				    card:juice_up(0.3, 0.5)
+			    return true end}))
+			    may.h(number_format(R)..' Hands', '...', '...', '')
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+					play_sound('tarot1')
+					v:juice_up(0.8, 0.5)
+				return true end}))
+				may.hm('+', true)
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+					play_sound('tarot1')
+					v:juice_up(0.8, 0.5)
+				return true end}))
+				may.hc('+', true)
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+					play_sound('tarot1')
+					v:juice_up(0.8, 0.5)
+				return true end}))
+				may.hlv('+'..number_format(C), true)
+				delay(1.3)
+				may.ch()
+		    end
 		end
 	end,
 }
@@ -1643,11 +1686,22 @@ SMODS.Consumable {
 		}
 	},
 	pos = { x = 0, y = 2 },
+	soul_pos = { x = 1, y = 2 },
 	atlas = 'may_spectral',
 	misc_badge = may_uncommon_badge,
 	cost = 17,
 	unlocked = true,
 	endless = true,
+	custom_soul_anim = function(self, layer)
+		--[[local scale_mod = math.sin(G.TIMERS.REAL / 3) / 6
+		local rotate_mod = 0.1 * math.sin(1.219 * G.TIMERS.REAL) + 0.07 * math.sin((G.TIMERS.REAL) * math.pi * 5) * (1 - (G.TIMERS.REAL - math.floor(G.TIMERS.REAL))) ^ 2 + (math.random(-500, 500) / 10000)]]
+		
+		local scale_mod = 0.05 + 0.03 * math.sin(22 * G.TIMERS.REAL) + 0.15 * math.sin((G.TIMERS.REAL - math.floor(G.TIMERS.REAL)) * math.pi * 20) * (1 - (G.TIMERS.REAL - math.floor(G.TIMERS.REAL))) ^ 3
+		local rotate_mod = 0.05 + 0.08 * math.cos(22 * G.TIMERS.REAL) + 0.6 * math.cos((G.TIMERS.REAL - math.floor(G.TIMERS.REAL + 1)) * math.pi * 25) * (0.7 - (G.TIMERS.REAL - math.floor(G.TIMERS.REAL))) ^ 3
+
+		self.children.floating_sprite:draw_shader('dissolve', 0, nil, nil, self.children.center, scale_mod, rotate_mod, nil, nil, nil, 0.6)
+		self.children.floating_sprite:draw_shader('dissolve',nil, nil, nil, self.children.center, scale_mod, rotate_mod)
+	end,
 	can_use = function(self, card)
 		return may.canuse() and #G.jokers.cards + G.GAME.joker_buffer < G.jokers.config.card_limit
 	end,
