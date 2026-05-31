@@ -84,5 +84,6 @@ If you have any questions or problems, feel free to start a discussion thread on
 ** **
 
 ** **
-![Nacho](https://codeberg.org/BalatroMayhem/Mayhem/raw/branch/main/repoassets/mrnachohd.png)
+![Nacho](https://codeberg.org/BalatroMayhem/Mayhem/raw/branch/main/repoassets/mrnachohd.png)  
+
 Mr. Nacho awaits you.
