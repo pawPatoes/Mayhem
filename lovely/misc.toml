@@ -1,0 +1,383 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 1000
+
+# Error message if dependencies are missing because people are incapable or reading 
+[[patches]] 
+[patches.pattern]
+target = "game.lua"
+pattern = "function Game:splash_screen()"
+position = "after"
+payload = '''
+if not Noituus then
+    error("MAYHEM: Missing dependency: Noituus | Make sure it is installed properly.") 
+end
+	
+if (not Noituus) and Overflow then
+    error("MAYHEM: Overflow installed! Mayhem as of recently requires Noituus, a mod with similar functionality. Replace Overflow with it.")
+end'''
+match_indent = true
+overwrite = true
+
+# Playing card chip multiplier (brown deck, white seal)
+[[patches]] 
+[patches.pattern]
+target = "card.lua"
+pattern = "return self.base.nominal + self.ability.bonus + (self.ability.perma_bonus or 0)"
+position = "at"
+payload = '''
+if not G.GAME then
+	return (self.base.nominal + self.ability.bonus + (self.ability.perma_bonus or 0)) * (self.ability.nominal_multiplier or 1)
+else
+	return (self.base.nominal + self.ability.bonus + (self.ability.perma_bonus or 0)) * (G.GAME.playing_card_multiplier or 1) * (self.ability.nominal_multiplier or 1)
+end'''
+match_indent = true
+overwrite = true
+
+[[patches]] 
+[patches.pattern]
+target = "card.lua"
+pattern = "nominal_chips = self.base.nominal > 0 and self.base.nominal or nil,"
+position = "at"
+payload = "nominal_chips = (self.base.nominal > 0 and self.base.nominal or 0) * (G.GAME and G.GAME.playing_card_multiplier or 1) * (self.ability.nominal_multiplier or 1),"
+match_indent = true
+overwrite = true
+
+# Midground sprites
+# taken from Cryptid
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if self.config.center.soul_pos and (self.config.center.discovered or self.bypass_discovery_center) then"
+position = "after"
+payload = '''
+	if self.config.center.soul_pos and self.config.center.soul_pos.extra and (self.config.center.discovered or self.bypass_discovery_center) then
+		local scale_mod = 0.07-- + 0.02*math.cos(1.8*G.TIMERS.REAL) + 0.00*math.cos((G.TIMERS.REAL - math.floor(G.TIMERS.REAL))*math.pi*14)*(1 - (G.TIMERS.REAL - math.floor(G.TIMERS.REAL)))^3
+		local rotate_mod = 0--0.05*math.cos(1.219*G.TIMERS.REAL) + 0.00*math.cos((G.TIMERS.REAL)*math.pi*5)*(1 - (G.TIMERS.REAL - math.floor(G.TIMERS.REAL)))^2
+		self.children.floating_sprite2:draw_shader('dissolve',0, nil, nil, self.children.center,scale_mod, rotate_mod,nil, 0.1--[[ + 0.03*math.cos(1.8*G.TIMERS.REAL)--]],nil, 0.6)
+		self.children.floating_sprite2:draw_shader('dissolve', nil, nil, nil, self.children.center, scale_mod, rotate_mod)
+	end
+'''
+match_indent = true
+
+# Dynatext pulse screen shake 
+[[patches]]
+[patches.pattern]
+target = "engine/text.lua"
+pattern = "letter.r = letter.r + (G.SETTINGS.reduced_motion and 0 or 1)*(letter.scale - 1)*(0.02*(-#self.strings[self.focused_string].letters/2 - 0.5 + k))"
+position = "after"
+payload = '''
+if to_number(letter.scale) > 8 and not may.invalid_number(letter.scale) and to_big(letter.scale) ~= R.NaN and to_big(letter.scale) ~= R.POSITIVEINFINITY and to_big(letter.scale) ~= R.NEGATIVEINFINITY then
+	G.ROOM.jiggle = math.min(G.ROOM.jiggle + to_number(math.min(to_big(10), ((letter.scale/24) * may.conf.Shakiness.screen_shake))), 250)
+end
+'''
+match_indent = true
+
+# Plasma deck stuff
+[[patches]]
+[patches.pattern]
+target = "back.lua"
+pattern = '''G.E_MANAGER:add_event(Event({
+            func = (function()
+                local text = localize('k_balanced')
+                play_sound('gong', 0.94, 0.3)
+                play_sound('gong', 0.94*1.5, 0.2)
+                play_sound('tarot1', 1.5)
+                ease_colour(G.C.UI_CHIPS, {0.8, 0.45, 0.85, 1})
+                ease_colour(G.C.UI_MULT, {0.8, 0.45, 0.85, 1})
+                attention_text({
+                    scale = 1.4, text = text, hold = 2, align = 'cm', offset = {x = 0,y = -2.7},major = G.play
+                })
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    blockable = false,
+                    blocking = false,
+                    delay =  4.3,
+                    func = (function() 
+                            ease_colour(G.C.UI_CHIPS, G.C.BLUE, 2)
+                            ease_colour(G.C.UI_MULT, G.C.RED, 2)
+                        return true
+                    end)
+                }))
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    blockable = false,
+                    blocking = false,
+                    no_delete = true,
+                    delay =  6.3,
+                    func = (function() 
+                        G.C.UI_CHIPS[1], G.C.UI_CHIPS[2], G.C.UI_CHIPS[3], G.C.UI_CHIPS[4] = G.C.BLUE[1], G.C.BLUE[2], G.C.BLUE[3], G.C.BLUE[4]
+                        G.C.UI_MULT[1], G.C.UI_MULT[2], G.C.UI_MULT[3], G.C.UI_MULT[4] = G.C.RED[1], G.C.RED[2], G.C.RED[3], G.C.RED[4]
+                        return true
+                    end)
+                }))
+                return true
+            end)
+        }))'''
+position = "after"
+payload = '''G.E_MANAGER:add_event(Event({
+            func = (function()
+                local text = localize('k_balanced')
+                play_sound('gong', 0.94, 0.3)
+                play_sound('gong', 0.94*1.5, 0.2)
+                play_sound('tarot1', 1.5)
+				G.GAME.may_override_monitor_colors = true
+                ease_colour(G.C.UI_CHIPS, {0.8, 0.45, 0.85, 1})
+                ease_colour(G.C.UI_MULT, {0.8, 0.45, 0.85, 1})
+                attention_text({
+                    scale = 1.4, text = text, hold = 2, align = 'cm', offset = {x = 0,y = -2.7},major = G.play
+                })
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    blockable = false,
+                    blocking = false,
+                    delay =  4.3,
+                    func = (function() 
+                            ease_colour(G.C.UI_CHIPS, G.C.BLUE, 2)
+                            ease_colour(G.C.UI_MULT, G.C.RED, 2)
+                        return true
+                    end)
+                }))
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    blockable = false,
+                    blocking = false,
+                    no_delete = true,
+                    delay =  6.3,
+                    func = (function() 
+                        G.C.UI_CHIPS[1], G.C.UI_CHIPS[2], G.C.UI_CHIPS[3], G.C.UI_CHIPS[4] = G.C.BLUE[1], G.C.BLUE[2], G.C.BLUE[3], G.C.BLUE[4]
+                        G.C.UI_MULT[1], G.C.UI_MULT[2], G.C.UI_MULT[3], G.C.UI_MULT[4] = G.C.RED[1], G.C.RED[2], G.C.RED[3], G.C.RED[4]
+                        return true
+                    end)
+                }))
+				G.GAME.may_override_monitor_colors = false
+                return true
+            end)
+        }))'''
+match_indent = true
+
+# Make Cryptid Redeemed Deck not give Transcend Vouchers
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Cryptid "items/deck.lua"]'''
+pattern = "if vv == self.config.center.key then"
+position = "at"
+payload = '''if vv == self.config.center.key and v.key ~= 'v_may_transcend_1' and v.key ~= 'v_may_transcend_2' then'''
+match_indent = true
+
+# Enter shop context
+# Taken from MoreFluff
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+match_indent = true
+pattern = '''
+    for i = 1, #G.GAME.tags do
+        G.GAME.tags[i]:apply_to_run({type = 'voucher_add'})
+    end
+'''
+position = 'after'
+payload = '''
+    SMODS.calculate_context({ may_enter_shop = true, main_eval=true })
+    for i=1, (G.GAME.may_mega_boosters or 0) do 
+        SMODS.add_booster_to_shop('p_buffoon_mega_1')
+    end
+	may.handle_special_vouchers()
+'''
+
+# why
+[[patches]] 
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''                    if (not v.config.softlock or G.GAME.hands[v.config.hand_type].played > 0) then'''
+position = "at"
+payload = '''if (not v.config.softlock or (G.GAME.hands[v.config.hand_type or ""].played or 0) > 0) then'''
+match_indent = true
+overwrite = true
+
+# Disable tutorial
+[[patches]] 
+[patches.pattern]
+target = "globals.lua"
+pattern = '''self.F_SKIP_TUTORIAL = false'''
+position = "at"
+payload = '''self.F_SKIP_TUTORIAL = true'''
+match_indent = true
+overwrite = true
+
+# Disable displays if necessary to prevent crashing
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "G.GAME.blind:load(saveTable.BLIND)"
+position = "after"
+payload = '''
+	if #(G.GAME.may_displays or {}) ~= 0 then
+        G.E_MANAGER:add_event(Event({func = function()
+		    for k, v in pairs(G.GAME.may_displays) do
+				v = nil
+		    end 
+		    G.GAME.may_displays = {}
+		return true end})) 
+	end
+	if #(G.play.cards or {}) ~= 0 then 
+	    G.E_MANAGER:add_event(Event({func = function()
+		    for k, v in pairs(G.play.cards) do
+			    if v:is_playing_card() then 
+				    draw_card(v.area, G.discard, 1, 'up', true, v, nil, true)
+				elseif v:gc().set == 'Joker' then
+				    v.area:remove_card(v)
+				    G.jokers:emplace(v)
+				elseif v.ability.consumeable or v:gc().set == 'Voucher' then
+				    v.area:remove_card(v)
+				    G.consumeables:emplace(v)
+				else
+				    v:remove()
+			    end
+		    end 
+		return true end}))
+	end
+	may.ch()
+	may.refresh_score_operator(nil, true)
+	if may.conf.TrParticles then
+        G.transcendence_particles = Particles(1, 1, 0, 0, {
+            timer = 0.015,
+            scale = 0.3,
+            initialize = true,
+            lifespan = 3,
+            speed = 5,
+            padding = -1,
+            attach = G.ROOM_ATTACH,
+            colours = { G.C.BLACK, G.C.DARK_EDITION },
+            fill = true
+        })
+        G.transcendence_particles.fade_alpha = 1
+	end
+'''
+match_indent = true
+
+# ???????
+[[patches]] 
+[patches.pattern]
+target = '''=[SMODS _ "src/game_object.lua"]'''
+pattern = '''for i = 1, 4 do'''
+position = "before"
+payload = '''if not start_colour then return end'''
+match_indent = true
+overwrite = true
+
+# Allow UI to appear on any object in any card area
+[[patches]] 
+[patches.pattern]
+target = '''card.lua'''
+pattern = '''if self.ability.consumeable or self.ability.set == 'Joker' or (self.area and self.area == G.pack_cards) then'''
+position = "at"
+payload = '''if (self.area and self.area.config.type == 'joker') or (self.area == G.hand and self.ability.consumeable) or (self.area and self.area == G.pack_cards) or (self.area and self.area.config.type == 'voucher' and may.has_card('v_may_reconfigure')) then'''
+match_indent = true
+
+# Allow Vouchers to be selected in Run Info tab
+[[patches]] 
+[patches.pattern]
+target = '''cardarea.lua'''
+pattern = '''self.config.type == 'consumeable' or'''
+position = "after"
+payload = '''self.config.type == 'voucher' or'''
+match_indent = true
+
+# Prevent background weirdness when inside a pack during a blind
+[[patches]] 
+[patches.pattern]
+target = '''game.lua'''
+pattern = '''ease_background_colour_blind(G.STATES.DRAW_TO_HAND)'''
+position = "at"
+payload = '''
+    if not G.pack_cards then
+	    ease_background_colour_blind(G.STATES.DRAW_TO_HAND)
+	end
+'''
+match_indent = true
+
+# ???????
+[[patches]]
+[patches.pattern]
+target = 'engine/ui.lua'
+pattern = "if self.config.colour[4] > 0.01 then"
+position = 'at'
+payload = "if (self.config and self.config.colour and self.config.colour[4] or 0) > 0.01 then"
+match_indent = true
+
+# ¿¿¿¿¿¿¿
+[[patches]]
+[patches.pattern]
+target = 'card.lua'
+pattern = "if next(self.eligible_strength_jokers) then return true end"
+position = 'at'
+payload = '''
+for k, v in pairs(G.jokers.cards) do
+	if not v.edition then
+		return true
+	end
+end
+return false
+'''
+match_indent = true
+
+# WHY
+[[patches]]
+[patches.pattern]
+target = 'card.lua'
+pattern = "if next(self.eligible_editionless_jokers) then return true end"
+position = 'at'
+payload = '''
+for k, v in pairs(G.jokers.cards) do
+	if not v.edition then
+		return true
+	end
+end
+return false
+'''
+match_indent = true
+
+# Probably fixing some crazy 5-way mod conflict but oh well
+[[patches]]
+[patches.pattern]
+target = 'card.lua'
+pattern = "if self.ability.perishable and self.ability.perish_tally > 0 then"
+position = 'at'
+payload = '''if self.ability.perishable and (self.ability.perish_tally or 0) > 0 then'''
+match_indent = true
+
+# Infinite consumable selection limit
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = "{card_limit = self.GAME.starting_params.consumable_slots, type = 'joker', highlight_limit = 1, negative_info = 'consumable'})"
+position = 'at'
+payload = '''{card_limit = self.GAME.starting_params.consumable_slots, type = 'joker', highlight_limit = 1e300, negative_info = 'consumable'})'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/button_callbacks.lua'
+pattern = "local dont_dissolve = nil"
+position = 'at'
+payload = '''local dont_dissolve = card:gc().may_persist_after_use or G.GAME.may_no_dissolve_after_use'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = "if G.shop_vouchers and G.shop_vouchers.cards then"
+position = 'before'
+payload = '''
+if G.vouchers then
+    for k2, v2 in pairs(G.vouchers.cards) do
+	    if v2:gc().key == v.key then
+		    include = false
+			break
+		end
+	end
+end 
+'''
+match_indent = true

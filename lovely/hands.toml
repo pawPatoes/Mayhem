@@ -1,0 +1,240 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 1000
+
+# Rational Poker Hand level fixes and more level colors
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = "colours = {(to_big(G.GAME.hands[cfg.hand_type].level)==to_big(1) and G.C.UI.TEXT_DARK or G.C.HAND_LEVELS[to_number(to_big(math.min(7, G.GAME.hands[cfg.hand_type].level)))])}"
+position = "at"
+payload = '''colours = {(to_big(G.GAME.hands[cfg.hand_type].level):floor() == to_big(1) and G.C.UI.TEXT_DARK or to_big(G.GAME.hands[cfg.hand_type].level):floor() == to_big(0) and G.C.RED or G.C.HAND_LEVELS[to_number(to_big(math.min(G.C.MAX_HAND_LEVEL_COLOR, G.GAME.hands[cfg.hand_type].level)):floor())])}'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''colours = {(to_big(G.GAME.hands[cfg.hand_type].level)==to_big(1) and G.C.UI.TEXT_DARK or G.C.HAND_LEVELS[math.floor(to_number(math.min(7, G.GAME.hands[cfg.hand_type].level)))])}'''
+position = "at"
+payload = '''colours = {(to_big(G.GAME.hands[cfg.hand_type].level)==to_big(1) and G.C.UI.TEXT_DARK or G.C.HAND_LEVELS[math.floor(to_number(math.min(G.C.MAX_HAND_LEVEL_COLOR, G.GAME.hands[cfg.hand_type].level)))])}'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''G.hand_text_area.hand_level.config.colour = G.C.HAND_LEVELS[math.min(vals.level, 7)]'''
+position = "at"
+payload = '''G.hand_text_area.hand_level.config.colour = G.C.HAND_LEVELS[math.min(math.floor(vals.level), G.C.MAX_HAND_LEVEL_COLOR)]'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''G.hand_text_area.hand_level.config.colour = G.C.HAND_LEVELS[math.floor(to_number(math.min(vals.level, 7)))]'''
+position = "at"
+payload = '''G.hand_text_area.hand_level.config.colour = G.C.HAND_LEVELS[math.floor(to_number(math.min(vals.level, G.C.MAX_HAND_LEVEL_COLOR)))]'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''G.hand_text_area.hand_level.config.colour = G.C.HAND_LEVELS[to_number(to_big(math.min(vals.level, 7)))]'''
+position = "at"
+payload = '''G.hand_text_area.hand_level.config.colour = G.C.HAND_LEVELS[to_number(to_big(math.min(math.floor(vals.level), G.C.MAX_HAND_LEVEL_COLOR)))]'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.HAND_LEVELS[to_big(math.min(7, G.GAME.hands[handname].level)):to_number()], minw = 1.5, outline = 0.8, outline_colour = G.C.WHITE}, nodes={'''
+position = "at"
+payload = '''{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.HAND_LEVELS[to_big(math.min(G.C.MAX_HAND_LEVEL_COLOR, G.GAME.hands[handname].level)):to_number()], minw = 1.5, outline = 0.8, outline_colour = G.C.WHITE}, nodes={'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.HAND_LEVELS[math.floor(to_number(math.min(7, G.GAME.hands[handname].level)))], minw = 1.5, outline = 0.8, outline_colour = G.C.WHITE}, nodes={'''
+position = "at"
+payload = '''{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.HAND_LEVELS[math.floor(to_number(math.min(G.C.MAX_HAND_LEVEL_COLOR, G.GAME.hands[handname].level)))], minw = 1.5, outline = 0.8, outline_colour = G.C.WHITE}, nodes={'''
+match_indent = true
+
+# Misc Poker Hand values
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''G.GAME.hands[text].visible = true'''
+position = "after"
+payload = '''
+	if G.GAME.hands[text].dollars then
+		ease_dollars(G.GAME.hands[text].dollars)
+	end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''-- context.after calculations'''
+position = "before"
+payload = '''
+	if text then
+		if to_big(G.GAME.hands[text].score or 0) > to_big(0) then
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function() 
+				G.GAME.chips = to_big(G.GAME.chips):add(G.GAME.hands[text].score)
+				card_eval_status_text(G.HUD:get_UIE_by_ID('chip_UI_count'), 'extra', nil, nil, nil, { message = (to_big(G.GAME.hands[text].score) >= to_big(0) and '+' or '-')..number_format(math.abs(G.GAME.hands[text].score)), colour = may.C.score, delay = 0.45, sound = 'may_addscore'})
+			return true end}))
+		end
+	end
+	if to_big(G.GAME.chips) >= to_big(G.GAME.blind.chips) * 1e100 then
+	    G.GAME.may_tr1_reached = true 
+	end
+'''
+match_indent = true
+
+# Failsafe
+[[patches]]
+[patches.pattern]
+target = '''functions/common_events.lua'''
+pattern = "G.GAME.hands[hand].level = math.max(0, G.GAME.hands[hand].level + amount)"
+position = "at"
+payload = '''G.GAME.hands[hand or 'High Card'].level = math.max(0, to_big(G.GAME.hands[hand or 'High Card'].level) + to_big(amount))'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/utils.lua"]'''
+pattern = "if not instant then delay(1.3) end"
+position = "before"
+payload = '''
+    if args.level_up then
+        if G.GAME.may_temp_ring_levels and not instant then
+		    may.hlv((G.GAME.may_temp_ring_levels > 0 and '+' or '-')..number_format(math.abs(G.GAME.may_temp_ring_levels)))
+		    G.GAME.may_temp_ring_levels = nil
+	    end
+	    if G.GAME.may_ring_bonuses then
+		    if (G.GAME.may_ring_bonuses.lev_mult or 0) ~= 0 or (G.GAME.may_ring_bonuses.lev_chips or 0) ~= 0 then
+			    may.hand_lvl_multchips(args.from, hand, instant, (G.GAME.may_ring_bonuses.lev_chips or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.lev_chips or 0} or nil, (G.GAME.may_ring_bonuses.lev_mult or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.lev_mult or 0} or nil)
+			    G.GAME.may_ring_bonuses.lev_mult = 0
+				G.GAME.may_ring_bonuses.lev_chips = 0
+		    end
+		    if (G.GAME.may_ring_bonuses.score or 0) ~= 0 or (G.GAME.may_ring_bonuses.dollars or 0) ~= 0  then
+			    may.hand_mod_score_dollars_composite(args.from, hand, instant, (G.GAME.may_ring_bonuses.score or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.score} or nil, (G.GAME.may_ring_bonuses.dollars or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.dollars} or nil)
+			    G.GAME.may_ring_bonuses.score = 0
+			    G.GAME.may_ring_bonuses.dollars = 0 
+		    end
+		    if (G.GAME.may_ring_bonuses.mult or 0) ~= 0 or (G.GAME.may_ring_bonuses.chips or 0) ~= 0 then
+			    may.hand_multchips(args.from, hand, instant, (G.GAME.may_ring_bonuses.chips or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.chips} or nil, (G.GAME.may_ring_bonuses.mult or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.mult} or nil)
+			    G.GAME.may_ring_bonuses.mult = 0
+			    G.GAME.may_ring_bonuses.chips = 0
+		    end
+			--[[if #G.GAME.may_ring_bonuses.editions ~= 0 then
+				for k, v in pairs(G.GAME.may_ring_bonuses.editions) do
+					Engulf.EditionHand(card, hand, v[1], v[2], instant)
+				end
+			end]]
+			may.refresh_score_operator()
+	    end
+	end
+	if args.level_up and not args.no_context then
+        SMODS.calculate_context({level_up_hand = true, other_card = args.from, hand = hand, instant = instant, amount = args.level_up or 1})
+    end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/utils.lua"]'''
+pattern = "if not instant and not displayed then"
+position = "before"
+payload = '''
+if args.instant and args.level_up then
+    if args.level_up then
+	    if G.GAME.may_ring_bonuses then
+		    if (G.GAME.may_ring_bonuses.lev_mult or 0) ~= 0 or (G.GAME.may_ring_bonuses.lev_chips or 0) ~= 0 then
+			    may.hand_lvl_multchips(args.from, args.hands[1], instant, (G.GAME.may_ring_bonuses.lev_chips or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.lev_chips or 0} or nil, (G.GAME.may_ring_bonuses.lev_mult or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.lev_mult or 0} or nil)
+			    G.GAME.may_ring_bonuses.lev_mult = 0
+				G.GAME.may_ring_bonuses.lev_chips = 0
+		    end
+		    if (G.GAME.may_ring_bonuses.score or 0) ~= 0 or (G.GAME.may_ring_bonuses.dollars or 0) ~= 0  then
+			    may.hand_mod_score_dollars_composite(args.from, args.hands[1], instant, (G.GAME.may_ring_bonuses.score or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.score} or nil, (G.GAME.may_ring_bonuses.dollars or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.dollars} or nil)
+			    G.GAME.may_ring_bonuses.score = 0
+			    G.GAME.may_ring_bonuses.dollars = 0 
+		    end
+		    if (G.GAME.may_ring_bonuses.mult or 0) ~= 0 or (G.GAME.may_ring_bonuses.chips or 0) ~= 0 then
+			    may.hand_multchips(args.from, args.hands[1], instant, (G.GAME.may_ring_bonuses.chips or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.chips} or nil, (G.GAME.may_ring_bonuses.mult or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.mult} or nil)
+			    G.GAME.may_ring_bonuses.mult = 0
+			    G.GAME.may_ring_bonuses.chips = 0
+		    end
+			--[[if #G.GAME.may_ring_bonuses.editions ~= 0 then
+				for k, v in pairs(G.GAME.may_ring_bonuses.editions) do
+					Engulf.EditionHand(card, hand, v[1], v[2], instant)
+				end
+			end]]
+			may.refresh_score_operator()
+	    end
+	end
+	if args.level_up and not args.no_context then
+	    for k, v in ipairs(args.hands) do
+		    SMODS.calculate_context({level_up_hand = true, other_card = args.from, hand = v, instant = instant, amount = args.level_up or 1})
+		end
+    end
+end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/utils.lua"]'''
+pattern = "args.hands = args.hands or get_keys(G.GAME.hands)"
+position = "after"
+payload = '''
+-- Scrapped Astronomy II effect
+--[[local may_astronomy2
+if args.level_up then
+    if #SMODS.find_card('v_may_astronomy_2') ~= 0 then
+	    args.hands = get_keys(G.GAME.hands)
+		args.level_up = (args.level_up or 1)  * #SMODS.find_card('v_may_astronomy_2')
+		may_astronomy2 = true
+	end
+end]] 
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/utils.lua"]'''
+pattern = "for _, hand in ipairs(args.hands) do"
+position = "before"
+payload = '''
+if #args.hands >= 5 and args.level_up then
+	if not instant then
+	    may.h((args.hands == get_keys(G.GAME.hands) or may_astronomy2) and 'All Hands' or 'Many Hands', '...', '...', '...')
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+			play_sound('tarot1')
+			if args.from then args.from:juice_up(0.8, 0.5) end
+		return true end}))
+		may.hm('+', true)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+			play_sound('tarot1')
+			if args.from then args.from:juice_up(0.8, 0.5) end
+		return true end}))
+		may.hc('+', true)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+			play_sound('tarot1')
+			if args.from then args.from:juice_up(0.8, 0.5) end
+		return true end}))
+		may.hlv('+'..(args.level_up or 1), true)
+		delay(1.3)
+		may.ch()
+	end
+	instant = true
+end
+'''
+match_indent = true
