@@ -30,8 +30,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.MY_PAT }}
         run: |
-          # Authenticate with PAT 
-          echo "$GH_TOKEN" | gh auth login --with-token
+          # Unset the environment variable so gh auth login can take over
+          unset GH_TOKEN
+          echo "${{ secrets.MY_PAT }}" | gh auth login --with-token
           
           # Create the PR
           gh pr create \
