@@ -22,11 +22,16 @@ jobs:
           git checkout -b sync-from-codeberg
           git reset --hard codeberg/main
 
-      - name: Create Pull Request # RUN A PR BOI
-        uses: repo-sync/pull-request@v2
-        with:
-          source_branch: 'sync-from-codeberg'
-          destination_branch: 'main'
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_title: 'Sync updates from Codeberg'
-          pr_body: 'This PR automatically synchronizes the repository with the latest changes from Codeberg.'
+      - name: Push branch to GitHub
+        run: |
+          git push origin sync-from-codeberg --force
+
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --title "PULL THE REQUEST (Update mod)" \
+            --body "WE PULL THE REUQESTS HERE" \
+            --head sync-from-codeberg \
+            --base main
