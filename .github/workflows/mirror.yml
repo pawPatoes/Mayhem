@@ -1,0 +1,15 @@
+on:
+  schedule:
+    - cron: '0 0 * * *' # Should run every day :D
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mirror Codeberg to GitHub
+        uses: cssnr/mirror-repository-action@master
+        with:
+          url: 'https://codeberg.org/BalatroMayhem/Mayhem.git'
+          username: ${{ secrets.CODEBERG_USERNAME }} # YOU WILL NEVER KNOW THESE >:3
+          password: ${{ secrets.CODEBERG_TOKEN }}
