@@ -34,4 +34,5 @@ jobs:
             --title "PULL THE REQUEST (Update mod)" \
             --body "WE PULL THE REUQESTS HERE" \
             --head sync-from-codeberg \
-            --base main
+            --base main \
+            --verbose
