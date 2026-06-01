@@ -27,14 +27,15 @@ jobs:
           git push origin sync-from-codeberg --force
 
       - name: Create Pull Request
-        env:
-          GH_TOKEN: ${{ secrets.MY_PAT }}
         run: |
-          # Unset the environment variable so gh auth login can take over
-          unset GH_TOKEN
+          # Create a temporary directory for gh config
+          mkdir -p .gh_config
+          export GH_CONFIG_DIR=$(pwd)/.gh_config
+          
+          # Force authentication using PAT
           echo "${{ secrets.MY_PAT }}" | gh auth login --with-token
           
-          # Create the PR
+          # Create the PR explicitly bypassing any global/env tokens
           gh pr create \
             --title "PULL THE REQUEST (Update mod)" \
             --body "WE PULL THE REUQESTS HERE" \
