@@ -4,18 +4,29 @@ on:
   workflow_dispatch:
 
 jobs:
-  mirror:
+  sync:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
-      - name: Checkout local repository # do the thing no 1
+      - name: Checkout GitHub repo
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          persist-credentials: true
+          fetch-depth: 0
 
-      - name: Mirror Codeberg to GitHub
-        uses: cssnr/mirror-repository-action@master
+      - name: Pull from Codeberg
+        run: |
+          git remote add codeberg https://codeberg.org/BalatroMayhem/Mayhem.git
+          git fetch codeberg
+          git checkout -b sync-from-codeberg
+          git reset --hard codeberg/main
+
+      - name: Create Pull Request # RUN A PR BOI
+        uses: repo-sync/pull-request@v2
         with:
-          url: 'https://codeberg.org/BalatroMayhem/Mayhem.git' # do the thing no 2
-          username: ${{ secrets.CODEBERG_USERNAME }}
-          password: ${{ secrets.CODEBERG_TOKEN }} # YOU WILL NEVER KNOW
+          source_branch: 'sync-from-codeberg'
+          destination_branch: 'main'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_title: 'Sync updates from Codeberg'
+          pr_body: 'This PR automatically synchronizes the repository with the latest changes from Codeberg.'
