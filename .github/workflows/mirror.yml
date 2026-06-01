@@ -30,6 +30,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.MY_PAT }}
         run: |
+          # Authenticate with PAT 
+          echo "$GH_TOKEN" | gh auth login --with-token
+          
+          # Create the PR
           gh pr create \
             --title "PULL THE REQUEST (Update mod)" \
             --body "WE PULL THE REUQESTS HERE" \
