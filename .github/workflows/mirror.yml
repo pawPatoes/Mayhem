@@ -35,4 +35,3 @@ jobs:
             --body "WE PULL THE REUQESTS HERE" \
             --head sync-from-codeberg \
             --base main \
-            --verbose
