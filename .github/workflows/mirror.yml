@@ -39,7 +39,7 @@ jobs:
             echo "1" > .github/pr_count
           else
             CURRENT=$(cat .github/pr_count)
-            echo $((CURRENT + 1)) > .github/pr_count
+            echo $((CURRENT + 1)) > .github/pr_count.md
           fi
           git add .github/pr_count
           git commit -m "Update PR count"
