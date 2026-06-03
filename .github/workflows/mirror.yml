@@ -34,9 +34,18 @@ jobs:
           git config user.email "github-actions@users.noreply.github.com"
           git checkout sync-from-codeberg
           git merge origin/main --allow-unrelated-histories -X ours -m "Syncing from Codeberg"
+          mkdir -p .github
+          if [ ! -f .github/pr_count ]; then
+            echo "1" > .github/pr_count
+          else
+            CURRENT=$(cat .github/pr_count)
+            echo $((CURRENT + 1)) > .github/pr_count
+          fi
+          git add .github/pr_count
+          git commit -m "Update PR count"
           git push origin sync-from-codeberg
           gh pr create \
-            --title "PULL THE REQUEST (Update mod)" \
-            --body "WE PULL THE REUQESTS HERE" \
+            --title "PULL THE REQUEST (Update mod #$(cat .github/pr_count))" \
+            --body "WE PULL THE REUQESTS HERE. This is pull request number $(cat .github/pr_count)." \
             --head sync-from-codeberg \
             --base main
