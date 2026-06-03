@@ -45,7 +45,7 @@ jobs:
           git commit -m "Update PR count"
           git push origin sync-from-codeberg
           gh pr create \
-            --title "PULL THE REQUEST (Update mod #$(cat .github/pr_count))" \
-            --body "WE PULL THE REUQESTS HERE. This is pull request number $(cat .github/pr_count)." \
+            --title "PULL THE REQUEST (Update mod #$(cat .github/pr_count.md))" \
+            --body "WE PULL THE REUQESTS HERE. This is pull request number $(cat .github/pr_count.md)." \
             --head sync-from-codeberg \
             --base main
