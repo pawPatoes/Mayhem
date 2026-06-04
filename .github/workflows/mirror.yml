@@ -28,24 +28,23 @@ jobs:
       
       - name: Create Pull Request
         env:
-          GH_TOKEN: ${{ secrets.MY_PAT }}
+            GH_TOKEN: ${{ secrets.MY_PAT }}
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@users.noreply.github.com"
-          git checkout sync-from-codeberg
-          git merge origin/main --allow-unrelated-histories -X ours -m "Syncing from Codeberg"
-          mkdir -p .github
-          if [ ! -f .github/pr_count ]; then
-            echo "1" > .github/pr_count.md
-          else
-            CURRENT=$(cat .github/pr_count.md)
-            echo $((CURRENT + 1)) > .github/pr_count.md
-          fi
-          git add .github/pr_count.md
-          git commit -m "Update PR count"
-          git push origin sync-from-codeberg
-          gh pr create \
-            --title "PULL THE REQUEST (Update mod #$(cat .github/pr_count.md))" \
-            --body "WE PULL THE REUQESTS HERE. This is pull request number $(cat .github/pr_count.md)." \
-            --head sync-from-codeberg \
-            --base main
+            git config user.name "github-actions"
+            git config user.email "github-actions@users.noreply.github.com"
+            git checkout sync-from-codeberg
+            mkdir -p .github
+            if [ ! -f .github/pr_count.md ]; then
+              echo "1" > .github/pr_count.md
+            else
+              CURRENT=$(cat .github/pr_count.md)
+              echo $((CURRENT + 1)) > .github/pr_count.md
+            fi
+            git add .github/pr_count.md
+            git commit -m "Update PR count"
+            git push origin sync-from-codeberg
+            gh pr create \
+              --title "PULL THE REQUEST (Update mod #$(cat .github/pr_count.md))" \
+              --body "WE PULL THE REUQESTS HERE. This is pull request number $(cat .github/pr_count.md)." \
+              --head sync-from-codeberg \
+              --base main
