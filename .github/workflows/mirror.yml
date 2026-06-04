@@ -36,12 +36,12 @@ jobs:
           git merge origin/main --allow-unrelated-histories -X ours -m "Syncing from Codeberg"
           mkdir -p .github
           if [ ! -f .github/pr_count ]; then
-            echo "1" > .github/pr_count
+            echo "1" > .github/pr_count.md
           else
-            CURRENT=$(cat .github/pr_count)
+            CURRENT=$(cat .github/pr_count.md)
             echo $((CURRENT + 1)) > .github/pr_count.md
           fi
-          git add .github/pr_count
+          git add .github/pr_count.md
           git commit -m "Update PR count"
           git push origin sync-from-codeberg
           gh pr create \
