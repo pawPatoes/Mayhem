@@ -10,44 +10,44 @@ SMODS.Booster {
 	weight = .9,
 	draw_hand = false,
 	particles = function(self)
-        G.booster_pack_sparkles = Particles(1, 1, 0, 0, {
-            timer = 0.015,
-            scale = 0.3,
-            initialize = true,
-            lifespan = 3,
-            speed = 0.2,
-            padding = -1,
-            attach = G.ROOM_ATTACH,
-            colours = { G.C.BLACK, G.C.RED, G.C.ATTENTION },
-            fill = true
-        })
-        G.booster_pack_sparkles.fade_alpha = 1
-        G.booster_pack_sparkles:fade(1, 0)
-    end,
-    create_card = function(self, card, i)
-        local _edition = poll_edition('may_premium' .. G.GAME.round_resets.ante, 2, true, true)
-        local _seal = SMODS.poll_seal({ mod = 10, guaranteed = true })
-        local _enhance = SMODS.poll_enhancement({ guaranteed = true })
-        return {
-            set = "Playing Card",
-            edition = _edition,
-            seal = _seal,
-            enhancement = _enhance,
-            area = G.pack_cards,
-            skip_materialize = true,
-            soulable = true,
-            key_append = "may_premium"
-        }
-    end,
-    in_pool = function(self, args)
-        return G.GAME.round > 6, { allow_duplicates = true }
-    end,
+		G.booster_pack_sparkles = Particles(1, 1, 0, 0, {
+			timer = 0.015,
+			scale = 0.3,
+			initialize = true,
+			lifespan = 3,
+			speed = 0.2,
+			padding = -1,
+			attach = G.ROOM_ATTACH,
+			colours = { G.C.BLACK, G.C.RED, G.C.ATTENTION },
+			fill = true
+		})
+		G.booster_pack_sparkles.fade_alpha = 1
+		G.booster_pack_sparkles:fade(1, 0)
+	end,
+	create_card = function(self, card, i)
+		local _edition = poll_edition('may_premium' .. G.GAME.round_resets.ante, 2, true, true)
+		local _seal = SMODS.poll_seal({ mod = 10, guaranteed = true })
+		local _enhance = SMODS.poll_enhancement({ guaranteed = true })
+		return {
+			set = "Playing Card",
+			edition = _edition,
+			seal = _seal,
+			enhancement = _enhance,
+			area = G.pack_cards,
+			skip_materialize = true,
+			soulable = true,
+			key_append = "may_premium"
+		}
+	end,
+	in_pool = function(self, args)
+		return G.GAME.round > 6, { allow_duplicates = true }
+	end,
 	ease_background_colour = function(self)
 		ease_colour(G.C.DYN_UI.MAIN, G.C.BLACK)
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = G.C.RED, contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
@@ -55,8 +55,8 @@ SMODS.Booster {
 		text = {
 			"Choose {C:attention}#1#{} of",
 			"up to {C:attention}#2# Playing Cards{}",
-            "with random {C:dark_edition}Enhancements{},", 
-            "{C:dark_edition}Editions{} and {C:dark_edition}Seals{}", 
+			"with random {C:dark_edition}Enhancements{},", 
+			"{C:dark_edition}Editions{} and {C:dark_edition}Seals{}", 
 			"to be added to deck"
 		},
 	},
@@ -71,13 +71,13 @@ SMODS.Booster {
 		loc_key = "may_cry_plus_premium",
 		create = function()
 			local card = create_playing_card({ center = SMODS.poll_enhancement({ guaranteed = true })}, G.play, true, true, {G.C.MONEY})
-		    card:set_edition('e_negative')
-		    card:set_seal(SMODS.poll_seal({ guaranteed = true, type_key = "may_premium" }), true, false)
-            G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-                G.play:remove(card)
-                G.deck:emplace(card)
-                play_sound('card1')
-            return true end}))
+			card:set_edition('e_negative')
+			card:set_seal(SMODS.poll_seal({ guaranteed = true, type_key = "may_premium" }), true, false)
+			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
+				G.play:remove(card)
+				G.deck:emplace(card)
+				play_sound('card1')
+			return true end}))
 		end
 	}
 }
@@ -92,44 +92,44 @@ SMODS.Booster {
 	weight = .8,
 	draw_hand = false,
 	particles = function(self)
-        G.booster_pack_sparkles = Particles(1, 1, 0, 0, {
-            timer = 0.015,
-            scale = 0.3,
-            initialize = true,
-            lifespan = 3,
-            speed = 0.2,
-            padding = -1,
-            attach = G.ROOM_ATTACH,
-            colours = { G.C.BLACK, G.C.RED, G.C.ATTENTION },
-            fill = true
-        })
-        G.booster_pack_sparkles.fade_alpha = 1
-        G.booster_pack_sparkles:fade(1, 0)
-    end,
-    create_card = function(self, card, i)
-        local _edition = poll_edition('may_premium' .. G.GAME.round_resets.ante, 2, true, true)
-        local _seal = SMODS.poll_seal({ mod = 10, guaranteed = true })
-        local _enhance = SMODS.poll_enhancement({ guaranteed = true })
-        return {
-            set = "Playing Card",
-            edition = _edition,
-            seal = _seal,
-            enhancement = _enhance,
-            area = G.pack_cards,
-            skip_materialize = true,
-            soulable = true,
-            key_append = "may_premium"
-        }
-    end,
-    in_pool = function(self, args)
-        return G.GAME.round > 6, { allow_duplicates = true }
-    end,
+		G.booster_pack_sparkles = Particles(1, 1, 0, 0, {
+			timer = 0.015,
+			scale = 0.3,
+			initialize = true,
+			lifespan = 3,
+			speed = 0.2,
+			padding = -1,
+			attach = G.ROOM_ATTACH,
+			colours = { G.C.BLACK, G.C.RED, G.C.ATTENTION },
+			fill = true
+		})
+		G.booster_pack_sparkles.fade_alpha = 1
+		G.booster_pack_sparkles:fade(1, 0)
+	end,
+	create_card = function(self, card, i)
+		local _edition = poll_edition('may_premium' .. G.GAME.round_resets.ante, 2, true, true)
+		local _seal = SMODS.poll_seal({ mod = 10, guaranteed = true })
+		local _enhance = SMODS.poll_enhancement({ guaranteed = true })
+		return {
+			set = "Playing Card",
+			edition = _edition,
+			seal = _seal,
+			enhancement = _enhance,
+			area = G.pack_cards,
+			skip_materialize = true,
+			soulable = true,
+			key_append = "may_premium"
+		}
+	end,
+	in_pool = function(self, args)
+		return G.GAME.round > 6, { allow_duplicates = true }
+	end,
 	ease_background_colour = function(self)
 		ease_colour(G.C.DYN_UI.MAIN, G.C.BLACK)
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = G.C.RED, contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
@@ -137,8 +137,8 @@ SMODS.Booster {
 		text = {
 			"Choose {C:attention}#1#{} of",
 			"up to {C:attention}#2# Playing Cards{}",
-            "with random {C:dark_edition}Enhancements{},", 
-            "{C:dark_edition}Editions{} and {C:dark_edition}Seals{}", 
+			"with random {C:dark_edition}Enhancements{},", 
+			"{C:dark_edition}Editions{} and {C:dark_edition}Seals{}", 
 			"to be added to deck"
 		},
 	},
@@ -153,13 +153,13 @@ SMODS.Booster {
 		loc_key = "may_cry_plus_premium",
 		create = function()
 			local card = create_playing_card({ center = SMODS.poll_enhancement({ guaranteed = true })}, G.play, true, true, {G.C.MONEY})
-		    card:set_edition('e_negative')
-		    card:set_seal(SMODS.poll_seal({ guaranteed = true, type_key = "may_premium" }), true, false)
-            G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-                G.play:remove(card)
-                G.deck:emplace(card)
-                play_sound('card1')
-            return true end}))
+			card:set_edition('e_negative')
+			card:set_seal(SMODS.poll_seal({ guaranteed = true, type_key = "may_premium" }), true, false)
+			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
+				G.play:remove(card)
+				G.deck:emplace(card)
+				play_sound('card1')
+			return true end}))
 		end
 	}
 }
@@ -174,44 +174,44 @@ SMODS.Booster {
 	weight = .7,
 	draw_hand = false,
 	particles = function(self)
-        G.booster_pack_sparkles = Particles(1, 1, 0, 0, {
-            timer = 0.015,
-            scale = 0.3,
-            initialize = true,
-            lifespan = 3,
-            speed = 0.2,
-            padding = -1,
-            attach = G.ROOM_ATTACH,
-            colours = { G.C.BLACK, G.C.RED, G.C.ATTENTION },
-            fill = true
-        })
-        G.booster_pack_sparkles.fade_alpha = 1
-        G.booster_pack_sparkles:fade(1, 0)
-    end,
-    create_card = function(self, card, i)
-        local _edition = poll_edition('may_premium' .. G.GAME.round_resets.ante, 2, true, true)
-        local _seal = SMODS.poll_seal({ mod = 10, guaranteed = true })
-        local _enhance = SMODS.poll_enhancement({ guaranteed = true })
-        return {
-            set = "Playing Card",
-            edition = _edition,
-            seal = _seal,
-            enhancement = _enhance,
-            area = G.pack_cards,
-            skip_materialize = true,
-            soulable = true,
-            key_append = "may_premium"
-        }
-    end,
-    in_pool = function(self, args)
-        return G.GAME.round > 6, { allow_duplicates = true }
-    end,
+		G.booster_pack_sparkles = Particles(1, 1, 0, 0, {
+			timer = 0.015,
+			scale = 0.3,
+			initialize = true,
+			lifespan = 3,
+			speed = 0.2,
+			padding = -1,
+			attach = G.ROOM_ATTACH,
+			colours = { G.C.BLACK, G.C.RED, G.C.ATTENTION },
+			fill = true
+		})
+		G.booster_pack_sparkles.fade_alpha = 1
+		G.booster_pack_sparkles:fade(1, 0)
+	end,
+	create_card = function(self, card, i)
+		local _edition = poll_edition('may_premium' .. G.GAME.round_resets.ante, 2, true, true)
+		local _seal = SMODS.poll_seal({ mod = 10, guaranteed = true })
+		local _enhance = SMODS.poll_enhancement({ guaranteed = true })
+		return {
+			set = "Playing Card",
+			edition = _edition,
+			seal = _seal,
+			enhancement = _enhance,
+			area = G.pack_cards,
+			skip_materialize = true,
+			soulable = true,
+			key_append = "may_premium"
+		}
+	end,
+	in_pool = function(self, args)
+		return G.GAME.round > 6, { allow_duplicates = true }
+	end,
 	ease_background_colour = function(self)
 		ease_colour(G.C.DYN_UI.MAIN, G.C.BLACK)
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = G.C.RED, contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
@@ -219,8 +219,8 @@ SMODS.Booster {
 		text = {
 			"Choose {C:attention}#1#{} of",
 			"up to {C:attention}#2# Playing Cards{}",
-            "with random {C:dark_edition}Enhancements{},", 
-            "{C:dark_edition}Editions{} and {C:dark_edition}Seals{}", 
+			"with random {C:dark_edition}Enhancements{},", 
+			"{C:dark_edition}Editions{} and {C:dark_edition}Seals{}", 
 			"to be added to deck"
 		},
 	},
@@ -235,13 +235,13 @@ SMODS.Booster {
 		loc_key = "may_cry_plus_premium",
 		create = function()
 			local card = create_playing_card({ center = SMODS.poll_enhancement({ guaranteed = true })}, G.play, true, true, {G.C.MONEY})
-		    card:set_edition('e_negative')
-		    card:set_seal(SMODS.poll_seal({ guaranteed = true, type_key = "may_premium" }), true, false)
-            G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-                G.play:remove(card)
-                G.deck:emplace(card)
-                play_sound('card1')
-            return true end}))
+			card:set_edition('e_negative')
+			card:set_seal(SMODS.poll_seal({ guaranteed = true, type_key = "may_premium" }), true, false)
+			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
+				G.play:remove(card)
+				G.deck:emplace(card)
+				play_sound('card1')
+			return true end}))
 		end
 	}
 }
@@ -263,7 +263,7 @@ SMODS.Booster {
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = G.C.EDITION, contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
@@ -280,9 +280,9 @@ SMODS.Booster {
 		SMODS.Booster.update_pack(self, dt)
 	end,
 	group_key = "k_may_modifiercard_pack",
-    in_pool = function(self, args)
-        return G.GAME.round > 6, { allow_duplicates = true }
-    end, 
+	in_pool = function(self, args)
+		return G.GAME.round > 6, { allow_duplicates = true }
+	end, 
 	cry_digital_hallucinations = {
 		colour = G.C.EDITION,
 		loc_key = "may_cry_plus_edition_card",
@@ -312,7 +312,7 @@ SMODS.Booster {
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = G.C.EDITION, contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
@@ -329,9 +329,9 @@ SMODS.Booster {
 		SMODS.Booster.update_pack(self, dt)
 	end,
 	group_key = "k_may_modifiercard_pack",
-    in_pool = function(self, args)
-        return G.GAME.round > 6, { allow_duplicates = true }
-    end, 
+	in_pool = function(self, args)
+		return G.GAME.round > 6, { allow_duplicates = true }
+	end, 
 	cry_digital_hallucinations = {
 		colour = G.C.EDITION,
 		loc_key = "may_cry_plus_edition_card",
@@ -361,7 +361,7 @@ SMODS.Booster {
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = G.C.EDITION, contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
@@ -378,9 +378,9 @@ SMODS.Booster {
 		SMODS.Booster.update_pack(self, dt)
 	end,
 	group_key = "k_may_modifiercard_pack",
-    in_pool = function(self, args)
-        return G.GAME.round > 6, { allow_duplicates = true }
-    end, 
+	in_pool = function(self, args)
+		return G.GAME.round > 6, { allow_duplicates = true }
+	end, 
 	cry_digital_hallucinations = {
 		colour = G.C.EDITION,
 		loc_key = "may_cry_plus_edition_card",
@@ -393,7 +393,7 @@ SMODS.Booster {
 	}
 }
 for i=1, 2 do
-    
+	
 SMODS.Booster {
 	key = "b_retrocard"..i,
 	kind = 'retrocards',
@@ -411,20 +411,20 @@ SMODS.Booster {
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = HEX('1b7500'), contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
 		name = "Pixel Pack",
 		text = {
-            {
-			    "Choose {C:attention}#1#{} of",
-			    "up to {C:attention}#2# Retro Cards{}",
-			    "to be used immediately"
-            }, 
-            {
-                "{C:inactive,E:1}Art by T3rragon{}"
-            }
+			{
+				"Choose {C:attention}#1#{} of",
+				"up to {C:attention}#2# Retro Cards{}",
+				"to be used immediately"
+			}, 
+			{
+				"{C:inactive,E:1}Art by T3rragon{}"
+			}
 		},
 	},
 	update_pack = function(self, dt)
@@ -443,9 +443,9 @@ SMODS.Booster {
 			G.consumeables:emplace(ccard)
 		end
 	}, 
-    in_pool = function(self, args)
-        return G.GAME.round >= 9, { allow_duplicates = true }
-    end
+	in_pool = function(self, args)
+		return G.GAME.round >= 9, { allow_duplicates = true }
+	end
 }
 
 end
@@ -467,20 +467,20 @@ SMODS.Booster {
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = HEX('1b7500'), contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
 		name = "Jumbo Pixel Pack",
 		text = {
-            {
-			    "Choose {C:attention}#1#{} of",
-			    "up to {C:attention}#2# Retro Cards{}",
-			    "to be used immediately"
-            }, 
-            {
-                "{C:inactive,E:1}Art by T3rragon{}"
-            }
+			{
+				"Choose {C:attention}#1#{} of",
+				"up to {C:attention}#2# Retro Cards{}",
+				"to be used immediately"
+			}, 
+			{
+				"{C:inactive,E:1}Art by T3rragon{}"
+			}
 		},
 	},
 	update_pack = function(self, dt)
@@ -499,9 +499,9 @@ SMODS.Booster {
 			G.consumeables:emplace(ccard)
 		end
 	},
-    in_pool = function(self, args)
-        return G.GAME.round >= 9, { allow_duplicates = true }
-    end
+	in_pool = function(self, args)
+		return G.GAME.round >= 9, { allow_duplicates = true }
+	end
 }
 
 SMODS.Booster {
@@ -521,20 +521,20 @@ SMODS.Booster {
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = HEX('1b7500'), contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
 		name = "Mega Pixel Pack",
 		text = {
-            {
-			    "Choose {C:attention}#1#{} of",
-			    "up to {C:attention}#2# Retro Cards{}",
-			    "to be used immediately"
-            }, 
-            {
-                "{C:inactive,E:1}Art by T3rragon{}"
-            }
+			{
+				"Choose {C:attention}#1#{} of",
+				"up to {C:attention}#2# Retro Cards{}",
+				"to be used immediately"
+			}, 
+			{
+				"{C:inactive,E:1}Art by T3rragon{}"
+			}
 		},
 	},
 	update_pack = function(self, dt)
@@ -553,9 +553,9 @@ SMODS.Booster {
 			G.consumeables:emplace(ccard)
 		end
 	}, 
-    in_pool = function(self, args)
-        return G.GAME.round >= 9, { allow_duplicates = true }
-    end
+	in_pool = function(self, args)
+		return G.GAME.round >= 9, { allow_duplicates = true }
+	end
 }
 
 -- have to use pseudorandom element because all of the yotta cards are technically hidden
@@ -583,7 +583,7 @@ SMODS.Booster {
 	weight = .5,
 	misc_badge = may_wip_badge,
 	draw_hand = false,
-    endless = true, 
+	endless = true, 
 	create_card = function(self, card)
 		return create_card("yottacards", G.pack_cards, nil, nil, true, true, pseudorandom_element(may.yotta_cards, pseudoseed('may_yotta_pack')), "may_yottapack")
 	end,
@@ -592,7 +592,7 @@ SMODS.Booster {
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = G.C.YELLOW, contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
@@ -622,9 +622,9 @@ SMODS.Booster {
 			G.consumeables:emplace(ccard)
 		end
 	}, 
-    in_pool = function(self, args)
-        return G.GAME.may_endless_mode, { allow_duplicates = true }
-    end
+	in_pool = function(self, args)
+		return G.GAME.may_endless_mode, { allow_duplicates = true }
+	end
 }
 
 end
@@ -644,8 +644,9 @@ SMODS.Booster {
 	pos = pos,
 	config = { extra = 2, choose = 1 },
 	cost = 11,
-	weight = 0.9,
+	weight = 0.6,
 	draw_hand = false,
+	endless = true,
 	create_card = function(self, card)
 		return create_card("Voucher", G.pack_cards, nil, nil, true, true, may.get_next_voucher_key(), "may_voucherpack")
 	end,
@@ -654,7 +655,7 @@ SMODS.Booster {
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = G.C.GREEN, contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
@@ -695,11 +696,14 @@ SMODS.Booster {
 		G.booster_pack_sparkles.fade_alpha = 1
 		G.booster_pack_sparkles:fade(1, 0)
 	end,
+	in_pool = function(self, args)
+		return G.GAME.may_endless_mode, { allow_duplicates = true }
+	end
 }
 
 end
 
-for i=1, 2 do
+--[[for i=1, 2 do
 
 SMODS.Booster {
 	key = "b_jumbo_voucherpack"..i,
@@ -709,9 +713,9 @@ SMODS.Booster {
 	order = 5,
 	config = { extra = 3, choose = 1 },
 	cost = 15,
-	weight = .6,
+	weight = .45,
 	draw_hand = false,
-    endless = true,
+	endless = true,
 	create_card = function(self, card)
 		return create_card("Voucher", G.pack_cards, nil, nil, true, true, nil, "may_voucherpack")
 	end,
@@ -720,7 +724,7 @@ SMODS.Booster {
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = G.C.GREEN, contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
@@ -761,9 +765,9 @@ SMODS.Booster {
 		G.booster_pack_sparkles.fade_alpha = 1
 		G.booster_pack_sparkles:fade(1, 0)
 	end,
-    in_pool = function(self, args)
-        return G.GAME.may_endless_mode, { allow_duplicates = true }
-    end
+	in_pool = function(self, args)
+		return G.GAME.may_endless_mode, { allow_duplicates = true }
+	end
 }
 
 end
@@ -778,8 +782,8 @@ SMODS.Booster {
 	order = 5,
 	config = { extra = 5, choose = 1 },
 	cost = 25,
-	weight = .4,
-    endless = true,
+	weight = .25,
+	endless = true,
 	draw_hand = false,
 	create_card = function(self, card)
 		return create_card("Voucher", G.pack_cards, nil, nil, true, true, nil, "may_voucherpack")
@@ -789,7 +793,7 @@ SMODS.Booster {
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = G.C.GREEN, contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
@@ -830,12 +834,12 @@ SMODS.Booster {
 		G.booster_pack_sparkles.fade_alpha = 1
 		G.booster_pack_sparkles:fade(1, 0)
 	end,
-    in_pool = function(self, args)
-        return G.GAME.may_endless_mode, { allow_duplicates = true }
-    end
+	in_pool = function(self, args)
+		return G.GAME.may_endless_mode, { allow_duplicates = true }
+	end
 }
 
-end
+end]]
 
 may.universal_choices = {'Tarot', 'Planet', 'Spectral'}
 
@@ -857,21 +861,21 @@ SMODS.Booster {
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = G.C.ETERNAL, contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
 		name = "Universal Pack",
 		text = {
-            {
-			    "Choose {C:attention}#1#{} of",
-			    "up to {C:attention}#2#{} {C:purple}Tarot{}, {C:planet}Planet{} or",
-			    "{C:spectral}Spectral{} Cards to be",
-			    "used immediately"
-            }, 
-            {
-                "{C:inactive,E:1}Art by T3rragon{}"
-            }
+			{
+				"Choose {C:attention}#1#{} of",
+				"up to {C:attention}#2#{} {C:purple}Tarot{}, {C:planet}Planet{} or",
+				"{C:spectral}Spectral{} Cards to be",
+				"used immediately"
+			}, 
+			{
+				"{C:inactive,E:1}Art by T3rragon{}"
+			}
 		},
 	},
 	update_pack = function(self, dt)
@@ -932,21 +936,21 @@ SMODS.Booster {
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = G.C.ETERNAL, contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
 		name = "Universal Pack",
 		text = {
-            {
-			    "Choose {C:attention}#1#{} of",
-			    "up to {C:attention}#2#{} {C:purple}Tarot{}, {C:planet}Planet{} or",
-			    "{C:spectral}Spectral{} Cards to be",
-			    "used immediately"
-            }, 
-            {
-                "{C:inactive,E:1}Art by T3rragon{}"
-            }
+			{
+				"Choose {C:attention}#1#{} of",
+				"up to {C:attention}#2#{} {C:purple}Tarot{}, {C:planet}Planet{} or",
+				"{C:spectral}Spectral{} Cards to be",
+				"used immediately"
+			}, 
+			{
+				"{C:inactive,E:1}Art by T3rragon{}"
+			}
 		},
 	},
 	update_pack = function(self, dt)
@@ -1007,21 +1011,21 @@ SMODS.Booster {
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = G.C.ETERNAL, contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
 		name = "Jumbo Universal Pack",
 		text = {
-            {
-			    "Choose {C:attention}#1#{} of",
-			    "up to {C:attention}#2#{} {C:purple}Tarot{}, {C:planet}Planet{} or",
-			    "{C:spectral}Spectral{} Cards to be",
-			    "used immediately"
-            }, 
-            {
-                "{C:inactive,E:1}Art by T3rragon{}"
-            }
+			{
+				"Choose {C:attention}#1#{} of",
+				"up to {C:attention}#2#{} {C:purple}Tarot{}, {C:planet}Planet{} or",
+				"{C:spectral}Spectral{} Cards to be",
+				"used immediately"
+			}, 
+			{
+				"{C:inactive,E:1}Art by T3rragon{}"
+			}
 		},
 	},
 	update_pack = function(self, dt)
@@ -1082,21 +1086,21 @@ SMODS.Booster {
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = G.C.ETERNAL, contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
 		name = "Mega Universal Pack",
 		text = {
-            {
-			    "Choose {C:attention}#1#{} of",
-			    "up to {C:attention}#2#{} {C:purple}Tarot{}, {C:planet}Planet{} or",
-			    "{C:spectral}Spectral{} Cards to be",
-			    "used immediately"
-            }, 
-            {
-                "{C:inactive,E:1}Art by T3rragon{}"
-            }
+			{
+				"Choose {C:attention}#1#{} of",
+				"up to {C:attention}#2#{} {C:purple}Tarot{}, {C:planet}Planet{} or",
+				"{C:spectral}Spectral{} Cards to be",
+				"used immediately"
+			}, 
+			{
+				"{C:inactive,E:1}Art by T3rragon{}"
+			}
 		},
 	},
 	update_pack = function(self, dt)
@@ -1158,7 +1162,7 @@ SMODS.Booster {
 		ease_background_colour({ new_colour = G.C.BLACK, special_colour = G.C.EDITION, contrast = 2 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
@@ -1188,7 +1192,7 @@ SMODS.Booster {
 }]]
 
 for i=1, 4 do
-    
+	
 SMODS.Booster {
 	key = "b_fusion"..i,
 	kind = 'fusion',
@@ -1207,17 +1211,16 @@ SMODS.Booster {
 		ease_background_colour({ new_colour = SMODS.Gradients.may_col_mayhem_gradient, special_colour = HEX('aa0000'), contrast = 1 })
 	end,
 	loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
+		local cfg = (card and card.ability) or self.config
 		return { vars = { cfg.choose, cfg.extra } }
 	end, 
 	loc_txt = {
 		name = "Fusion Pack",
 		text = {
-            {
-			    "Choose {C:attention}#1#{} of",
-			    "up to {C:attention}#2#{} {C:dark_edition}fusable{} {C:attention}Base Jokers{}",
-				"{C:inactive}Blueprint excluded{}"
-            }, 
+			{
+				"Choose {C:attention}#1#{} of",
+				"up to {C:attention}#2#{} {C:dark_edition}fusable{} {C:attention}Base Jokers{}",
+			}, 
 		},
 	},
 	update_pack = function(self, dt)
@@ -1231,11 +1234,11 @@ SMODS.Booster {
 		loc_key = "may_cry_plus_fusable",
 		create = function()
 			local pool = {}
-		    for k, v in pairs(G.P_CENTERS) do
-			    if v.set == 'Joker' and may.is_fusable(v) and not may.is_fusion(v) then 
-				    table.insert(pool, v)
-			    end 
-		    end
+			for k, v in pairs(G.P_CENTERS) do
+				if v.set == 'Joker' and may.is_fusable(v) and not may.is_fusion(v) then 
+					table.insert(pool, v)
+				end 
+			end
 			local ccard = create_card("Joker", G.jokers, nil, nil, nil, nil, may.random_consumable('diha', nil, nil, pool, true), "diha").key
 			ccard:set_edition({ negative = true }, true)
 			ccard:add_to_deck()
@@ -1257,9 +1260,9 @@ SMODS.Booster {
 		G.booster_pack_sparkles.fade_alpha = 1
 		G.booster_pack_sparkles:fade(1, 0)
 	end,
-    in_pool = function(self, args)
-        return G.GAME.may_endless_mode, { allow_duplicates = false }
-    end
+	in_pool = function(self, args)
+		return G.GAME.may_endless_mode, { allow_duplicates = false }
+	end
 }
 
 end

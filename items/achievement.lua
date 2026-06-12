@@ -58,7 +58,7 @@ SMODS.Achievement {
 	earned = false,
 	hidden_name = true,
 	unlock_condition = function(self, args)
-		if args.type == 'money' and G.GAME.dollars >= to_big(1e100):arrow(1, 10) then
+		if args.type == 'money' and to_big(G.GAME.dollars) >= to_big(1e100):arrow(1, 10) then
 			return true
 		end
 	end,

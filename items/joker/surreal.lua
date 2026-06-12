@@ -570,16 +570,16 @@ SMODS.Joker {
 				card:juice_up(0.5, 0.5)
 				if Overflow then
 					local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-					G.consumeables:emplace(wheel)
 					wheel:add_to_deck()
 					wheel:setQty(card.ability.extra.total_cards)
 					wheel:set_edition({negative = true}, false, false)
+					G.consumeables:emplace(wheel)
 				else
 					for i=1, card.ability.extra.total_cards, 1 do
 						local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-						G.consumeables:emplace(wheel)
 						wheel:add_to_deck()
 						wheel:set_edition({negative = true}, false, false)
+						G.consumeables:emplace(wheel)
 					end
 				end
 			return true end}))
@@ -606,10 +606,10 @@ SMODS.Joker {
 				card:juice_up(0.5, 0.5)
 				if Overflow then
 					local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-					G.consumeables:emplace(wheel)
 					wheel:add_to_deck()
 					wheel:setQty(card.ability.extra.total_cards)
 					wheel:set_edition({negative = true}, false, false)
+					G.consumeables:emplace(wheel)
 				else
 					for i=1, card.ability.extra.total_cards, 1 do
 						local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)

@@ -2,7 +2,7 @@
 -- See modtabs.lua for Mayhem's config pages
 
 -- Custom text and color stuff with Score Operator
--- Inspired by POLTERWORX, no code use however
+-- Inspired by POLTERWORX, no code used however
 function may.cosmetic_score_operator(text, color, sound, no_juice, ignore_identical)
 	-- man
 	local op = G.HUD:get_UIE_by_ID('hand_text_area').children[1].children[2].UIBox:get_UIE_by_ID('hand_operator_container').children[1] 
@@ -79,7 +79,7 @@ end
 -- Code mostly from Entropy
 G.FUNCS.can_open_pack = function(e)
     local card = e.config.ref_table
-    if not may.canuse() then 
+    if (not may.canuse()) or may.booster() then 
         e.config.colour = G.C.UI.BACKGROUND_INACTIVE
         e.config.button = nil
     else
@@ -173,7 +173,7 @@ end
 
 G.FUNCS.can_redeem_voucher = function(e)
     local card = e.config.ref_table
-    if not may.canuse() then 
+    if (not may.canuse()) or may.booster() then 
         e.config.colour = G.C.UI.BACKGROUND_INACTIVE
         e.config.button = nil
     else
@@ -812,4 +812,36 @@ G.FUNCS.SMODS_scoring_calculation_function = function(e)
 	if not G.GAME.may_cosmetic_op then
 		vanf_gfsscf(e)
 	end
+end
+
+function SMODS.current_mod.process_loc_text()
+	G.localization.misc.dictionary['k_may_modifiercard_pack'] = "Enhanced Pack"
+	G.localization.misc.dictionary['k_may_retro_pack'] = "Pixel Pack"
+	G.localization.misc.dictionary['k_may_yotta_pack'] = "Yotta Card Pack"
+	G.localization.misc.dictionary['k_may_voucher_pack'] = "Voucher Pack"
+	G.localization.misc.dictionary['k_may_universal_pack'] = "Universal Pack"
+	G.localization.misc.dictionary['k_may_booster_bundle'] = "Booster Bundle"
+    G.localization.misc.dictionary['k_may_premium_pack'] = "Premium Pack"
+	G.localization.misc.dictionary['k_may_fusion_pack'] = "Fusion Pack"
+end
+
+-- Description buttons
+G.FUNCS.may_open_repo = function(e)
+	play_sound('cardFan2', 1, 0.75)
+	love.system.openURL("https://codeberg.org/balatromayhem/mayhem")
+end
+
+G.FUNCS.may_open_latest_version = function(e)
+	play_sound('cardFan2', 1, 0.75)
+	love.system.openURL("https://codeberg.org/balatromayhem/mayhem/releases/latest")
+end
+
+G.FUNCS.may_open_wiki = function(e)
+	play_sound('cardFan2', 1, 0.75)
+	love.system.openURL("https://balatromods.miraheze.org/wiki/mayhem")
+end
+
+G.FUNCS.may_open_discord = function(e)
+	play_sound('cardFan2', 1, 0.75)
+	love.system.openURL("https://discord.gg/esrGbYWHEQ")
 end

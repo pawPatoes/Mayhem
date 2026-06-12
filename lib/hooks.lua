@@ -54,12 +54,12 @@ G.FUNCS.reroll_shop = function(e)
 	end
 	if (G.GAME.may_exp_reroll_consecutive or 0) >= 5 then
 		if may.conf.threshold_punishment then
-			may.a('Reroll price threshold reached 5 times consecutively! Surreal scaling will activate each reroll, including this one.', '5', 0.3, G.C.RED, 'talisman_eeechip', 0.7, 1)
+			may.a('Reroll price threshold reached 5 times consecutively! Opalescent Scaling will activate each reroll, including this one.', '5', 0.3, G.C.RED, 'talisman_eeechip', 0.7, 1)
 			G.GAME.may_surreal_scaling = (G.GAME.may_surreal_scaling or 0) + 1
 		end
 	elseif G.GAME.may_exp_reroll_consecutive == 4 and G.GAME.may_exp_reroll then
 		if may.conf.threshold_punishment and not G.GAME.may_consecutive_warned then
-			may.a('Surreal scaling will activate if reroll price threshold is reached in next shop!', '5', 0.5, G.C.RED, 'talisman_eeechip', 0.7, 1)
+			may.a('Opalescent Scaling will activate if reroll price threshold is reached in next shop!', '5', 0.5, G.C.RED, 'talisman_eeechip', 0.7, 1)
 			G.GAME.may_consecutive_warned = true
 		end
 	end
@@ -69,7 +69,7 @@ G.FUNCS.reroll_shop = function(e)
 	if G.GAME.current_round.reroll_cost_increase >= 1e100 then
 		if may.conf.reroll_punishment then
 			if not G.GAME.may_reroll_punishment_announced then
-				may.a('Reroll price is greater than $1e100! Interdimensional scaling activated.', '5', 0.5, G.C.RED, 'talisman_eeechip', 0.7, 1)
+				may.a('Reroll price is greater than $1e100! Prismatic Scaling activated.', '5', 0.5, G.C.RED, 'talisman_eeechip', 0.7, 1)
 				G.GAME.may_reroll_punishment_announced = true
 				G.GAME.may_interdimensional_scaling = (G.GAME.may_interdimensional_scaling or 0) + 1
 			end
@@ -96,12 +96,20 @@ end
 local vanf_gu = Game.update
 function Game:update(dt)
 	vanf_gu(self, dt)
-	--[[ Party Time background
-	if G.GAME.blind then
-		if (#SMODS.find_card('j_may_party_time') ~= 0 or #SMODS.find_card('j_may_aurora_rave') ~= 0 or #SMODS.find_card('j_may_planet_ibiza') ~= 0) and (may.transcendence or 0) == 0 and may.conf.JokerEffects then
-			ease_background_colour({ new_colour = copy_table(G.C.BLACK), special_colour = G.C.EDITION, contrast = 2 })
-		end	
-	end]]
+	if G.GAME and G.GAME.blind and not G.GAME.may_fusion_conditions then
+		G.GAME.may_fusion_conditions = {}
+		for k, v in pairs(may.fusions.recipes) do 
+			G.GAME.may_fusion_conditions[v.result_joker] = (v.condition or function() return true end)()
+		end
+	end
+end
+
+local vanf_scs = SMODS.calculate_context
+function SMODS.calculate_context(...)
+	if G.GAME and G.GAME.blind then 
+		may.update_fusion_conditions()
+	end
+	return vanf_scs(...)
 end
 
 local vanf_suph = SMODS.upgrade_poker_hands
@@ -157,11 +165,11 @@ function G.FUNCS.select_blind(e)
 	for k, v in pairs(elapsed_timers) do
 		table.remove(G.GAME.may_timers, v)
 	end
-	if G.GAME.round_resets.ante > 8 and not G.GAME.may_announced_endless then 
+	--[[if G.GAME.round_resets.ante > 8 and not G.GAME.may_announced_endless then 
 		may.a('Endless Mode reached! Endless-Exclusive content may now appear.', '20', 0.5, G.C.DARK_EDITION, 'may_ethereal_joker', 1, 1.5)
 		G.GAME.may_announced_endless = true
 		G.GAME.may_endless_mode = true
-	end
+	end]] 
 end
 
 -- don't ask
@@ -173,6 +181,9 @@ function card_eval_status_text(card, eval_type, amt, percent, dir, extra)
 	vanf_cest(card, eval_type, amt, percent, dir, extra)
 end
 
+-- Custom Blind Scaling
+-- if you're wondering why there's to many to_bigs, I AM SICK AND TIRED OF OMEGANUM INFINITY WHAT DO YOU MEAN ARITHMETIC ERROR WHAT DID I EVEN DO WRONG 
+local vanf_gba = get_blind_amount
 
 local function FALLBACK(x, y)
 	if may.invalid_number(x) or to_big(x):isInfinite() or to_big(x):isNaN() then 
@@ -181,9 +192,6 @@ local function FALLBACK(x, y)
 	return to_big(x):mul(1):normalize()
 end
 
--- Custom Blind Scaling
--- if you're wondering why there's to many to_bigs, I AM SICK AND TIRED OF OMEGANUM INFINITY WHAT DO YOU MEAN ARITHMETIC ERROR WHAT DID I EVEN DO WRONG 
-local vanf_gba = get_blind_amount
 function get_blind_amount(ante)
 	local big1 = to_big(1)
 	local big3 = to_big(3)
@@ -227,11 +235,11 @@ function get_blind_amount(ante)
 		    amount = FALLBACK(amount, ante)
 	    end
 		if interdimensional > to_big(0) then
-			amount = to_big(amount):arrow(2, to_big((interdimensional * ((big35 + (to_big(ante) * big0_35)) + big1))))
+			amount = to_big(amount):arrow(2, to_big((interdimensional * ((big20 + (to_big(ante) * big0_3)) + big1))))
 		    amount = FALLBACK(amount, ante)
 	    end
 		if ethereal > to_big(0) then 
-			amount = to_big(amount):arrow(3, to_big((ethereal * ((big50 + (to_big(ante) * big0_5)) + big1))))
+			amount = to_big(amount):arrow(3, to_big((ethereal * ((big35 + (to_big(ante) * big0_35)) + big1))))
 		    amount = FALLBACK(amount, ante)
 	    end
 		if surreal > to_big(0) then 
@@ -340,6 +348,10 @@ function end_round()
 	if G.GAME.blind_on_deck == 'Boss' then
 		G.GAME.may_bosses_defeated = (G.GAME.may_bosses_defeated or 0) + 1
 	end
+	if G.GAME.may_daredevil_active then
+		change_operator(-G.GAME.may_daredevil_active)
+		G.GAME.may_daredevil_active = nil
+	end
 end
 
 -- Starting paramaters buff
@@ -408,25 +420,6 @@ function Card:start_dissolve(dissolve_colours, silent, dissolve_time_fac, no_jui
 	return true end}))
 end
 
-local vanf_ebc = ease_background_colour
-function ease_background_colour(args)
-	local yotta
-	if G.pack_cards then 
-		for k, v in pairs(G.pack_cards) do
-			if type(v) == 'table' and v.gc and v:gc().set == 'yottacards' then
-				yotta = true
-				break
-			end 
-		end
-	end 
-	if yotta then
-		args.new_colour = G.C.YELLOW
-		args.special_colour = darken(G.C.YELLOW, 0.5)
-		args.contrast = 2
-	end
-	vanf_ebc(args)
-end
-
 local vanf_gfec = G.FUNCS.end_consumeable
 G.FUNCS.end_consumeable = function(e, delayfac)
 	local prev_state = G.STATE
@@ -476,4 +469,10 @@ function Card:add_to_deck(from_debuff)
 		    self:set_ability(may.random_consumable('display_failsafe', nil, nil, G.P_CENTER_POOLS.Consumeable, true), nil, true)
 		end 
 	end	
+end
+
+local vanf_sb = G.FUNCS.skip_booster
+G.FUNCS.skip_booster = function(e)
+	vanf_sb(e)
+	G.GAME.may_packs_skipped = (G.GAME.may_packs_skipped or 0) + 1
 end

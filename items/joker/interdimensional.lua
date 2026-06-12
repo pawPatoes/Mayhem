@@ -276,8 +276,10 @@ SMODS.Joker {
 				may.pager(),
 				"{C:attention}Increases{} by {C:attention}#2#{} per {C:attention}card{} in {C:attention}played hand{}",
 				may.pager(),
-				"{C:attention}Jokers{} with an {C:dark_edition}Edition{} give {X:purple,C:white}^^#3#{} Mult & Chips",
-				"{X:purple,C:white}^^#4#{} Mult & Chips if {C:attention}this Joker{} has an {C:dark_edition}Edition{} instead",
+				"{X:mult,C:white}+^^#3#{} Mult per {C:attention}Joker{} with an {C:dark_edition}Edition{}",
+				"{X:mult,C:white}+^^#4#{} Mult instead if {C:attention}this Joker{} has an {C:dark_edition}Edition{}",
+				may.pager(), 
+				"{C:inactive}Currently ^^#5# Mult{}"
 			},
 			may.add_fusion_text('Universal Collapse', 'Diskus Distruktum', '{C:attention}Holding{} at least {C:attention}1400{} copies of {C:purple}The Wheel of Fortune{}'),
 		}
@@ -291,10 +293,23 @@ SMODS.Joker {
 	pos = { x = 4, y = 12 },
 	soul_pos = { x = 5, y = 12 },
 	cost = 100000,
-	config = { extra = { blindcards = 40, cards_gain = 10, EEmultchips = 14, EEmultchips_alt = 80 } },
+	config = { extra = { blindcards = 40, cards_gain = 10, EEmult = 14, EEmult_alt = 80 } },
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_wheel_of_fortune
-		return { vars = { card.ability.extra.blindcards, card.ability.extra.cards_gain, card.ability.extra.EEmultchips, card.ability.extra.EEmultchips_alt } }
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
+		local num = 1
+		if G.jokers then
+			for k, v in pairs(G.jokers.cards) do
+				if v.edition and v.edition.key then
+					if card.edition then
+						num = num + card.ability.extra.EEmult_alt
+					else
+					    num = num + card.ability.extra.EEmult
+					end
+				end
+			end
+		end
+		return { vars = { card.ability.extra.blindcards, card.ability.extra.cards_gain, card.ability.extra.EEmult, card.ability.extra.EEmult_alt, num} }
 	end,
 	calculate = function(self, card, context)
 		if context.before and not context.blueprint then
@@ -307,66 +322,30 @@ SMODS.Joker {
 		if context.setting_blind then
 			G.E_MANAGER:add_event(Event({ func = function()
 				card:juice_up(0.5, 0.5)
-				if Overflow then
-					local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-					G.consumeables:emplace(wheel)
-					wheel:setQty(card.ability.extra.blindcards)
-					wheel:add_to_deck()
-					wheel:set_edition({negative = true}, false, false)
-				else
-					for i=1, card.ability.extra.blindcards, 1 do
-						local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-						G.consumeables:emplace(wheel)
-						wheel:add_to_deck()
-						wheel:set_edition({negative = true}, false, false)
-						wheel:setQty(1)
-					end
-				end
+				local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
+				wheel:setQty(card.ability.extra.blindcards)
+				wheel:add_to_deck()
+			    wheel:set_edition({negative = true}, false, false)
+				G.consumeables:emplace(wheel)
 			return true end}))
 		end
-		if context.other_joker and context.other_joker.edition and context.other_joker ~= card then
-			G.E_MANAGER:add_event(Event({ func = function()
-				card:juice_up(0.5, 0.5)
-			return true end}))
-			if card.edition then
-				return {
-					message = "^^"..card.ability.extra.EEmultchips_alt.." Mult & Chips",
-					EEmult_mod = card.ability.extra.EEmultchips_alt,
-					EEchip_mod = card.ability.extra.EEmultchips_alt,
-					colour = G.C.PURPLE,
-					card = context.other_joker,
-					sound = 'may_eeboth'
-				}
-			else
-				return {
-					message = "^^"..card.ability.extra.EEmultchips.." Mult & Chips",
-					EEmult_mod = card.ability.extra.EEmultchips,
-					EEchip_mod = card.ability.extra.EEmultchips,
-					colour = G.C.PURPLE,
-					card = context.other_joker,
-					sound = 'may_eeboth'
-				}
+		if context.joker_main or context.forcetrigger then
+			local num = 1
+			for k, v in pairs(G.jokers.cards) do
+				if v.edition and v.edition.key then
+					if card.edition then
+						num = num + card.ability.extra.EEmult_alt
+					else
+					    num = num + card.ability.extra.EEmult
+					end
+				end
 			end
-		end
-		if context.forcetrigger then
-			G.E_MANAGER:add_event(Event({ func = function()
-				card:juice_up(0.5, 0.5)
-				if Overflow then
-					local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-					G.consumeables:emplace(wheel)
-					wheel:setQty(card.ability.extra.blindcards)
-					wheel:add_to_deck()
-					wheel:set_edition({negative = true}, false, false)
-				else
-					for i=1, card.ability.extra.blindcards, 1 do
-						local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-						G.consumeables:emplace(wheel)
-						wheel:add_to_deck()
-						wheel:set_edition({negative = true}, false, false)
-						wheel:setQty(1)
-					end
-				end
-			return true end}))
+			if num > 1 then
+			    return {
+				    ee_mult = num,
+				    card = card 
+			    }
+			end
 		end
 	end
 }
@@ -392,15 +371,19 @@ SMODS.Joker {
 				"{C:planet}Deimos{} {C:green}no longer{} {C:mult}destroys{} cards", 
 				"and gives this Joker's {X:chips,C:white}^^Chips{}"
 			},
-            may.add_fusion_text('Universal Collapse', 'Infinity Stone', 'At least {C:attention}250{} {C:dark_edition}Stone Cards{} {C:mult}destroyed{}')
+            may.add_fusion_text('Universal Collapse', 'Infinity Stone', 'At least {C:attention}250{} {C:dark_edition}Stone Cards{} {C:mult}destroyed{}'),
+			{
+				"{C:inactive,E:1}Art by XZ0204{}"
+			}
 		}
 	},
 	rarity = "may_interdimensional",
-	atlas = 'placeholder',
+	atlas = 'joker2',
 	blueprint_compat = true,
 	demicoloncompat = true,
 	immutable = true,
-	pos = { x = 0, y = 0 },
+	pos = { x = 3, y = 8 },
+	soul_pos = { x = 4, y = 8 },
 	config = { extra = { EEchip = 1, EEchip_gain = 0.5, EEchip_gain2 = 0.1, } },
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }

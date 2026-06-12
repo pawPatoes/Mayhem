@@ -1,24 +1,25 @@
 -- OmegaNum operations
 
+Big.is = Big.is or function()
+    return type(self) == 'table' and self.sign
+end
+
 -- fix for 0 arrows = multiplication and others
 local vanf_ba = Big.arrow
 function Big:arrow(arrows, other)
-	if to_number(to_big(arrows)) > 1 then
-		return vanf_ba(self, to_big(arrows), other)
-	else
-		if arrows == 1 then
-			return self:pow(other)
-		elseif arrows == 0 then
-			return self:mul(other)
-		elseif arrows == -1 then
-			return self:add(other)
-		elseif arrows == -2 then
-			return self:sub(other)
-		elseif arrows == -3 then
-			return self:div(other)
-		elseif arrows == -4 then
-			return self:logBase(other)
-		end
+	arrows = math.floor(Big.is(arrows) and arrows.number or arrows)
+	if arrows == 0 then
+		return self:mul(other)
+	elseif arrows == -1 then
+		return self:add(other)
+	elseif arrows == -2 then
+		return self:sub(other)
+	elseif arrows == -3 then
+		return self:div(other)
+	elseif arrows == -4 then
+		return self:logBase(other)
+	else 
+		return vanf_ba(self, arrows, other) 
 	end
 end
 
@@ -278,4 +279,38 @@ end
 
 function Big:modocate(amount)
 	return self * amount + ( 1 + math.log10(self) * self)
+end
+
+-- Overwriting because patching doesn't work for mysterious reasons
+if Talisman.effects and Talisman.effects.registerHyper then
+	function Talisman.effects.registerHyper(init)
+		local key = 'hyper_' .. init.keyPlural
+		local modkey = 'hyper' .. init.key .. '_mod'
+		fxlist[key] = {
+			parameterKey = init.keyPlural,
+			messageKey = 'hyper' .. init.key .. '_message',
+			messageType = key,
+			modKey = modkey,
+			set = function (current, amount)
+				return to_big(current):arrow(amount[1], amount[2]) --- @diagnostic disable-line
+			end,
+			stringify = function (amount)
+				local str
+				if amount[1] > 5 then
+					str = string.format('{%s}', amount[1])
+				else
+					str = string.rep('^', amount[1])
+				end
+				str = str .. amount[2]
+				if init.loc then str = str .. " " .. localize(init.loc) end
+				return str
+			end,
+			sound = may.get_operation_sound(amount[1], init.keyPlural),
+			colorKey = init.colorKey,
+			hyper = true
+		}
+		fxlist['hyper' .. init.keyPlural] = fxlist[key]
+		fxlist[modkey] = fxlist[key]
+		return fxlist[key]
+	end
 end

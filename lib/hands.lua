@@ -128,27 +128,18 @@ function may.level_up_hand_hyper(card, hand, instant, amount, arrow)
 		level_up_hand(card, hand, true, to_big(G.GAME.hands[hand].level):arrow(arrow or 0, amount) - G.GAME.hands[hand].level)
 		if not instant then 
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-				play_sound('may_super_level')
-				if arrow > 0 then 
-					play_sound(may.get_operation_sound(arrow, 'chips'))
-				end
+				play_sound(may.get_operation_sound(arrow, 'level'))
 				if card then card:juice_up(0.8, 0.5) end
 				G.TAROT_INTERRUPT_PULSE = true
 				return true end }))
 			update_hand_text({delay = 0}, {mult = number_format(G.GAME.hands[hand].mult), StatusText = true})
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
-				play_sound('may_super_level')
-				if arrow > 0 then 
-					play_sound(may.get_operation_sound(arrow, 'chips'))
-				end
+				play_sound(may.get_operation_sound(arrow, 'level'))
 				if card then card:juice_up(0.8, 0.5) end
 				return true end }))
 			update_hand_text({delay = 0}, {chips = number_format(G.GAME.hands[hand].chips), StatusText = true})
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
-				play_sound('may_super_level')
-				if arrow > 0 then 
-					play_sound(may.get_operation_sound(arrow, 'chips'))
-				end
+				play_sound(may.get_operation_sound(arrow, 'level'))
 				if card then card:juice_up(0.8, 0.5) end
 				G.TAROT_INTERRUPT_PULSE = nil
 				return true end }))
@@ -270,10 +261,7 @@ function may.level_up_all_hands_hyper(card, instant, amount, arrow, ignore)
 			may.h(hand_name, '...', '...', '...')
 			delay(0.5)
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-				play_sound('may_super_level')
-				if arrow > 0 then 
-					play_sound(may.get_operation_sound(arrow, 'chips'))
-				end
+				play_sound(may.get_operation_sound(arrow, 'level'))
 				if card then card:juice_up(0.8, 0.5) end
 				G.TAROT_INTERRUPT_PULSE = true
 			return true end}))
@@ -283,10 +271,7 @@ function may.level_up_all_hands_hyper(card, instant, amount, arrow, ignore)
 				may.hm('-', true)
 			end
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
-				play_sound('may_super_level')
-				if arrow > 0 then 
-					play_sound(may.get_operation_sound(arrow, 'chips'))
-				end
+				play_sound(may.get_operation_sound(arrow, 'level'))
 				if card then card:juice_up(0.8, 0.5) end
 			return true end}))
 			if to_big(amount) > to_big(0) then
@@ -295,10 +280,7 @@ function may.level_up_all_hands_hyper(card, instant, amount, arrow, ignore)
 				may.hc('-', true)
 			end
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
-				play_sound('may_super_level')
-				if arrow > 0 then 
-					play_sound(may.get_operation_sound(arrow, 'chips'))
-				end
+				play_sound(may.get_operation_sound(arrow, 'level'))
 				if card then card:juice_up(0.8, 0.5) end
 				G.TAROT_INTERRUPT_PULSE = nil
 			return true end}))
@@ -495,7 +477,7 @@ function may.hand_mod_dollars_all(card, silent, arrow, mod)
 		G.E_MANAGER:add_event(Event({delay = 0.2, func = function()
 			ease_colour(G.C.UI_CHIPS, copy_table(G.C.GOLD), 0.1)
 		return true end}))
-		may.h('All Hands', '...', '---', G.GAME.hands[hand].level)
+		may.h('All Hands', '...', '---', '...')
 		local op = may.generate_arrow_text(arrow)
 		local op_num = arrow
 		if arrow == -1 and to_big(mod) < to_big(0) then
@@ -656,6 +638,12 @@ function may.hand_multchips(card, hand, instant, chips, mult)
 			G.GAME.hands[hand].mult = to_big(G.GAME.hands[hand].mult):arrow(mult[1], mult[2])
 		end
 	end
+	if to_big(G.GAME.hands[hand].chips):isNaN() then
+		G.GAME.hands[hand].chips = prev_chips
+	end
+	if to_big(G.GAME.hands[hand].mult):isNaN() then
+		G.GAME.hands[hand].mult = prev_chips
+	end
 	if not instant then
 		may.h(localize(hand, 'poker_hands'), prev_chips, prev_mult, G.GAME.hands[hand].level)
 		delay(0.5)
@@ -671,7 +659,7 @@ function may.hand_multchips(card, hand, instant, chips, mult)
 				play_sound(may.get_operation_sound(op_num, 'chips'))
 				if card then card:juice_up(0.8, 0.5) end
 			return true end}))
-			may.hc(op..math.abs(chips[2]), true)
+			may.hc(op..may.round(math.abs(chips[2]), 3), true)
 			delay(0.2)
 			may.hc(G.GAME.hands[hand].chips, false)
 		end
@@ -687,7 +675,7 @@ function may.hand_multchips(card, hand, instant, chips, mult)
 				play_sound(may.get_operation_sound(op_num, 'mult'))
 				if card then card:juice_up(0.8, 0.5) end
 			return true end}))
-			may.hm(op..math.abs(mult[2]), true)
+			may.hm(op..may.round(math.abs(mult[2]), 3), true)
 			delay(0.2)
 			may.hm(G.GAME.hands[hand].mult, false)
 		end

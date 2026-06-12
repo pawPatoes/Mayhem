@@ -2,7 +2,6 @@
 -- Mostly taken from Cryptid
 
 G.FUNCS.notif_welcome = function()
-	G.SETTINGS.GRAPHICS.bloom = 2
 	G.SETTINGS.screenshake = 25
 	G:save_settings()
 	play_sound("foil1", 0.7, 0.3)
@@ -502,7 +501,7 @@ may.notifications = {
 			}
 		end,
 	},
-	amulet = {
+	talisman = {
 		nodes = function()
 			return {
 				n = G.UIT.R,
@@ -528,7 +527,7 @@ may.notifications = {
 									{
 										n = G.UIT.T,
 										config = {
-											text = localize("may_notif_amulet_d1"),
+											text = localize("may_notif_talisman_d1"),
 											scale = 0.5,
 											colour = G.C.BLACK,
 										},
@@ -542,7 +541,7 @@ may.notifications = {
 									{
 										n = G.UIT.T,
 										config = {
-											text = localize("may_notif_amulet_d2"),
+											text = localize("may_notif_talisman_d2"),
 											scale = 0.5, 
 											colour = G.C.BLACK,
 										},
@@ -556,7 +555,74 @@ may.notifications = {
 									{
 										n = G.UIT.T,
 										config = {
-											text = localize("may_notif_amulet_d3"),
+											text = localize("may_notif_talisman_d3"),
+											scale = 0.5,
+											colour = G.C.BLACK,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+		end,
+	},
+	overflow = {
+		nodes = function()
+			return {
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+					colour = empty and G.C.CLEAR or G.C.UI.BACKGROUND_WHITE,
+					r = 0.1,
+					padding = 0.04,
+					minw = 2,
+					minh = 0.8,
+					emboss = not empty and 0.05 or nil,
+					filler = true,
+				},
+				nodes = {
+					{
+						n = G.UIT.R,
+						config = { align = "cm", padding = 0.03 },
+						nodes = {
+							{
+								n = G.UIT.R,
+								config = { align = "cm", padding = 0 },
+								nodes = {
+									{
+										n = G.UIT.T,
+										config = {
+											text = localize("may_notif_overflow_d1"),
+											scale = 0.5,
+											colour = G.C.BLACK,
+										},
+									},
+								},
+							},
+							{
+								n = G.UIT.R,
+								config = { align = "cm", padding = 0 },
+								nodes = {
+									{
+										n = G.UIT.T,
+										config = {
+											text = localize("may_notif_overflow_d2"),
+											scale = 0.5, 
+											colour = G.C.BLACK,
+										},
+									},
+								},
+							},
+							{
+								n = G.UIT.R,
+								config = { align = "cm", padding = 0 },
+								nodes = {
+									{
+										n = G.UIT.T,
+										config = {
+											text = localize("may_notif_overflow_d3"),
 											scale = 0.5,
 											colour = G.C.BLACK,
 										},

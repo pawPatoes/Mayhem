@@ -1,9 +1,5 @@
 -- SFX
 
-SMODS.Sound({key = 'thunder1', path = 'thunder1.ogg'})
-SMODS.Sound({key = 'thunder2', path = 'thunder2.ogg'})
-SMODS.Sound({key = 'bigmoney', path = 'hugemoney.ogg'})
-
 SMODS.Sound({key = 'e_amber', path = 'edition/e_amber.ogg'})
 SMODS.Sound({key = 'e_nostalgic', path = 'edition/e_nostalgic.ogg'})
 SMODS.Sound({key = 'e_techno', path = 'edition/e_techno.ogg'})
@@ -39,6 +35,9 @@ SMODS.Sound({key = 'doggo_success1', path = 'joker/doggo/success1.ogg'})
 SMODS.Sound({key = 'doggo_success2', path = 'joker/doggo/success2.ogg'})
 SMODS.Sound({key = 'doggo_success3', path = 'joker/doggo/success3.ogg'})
 SMODS.Sound({key = 'ah_yes_the_store', path = 'joker/ah_yes_the_store.ogg'}) 
+SMODS.Sound({key = 'cake_spawn', path = 'joker/anniversary_cake/spawn.ogg'})
+SMODS.Sound({key = 'cake_activate', path = 'joker/anniversary_cake/activate.ogg'})
+SMODS.Sound({key = 'cake_destroy', path = 'joker/anniversary_cake/destroy.ogg'})
 
 SMODS.Sound({key = 'universal_collapse', path = 'joker/universalcollapse/spawn.ogg'}) 
 SMODS.Sound({key = 'instability_increase', path = 'joker/universalcollapse/instability_increase.ogg'}) 
@@ -47,7 +46,7 @@ SMODS.Sound({key = 'instability_threshold', path = 'joker/universalcollapse/inst
 SMODS.Sound({key = 'yotta', path = 'consumable/yotta.ogg'})
 SMODS.Sound({key = 'bundle', path = 'consumable/bundle.ogg'})
 SMODS.Sound({key = 'upside_down', path = 'consumable/upside_down.ogg'})
-SMODS.Sound({key = 'super_level', path = 'super_level.ogg'})
+SMODS.Sound({key = 'boost', path = 'boost.ogg'})
 SMODS.Sound({key = 'rare_planet', path = 'consumable/planet/rare_planet.ogg'})
 SMODS.Sound({key = 'legendary_planet', path = 'consumable/planet/legendary_planet.ogg'})
 SMODS.Sound({key = 'mythic_planet', path = 'consumable/planet/mythic_planet.ogg'})
@@ -61,12 +60,14 @@ SMODS.Sound({key = 'hyperoperator', path = 'hyperoperator.ogg'})
 SMODS.Sound({key = 'lvl_multchips', path = 'lvl_multchips.ogg'})
 SMODS.Sound({key = 'blind_size', path = 'blind_size.ogg'})
 SMODS.Sound({key = 'nominal_chips', path = 'nominal_chips.ogg'})
-SMODS.Sound({key = 'eq_level', path = 'eq_level.ogg'})
+SMODS.Sound({key = 'eq_level', path = 'level/eq_level.ogg'})
 SMODS.Sound({key = 'permabonus', path = 'permabonus.ogg', volume = 0.6})
 SMODS.Sound({key = 'event', path = 'event.ogg', volume = 1.5})
 SMODS.Sound({key = 'forcetrigger', path = 'forcetrigger.ogg'})
 SMODS.Sound({key = 'demitrigger', path = 'demitrigger.ogg'})
 SMODS.Sound({key = 'positive', path = 'positive.ogg'})
+SMODS.Sound({key = 'thunder1', path = 'thunder1.ogg'})
+SMODS.Sound({key = 'thunder2', path = 'thunder2.ogg'}) 
 
 SMODS.Sound({key = 'big_score1', path = 'big_score1.ogg'}) 
 SMODS.Sound({key = 'big_score2', path = 'big_score2.ogg'})
@@ -116,8 +117,16 @@ SMODS.Sound({key = 'eeboth', path = 'operation/TetrationalMultChips.ogg'})
 SMODS.Sound({key = 'eeeboth', path = 'operation/PentationalMultChips.ogg'})
 SMODS.Sound({key = 'hexboth', path = 'operation/HexationalMultChips.ogg'})
 
+SMODS.Sound({key = 'x_level', path = 'level/x_level.ogg'})
+SMODS.Sound({key = 'e_level', path = 'level/e_level.ogg'})
+SMODS.Sound({key = 'ee_level', path = 'level/ee_level.ogg'})
+SMODS.Sound({key = 'eee_level', path = 'level/eee_level.ogg'})
+SMODS.Sound({key = 'hex_level', path = 'level/hex_level.ogg'})
+
 SMODS.Sound({key = 'mdcmult', path = 'operation/ModocativeMult.ogg'})
 SMODS.Sound({key = 'mdcchip', path = 'operation/ModocativeChips.ogg'})
+
+SMODS.Sound({key = 'bigmoney', path = 'hugemoney.ogg'})
 
 -- Tamer sounds
 if may.conf.TameSounds then

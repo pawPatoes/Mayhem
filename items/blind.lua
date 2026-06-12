@@ -113,10 +113,11 @@ SMODS.Blind {
 		G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 		play_sound('tarot1')
 	end,
-	press_play = function(self)
+	modify_hand = function(self, cards, poker_hands, text, mult, hand_chips)
 		G.GAME.blind.chips = G.GAME.blind.chips + (G.GAME.blind.chips * (#G.hand.cards * 0.08))
 		G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 		play_sound('may_blind_size')
+		return mult, hand_chips, false
 	end,
 	boss = {
 		min = 1,

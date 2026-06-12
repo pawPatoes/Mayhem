@@ -17,6 +17,11 @@ return {
 					"Play on {C:may_col_eternum_green,E:1}Eternum{} mode if you just want to watch the game {C:attention,E:1}burn{}", 
 					" ",
 					"{C:green,E:1,s:2}Thanks for playing!{}", 
+					" ",
+					"{button:may_open_repo,X:chips,C:white,s:1.5}Repository{}",
+					"{button:may_open_latest_version,X:green,C:white,s:1.5}Update{}",
+					"{button:may_open_wiki,X:money,C:white,s:1.5}Wiki{}",
+					"{button:may_open_discord,X:tarot,C:white,s:1.5}Discord{}",
 				} 
 			}, 
 		}, 
@@ -570,10 +575,15 @@ return {
 		    may_notif_cry_d2 = 'Playing both at the same time is also not recommended', 
 		    may_notif_cry_d3 = 'if you want the intended experience, despite the cross-mod.',
 			
-			may_notif_amulet_1 = 'Amulet/cdataman notice', 
-		    may_notif_amulet_d1 = 'Mayhem is compatible with Amulet/cdataman,', 
-		    may_notif_amulet_d2 = 'however using it instead of Talisman is not recommended as', 
-		    may_notif_amulet_d3 = 'certain Mayhem features will not work as intended (eg Transcendence).',
+			may_notif_talisman_1 = 'Talisman notice', 
+		    may_notif_talisman_d1 = 'Mayhem is compatible with Talisman, however', 
+		    may_notif_talisman_d2 = 'it is also compatible with Amulet, so using', 
+		    may_notif_talisman_d3 = 'Amulet instead of Talisman is recommended.',
+			
+			may_notif_overflow_1 = 'Overflow notice', 
+		    may_notif_overflow_d1 = 'Mayhem (probably) works with Overflow, however', 
+		    may_notif_overflow_d2 = 'Noituus is recommended as the consumable stacking mod for Mayhem.', 
+		    may_notif_overflow_d3 = 'You can find Noituus in the Dependencies ZIP on the Codeberg release.',
 			
 			may_notif_smods_1 = 'Steamodded notice', 
 		    may_notif_smods_d1 = 'Mayhem is incredibly unstable with Steamodded 1221a.', 

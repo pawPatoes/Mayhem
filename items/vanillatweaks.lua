@@ -69,7 +69,7 @@ SMODS.Consumable:take_ownership('c_ankh', {
             "{C:attention}Duplicate{} a {C:attention}random{}", 
             "{C:mult}non-{}{C:dark_edition}Fusion{} {C:attention}Joker{}", 
             "{C:mult}Destroy{} all {C:attention}other{} {C:mult}non-{}{C:dark_edition}Fusion{} {C:attention}Jokers{}", 
-            "{C:inactive}Surreal Jokers count as Fusion Jokers{}"
+            "{C:inactive}Opalescent Jokers count as Fusion Jokers{}"
         }
     }, 
     can_use = function(self, card)
@@ -113,7 +113,7 @@ SMODS.Joker:take_ownership('j_invisible', {
             "{C:money}sell{} {C:attention}this Joker{} to {C:green}duplicate{}",
             "another {C:attention}random{} {C:mult}non-{}{C:dark_edition}Fusion{} {C:attention}Joker{}", 
             "{C:inactive}(Currently {C:attention}#2#{C:inactive}/#1#){}", 
-            "{C:inactive}Surreal Jokers count as Fusion Jokers{}", 
+            "{C:inactive}Opalescent Jokers count as Fusion Jokers{}", 
 			"{C:inactive}Removes Negative Edition from copy{}"
         }
     }, 
@@ -178,20 +178,6 @@ SMODS.Consumable:take_ownership('c_black_hole', {
 })
 
 -- Add fusion notices to vanilla jokers
-SMODS.Joker:take_ownership('j_blueprint', {
-    loc_txt = {
-        name = "Blueprint", 
-        text = {
-            {
-                "Copies ability of", 
-				"{C:attention}Joker{} to the right{}",
-   		 }, 
-    		may.add_fusion_text('Universal Collapse', 'Schematicum', '{C:dark_edition}Transcendent Scaling{} active & used {C:attention}20{} {C:spectral}Potents{}')
-        }, 
-    },
-	no_tree = true,
-})
-
 SMODS.Joker:take_ownership('j_marble', {
     loc_txt = {
         name = "Marble Joker", 
@@ -236,47 +222,62 @@ SMODS.Joker:take_ownership('j_stone', {
     end
 })
 
+SMODS.Joker:take_ownership('j_satellite', {
+	rarity = 3
+})
+
+SMODS.Joker:take_ownership('j_ring_master', {
+	rarity = 3, 
+	endless = true, 
+	in_pool = function(self, args)
+        return G.GAME.may_endless_mode, { allow_duplicates = false }
+    end
+})
+
 -- Rework High Priestess and The Fool 
 SMODS.Consumable:take_ownership('c_high_priestess', {
+	config = { extra = { cards = 2 } },
     loc_txt = {
         name = 'The High Priestess', 
         text = {
-            "Convert all {C:attention}selected{}", 
-            "cards {C:attention}held in hand{}", 
-            "into random", 
-			"{C:tarot}Tarot{} or {C:planet}Planet{} {C:dark_edition}CCDs{}"
+            "Create {C:attention}#1#{} random {C:attention}Consumables{},", 
+			"each one being either a", 
+			"{C:tarot}Tarot{}, {C:planet}Planet{} or {C:spectral}Spectral{} Card", 
+			"{C:inactive}No duplicate sets, requires room{}"
         }
     }, 
-    loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = { key = 'may_ccd_tutorial', set = 'Other' }
+    loc_vars = function(self, info_queue, card) 
+		return { vars = { card.ability.extra.cards } }
     end, 
     can_use = function(self, card)
-        return may.canuse() and #G.hand.highlighted > 0
+        return may.canuse() and G.consumeables and #G.consumeables.cards < G.consumeables.config.card_limit
     end, 
+	immutable = true,
     use = function(self, card, copier)
-		local pool = {}
-		for k, v in pairs(G.P_CENTER_POOLS.Tarot) do
-			table.insert(pool, v)
-		end 
-		for k, v in pairs(G.P_CENTER_POOLS.Planet) do
-			table.insert(pool, v)
+		local sets = {'Tarot', 'Planet', 'Spectral'}
+		local choice1 = pseudorandom_element(sets, pseudoseed('may_high_priestess'))
+		local to_delete
+		for k, v in pairs(sets) do
+			if v == choice1 then 
+				to_delete = k
+			end
 		end
-        G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-			play_sound('tarot1')
+		table.remove(sets, to_delete)
+		local choice2 = pseudorandom_element(sets, pseudoseed('may_high_priestess'))
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+			local card2 = create_card(choice1, G.consumeables, nil, nil, nil, nil, nil, 'may_high_priestess')
+			G.consumeables:emplace(card2)
+			card2:add_to_deck()
+			play_sound('timpani')
 			card:juice_up(0.3, 0.5)
-		return true end }))
-		for i=1, #G.hand.highlighted do
-			local percent = 1.15 - (i-0.999)/(#G.hand.highlighted-0.998)*0.3
-			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() G.hand.highlighted[i]:flip();play_sound('card1', percent);G.hand.highlighted[i]:juice_up(0.3, 0.3);return true end }))
-		end
-		delay(0.2)
-		for i=1, #G.hand.highlighted do
-			local percent = 0.85 + (i-0.999)/(#G.hand.highlighted-0.998)*0.3
-			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() G.hand.highlighted[i]:flip();G.hand.highlighted[i]:set_ability(may.random_consumable('may_hp', nil, 'c_high_priestess', pool, true), true, nil);play_sound('tarot2', percent);G.hand.highlighted[i]:juice_up(0.3, 0.3);G.hand.highlighted[i].highlighted = false;return true end }))
-		end
-        G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-            G.hand:unhighlight_all()
-        return true end}))
+		return true end}))
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+			local card2 = create_card(choice2, G.consumeables, nil, nil, nil, nil, nil, 'may_high_priestess')
+			G.consumeables:emplace(card2)
+			card2:add_to_deck()
+			play_sound('timpani')
+			card:juice_up(0.3, 0.5)
+		return true end}))
     end,
 })
 
@@ -433,9 +434,6 @@ SMODS.Joker:take_ownership('j_perkeo', {
 
 -- Make the following discovered and unlocked by default for the intro
 may.intro_unlocks = {'b_blue', 'b_green', 'b_black', 'b_yellow'}
-SMODS.Joker:take_ownership('j_sly', {
-	discovered = true
-}, true)
 
 for k, v in pairs(may.intro_unlocks) do
     SMODS.Back:take_ownership(v, {
