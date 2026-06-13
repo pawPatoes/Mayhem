@@ -135,10 +135,10 @@ SMODS.Enhancement {
 		name = 'Overgrown Card',
 		text = {
 			{
-				"Apply a",
-				"{C:attention}random{} {C:dark_edition}Edition{} to this card",
+				"Apply a {C:attention}random{} {C:dark_edition}Edition{}", 
+				"to this card", 
 				"when it is {C:attention}discarded{}",
-				"then {C:mult}remove this enhancement{}",
+				"then {C:mult}remove{} this {C:dark_edition}Enhancement{}",
 			},
 			{
 				"{C:inactive,E:1}Idea by _TeKKen_{}", 
@@ -180,7 +180,7 @@ SMODS.Enhancement {
 	discovered = true,
 	atlas = 'enhancement',
 	calculate = function(self, card, context)
-		if context.end_of_round and context.cardarea == G.hand and context.other_card == card then
+		if context.playing_card_end_of_round and context.cardarea == G.hand then
 			return {
 				x_dollars = 1.1, 
                 card = card 
@@ -228,9 +228,8 @@ SMODS.Enhancement {
 		name = 'Crystal Card',
 		text = {
             {
-			    '{C:money}+#1#%{} of {C:money}total balance{} when scored {C:inactive}($#2#){}',
-			    '{C:mult}Decreases{} by {C:attention}2{} when {C:attention}triggered{}',
-			    '{C:attention}Increases{} by {C:attention}10{} if {C:attention}held in hand{} after scoring',
+			    '{C:money}+$3{} when scored',
+				'{C:attention}Suitless{}, {C:attention}Rankless{}, {C:green}always{} scores,', 
             },
             {
                 '{C:inactive,E:1}Art by HuyCorn{}'
@@ -240,42 +239,27 @@ SMODS.Enhancement {
 	pos = { x = 5, y = 0 },
 	unlocked = true,
 	replace_base_card = false,
-	weight = .075,
+	weight = .4,
 	discovered = true,
     shatters = true,
-	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.crystal_percent or 0, number_format((to_big(G.GAME.dollars) or to_big(0)):mul((card.ability.crystal_percent or 0) * 0.01)) } }
-	end, 
-	set_ability = function(self, card, initial, delay_sprites)
-		card.ability.crystal_percent = 5
-	end,
 	atlas = 'enhancement',
+	replace_base_card = true, 
+	no_rank = true, 
+	no_suit = true,
+	always_scores = true,
 	calculate = function(self, card, context)
 		if context.cardarea == G.play and context.main_scoring then
-			card.ability.crystal_percent = math.max(0, card.ability.crystal_percent - 2)
 			return {
-				message = 'Downgraded!',
-				colour = G.C.MONEY,
-				card = card, 
-				x_dollars = 1 + (card.ability.crystal_percent * 0.01)
+				p_dollars = 3
 			}
 		end
-		if context.after and context.cardarea == G.hand then
-			card.ability.crystal_percent = card.ability.crystal_percent + 10
-			return {
-				message = 'Upgraded!',
-				colour = G.C.MONEY,
-				card = card
-			}
+	end, 
+	draw = function(self, card, layer)
+		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+			card.children.center:draw_shader('voucher', nil, card.ARGS.send_to_shader)
 		end
 	end
 }
-
-local vanf_dc = draw_card
-function draw_card(from, to, percent, dir, sort, card, delay, mute, stay_flipped, vol, discarded_only)
-	vanf_dc(from, to, percent, dir, sort, card, delay, mute, stay_flipped, vol, discarded_only)
-	SMODS.calculate_context({card_drawn = true, other_card = card, from = from, to = to})
-end
 
 SMODS.Enhancement {
 	key = 'cardboard',
@@ -285,7 +269,7 @@ SMODS.Enhancement {
             {
 			    "If {C:attention}held in hand{} after hand is played, {C:attention}give{} all {C:attention}other{}",
 			    "{C:attention}Cardboard{} cards {C:attention}held in hand{}",
-			    "{X:attention,C:white}X4{} Nominal Chips"
+			    "{C:chips}+Chips{} equal to {X:green,C:white}X3{} their {C:attention}Nominal Chips{}"
             }, 
             {
                 '{C:inactive,E:1}Art by HuyCorn{}'
@@ -303,13 +287,10 @@ SMODS.Enhancement {
 	atlas = 'enhancement',
 	calculate = function(self, card, context)
 		if context.after and context.cardarea == G.hand then
-			for i=1, #G.hand.cards, 1 do
-				if SMODS.has_enhancement(G.hand.cards[i], 'm_may_cardboard') and G.hand.cards[i] ~= card then
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-						G.hand.cards[i].ability.nominal_multiplier = (G.hand.cards[i].ability.nominal_multiplier or 0) + 4
-						G.hand.cards[i]:juice_up()
-						play_sound('may_nominal_chips')
-					return true end}))
+			for k, v in pairs(G.hand.cards) do
+				if SMODS.has_enhancement(v, 'm_may_cardboard') and v ~= card then
+					v.ability.perma_bonus = (v.ability.perma_bonus or 0) + (v:may_get_nominal_chips() * 3)
+					card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'Upgraded!'}, colour = G.C.CHIPS, delay = 0.45, sound = 'may_permabonus' })
 				end
 			end
 		end
@@ -361,7 +342,7 @@ SMODS.Enhancement {
 	end
 }
 
-SMODS.Enhancement {
+--[[SMODS.Enhancement {
 	key = 'titanium',
 	loc_txt = {
 		name = 'Titanium Card',
@@ -401,7 +382,7 @@ SMODS.Enhancement {
     in_pool = function(self, args)
         return G.GAME.may_endless_mode, { allow_duplicates = true }
     end
-}
+}]] 
 
 SMODS.Enhancement {
 	key = 'geometric',
@@ -426,7 +407,7 @@ SMODS.Enhancement {
 	calculate = function(self, card, context)
 		if context.cardarea == G.play and context.main_scoring then
 			return {
-				x_mult = math.sqrt(G.GAME.hands[context.scoring_name].mult) * 0.25
+				x_mult = math.sqrt(G.GAME.hands[context.scoring_name].level) * 0.25
 			}
 		end
 	end

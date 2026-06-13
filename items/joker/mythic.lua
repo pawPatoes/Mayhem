@@ -77,9 +77,9 @@ SMODS.Joker {
 				"When {C:attention}Blind{} is {C:attention}selected{},",
 				"create {C:attention}#1#{} {C:dark_edition}Negative{} copies of {C:purple}The Wheel of Fortune{}",
 				may.pager(),
-				"{C:attention}Jokers{} with an {C:dark_edition}Edition{} give {X:mult,C:white}^#2#{} Mult",
-				may.pager(),
-				"When {C:attention}a playing card{} is triggered, create {C:attention}#3#{} {C:dark_edition}Negative{} copies of {C:purple}The Wheel of Fortune{}",
+				"{X:mult,C:white}+^#2#{} Mult per {C:attention}Joker{} with an {C:dark_edition}Edition{}",
+				may.pager(), 
+				"{C:inactive}Currently ^#3# Mult{}"
 			},
 			may.add_fusion_text('Collectionist', 'Diskus Kollectum', may.get_condition('diskus_kollectum')),
 		},	
@@ -92,83 +92,45 @@ SMODS.Joker {
 	custom_soul_anim = 'diskus_spin',
 	pos = { x = 0, y = 0 },
 	soul_pos = { x = 1, y = 0 },
-	cost = 100,
-	config = { extra = { blindcards = 10, Emult = 1.4, cards = 2, } },
+	cost = 141,
+	config = { extra = { blindcards = 14, Emult = 0.56 } },
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_wheel_of_fortune
-		info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
-		return { vars = { card.ability.extra.blindcards, card.ability.extra.Emult, card.ability.extra.cards } }
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
+		local num = 1
+		if G.jokers then
+			for k, v in pairs(G.jokers.cards) do
+				if v.edition and v.edition.key then
+					num = num + card.ability.extra.Emult
+				end
+			end
+		end
+		return { vars = { card.ability.extra.blindcards, card.ability.extra.Emult, num } }
 	end,
 	calculate = function(self, card, context)
-		if context.individual and context.cardarea == G.play and context.other_card then
-			G.E_MANAGER:add_event(Event({ func = function()
-				card:juice_up(0.5, 0.5)
-					if Overflow then
-						local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-						G.consumeables:emplace(wheel)
-						wheel:setQty(card.ability.extra.cards)
-						wheel:add_to_deck()
-						wheel:set_edition({negative = true}, false, false)
-					else
-						for i=1, card.ability.extra.cards, 1 do
-							local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-							G.consumeables:emplace(wheel)
-							wheel:add_to_deck()
-							wheel:set_edition({negative = true}, false, false)
-						end
-					end
-			return true end}))
-		end
 		if context.setting_blind then
 			G.E_MANAGER:add_event(Event({ func = function()
 				card:juice_up(0.5, 0.5)
-				if Overflow then
-					local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-					G.consumeables:emplace(wheel)
-					wheel:setQty(card.ability.extra.blindcards)
-					wheel:add_to_deck()
-					wheel:set_edition({negative = true}, false, false)
-				else
-					for i=1, card.ability.extra.blindcards, 1 do
-						local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-						G.consumeables:emplace(wheel)
-						wheel:add_to_deck()
-						wheel:set_edition({negative = true}, false, false)
-						wheel:setQty(1)
-					end
-				end
+				local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
+				wheel:setQty(card.ability.extra.blindcards)
+				wheel:add_to_deck()
+			    wheel:set_edition({negative = true}, false, false)
+				G.consumeables:emplace(wheel)
 			return true end}))
 		end
-		if context.other_joker and context.other_joker.edition and context.other_joker ~= card then
-			G.E_MANAGER:add_event(Event({ func = function()
-				card:juice_up(0.5, 0.5)
-			return true end}))
-			return {
-				message = "^"..card.ability.extra.Emult.." Mult",
-				Emult_mod = card.ability.extra.Emult,
-				colour = G.C.MULT,
-				card = context.other_joker
-			}
-		end
-		if context.forcetrigger then
-			G.E_MANAGER:add_event(Event({ func = function()
-				card:juice_up(0.5, 0.5)
-				if Overflow then
-					local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-					G.consumeables:emplace(wheel)
-					wheel:setQty(card.ability.extra.blindcards)
-					wheel:add_to_deck()
-					wheel:set_edition({negative = true}, false, false)
-				else
-					for i=1, card.ability.extra.blindcards, 1 do
-						local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-						G.consumeables:emplace(wheel)
-						wheel:add_to_deck()
-						wheel:set_edition({negative = true}, false, false)
-						wheel:setQty(1)
-					end
+		if context.joker_main or context.forcetrigger then
+			local num = 1
+			for k, v in pairs(G.jokers.cards) do
+				if v.edition and v.edition.key then
+					num = num + card.ability.extra.Emult
 				end
-			return true end}))
+			end 
+			if num > 1 then
+			    return {
+				    e_mult = num,
+				    card = card 
+			    }
+			end
 		end
 	end
 }
@@ -201,7 +163,7 @@ SMODS.Joker {
 	immutable = true,
 	pos = { x = 7, y = 4 },
 	soul_pos = { x = 8, y = 4 },
-	config = { extra = { Echip = 1, Echip_gain = 0.075, } },
+	config = { extra = { Echip = 1, Echip_gain = 0.2, } },
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_medusa

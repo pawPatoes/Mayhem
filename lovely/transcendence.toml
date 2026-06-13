@@ -808,34 +808,6 @@ payload = '''
 '''
 match_indent = true
 
-# Glitchiness during Transcendence
-[[patches]]
-[patches.pattern]
-target = "game.lua"
-pattern = "G.SHADERS['CRT']:send('glitch_intensity', 0)--0.1*G.SETTINGS.GRAPHICS.crt/100 + (G.screenwipe_amt) + 1)"
-position = "at"
-payload = '''
-	G.SHADERS['CRT']:send('glitch_intensity', transcendence_glitch or 0)
-	G.SHADERS['CRT']:send('noise_fac', transcendence_noise or 0)
-	G.SHADERS['CRT']:send('bloom_fac', transcendence_bloom or 0)
-	G.SHADERS['CRT']:send('crt_intensity', transcendence_crt or 0)
-'''
-match_indent = true
-
-# Cryptid compatibility
-[[patches]]
-[patches.pattern]
-target = "game.lua"
-pattern = "G.SHADERS['CRT']:send('glitch_intensity', glitched_intensity or 0)"
-position = "at"
-payload = '''
-	G.SHADERS['CRT']:send('glitch_intensity', glitched_intensity or 0)
-	G.SHADERS['CRT']:send('noise_fac', transcendence_noise or 0)
-	G.SHADERS['CRT']:send('bloom_fac', transcendence_bloom or 0)
-	G.SHADERS['CRT']:send('crt_intensity', transcendence_crt or 0)
-'''
-match_indent = true
-
 # Initialize particles
 [[patches]]
 [patches.pattern]
@@ -883,4 +855,3 @@ for i=1, 3 do
 	parameter.lick[i] = math.min(math.max(((col[i]*0.5+G.C.YELLOW[i]*0.5) + 0.1)^2, 0.1), 1)
 end
 '''
-

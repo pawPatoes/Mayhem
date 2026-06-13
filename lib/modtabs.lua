@@ -301,67 +301,50 @@ SMODS.current_mod.extra_tabs = function()
 			{
 				label = 'Gameplay',
 				tab_definition_function = function()
-					if may.conf.Mode == 1 then
-						return {n = G.UIT.ROOT, config = {align = 'cm',minw = 8,minh = 4,r = .1,padding = .1,colour = G.C.BLACK}, nodes = {
-							{n=G.UIT.R, config={}, nodes={
-								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
-									{ n = G.UIT.T, config = { text = 'Coming soon!', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
-								}},
+					return {n = G.UIT.ROOT, config = {align = 'cm',minw = 8,minh = 4,r = .1,padding = .1,colour = G.C.BLACK}, nodes = {
+						{n = G.UIT.R, config = { align = "cm", padding = 0 }, nodes = {
+							create_option_cycle({
+								label = "Exponential Reroll Cost Increase Threshold",
+								scale = 1,
+								w = 6,
+								options = {"25 rerolls", "50 rerolls", "75 rerolls", "Disabled"},
+								opt_callback = 'may_upd_reroll_cost',
+								current_option = may.conf.reroll_cost,
+							})
+						}},	
+                        {n=G.UIT.R, config={}, nodes={
+							{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
+								{ n = G.UIT.T, config = { text = 'Activate Scaling when obtaining Fusion Jokers', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
-							{n=G.UIT.R, config={}, nodes={
-								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
-									{ n = G.UIT.T, config = { text = 'More is available in Eternum mode', scale = 0.2, colour = G.C.UI.TEXT_LIGHT }},
-								}},
+							{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
+							    create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "fusion_punishment" },
 							}},
-						}}
-					else
-						return {n = G.UIT.ROOT, config = {align = 'cm',minw = 8,minh = 4,r = .1,padding = .1,colour = G.C.BLACK}, nodes = {
-							{n = G.UIT.R, config = { align = "cm", padding = 0 }, nodes = {
-								create_option_cycle({
-									label = "Exponential Reroll Cost Increase Threshold",
-									scale = 1,
-									w = 6,
-									options = {"25 rerolls", "50 rerolls", "75 rerolls", "Disabled"},
-									opt_callback = 'may_upd_reroll_cost',
-									current_option = may.conf.reroll_cost,
-								})
-							}},	
-							{n = G.UIT.R, config = { align = "cm", padding = 0 }, nodes = {
-								create_option_cycle({
-									label = "Blind Scaling",
-									scale = 1,
-									w = 6,
-									options = {"Fast", "Very Fast (Default)", "Absurd", "Disabled"},
-									opt_callback = 'may_upd_scaling',
-									current_option = may.conf.scaling,
-								})
+						}},
+						{n=G.UIT.R, config={}, nodes={
+							{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
+								{ n = G.UIT.T, config = { text = 'Activate Prismatic Scaling when reroll price reaches $1e100', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
-							{n=G.UIT.R, config={}, nodes={
-								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
-									{ n = G.UIT.T, config = { text = 'Activate Interdimensional scaling when reroll price reaches $1e100', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
-								}},
-								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "reroll_punishment" },
-								}},
+							{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
+							    create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "reroll_punishment" },
 							}},
-							{n=G.UIT.R, config={}, nodes={
-								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
-									{ n = G.UIT.T, config = { text = 'Activate Surreal scaling when reroll threshold is reached 5 times in a row', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
-								}},
-								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "threshold_punishment" },
-								}},
+						}},
+						{n=G.UIT.R, config={}, nodes={
+							{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
+								{ n = G.UIT.T, config = { text = 'Activate Opalescent Scaling when reroll threshold is reached 5 times in a row', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
-							{n=G.UIT.R, config={}, nodes={
-								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
-									{ n = G.UIT.T, config = { text = 'Activate various scaling after high round thresholds', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
-								}},
-								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "round_punishment" },
-								}},
+							{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "threshold_punishment" },
 							}},
-						}}
-					end
+						}},
+						{n=G.UIT.R, config={}, nodes={
+							{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
+								{ n = G.UIT.T, config = { text = 'Activate various Fusion Scaling after high round thresholds', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
+							}},
+							{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "round_punishment" },
+							}},
+						}},
+					}}
 				end,
 			},
 			{
@@ -379,7 +362,7 @@ SMODS.current_mod.extra_tabs = function()
 								label = "Menu Music",
 								scale = 1,
 								w = 6,
-								options = {"Auto", "Mayhem Theme", "Eternum Theme", "Yotta Card", "UltraBlind", "HyperAscendant Joker", "Enhanced Pack", "Party Time", "Rondo Discoteca", "Surreal Joker", "Pixel Pack", "Tainted Boss", "Fusion Joker", "Fusion Pack", "Fusion Joker (Shop)", "Default"},
+								options = {"Auto", "Mayhem Theme", "Eternum Theme", "Yotta Card", "UltraBlind", "Transcendent Joker", "Enhanced Pack", "Party Time", "Rondo Discoteca", "Opalescent Joker", "Pixel Pack", "Tainted Boss", "Fusion Joker", "Fusion Pack", "Fusion Joker (Shop)", "Transcendent Joker (Shop)", "Opalescent Joker (Shop)", "Default"},
 								opt_callback = 'may_upd_music',
 								current_option = may.conf.Music,
 							})
@@ -414,7 +397,7 @@ SMODS.current_mod.extra_tabs = function()
 								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "Partymusic" },
 							}},
 							{n = G.UIT.C, config = { align = "cl", padding = 0 }, nodes = {
-								{ n = G.UIT.T, config = { text = 'HyperAscendant Joker', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
+								{ n = G.UIT.T, config = { text = 'Transcendent Joker', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
 							{n = G.UIT.C, config = { align = "cl", padding = 0.05 }, nodes = {
 								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "Hyperascendantmusic" },
@@ -446,7 +429,7 @@ SMODS.current_mod.extra_tabs = function()
 								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "Ibizamusic" },
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
-								{ n = G.UIT.T, config = { text = 'Surreal Joker', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
+								{ n = G.UIT.T, config = { text = 'Opalescent Joker', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0.05 }, nodes = {
 								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "Surrealmusic" },

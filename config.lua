@@ -36,7 +36,7 @@ return {
 	["pagers"] = true,
 	["Safe"] = false,
 	["show_version"] = true,
-	["short_fusion"] = false,
+	["short_fusion"] = true,
 	["content"] = {
 		["WIP"] = true,
 		["Jokers"] = true,
@@ -68,6 +68,7 @@ return {
 	["reroll_punishment"] = true,
 	["threshold_punishment"] = true,
 	["round_punishment"] = true,
+	["fusion_punishment"] = true,
 	["reroll_cost"] = 2,
 	["scaling"] = 1,
     ["epileptic"] = false,
@@ -76,7 +77,8 @@ return {
 		["stj"] = false, 
 		["cry"] = false, 
 		["welcome"] = false,
-		["amulet"] = false,
+		["talisman"] = false,
 		["smods"] = false,
+		["overflow"] = false,
 	}
 }

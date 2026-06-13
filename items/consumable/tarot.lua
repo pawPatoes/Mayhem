@@ -79,7 +79,7 @@ SMODS.Consumable {
 	atlas = 'tarot',
 	cost = 3,
 	unlocked = true,
-	config = { extra = { interest = 0.045 } },
+	config = { extra = { interest = 0.06 } },
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
 		local count = 0
@@ -485,7 +485,7 @@ SMODS.Consumable {
 	end
 }
 
-SMODS.Consumable {
+--[[SMODS.Consumable {
 	key = 'mecha',
 	set = 'Tarot',
 	loc_txt = {
@@ -518,7 +518,7 @@ SMODS.Consumable {
     in_pool = function(self, args)
         return G.GAME.may_endless_mode, { allow_duplicates = false }
     end
-}
+}]] 
 
 SMODS.Consumable {
 	key = 'axiom',
@@ -531,10 +531,14 @@ SMODS.Consumable {
                 "held in {C:attention}hand{}",
 				"into a {C:attention}Geometric{} card"
 			},
+			{
+				"{C:inactive,E:1}Art by XZ0204"
+			}
 		}
 	},
-	pos = { x = 1, y = 2 },
-	atlas = 'placeholder',
+	pos = { x = 0, y = 2 },
+	display_size = { w = 65, h = 95 },
+	atlas = 'tarot',
 	cost = 3,
 	unlocked = true,
     config = { extra = { cards = 1, target = 'm_may_geometric'} }, 

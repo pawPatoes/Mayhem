@@ -173,7 +173,7 @@ SMODS.Consumable {
         for k, v in pairs(G.hand.cards) do
             if v.ability.consumeable then 
                 table.insert(targets, v)
-                table.insert(consumables, G.P_CENTERS[v2].set)
+                table.insert(consumables, G.P_CENTERS[v].set)
             end
         end
         for k, v in pairs(targets) do
@@ -294,6 +294,7 @@ SMODS.Consumable {
 	discovered = true,
     no_grc = true, 
 	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		info_queue[#info_queue + 1] = { key = "may_ccd_tutorial", set = "Other" }
 		return { vars = {} }
 	end,
@@ -644,7 +645,7 @@ SMODS.Consumable {
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.1, func = function() 
 				play_sound('may_permabonus', percent)
 				targets[i]:juice_up(0.3, 0.3)
-				targets[i].ability.perma_mult = (targets[i].ability.perma_mult or 0) + card.ability.extra.bonus
+				targets[i].ability.perma_bonus = (targets[i].ability.perma_bonus or 0) + card.ability.extra.bonus
 			return true end}))
 		end
 		for i=1, #targets, 1 do
@@ -827,7 +828,7 @@ SMODS.Consumable {
 		name = 'HannaH MaM',
 		text = {
 			{
-				"{C:atterntion}Duplicate{} all {C:attention}selected playing cards{}",
+				"{C:attention}Duplicate{} all {C:attention}selected playing cards{}",
 				"{C:attention}#1# Ante per{} selected {C:attention}card{}"
 			},
 			{
@@ -915,9 +916,11 @@ SMODS.Consumable {
 		name = 'TempepmeT',
 		text = {
 			{
-				"Set the {C:money}sell value{} of",
-				"a {C:attention}selected Joker{} to {C:mult}0{}",
-				"Add {C:mult}lost{} {C:money}sell value{} to {C:attention}all other Jokers{}"
+				"{C:mult}Decrease{} {C:money}Interest Cap{} by", 
+				"the {C:money}sell value{} of a random {C:attention}Joker{},", 
+				"then earn the {C:money}sell value{} of", 
+				"all held {C:attention}Consumables{} {X:green,C:white}X#1#{} as {C:money}money{}",
+				"{C:inactive}Currently +$#2#{}"
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -928,29 +931,38 @@ SMODS.Consumable {
 	atlas = 'upside_down',
 	cost = 10,
 	unlocked = true,
+	config = { extra = { mul = 3 } },
 	discovered = true,
     no_grc = true, 
 	can_use = function(self, card)
-		return may.canuse() and #G.jokers.highlighted == 1 and #G.jokers.cards > 1
+		return may.canuse() and #G.jokers.cards >= 1 and #G.consumeables.cards >= 1
 	end,
+	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
+		local val = 0
+		if G.consumeables then
+			for k, v in pairs(G.consumeables.cards) do
+				val = val + v.sell_cost
+			end
+		end 
+		return { vars = { card.ability.extra.mul, val * card.ability.extra.mul } }
+	end, 
 	use = function(self, card, area, copier)
-		local target = G.jokers.highlighted[1]
-		local value = target.sell_cost
-		target.sell_cost = 0
+		local joker = pseudorandom_element(G.jokers.cards, pseudoseed('c_may_temperance_upsd'))
+		local val = 0
+		for k, v in pairs(G.consumeables.cards) do
+			val = val + v.sell_cost
+		end
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
 			play_sound('tarot2')
-			target:juice_up(0.3, 0.5)
+			joker:juice_up(0.3, 0.5)
 		return true end}))
-		for k, v in pairs(G.jokers.cards) do
-			if v ~= target then
-				v.ability.extra_value = (v.ability.extra_value or 0) + value
-				v:set_cost()
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-					play_sound('timpani')
-					v:juice_up(0.3, 0.5)
-				return true end}))
-			end
-		end
+		may.ease_interest_cap(-1, joker.sell_cost)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+			play_sound('timpani')
+			card:juice_up(0.3, 0.5)
+		return true end}))
+		ease_dollars(val * card.ability.extra.mul)
 	end,
 }
 
@@ -972,7 +984,7 @@ SMODS.Consumable {
 		}
 	},
 	pos = { x = 4, y = 4 },
-	config = { extra = { bonus = 5, target_enhancement = 'm_gold' } },
+	config = { extra = { bonus = 0.3, target_enhancement = 'm_gold' } },
 	atlas = 'upside_down',
 	cost = 10,
 	unlocked = true,
@@ -1381,6 +1393,7 @@ SMODS.Consumable {
 	discovered = true,
     no_grc = true, 
 	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		return { vars = { card.ability.extra.tarots } }
 	end,
 	can_use = function(self, card)
@@ -2516,7 +2529,7 @@ SMODS.Consumable {
 			end
 		end
 		delay(0.5)
-		may.ease_interest_cap(5)
+		may.ease_interest_cap(-1, 5)
 		SMODS.calculate_context({ remove_playing_cards = true, removed = targets })
 	end
 }
@@ -2586,12 +2599,13 @@ SMODS.Consumable {
 	key = 'black_hole_upsd',
 	set = 'upside_down_spectrals',
 	name = 'BlalB HooH',
+	config = { extra = { tags = 10 } },
 	loc_txt = {
 		name = "BlalB HooH",
 		text = {
 			{
 				"{C:mult}Levels down{} {C:attention}all Poker Hands{} by 1",
-				"Creates a copy of {C:dark_edition}Universal Collapse{}",
+				"Creates {C:attention}#1#{} random {C:attention}Tags",
 				"{C:inactive}Requires room{}",
 			},
 			{
@@ -2604,25 +2618,21 @@ SMODS.Consumable {
 	cost = 50,
 	unlocked = true,
 	discovered = true,
-	endless = true, 
     no_grc = true, 
     loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_CENTERS.j_may_universal_collapse
-        return {}
+        return { vars = { card.ability.extra.tags } }
     end, 
 	can_use = function(self, card)
-		return may.canuse() and #G.jokers.cards < G.jokers.config.card_limit
+		return may.canuse()
 	end,
 	use = function(self, card, area, copier)
 		may.level_up_all_hands(card, false, -1)
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-			local card2 = create_card('Joker', G.jokers, nil, nil, nil, nil, 'j_may_universal_collapse', 'may_genesis')
-			G.jokers:emplace(card2)
-			play_sound('may_thunder'..math.random(1,2)..'', 1, 0.75)
-			card2:add_to_deck()
+			play_sound('may_bundle')
+			card:may_explode(nil, nil, true)
+			for i = 1, card.ability.extra.tags do
+				may.random_tag()
+			end
 		return true end}))
 	end, 
-	in_pool = function(self, args)
-        return G.GAME.may_endless_mode, { allow_duplicates = false }
-    end
 }

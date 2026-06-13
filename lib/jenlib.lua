@@ -367,7 +367,8 @@ local invalid_values = {
 }
 
 --Checks if a number is not an actual number (e.g. nan, inf)
-function may.invalid_number(num)
+function may.invalid_number(num) 
+	if not num then return true end
 	local str = string.lower(number_format(num))
 	return may.bf(str, invalid_values)
 end

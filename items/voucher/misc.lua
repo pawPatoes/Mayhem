@@ -1,5 +1,34 @@
 -- Miscellaneous Vouchers
 
+-- Endless Mode
+
+SMODS.Voucher {	key = 'endless_mode',	loc_txt = {		name = "{C:tarot}Endless Mode{}",		text = {
+		    {			    "Begin {C:purple,E:1}Endless Mode{}", 
+				may.pager(), 
+				"{X:purple,C:white}Endless-Exclusive{} content may now {C:green}appear{}", 
+				"{C:green}New{} {C:dark_edition}systems{} are introduced", 
+				"Game {C:mult}difficulty{} is {C:mult}increased{}", 
+				"You are {C:mult}not{} able to {C:mult}exit{} {C:purple,E:1}Endless Mode{}",		    }, 
+		    {
+			    "Appears in {C:green}every shop{}",
+				"during and after {C:attention}Ante 9{}",
+		    }
+		}	},	pos = { x = 4, y = 2 },
+	soul_pos = { x = 5, y = 2 }, 	atlas = 'misc_voucher',	cost = 30,	unlocked = true,
+	may_unsellable_voucher = true,
+    set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_hyperascendant , nil, 1.2)
+	end,
+	redeem = function(self, card)
+		G.GAME.may_endless_mode = true
+		G.E_MANAGER:add_event(Event({func = function()
+			play_sound('may_ethereal_joker')
+		return true end}))
+	end,
+    in_pool = function(self, args)
+		return false, { allow_duplicates = false }
+	end}
+
 -- Reconfigure
 
 SMODS.Voucher {	key = 'reconfigure',	loc_txt = {		name = "{C:green}Reconfigure{}",		text = {
@@ -42,9 +71,9 @@ SMODS.Voucher {	key = 'astronomy_1',	loc_txt = {		name = "Astronomy {C:planet
 
 SMODS.Voucher {	key = 'astronomy_2',	loc_txt = {		name = "Astronomy {C:chips}II{}",		text = {
 		    {			    "When a {C:purple}Poker Hand{} is {C:planet}leveled up{},", 
-				"{C:green}every other{} {C:purple}Poker Hand{} is {C:planet}leveled up{}", 
-				"by {C:mult}half{} the {C:planet}level{} {C:green}increase{}", 
-				"{C:inactive}Will not trigger level up context for items{}",		    }, 
+				"it gains {X:attention,C:white}#1#{} of the {C:purple}Mult & Chips{}", 
+				"of {C:attention}most played{} {C:purple}Poker Hand{}", 
+				"{C:inactive}Ignores most played Poker Hand{}"		    }, 
 		    {
 			    "Appears in {C:purple,E:1}Endless Mode{}", 
 			    "every {C:attention}9 rounds{}", 
@@ -56,17 +85,12 @@ SMODS.Voucher {	key = 'astronomy_2',	loc_txt = {		name = "Astronomy {C:chips}
     set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_hyperascendant , nil, 1.2)
 	end,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { '(level increase)%' } }
+	end, 
 	calculate = function(self, card, context)
-		if context.level_up_hand and to_big(context.amount) > to_big(0) then
-		    for k, v in pairs(G.GAME.hands) do
-				if k ~= context.hand then
-					may.no_context_lvl_up(card, k, true, context.amount * 0.5)
-				end
-			end
-			if not context.instant then
-			    may.hn("Other Hands") 
-                may.hlv('+'..(context.amount * 0.5))
-			end
+		if context.level_up_hand and to_big(context.amount) > to_big(0) and context.hand ~= may.favhand() then
+		    may.hand_multchips(card, context.hand, context.instant, {-1, G.GAME.hands[may.favhand()].chips * (context.amount * 0.01)}, {-1, G.GAME.hands[may.favhand()].mult * (context.amount * 0.01)})
 		end
 	end,
     in_pool = function(self, args)

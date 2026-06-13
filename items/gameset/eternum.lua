@@ -47,6 +47,59 @@ SMODS.Joker:take_ownership('j_may_3d_joker', {
 	config = { extra = { Emult = 1.3 } }, 
 })
 
+SMODS.Joker:take_ownership('j_may_artso', {
+	loc_txt = {
+		name = 'Artso',
+		text = {
+			{
+				"Played {C:attention}Spades{} have a {C:green}#1# in #2#{} chance",
+				"to give {X:chips,C:white}^^#3#{} Chips",
+				may.pager(), 
+				"{C:mult}Unstable{} near {C:attention}Blueprints{}",
+				may.pager(), 
+				"{C:inactive,E:1,s:0.7}tUrk e sandwiC!!{}"
+			},
+			{
+				"{C:inactive,E:1}Character art by silly_goober_0nthewall (Discord){}"
+			}
+		}
+	},
+	config = { extra = { odds = 8.42, EEchip = 1.02 } }, 
+	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = G.P_CENTERS['j_blueprint']
+		return { vars = { G.GAME.probabilities.normal, card.ability.extra.odds, card.ability.extra.EEchip } }
+	end,
+	blueprint_compat = false,
+	immutable = true,
+    endless = true, 
+	calculate = function(self, card, context)
+		if (context.individual and context.cardarea == G.play) or (context.individual and context.cardarea == G.play and context.blueprint) then
+			if context.other_card:is_suit('Spades') then
+				if pseudorandom('may_artso') < G.GAME.probabilities.normal / card.ability.extra.odds then
+					return {
+						ee_chips = card.ability.extra.EEchip,
+					}
+				end
+			end
+		end
+		if context.joker_main and not context.blueprint then
+			for k, v in pairs(G.jokers.cards) do
+				if v:gc().key == 'j_blueprint' then
+					v:start_dissolve()
+				end
+			end
+		end
+		if context.forcetrigger then
+			return {
+				ee_chips = card.ability.extra.EEchip,
+			}
+		end
+	end,
+	in_pool = function(self, args)
+        return G.GAME.may_endless_mode, { allow_duplicates = false }
+    end
+})
+
 SMODS.Joker:take_ownership('j_may_nebula', {
 	loc_txt = {
 		name = 'Nebula',
@@ -401,16 +454,16 @@ SMODS.Back {
 end
 
 SMODS.Back {
-	name = "Transcendent deck",
-	key = "transcendent_deck",
+	name = "Ethereal Deck",
+	key = "ethereal_deck",
 	atlas = 'deck',
 	pos = { x = 2, y = 2 },
 	config = { hands = -1, discards = -1 },
 	loc_txt = {
-		name = "Transcendent Deck",
+		name = "Ethereal Deck",
 		text = {
 			"Start run with a random",
-			"{X:dark_edition,C:white}Transcendent{} {C:attention}Joker{}",
+			"{X:may_transcendent,C:white}Ethereal{} {C:attention}Joker{}",
 			"{C:chips}-1 hand{} and {C:mult}discard{}"
 		},
 	},
@@ -449,17 +502,17 @@ SMODS.Back {
 if may.conf.content.WIP then
 
 SMODS.Back {
-	name = "Surreal deck",
-	key = "surreal_deck",
+	name = "Opalescent Deck",
+	key = "opalescent_deck",
 	atlas = 'placeholder',
 	pos = { x = 4, y = 2 },
 	misc_badge = may_wip_badge,
 	config = { hands = -2 },
 	loc_txt = {
-		name = "Surreal Deck",
+		name = "Opalescent Deck",
 		text = {
 			"Start run with a random",
-			"{X:may_surreal,C:white}Surreal{} {C:attention}Joker{}",
+			"{X:may_surreal,C:white}Opalescent{} {C:attention}Joker{}",
 			"{C:chips}-2 hands{}"
 		},
 	},
@@ -477,17 +530,17 @@ SMODS.Back {
 }
 
 SMODS.Back {
-	name = "Interdimensional Deck",
-	key = "interdimensional_deck",
+	name = "Prismatic Deck",
+	key = "prismatic_deck",
 	atlas = 'placeholder',
 	pos = { x = 4, y = 2 },
 	misc_badge = may_wip_badge,
 	config = { hands = -1, discards = -1, joker_slot = -1, hand_size = -1 },
 	loc_txt = {
-		name = "Interdimensional Deck",
+		name = "Prismatic Deck",
 		text = {
 			"Start run with a random",
-			"{X:may_interdimensional,C:white}Interdimensional{} {C:attention}Joker{}",
+			"{X:may_interdimensional,C:white}Prismatic{} {C:attention}Joker{}",
 			"{C:chips}-1 hand{}, {C:mult}discard{}, {C:attention}Hand Size{} and {C:attention}Joker Slot{}"
 		},
 	},
@@ -508,16 +561,16 @@ SMODS.Back {
 end
 
 SMODS.Back {
-	name = "Ethereal deck",
-	key = "ethereal_deck",
+	name = "Demiurgic Deck",
+	key = "demiurgic_deck",
 	atlas = 'deck',
 	pos = { x = 3, y = 0 },
 	config = {  hands = -2, discards = -2, joker_slot = -3 },
 	loc_txt = {
-		name = "Ethereal Deck",
+		name = "Demiurgic Deck",
 		text = {
 			"Start run with a random",
-			"{X:may_ethereal,C:white}Ethereal{} {C:attention}Joker{},",
+			"{X:may_ethereal,C:white}Demiurgic{} {C:attention}Joker{},",
 			"{C:chips}2 hands{}, {C:mult}1 discard{} and {C:attention}2 joker slots{}",
 		},
 	},
@@ -740,7 +793,7 @@ SMODS.Back {
 		name = "HyperAscendant Deck",
 		text = {
 			"Start run with a random",
-			"{X:may_hyperascendant,C:white}HyperAscendant{} {C:attention}Joker{}",
+			"{X:may_hyperascendant,C:white}Transcendent{} {C:attention}Joker{}",
 		},
 	},
 	apply = function(self)
@@ -862,15 +915,15 @@ SMODS.Consumable {
 	loc_txt = {
 		name = "Macrocosm",
 		text = {
-			"Creates a {C:attention}random{} {X:dark_edition,C:white}Transcendent{} Joker",
-			"{C:mult}#1# hands{} played",
+			"Creates a {C:attention}random{} {X:may_transcendent,C:white}Ethereal{} Joker",
+			"{C:mult}#1#{} {C:chips}hands{}",
 			"{C:inactive}(requires room){}"
 		}
 	},
 	pos = { x = 2, y = 2 },
 	soul_pos = { x = 3, y = 2 },
 	config = { hands = -2 },
-	atlas = 'may_special_spectral',
+	atlas = 'may_spectral',
 	misc_badge = may_rare_badge,
 	endless = true,
 	cost = 10,

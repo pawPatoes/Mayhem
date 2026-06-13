@@ -131,8 +131,8 @@ SMODS.Consumable {
 				"{C:mult}destroy{} it for various", 
 				"{C:dark_edition}Score Operator{} {C:green}increases{}", 
 				may.pager(),
-				"{X:may_transcendent,C:white}Transcendent{}: +1, {X:may_interdimensional,C:white}Interdimensional{}: +2,",
-				"{X:may_surreal,C:white}Surreal{}: +3, {X:may_ethereal,C:white}Ethereal{}: +3, {X:may_hyperascendant,C:white}HyperAscendant{}: +10",
+				"{X:may_transcendent,C:white}Ethereal{}: +1, {X:may_interdimensional,C:white}Prismatic{}: +2,",
+				"{X:may_ethereal,C:white}Demiurgic{}: +3, {X:may_hyperascendant,C:white}Transcendent{}: +10, {X:may_surreal,C:white}Opalescent{}: +15",
 				"{C:attention}Joker{} must have one of the {C:attention}rarities{} above"
 			},
 			{
@@ -165,7 +165,7 @@ SMODS.Consumable {
             if G.jokers.highlighted[1]:gc().rarity == 'may_transcendent' then 
                 amount = amount + 1
             elseif G.jokers.highlighted[1]:gc().rarity == 'may_surreal' or G.jokers.highlighted[1]:gc().rarity == 'may_ethereal' then 
-                amount = amount + 3
+                amount = amount + 15
             elseif G.jokers.highlighted[1]:gc().rarity == 'may_interdimensional' then 
                 amount = amount + 2
             elseif G.jokers.highlighted[1]:gc().rarity == 'may_hyperascendant' then
@@ -254,10 +254,10 @@ SMODS.Consumable {
             G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
                 local card2 = create_card(G.P_CENTERS[v].set, G.consumeables, nil, nil, nil, nil, v, 'may_speculum')
 				card2:start_materialize()
+				card2:setQty(2)
 				card2:set_edition({negative = true}, true)
 				card2:add_to_deck()
 				G.consumeables:emplace(card2)
-                card2:setQty(2)
                 play_sound('timpani')
             return true end}))
             ease_dollars(-(G.P_CENTERS[v].cost * 3))

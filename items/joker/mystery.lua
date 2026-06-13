@@ -4,19 +4,17 @@ local UC_messages = {
 	"I don't feel safe around this thing...",
 	"Are you sure this is a good idea?",
 	"I dont like where this is going.",
-	"Who am I you ask? ERROR:(undefined string, author was too lazy to create lore)",
+	"I choose to remain mysterious out of laziness.",
 	"I feel funny...",
 	"How did we get here?",
 	"Is this thing really that important to you?",
 	"Why am I saying strange things? I thought this mod has no lore!",
 	"I am self aware, I just like not to think about it.",
 	"This thing's making me hear colors!",
-	"JIMCO CORPORATE: YOUR ADVERTISEMENT COULD BE HERE, CALL 375943573485 NOW!",
-	"Maybe the Wheel of Fortune will work next time",
-	"I AM OMINOUS. PLEASE BE SCARED",
+	"Maybe the Wheel of Fortune will work next time...",
+	"I AM OMINOUS. PLEASE BE SCARED.",
 	"Nice face cards you got there, gonna summon The Plant just for you!",
-	"Fun fact this mod was originally called dddddddddddddddddddddddddddddd (citation needed)",
-	"I dare you to use Macrocosm. I've got Ceaseless Void ready!", 
+	"Fun fact: Mayhem was originally vanilla+.",
 	"F16E9D97CD7388B4", 
 	"Gains ^0.02 Mult whe- oh wrong version", 
 	"Hello world! And goodbye world!", 
@@ -93,7 +91,7 @@ SMODS.Joker {
 			if context.beat_boss then
 				may.ease_instability(0, 1.5)
 				return {
-					message = "X1.1 Instability", 
+					message = "X1.5 Instability", 
 					card = card,
 					colour = SMODS.Gradients.may_col_instability
 				}
@@ -128,7 +126,7 @@ SMODS.Joker {
                 "{C:inactive,E:1,s:0.7}i am evil now{}"
             }, 
             {
-                "{C:inactive,E:1}Original character art by @silly_goober_0nthewall (Discord){}"
+                "{C:inactive,E:1}Original art by silly_goober_0nthewall{}"
             }
 		}
 	},
@@ -142,7 +140,7 @@ SMODS.Joker {
 	cost = 50000,
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = G.P_CENTERS.j_may_universal_collapse
-		return { vars = { card.ability.extra.EEEmultchips, card.ability.extra.EEEmultchips2, (G.GAME.instability or 0) } }
+		return { vars = { card.ability.extra.EEEmultchips, card.ability.extra.EEEmultchips2, (G.GAME.may_instability or 0) } }
 	end,
 	calculate = function(self, card, context)
 		if context.selling_card and context.card.ability.set == "Joker" and not context.blueprint then 
@@ -158,9 +156,9 @@ SMODS.Joker {
 			}
         end
 		if context.end_of_round and context.game_over == false and context.main_eval then
-			card.ability.extra.EEEmultchips = card.ability.extra.EEEmultchips + (G.GAME.instability or 0)
-			card.ability.extra.EEEmultchips2 = card.ability.extra.EEEmultchips2 + (G.GAME.instability or 0)
-			if G.GAME.instability > 0 then 
+			card.ability.extra.EEEmultchips = card.ability.extra.EEEmultchips + (G.GAME.may_instability or 0)
+			card.ability.extra.EEEmultchips2 = card.ability.extra.EEEmultchips2 + (G.GAME.may_instability or 0)
+			if G.GAME.may_instability > 0 then 
 				return {
 					message = localize('k_upgrade_ex'), 
 					colour = SMODS.Gradients.may_col_instability, 

@@ -9,16 +9,16 @@ may.edition_tags = {
     {'may_alloy', 'alloy', 'Alloy', 3, 0, 0, 'Superb Thing', true},
     {'may_amber', 'amber', 'Amber', 0, 2, 2},
 	{'may_metallic', 'metallic', 'Metallic', 0, 5, 2},
-	{'may_twilight', 'twilight', 'Twilight', 0, 6, 2},
+	{'may_twilight', 'twilight', 'Twilight', 0, 6, 2, nil, true},
     {'may_goldfoil', 'goldfoil', 'Goldfoil', 1, 4, 0, 'Superb Thing'},
     {'may_neon', 'neon', 'Neon', 1, 0, 1, 'Superb Thing'},
     {'may_dichromatic', 'dichromatic', 'Dichromatic', 3, 3, 0, 'Superb Thing'},
     {'may_inverted', 'inverted', 'Inverted', 1, 5, 0, 'Superb Thing'},
-    {'may_radioactive', 'radioactive', 'Radioactive', 6, 3, 1, 'Superb Thing'},
+    {'may_radioactive', 'radioactive', 'Radioactive', 6, 3, 1, 'Superb Thing', true},
     {'may_hypnotic', 'hypnotic', 'Hypnotic', 3, 3, 2},
     {'may_vignette', 'vignette', 'Vignette', 2, 5, 1, 'Superb Thing', true},
-    {'may_nostalgic', 'nostalgic', 'Nostalgic', 5, 1, 1, 'Superb Thing'},
-    {'may_cosmic', 'cosmic', 'Cosmic', 3, 2, 0, 'Superb Thing'},
+    {'may_nostalgic', 'nostalgic', 'Nostalgic', 5, 1, 1, 'Superb Thing', true},
+    {'may_cosmic', 'cosmic', 'Cosmic', 4, 2, 0, 'Superb Thing'},
 }
 
 for k, v in pairs(may.edition_tags) do

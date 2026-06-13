@@ -69,8 +69,8 @@ SMODS.Seal {
 		name = 'Inverted Seal',
 		label = 'Inverted Seal',
 		text = {
-			"{C:green}#1# in 8{} chance to",
-			"{C:attention}create{} a {C:dark_edition}Negative{} {C:attention}copy{} of a {C:attention}random{}",
+			"{C:green}#1# in 3{} chance to",
+			"apply {C:dark_edition}Negative{} to a {C:attention}random{}",
 			"held {C:attention}consumable{} at the {C:attention}end of round{}",
 			"if this card is {C:attention}held in hand{}"
 		}
@@ -80,28 +80,44 @@ SMODS.Seal {
 	badge_colour = HEX('ff6200'),
 	sound = { sound = 'gold_seal', per = 1.2, vol = 0.4 },
 	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		return { vars = { G.GAME.probabilities.normal } }
 	end, 
 	calculate = function(self, card, context)
 		if context.end_of_round and context.cardarea == G.hand and #G.consumeables.cards > 0 then
-			if pseudorandom('may_inverted_seal') < G.GAME.probabilities.normal / 8 then
-                local targets = {}
-                for k, v in pairs(G.consumeables.cards) do 
-                    if (not v:gc().hidden) and (not v:gc().no_doe) and (not v:gc().no_grc) then 
-                        table.insert(targets, v)
-                    end
-                end
-                if #targets > 0 then
-				    local target = pseudorandom_element(targets, pseudoseed("may_inverted_seal"))
-				    G.E_MANAGER:add_event(Event({func = function()
-					    local card_copy = copy_card(target, nil)
-						card_copy:setQty(1)
-					    card_copy:set_edition({negative = true}, true)
-					    card_copy:add_to_deck()
-					    G.consumeables:emplace(card_copy)
-					    card:juice_up()
-				    return true end}))
-                end
+			if pseudorandom('may_inverted_seal') < G.GAME.probabilities.normal / 3 then
+               if G.consumeables.cards[1] then
+				    local available
+				    for i = 1, #G.consumeables.cards do
+					    if not (G.consumeables.cards[i]:gc().hidden or G.consumeables.cards[i]:gc().no_doe or G.consumeables.cards[i]:gc().no_perkeo) then
+							available = true
+							break
+					    end
+				    end
+				    if available then
+						G.E_MANAGER:add_event(Event({func = function() 
+							local total, checked, center = 0, 0, nil
+							for i = 1, #G.consumeables.cards do
+								if not (G.consumeables.cards[i]:gc().hidden or G.consumeables.cards[i]:gc().no_doe or G.consumeables.cards[i]:gc().no_perkeo) then
+								    total = total + (G.consumeables.cards[i]:getQty())
+								end
+							end
+							local poll = pseudorandom(pseudoseed('inverted_seal'))*total
+							for i = 1, #G.consumeables.cards do
+								checked = checked + (G.consumeables.cards[i]:getQty())
+								if checked >= poll then
+									center = G.consumeables.cards[i]
+								break
+								end
+							end
+							if center then
+								center:split(1)
+								G.consumeables.cards[#G.consumeables.cards]:set_edition('e_negative')
+								card_eval_status_text(card, 'extra', nil, nil, nil, { message = 'Negative!', colour = G.C.DARK_EDITION, delay = 0.45})
+							end
+						return true end}))
+					end
+				end								
 			end
 		end
 	end
@@ -209,7 +225,9 @@ SMODS.Seal {
 		name = 'White Seal',
 		label = 'White Seal',
 		text = {
-			"{X:attention,C:white}X10{} Nominal Chips"
+			"When {C:attention}scored{}, gives", 
+			"{X:attention,C:white}X9{} the cards {C:attention}Nominal Chips{}", 
+			"as {C:chips}+Chips{}"
 		}
 	},
 	atlas = 'seal',
@@ -217,8 +235,12 @@ SMODS.Seal {
 	badge_colour = HEX('ffffff'),
 	sound = { sound = 'gold_seal', per = 1.2, vol = 0.4 },
 	calculate = function(self, card, context)
-		if card then
-			card.ability.nominal_multiplier = 10
+		if context.cardarea == G.play and context.main_scoring then
+			local amount = card:may_get_nominal_chips() * 9
+			return {
+				hand_chips = amount, 
+				card = card
+			}
 		end
 	end
 }
@@ -314,7 +336,8 @@ SMODS.Seal {
 		name = 'ERROR Seal',
 		label = 'ERROR Seal',
 		text = {
-			"nil"
+			"Gives {C:may_ethereal,E:1}unknown{} {C:green}bonuses{}",
+			"when scored",
 		}
 	},
 	atlas = 'seal',

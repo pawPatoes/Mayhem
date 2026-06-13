@@ -611,7 +611,8 @@ SMODS.Consumable {
 	end
 }
 
-SMODS.Consumable {
+-- YOUR REIGN OF TERROR IS OVER
+--[[SMODS.Consumable {
 	key = 'warp',
 	set = 'Spectral',
 	loc_txt = {
@@ -639,7 +640,7 @@ SMODS.Consumable {
 		G.GAME.may_warp_price = (G.GAME.may_warp_price or 30) * 2
 		ease_ante(card.ability.extra.ante)
 	end
-}
+}]] 
 
 SMODS.Consumable {
 	key = 'deal',
@@ -784,7 +785,7 @@ SMODS.Consumable {
 				enhancement = may.get_modifier_card(other.config.center.key)
 			end
 			if other.seal then 
-				seal = may.get_modifier_card(other.seal.key)
+				seal = may.get_modifier_card(other.seal)
 			end
 		    if edition or seal or enhancement then
 			    return may.canuse() and #G.hand.highlighted <= (1 + (card.area == G.hand and 1 or 0)) and #G.hand.highlighted > (card.area == G.hand and 1 or 0) and (other.config.center ~= G.P_CENTERS.c_base or other.seal or other.edition)
@@ -975,13 +976,13 @@ SMODS.Consumable {
 	end,
 	discovered = true,
 	loc_vars = function(self, info_queue, card)
-		local normal, odds = SMODS.get_probability_vars(card, (G.GAME.probabilities.normal or 1), card.ability.extra.odds, "Vile")
+		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Vile")
 		return { vars = { normal, odds, card.ability.extra.x_dollars } }
 	end,
 	use = function(self, card, area, copier)
 		may.randomise(G.hand.cards, false)
 		for k, v in pairs(G.hand.cards) do
-			if SMODS.pseudorandom_probability(card, "may_vile", G.GAME.probabilities.normal, card.ability.extra.odds, "Vile") then
+			if SMODS.pseudorandom_probability(card, "may_vile", 1, card.ability.extra.odds, "Vile") then
 				may.hypermoney(0, card.ability.extra.x_dollars, false)
 				card_eval_status_text(v, 'extra', nil, nil, nil, { message = 'X'..card.ability.extra.x_dollars..'$', colour = G.C.MONEY, delay = 0.45})
 			end
@@ -1105,65 +1106,39 @@ SMODS.Consumable {
 	loc_txt = {
 		name = "Potent",
 		text = {
-			"Create {C:attention}#1#{} {C:dark_edition}Negative{} {C:mult}Perishable{}", 
-			"copy of {C:attention}Blueprint{} with", 
-			"{C:mult}0{} {C:money}sell value{}", 
-			may.pager(50), 
-			"{C:mult}Does not work{} if you", 
-			"own {C:attention}#2#{} or more copies of {C:attention}Blueprint{}",
+			"Create a {C:attention}random{} {C:chips}base{} {C:dark_edition}Fusable{} {C:attention}Joker{}", 
+			"{C:mult}-#1#{} {C:attention}Joker Slot{}", 
+			"{C:inactive}Does not require room{}"
 		}
 	},
 	pos = { x = 5, y = 3 },
 	atlas = 'may_spectral',
 	cost = 4,
-	config = { extra = { copies = 1 } },
+	config = { extra = { slots = -1 } },
 	endless = true,
 	unlocked = true,
 	can_use = function(self, card)
-		local found = 0
-		for k, v in pairs(G.jokers.cards or {}) do
-			if v:gc().key == 'j_blueprint' then 
-				found = found + 1
-			end 
-		end
-		return found < 4 + (G.GAME.may_potent_limit or 0)
+		return may.canuse() and G.jokers.config.card_limit > math.abs(card.ability.extra.slots)
 	end,
 	loc_vars = function(self, info_queue, card)
-		info_queue[#info_queue + 1] = G.P_CENTERS.j_blueprint
-		info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
-		return { vars = { card.ability.extra.copies, 4 + (G.GAME.may_potent_limit or 0) } }
-	end,
+		return { vars = { math.abs(card.ability.extra.slots) } }
+	end, 
 	discovered = true,
 	use = function(self, card, area, copier)
-		for i = 1, card.ability.extra.copies do
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function() 
-				play_sound('timpani')
-				local card2 = create_card('Joker', G.jokers, nil, nil, nil, nil, 'j_blueprint', 'may_potent')
-				card2:add_to_deck()
-				G.jokers:emplace(card2)
-				card:juice_up(0.3, 0.5)
-				card2:set_edition('e_negative')
-				card2:set_perishable(true)
-				card2.sell_cost = 0
-			return true end}))
-		end
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function() 
+			play_sound('timpani')
+			local card2 = create_card('Fusable', G.jokers, nil, nil, nil, nil, nil, 'may_potent')
+			card2:add_to_deck()
+			G.jokers:emplace(card2)
+			card:juice_up(0.3, 0.5)
+		return true end}))
+		G.jokers:change_size(card.ability.extra.slots)
 	end, 
 	in_pool = function(self, args)
-		local prints = 0
-		for k, v in pairs(G.jokers.cards) do 
-			if v:gc().key == 'j_blueprint' then 
-				prints = prints + 1
-			end 
-			if prints > 3 + (G.GAME.may_potent_limit or 0) then 
-				return false, { allow_duplicates = false }
-			end 
-		end 
-		return true, { allow_duplicates = false }
+		return G.GAME.may_endless_mode and G.jokers.config.card_limit > 1, { allow_duplicates = false }
 	end, 
-	in_pool = function(self, args)
-        return G.GAME.may_endless_mode, { allow_duplicates = false }
-    end
 }
+
 if may.conf.Mode == 2 then
 	
 SMODS.Consumable {
@@ -1681,7 +1656,6 @@ SMODS.Consumable {
 		text = {
 			"Create a copy of {C:dark_edition}Universal Collapse{}",
 			"{X:may_instability,C:white}X0.5{} Instability and {X:attention,C:white}X#1#{} Ante", 
-			"{X:attention,C:white}X2{} {X:attention,C:white}XAnte{} when used",
 			"{C:inactive}Requires room{}"
 		}
 	},
@@ -1711,10 +1685,10 @@ SMODS.Consumable {
 	soul_rate = 0.3,
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS.j_may_universal_collapse
-		return { vars = { G.GAME.may_genesis_ante or 1.5 } }
+		return { vars = { G.GAME.may_genesis_ante or 3 } }
 	end,
 	use = function(self, card, area, copier)
-		G.GAME.may_genesis_ante = G.GAME.may_genesis_ante or 1.5
+		G.GAME.may_genesis_ante = G.GAME.may_genesis_ante or 3
 		G.GAME.rounds_since_genesis = 0
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
 		    local card2 = create_card('Joker', G.jokers, nil, nil, nil, nil, 'j_may_universal_collapse', 'may_genesis')
@@ -1724,7 +1698,6 @@ SMODS.Consumable {
 			card2:juice_up(0.6, 1)
 			G.jokers:juice_up(0.3, 0.5)
 			G.ROOM.jiggle = G.ROOM.jiggle + 5
-			G.GAME.may_genesis_ante = G.GAME.may_genesis_ante * 2
 		return true end})) 
 		may.ease_instability(0, 0.5)
 		if not G.GAME.may_unstable_sleeve_alt then

@@ -568,7 +568,7 @@ function may.ease_instability(arrow, mod, silent)
 			end
 		end
 		table.insert(G.GAME.may_instability_blind_increases, {N, G.GAME.may_instability_increase})
-		G.GAME.may_instability_increase = G.GAME.may_instability_increase ^ 3
+		G.GAME.may_instability_increase = math.min(1e300, to_big(G.GAME.may_instability_increase) ^ 3)
 		may.change_blind_size(N, G.GAME.may_instability_increase)
 	end
 	if activated > 0 then
@@ -662,10 +662,6 @@ function may.hypermoney(arrow, amount, silent)
 	end
 end
 
--- Fix Mult/Chips resetting when hand is leveled up
-SMODS.Scoring_Parameter:take_ownership('mult', {level_up_hand = function(self, amount, hand) hand[self.key] = math.max(hand[self.key] + (hand['l_'..self.key]*(amount)), 1) end})
-SMODS.Scoring_Parameter:take_ownership('chips', {level_up_hand = function(self, amount, hand) hand[self.key] = math.max(hand[self.key] + (hand['l_'..self.key]*(amount)), 1) end, juice_on_update = true})
-
 local randtext = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"," ","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9","+","-","?","!","$","%","[","]","(",")",}
 
 function may.obfuscatedtext(length)
@@ -678,6 +674,17 @@ end
 
 function may.get_operation_sound(operation, chipsmult)
 	operation = type(operation) ~= 'string' and to_number(to_big(operation)) or operation
+	if chipsmult == 'level' then
+		local tab = {
+			'tarot1', 
+			'may_x_level', 
+			'may_e_level', 
+			'may_ee_level', 
+			'may_eee_level', 
+			'may_hex_level'
+		}
+		return operation == 'eq' and 'may_eq_level' or tab[operation + 2]
+	end
 	if may.conf.CustomHyperoperations then
 		if chipsmult == 'chips' then
 			if operation == 'eq' then
@@ -821,17 +828,6 @@ function may.get_edition_tag(key, default)
         end
     end
     return default
-end
-
-function SMODS.current_mod.process_loc_text()
-	G.localization.misc.dictionary['k_may_modifiercard_pack'] = "Enhanced Pack"
-	G.localization.misc.dictionary['k_may_retro_pack'] = "Pixel Pack"
-	G.localization.misc.dictionary['k_may_yotta_pack'] = "Yotta Card Pack"
-	G.localization.misc.dictionary['k_may_voucher_pack'] = "Voucher Pack"
-	G.localization.misc.dictionary['k_may_universal_pack'] = "Universal Pack"
-	G.localization.misc.dictionary['k_may_booster_bundle'] = "Booster Bundle"
-    G.localization.misc.dictionary['k_may_premium_pack'] = "Premium Pack"
-	G.localization.misc.dictionary['k_may_fusion_pack'] = "Fusion Pack"
 end
 
 -- Checks if a consumable is the default consumable of its set
@@ -1450,6 +1446,13 @@ function may.handle_special_vouchers(round)
 					play_sound('may_positive')
 			    return true end}))
 			end
+		end
+	elseif to_big(G.GAME.round_resets.ante) >= to_big(9) then
+		if not may.has_card('v_may_endless_mode') then
+			SMODS.add_voucher_to_shop('v_may_endless_mode')
+		    G.E_MANAGER:add_event(Event({func = function()
+				play_sound('may_positive')
+            return true end}))
 		end
 	end
 end
