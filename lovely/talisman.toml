@@ -1,7 +1,7 @@
 [manifest]
 version = "1.0.0"
 dump_lua = true
-priority = 100000
+priority = 1000000000
 
 # Custom hyperoperation effects
 
@@ -29,6 +29,59 @@ elseif eval_type == 'hyper_mult' then
     amt[1] = math.max(amt[1], -3)
 	sound = may.get_operation_sound(amt[1], 'mult')
 '''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''(extra.EEEchip_mod or extra.hyperchip_mod) and 'talisman_eeechip' or'''
+position = "at"
+payload = '''extra.EEEchip_mod and 'talisman_eeechip' or
+extra.EEEmult_mod and 'talisman_eeemult' or
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''(extra.EEEmult_mod or extra.hypermult_mod) and 'talisman_eeemult' or'''
+position = "at"
+payload = '''
+extra.hyperchip_mod and may.get_operation_sound(amt[1], 'chips') or
+extra.hypermult_mod and may.get_operation_sound(amt[1], 'mult') or
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Amulet "talisman/effects.lua"]'''
+pattern = '''sound = init.soundFormat and init.soundFormat:format('eee'),'''
+position = "at"
+payload = '''sound = may.get_operation_sound(i, init and init.keyPlural or 'chips'),'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''if type(hyper_mult) == 'table' and hyper_mult[1] > 0 and hyper_mult[2] > 0 then'''
+position = "at"
+payload = '''if type(hyper_mult) == 'table' and hyper_mult[1] >= -4 and hyper_mult[2] > 0 then'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''if type(hyper_chips) == 'table' and hyper_chips[1] > 0 and hyper_chips[2] > 0 then'''
+position = "at"
+payload = '''if type(hyper_chips) == 'table' and hyper_chips[1] >= -4 and hyper_chips[2] > 0 then'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''sound = h.sound'''
+position = "at"
+payload = '''sound = eval_type == 'hyper_mult' and may.get_operation_sound(amt[1], 'mult') or eval_type == 'hyper_chips' and may.get_operation_sound(amt[1], 'chips') or h.sound'''
 match_indent = true
 
 # man
@@ -150,7 +203,7 @@ match_indent = true
 target = '''=[SMODS _ "src/utils.lua"]'''
 pattern = '''G.GAME.hands[hand].level = G.GAME.hands[hand].level + (type(args.level_up) == 'number' and args.level_up or 1)'''
 position = "at"
-payload = '''G.GAME.hands[hand].level = G.GAME.hands[hand].level + ((type(args.level_up) == 'number' or type(args.level_up) == 'table') and args.level_up or 1)'''
+payload = '''G.GAME.hands[hand].level = G.GAME.hands[hand].level + (is_number(args.level_up) and args.level_up or 1)'''
 match_indent = true
 
 # The suffering is endless
@@ -171,4 +224,13 @@ target = "main.lua"
 pattern = '''function math.log(x, y)'''
 position = "after"
 payload = '''if not x then return (y or 2.718281828459045) end'''
+match_indent = true
+
+# Grim crash with Amulet
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''loc_vars = {tonumber(string.format("%.2f", (1.3 ^ (G.GAME.round_resets.ante or 0))))}'''
+position = "at"
+payload = '''loc_vars = {number_format(1.3 ^ (G.GAME.round_resets.ante or 0))}'''
 match_indent = true

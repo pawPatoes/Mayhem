@@ -144,9 +144,9 @@ Engulf.EditionFuncs.e_may_cosmic = function(card, hand, instant, amount, edition
         play_sound('timpani')
 		local new = create_card('Planet', G.consumeables, nil, nil, nil, nil, may.planethand(hand), 'may_cosmic_engulf')
         new:add_to_deck()
+		new:setQty(amount)
         G.consumeables:emplace(new)
 		new:juice_up(0.3, 0.5)
-		new:setQty(amount)
         new:set_edition('e_negative')
     return true end}))
 end

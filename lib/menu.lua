@@ -1,12 +1,21 @@
 -- Menu
 
 if may.conf.Mode == 1 then
-	SMODS.Atlas({
-		key = "titlecard",
-		path = "may_titlecard.png",
-		px = 197,
-		py = 43,
-	})
+	if math.random(1, 70) == 70 then
+		SMODS.Atlas({
+		    key = "titlecard",
+		    path = "mehm_titlecard.png",
+		    px = 197,
+		    py = 43,
+	    })
+	else
+	    SMODS.Atlas({
+		    key = "titlecard",
+		    path = "may_titlecard.png",
+		    px = 197,
+		    py = 43,
+	    })
+	end
 else
 	SMODS.Atlas({
 		key = "titlecard",
@@ -16,48 +25,12 @@ else
 	})
 end
 
-may.menu_cards = {
-	'j_may_mr_nacho',
-	'j_may_doggo',
-	'j_may_jonas',
-	'j_may_man',
-	'j_may_lil_prince',
-	'j_may_ah_yes_the_store',
-	'j_may_diskus_distruktum',
-	'j_may_kids_drawing',
-	'j_may_spadus', 
-	'j_may_universal_collapse',
-	'j_may_fortuno',
-    'j_may_doomsday_device', 
-    'j_may_artso', 
-    'j_may_ad_infinitum', 
-    'j_may_party_time', 
-    'j_may_world_destroyer',
-	'j_may_guacamole',
-	'j_may_universal_collapse',
-	
-	'c_may_kivaaritehdas',
-    'c_may_matakka', 
-    'c_may_stos', 
-	--'c_may_prestige',
-	'c_may_moon', 
-    'c_may_dysnomia', 
-	'c_may_soul_upsd', 
-    'c_may_wheel_of_fortune_upsd', 
-    'c_may_potent', 
-	'c_may_gray_hole', 
-    'c_may_galileo',
-	'c_may_gem', 
-    'c_may_potestas', 
-	
-	'v_may_extended_selection', 
-	'v_may_increment', 
-	'v_may_booster_surplus', 
-    'v_may_card_merchant', 
-    'v_may_transcend_1', 
+may.unstable_smods = {
+	'1.0.0~BETA-1221a', 
+	'1.0.0~BETA-1501a', 
+	'1.0.0~BETA-1503a'
 }
 
-may.menu_editions = {'e_may_dichromatic', 'e_may_amber', 'e_may_cosmic', 'e_may_radioactive', 'e_may_neon', 'e_may_alloy', 'e_may_laminated'}
 local oldfunc = Game.main_menu
 Game.main_menu = function(change_context)
 	if change_context ~= "splash" then
@@ -123,7 +96,7 @@ Game.main_menu = function(change_context)
 				{ name = "time", ref_table = G.TIMERS, ref_value = "REAL_SHADER" },
 				{ name = "vort_speed", val = 0.4 },
 				{ name = "colour_1", ref_table = SMODS.Gradients, ref_value = may.conf.Mode == 1 and "may_col_mayhem_gradient" or "may_col_eternum_green" },
-				{ name = "colour_2", ref_table = G.C, ref_value = "BLACK" },
+				{ name = "colour_2", ref_table = G.C, ref_value = 'BLACK' },
 			},
 		}})
 		-- Add mod logo 
@@ -152,7 +125,7 @@ Game.main_menu = function(change_context)
 		function G.may_titlecard:stop_hover() 
             Node.stop_hover(self)
             G.may_titlecard:juice_up(0.025, 0.015) 
-       end
+        end
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = change_context == 'splash' and 3.6 or change_context == 'game' and 4 or 1, blockable = false, blocking = false, func = function()
 			play_sound('magic_crumple' .. (change_context == 'splash' and 2 or 3), (change_context == 'splash' and 1 or 1.3), 0.9)
 			play_sound('whoosh1', 0.2, 0.8)
@@ -161,9 +134,9 @@ Game.main_menu = function(change_context)
             G.may_titlecard:juice_up(0.05, 0.1)
 		return true end}))
 		
-		-- Add random card to the main menu
+		--[[ Add random card to the main menu
         local chosen = math.random(1, #may.menu_cards)
-        local newcard = create_card(G.P_CENTERS[may.menu_cards[chosen]], G.title_top, nil, nil, nil, nil, may.menu_cards[chosen], 'may_title_card')
+        local newcard = create_card(G.P_CENTERS[may.menu_cards[chosen, G.title_top, nil, nil, nil, nil, may.menu_cards[chosen], 'may_title_card')
         G.title_top:emplace(newcard)
         newcard:start_materialize()
         newcard:resize(1.32)
@@ -180,8 +153,8 @@ Game.main_menu = function(change_context)
                 newcard.states.visible = true
                 newcard:start_materialize({ G.C.BLACK, G.C.RARITY['may_ethereal'] }, nil, 1.2)
             end
-            newcard:set_edition(may.menu_editions[math.random(1, #may.menu_editions)], false, false)
-        return true end}))
+			newcard:set_edition(may.menu_editions[math.random(1, #may.menu_editions)], false, false)
+        return true end}))]] 
 		
 		-- Add particles to main menu
         G.menu_particles = Particles(1, 1, 0, 0, {
@@ -220,10 +193,10 @@ Game.main_menu = function(change_context)
 		may.conf.notices.stj = true 
 		G:save_settings()
     end
-	-- Amulet notice
-	if (not may.conf.notices.amulet) and Talisman.cdataman then
-		may.display_notification('amulet', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
-		may.conf.notices.amulet = true 
+	-- Talisman notice
+	if (not may.conf.notices.talisman) and not Talisman.cdataman then
+		may.display_notification('talisman', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
+		may.conf.notices.talisman = true 
 		G:save_settings()
     end
 	-- Cryptid notice
@@ -231,12 +204,87 @@ Game.main_menu = function(change_context)
 		may.display_notification('cryptid', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
 		may.conf.notices.cry = true 
 		G:save_settings()
-   end
-	-- Unstable SMODS notice
-	if (not may.conf.notices.smods) and SMODS.version == "1.0.0~BETA-1221a" then
-		may.display_notification('smods', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
-		may.conf.notices.smods = true 
+    end
+	-- Overflow notice
+	if (not may.conf.notices.overflow) and Noituus.OverflowInstalled then
+		may.display_notification('overflow', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
+		may.conf.notices.overflow = true 
 		G:save_settings()
     end 
+	-- Unstable SMODS notice
+	if table_hasvalue(may.unstable_smods, SMODS.version) then
+		may.display_notification('smods', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
+    end 
 	return ret
+end
+
+may.menu_cards = {
+	'j_may_mr_nacho',
+	'j_may_doggo',
+	'j_may_jonas',
+	'j_may_man',
+	'j_may_lil_prince',
+	'j_may_ah_yes_the_store',
+	'j_may_diskus_distruktum',
+	'j_may_kids_drawing',
+	'j_may_spadus', 
+	'j_may_universal_collapse',
+	'j_may_fortuno',
+    'j_may_doomsday_device', 
+    'j_may_astro', 
+    'j_may_ad_infinitum', 
+    'j_may_party_time', 
+    'j_may_world_destroyer',
+	'j_may_guacamole',
+	'j_may_universal_collapse',
+	'j_may_anniversary_cake',
+	
+	--'c_may_kivaaritehdas',
+    --'c_may_matakka', 
+    --'c_may_stos', 
+	--'c_may_prestige',
+	'c_may_moon', 
+    'c_may_dysnomia', 
+	'c_may_soul_upsd', 
+    'c_may_wheel_of_fortune_upsd', 
+    'c_may_potent', 
+	'c_may_gray_hole', 
+    'c_may_galileo',
+	'c_may_gem', 
+    'c_may_potestas', 
+	
+	'v_may_extended_selection', 
+	'v_may_increment', 
+	'v_may_booster_surplus', 
+    'v_may_card_merchant', 
+    'v_may_transcend_1', 
+}
+
+may.menu_editions = {
+	'e_may_dichromatic',
+	'e_may_amber', 
+	'e_may_cosmic', 
+	'e_may_radioactive', 
+	'e_may_neon',
+	'e_may_alloy', 
+	'e_may_laminated', 
+	'e_may_hypnotic', 
+	'e_may_twilight', 
+} 
+local chosen = may.menu_cards[math.random(1, #may.menu_cards)]
+
+SMODS.current_mod.menu_cards = function()
+	return {
+		{ key = chosen },
+		func = function()
+			for k, v in pairs(G.title_top.cards) do
+				if v:gc().key == chosen then
+						v:set_ability(G.P_CENTERS[may.menu_cards[math.random(1, #may.menu_cards)]])
+						v:resize(1.32)
+						v:set_edition(may.menu_editions[math.random(1, #may.menu_editions)], false, false)
+					break
+				end
+			end
+		end
+	}
 end

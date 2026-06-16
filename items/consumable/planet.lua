@@ -440,6 +440,7 @@ SMODS.Consumable {
 				play_sound('card1')
 			return true end}))
 		end
+		SMODS.calculate_context({ playing_card_added = true, cards = created })
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local planet = may.planethand(may.favhand()) or 'c_may_tartarus'
@@ -486,6 +487,7 @@ SMODS.Consumable {
 				play_sound('card1')
 			return true end}))
 		end
+		SMODS.calculate_context({ playing_card_added = true, cards = created })
 	end
 }
 
@@ -495,7 +497,7 @@ SMODS.Consumable {
 	pos = { x = 2, y = 3 },
 	atlas = 'planet',
 	ignore_allplanets = true,
-	config = { extra = { levels = 3, cards = 3 } },
+	config = { extra = { levels = 3, cards = 2 } },
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Gonggongan Moon', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
@@ -539,6 +541,7 @@ SMODS.Consumable {
 			end
 		return true end}))
 		may.ch()
+		SMODS.calculate_context({ playing_card_added = true, cards = created })
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local created = {}
@@ -565,6 +568,7 @@ SMODS.Consumable {
 			end
 		return true end}))
 		may.ch()
+		SMODS.calculate_context({ playing_card_added = true, cards = created })
 	end
 }
 
@@ -582,7 +586,7 @@ SMODS.Consumable {
 		name = 'Haumea',
 		text = {
 			"Gain the {C:money}Dollars{} of a",
-			"{C:attention}random{} {C:purple}Poker Hand{} as {C:money}Interest{}",
+			"{C:attention}random{} {C:purple}Poker Hand{} as {C:money}Interest Cap{}",
 		}
 	},
 	can_use = function(self, card)
@@ -595,8 +599,8 @@ SMODS.Consumable {
 		local hand = may.rndhand()
 		may.th(hand)
 		if G.GAME.hands[hand].dollars then
-			may.ease_interest(-1, G.GAME.hands[hand].dollars)
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..G.GAME.hands[hand].dollars..' Interest'}, colour = G.C.DOLLARS, delay = 0.45})
+			may.ease_interest_cap(-1, G.GAME.hands[hand].dollars)
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..G.GAME.hands[hand].dollars..' Interest Cap'}, colour = G.C.DOLLARS, delay = 0.45})
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
 				card:juice_up(0.3, 0.5)
 			return true end}))
@@ -619,7 +623,7 @@ SMODS.Consumable {
 			local hand = may.rndhand()
 			may.th(hand)
 			if G.GAME.hands[hand].dollars then
-				may.ease_interest(-1, G.GAME.hands[hand].dollars)
+				may.ease_interest_cap(-1, G.GAME.hands[hand].dollars)
 				amount = amount + G.GAME.hands[hand].dollars
 			end
 			if Engulf and card.edition then 
@@ -627,7 +631,7 @@ SMODS.Consumable {
 				may.ch()
 			end 
 		end
-		card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..amount..' Interest'}, colour = G.C.DOLLARS, delay = 0.45})
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..amount..' Interest Cap'}, colour = G.C.DOLLARS, delay = 0.45})
 		may.ch()
 	end,
 	in_pool = function(self, args)
@@ -712,6 +716,7 @@ SMODS.Consumable {
 	set = 'Planet',
 	key = 'namaka',
 	pos = { x = 2, y = 2 },
+	config = { extra = { odds = 3, dollars = 0.5 } },
 	atlas = 'planet',
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Haumean Moon', get_type_colour(self or card.config, card), nil, 1.2)
@@ -719,83 +724,153 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'Namaka',
 		text = {
-			"{C:chips}=#1#{} Chips of all {C:purple}Poker Hands{}",
-			"with their {C:chips}Chips{} {C:mult}less than{} {C:chips}#1#{}",
-			"{C:attention}Scales{} exponentially per use",
-			"{C:inactive}(Max of =50000, scales by (nX1.7)^1.02 rounded down){}"
+			"Each {C:green}discovered{} {C:purple}Poker Hand{} has a", 
+			"{C:green}#1# in #2#{} chance to gain", 
+			"{C:money}+#3#{} Dollars",
 		}
 	},
-	loc_vars = function(self, info_queue, card)
-		return { vars = { G.GAME.may_namaka_amount or 30 } }
+	loc_vars = function(self, info_queue, card) 
+		info_queue[#info_queue + 1] = { key = "may_hand_dollars_tutorial", set = "Other" }
+		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Namaka")
+		return { vars = { normal, odds, card.ability.extra.dollars } }
 	end,
 	can_use = function(self, card)
 		return may.canuse()
 	end,
 	use = function(self, card)
-		G.GAME.may_namaka_amount = G.GAME.may_namaka_amount or 30
+		local hands = {}
 		for k, v in pairs(G.GAME.hands) do
-			if to_big(v.chips) < to_big(G.GAME.may_namaka_amount) then 
-				may.hand_multchips(card, k, true, {'eq', G.GAME.may_namaka_amount})
-				if Engulf and card.edition then 
-					Engulf.EditionHand(card, k, card.edition, 1, true)
-				end
-			end 
+			if SMODS.is_poker_hand_visible(k) and SMODS.pseudorandom_probability(card, "may_namaka", 1, card.ability.extra.odds, "Namaka") then
+				table.insert(hands, k)
+			end
 		end
-		delay(0.5)
-		Q(function() card:juice_up(.2, .3) return true end)
-		may.h('All Hands', '...', '...', '...')
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('button')
-		return true end}))
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('may_eqchip')
-			card:juice_up(1, 1)
-		return true end}))
-		may.hc('='..G.GAME.may_namaka_amount, true)
-		may.ch()
-		delay(0.5)
-		G.GAME.may_namaka_amount = math.floor(math.min(50000, (G.GAME.may_namaka_amount * 1.7) ^ 1.02))
-		if G.GAME.may_namaka_amount == 50000 then
-			G.GAME.may_namaka_cap = true
+		if #hands > 0 then
+			for k, v in pairs(hands) do
+				may.hand_mod_dollars(card, v, true, -1, card.ability.extra.dollars)
+				may.th(v)
+			end 
+			may.h('Random Hands', '...', '---', '...')
+			G.GAME.may_override_monitor_colors = true
+			may.cosmetic_score_operator('', {0, 0, 0, 0})
+			G.E_MANAGER:add_event(Event({delay = 0.2, func = function()
+				ease_colour(G.C.UI_CHIPS, copy_table(G.C.GOLD), 0.1)
+			return true end}))
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+				G.TAROT_INTERRUPT_PULSE = true
+				play_sound('coin3')
+				card:juice_up(0.8, 0.5)
+			return true end}))
+			may.hc('+'..card.ability.extra.dollars, true)
+			delay(0.2)
+			may.hc('...', false)
+			delay(1.3)
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+				ease_colour(G.C.UI_CHIPS, G.C.BLUE, 0.1)
+				G.GAME.may_override_monitor_colors = nil
+			return true end}))
+			G.E_MANAGER:add_event(Event({func = function()
+				G.TAROT_INTERRUPT_PULSE = nil
+			return true end}))
+			may.refresh_score_operator()
+			may.ch()
+		else
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+                attention_text({
+                    text = localize('k_nope_ex'),
+                    scale = 1.3,
+                    hold = 1.4,
+                    major = card,
+                    backdrop_colour = G.C.SECONDARY_SET.Planet,
+                    align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and 'tm' or 'cm',
+                    offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
+                    silent = true
+                })
+                G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.06 * G.SETTINGS.GAMESPEED, blockable = false, blocking = false, func = function()
+                    play_sound('tarot2', 0.76, 0.4)
+                return true end}))
+                play_sound('tarot2', 1, 0.4)
+                card:juice_up(0.3, 0.5)
+            return true end}))
 		end
 	end,
 	bulk_use = function(self, card, area, copier, number)
-		G.GAME.may_namaka_amount = G.GAME.may_namaka_amount or 30
-		for i=1, number, 1 do
-			if G.GAME.may_namaka_amount < 50000 then
-				G.GAME.may_namaka_amount = math.floor(math.min(50000, (G.GAME.may_namaka_amount * 1.7) ^ 1.02))
-			else
-				break
+		local hands = {}
+		for k, v in pairs(G.GAME.hands) do
+			if SMODS.is_poker_hand_visible(k) then
+				table.insert(hands, {k, 0})
 			end
 		end
-		for k, v in pairs(G.GAME.hands) do
-			if to_big(v.chips) < to_big(G.GAME.may_namaka_amount) then 
-				may.hand_multchips(card, k, true, {'eq', G.GAME.may_namaka_amount})
-				if Engulf and card.edition then 
-					Engulf.EditionHand(card, k, card.edition, 1, true)
+		for k, v in pairs(hands) do
+			for i = 1, number do
+				if SMODS.pseudorandom_probability(card, "may_namaka", 1, card.ability.extra.odds, "Namaka") then
+					v[2] = v[2] + 1
 				end
-			end 
+			end
 		end
-		delay(0.5)
-		Q(function() card:juice_up(.2, .3) return true end)
-		may.h('All Hands', '...', '...', '...')
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('button')
-		return true end}))
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('may_eqchip')
-			card:juice_up(1, 1)
-		return true end}))
-		may.hc('='..G.GAME.may_namaka_amount, true)
-		may.ch()
-		delay(0.5)
-		if G.GAME.may_namaka_amount == 50000 then
-			G.GAME.may_namaka_cap = true
+		local to_exclude = {}
+		for k, v in pairs(hands) do
+			if v[2] == 0 then
+				table.insert(to_exclude, v)
+			end
+		end
+		for k, v in pairs(to_exclude) do
+            for k2, v2 in pairs(hands) do
+                if v == v2 then
+                    table.remove(hands, k2)
+                end
+            end
+		end
+		if #hands > 0 then
+			for k, v in pairs(hands) do
+				may.hand_mod_dollars(card, v[1], true, -1, card.ability.extra.dollars * v[2])
+				may.th(v[1])
+				may.hlv('X'..v[2])
+                delay(0.2)
+			end 
+			may.h('Random Hands', '...', '---', '...')
+			G.GAME.may_override_monitor_colors = true
+			may.cosmetic_score_operator('', {0, 0, 0, 0})
+			G.E_MANAGER:add_event(Event({delay = 0.2, func = function()
+				ease_colour(G.C.UI_CHIPS, copy_table(G.C.GOLD), 0.1)
+			return true end}))
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+				G.TAROT_INTERRUPT_PULSE = true
+				play_sound('coin3')
+				card:juice_up(0.8, 0.5)
+			return true end}))
+			may.hc('+...', true)
+			delay(0.2)
+			may.hc('...', false)
+			delay(1.3)
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+				ease_colour(G.C.UI_CHIPS, G.C.BLUE, 0.1)
+				G.GAME.may_override_monitor_colors = nil
+			return true end}))
+			G.E_MANAGER:add_event(Event({func = function()
+				G.TAROT_INTERRUPT_PULSE = nil
+			return true end}))
+			may.refresh_score_operator()
+			may.ch()
+		else
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+                attention_text({
+                    text = localize('k_nope_ex'),
+                    scale = 1.3,
+                    hold = 1.4,
+                    major = card,
+                    backdrop_colour = G.C.SECONDARY_SET.Planet,
+                    align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and 'tm' or 'cm',
+                    offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
+                    silent = true
+                })
+                G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.06 * G.SETTINGS.GAMESPEED, blockable = false, blocking = false, func = function()
+                    play_sound('tarot2', 0.76, 0.4)
+                return true end}))
+                play_sound('tarot2', 1, 0.4)
+                card:juice_up(0.3, 0.5)
+            return true end}))
 		end
 	end,
-	in_pool = function(self, args)
-		return not G.GAME.may_namaka_cap, {allow_duplicates = false}
-	end
 }
 
 
@@ -1163,9 +1238,8 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'Mangas',
 		text = {
-			"Gain {C:green}double{} the {C:planet}level{} of a",
+			"Gain the {C:planet}level{} of a",
 			"{C:attention}random{} {C:purple}Poker Hand{} as {C:money}money{}",
-			"then set it's {C:planet}level{} to {C:mult}1{}", 
             "{C:inactive}Max of +$#1#{}"
 		}
 	},
@@ -1174,23 +1248,15 @@ SMODS.Consumable {
 	end,
     loc_vars =function(self, info_queue, card)
 		if G.GAME.blind then
-            return { vars = { math.max(100, to_big(G.GAME.dollars) * to_big(10)) } }
+            return { vars = { math.max(100, to_big(G.GAME.dollars) * to_big(8)) } }
 		else 
-			return { vars = { '(current money X 10) or 100, whichever is bigger' } }
+			return { vars = { '(current money X 8) or 100, whichever is bigger' } }
 		end
     end, 
 	use = function(self, card)
 		local hand = may.rndhand()
-		local amount = math.min(to_big((G.GAME.hands[hand].level or 1) * 2), math.max(to_big(G.GAME.dollars) * to_big(10), 100))
+		local amount = math.min(to_big(G.GAME.hands[hand].level or 1), math.max(to_big(G.GAME.dollars) * to_big(8), 100))
 		may.th(hand)
-		if to_big(G.GAME.hands[hand].level or 1) > to_big(1) then
-			may.set_hand_level(card, hand, nil, 1)
-		else
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'Level 1 or below!'}, colour = G.C.MULT, delay = 0.45})
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function() 
-			    play_sound('tarot2')
-			return true end}))
-		end
 		ease_dollars(amount)
 		may.ch()
 		if Engulf and card.edition then 
@@ -1202,22 +1268,13 @@ SMODS.Consumable {
 		local total = 0
 		for i=1, number, 1 do
 			local hand = may.rndhand(hand)
-			total = total + math.min(to_big(G.GAME.hands[hand].level or 1) * 2), to_big(math.max(to_big(100), to_big(G.GAME.dollars) * to_big(10)))
-			may.set_hand_level(card, hand, true, 1)
+			total = total + math.min(to_big(G.GAME.hands[hand].level or 1), math.max(to_big(G.GAME.dollars) * to_big(8), 100))
 			if Engulf and card.edition then 
 				Engulf.EditionHand(card, hand, card.edition, 1, true)
 			end
 		end
 		may.h('Random Hands', '...', '...', '')
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			play_sound('may_eq_level')
-			card:juice_up(0.8, 0.5)
-		return true end}))
-		may.hlv(1)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			play_sound('tarot2')
-			card:juice_up(0.8, 0.5)
-		return true end}))
+		may.hlv('TOTAL '..total)
 		ease_dollars(total)
 		may.ch()
 	end
@@ -1386,7 +1443,7 @@ SMODS.Consumable {
 		text = {
 		    "Set the {C:planet}level{} of", 
 			"a {C:attention}random{} {C:purple}Poker Hand{} to {C:mult}1{}",
-			"and {C:green}distribute{} it's {C:attention}former{} {C:planet}level{}", 
+			"and {C:green}distribute{} its {C:attention}former{} {C:planet}level{}", 
 			"across all other {C:green}discovered{} {C:purple}Poker Hands{}", 
 		}
 	},
@@ -2495,21 +2552,6 @@ SMODS.Consumable {
 			end
 		end
 	end,
-	--[[bulk_use = function(self, card, area, copier, number)
-		may.set_all_hand_levels(card, false, G.GAME.hands[may.favhand()].level * 3, may.favhand())
-		local card2 = create_card('Planet', G.consumeables, nil, nil, nil, nil, 'c_may_quac_n7', 'may_quac_n7')
-		card2:add_to_deck()
-		G.consumeables:emplace(card2)
-		card2:setQty(number - 1)
-		if Engulf and card.edition then 
-			for k, v in pairs(G.GAME.hands) do
-				if k ~= may.favhand() then 
-					Engulf.EditionHand(card, k, card.edition, 1, true)
-					may.ch()
-				end
-			end
-		end
-	end,]] 
 	in_pool = function(self, args)
 		return G.GAME.may_endless_mode, { allow_duplicates = false }
 	end
@@ -2567,17 +2609,6 @@ SMODS.Consumable {
 			may.ch()
 		end
 	end,
-	--[[bulk_use = function(self, card, area, copier, number)
-		may.set_hand_level(card, may.favhand(), false, may.get_all_ph_level(may.favhand()) * 5 )
-		local card2 = create_card('Planet', G.consumeables, nil, nil, nil, nil, 'c_may_opolisis', 'may_opolisis')
-		card2:add_to_deck()
-		G.consumeables:emplace(card2)
-		card2:setQty(number - 1)
-		if Engulf and card.edition then 
-			Engulf.EditionHand(card, may.favhand(), card.edition, 1)
-			may.ch()
-		end
-	end,]] 
 	in_pool = function(self, args)
 		return G.GAME.may_endless_mode, { allow_duplicates = false }
 	end
@@ -2645,39 +2676,6 @@ SMODS.Consumable {
 		end
 		may.ch()
 	end,
-	--[[bulk_use = function(self, card, area, copier, number)
-		local balanced
-		for i=1, number, 1 do
-			balanced = (G.GAME.hands[may.favhand()].level + G.GAME.hands[may.favhand()].l_mult + G.GAME.hands[may.favhand()].l_chips + G.GAME.hands[may.favhand()].mult + G.GAME.hands[may.favhand()].chips) / 5
-			 if Engulf and card.edition then 
-				Engulf.EditionHand(card, hand, card.edition, 1, true)
-			end 
-		end
-		may.th(may.favhand())
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('may_eq_level')
-		return true end}))
-		may.hlv(balanced)
-		G.GAME.hands[may.favhand()].level = balanced
-		may.hand_mod_lvl_multchips(may.favhand(), 'mult', -1, balanced - G.GAME.hands[may.favhand()].l_mult)
-		may.hand_mod_lvl_multchips(may.favhand(), 'chips', -1, balanced - G.GAME.hands[may.favhand()].l_chips)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('may_eqchip')
-		return true end}))
-		may.hc('='..balanced, true)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('may_eqchip')
-		return true end}))
-		G.GAME.hands[may.favhand()].chips = balanced
-		may.hc('='..balanced, true)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			play_sound('may_eqmult')
-		return true end}))
-		G.GAME.hands[may.favhand()].mult = balanced
-		may.hm('='..balanced, true)
-		delay(1.3) 
-		may.ch()
-	end,]]
 	in_pool = function(self, args)
 		return G.GAME.may_endless_mode, { allow_duplicates = false }
 	end

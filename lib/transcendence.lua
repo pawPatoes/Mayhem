@@ -88,10 +88,13 @@ function may.get_transcendence(immediate, multchips)
 end
  
 function may.calc_transcendence()
-	if may.conf.TrEffects > 1 and (type(SMODS.get_scoring_parameter('chips', true)) == 'number' or type(SMODS.get_scoring_parameter('chips', true)) == 'table') and (type(SMODS.get_scoring_parameter('mult', true)) == 'number' or type(SMODS.get_scoring_parameter('mult', true)) == 'table') then 
-		if may.transcendence > 0 and G.hand then
-			if ((type(SMODS.get_scoring_parameter('chips', true)) == 'number' or type(SMODS.get_scoring_parameter('chips', true)) == 'table') and (type(SMODS.get_scoring_parameter('mult', true)) == 'number' or type(SMODS.get_scoring_parameter('mult', true)) == 'table')) and to_big(G.GAME.current_scoring_calculation:func(SMODS.get_scoring_parameter('chips', true), SMODS.get_scoring_parameter('mult', true), true)) > to_big(0) then 
-				if may.transcendence > 0 then
+	if not G.ARGS.push.may_true_music_volume then
+		G.ARGS.push.may_true_music_volume = G.SETTINGS.SOUND.music_volume
+	end
+	if may.conf.TrEffects > 1 and is_number(SMODS.get_scoring_parameter('chips', true)) and is_number(SMODS.get_scoring_parameter('mult', true)) then 
+		if (may.transcendence or 0) > 0 and G.hand then
+			if is_number(SMODS.get_scoring_parameter('chips', true)) and is_number(SMODS.get_scoring_parameter('mult', true)) and to_big(G.GAME.current_scoring_calculation:func(SMODS.get_scoring_parameter('chips', true), SMODS.get_scoring_parameter('mult', true), true)) > to_big(0) then 
+				if (may.transcendence or 0) > 0 then
 					if may.conf.TrParticles and G.transcendence_particles then
 						G.transcendence_particles.colours[2] = may.get_transcendence_color(may.transcendence)
 					end
@@ -401,7 +404,11 @@ G.FUNCS.hand_type_UI_set = function(e)
 			elseif to_big(comparison) > Big:create(1e100) then
 				G.FUNCS.tsj_specific(e, 0.5, 1.5, false, true)
 			else
-				G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10((type(G.GAME.current_round.current_hand[e.config.type]) == 'number' or type(G.GAME.current_round.current_hand[e.config.type]) == 'table') and G.GAME.current_round.current_hand[e.config.type] or 1))))
+				if Talisman.cdataman then
+					G.FUNCS.tsj_specific(e, 0, 0.4, false, true)
+				else
+				    G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log10(is_number(G.GAME.current_round.current_hand[e.config.type]) and G.GAME.current_round.current_hand[e.config.type] or 1)))) 
+				end
 			end
 		end
 	end
@@ -495,7 +502,12 @@ G.FUNCS.hand_chip_total_UI_set = function(e)
 				G.FUNCS.tsj_specific(e, 0.75, 3, false, true)
 			elseif to_big(comparison) > Big:create(1e100) then
 				G.FUNCS.tsj_specific(e, 0.5, 1.5, false, true)
-				G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log((type(G.GAME.current_round.current_hand.chip_total) == 'number' or type(G.GAME.current_round.current_hand.chip_total) == 'table') and G.GAME.current_round.current_hand.chip_total or 1))))
+			else
+				if Talisman.cdataman then
+					G.FUNCS.tsj_specific(e, 0.2, 0.7, false, true)
+				else 
+				    G.FUNCS.text_super_juice(e, math.max(0,math.floor(math.log(is_number(G.GAME.current_round.current_hand.chip_total) and G.GAME.current_round.current_hand.chip_total or 1))))
+				end
 			end
 			G.ARGS.hand_chip_total_UI_set = G.GAME.current_round.current_hand.chip_total
 		end
@@ -574,7 +586,7 @@ function Game:update(dt)
 		G.ROOM.jiggle = G.ROOM.jiggle + G.ROOM.may_permajiggle
 	end
 	if G.hand and may.transcendence then 
-		if may.transcendence < 10 and may.conf.TrEffects > 2 then
+		if (may.transcendence or 0) < 10 and may.conf.TrEffects > 2 then
 			if may.conf.TrShakeUI then 
 			    G.hand_text_area.blind_chips:juice_up(0.01, math.random(-(may.transcendence or 0)/9, (may.transcendence or 0))/9)
 			    G.hand_text_area.mult:juice_up(0.01, math.random(-(may.transcendence or 0)/9, (may.transcendence or 0))/9)

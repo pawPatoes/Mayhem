@@ -214,9 +214,9 @@ SMODS.Joker {
 				card:juice_up(0.3, 0.5)
 				local grim = create_card('Spectral', G.consumeables, nil, nil, nil, nil, 'c_grim', nil)
 				grim.no_forced_edition = true
-				grim:set_edition({negative = true}, true)
 				grim.no_forced_edition = nil
 				grim:setQty(1)
+				grim:set_edition({negative = true}, true)
 				grim:set_cost()
 				grim:add_to_deck()
 				G.consumeables:emplace(grim)
@@ -235,9 +235,9 @@ SMODS.Joker {
 				card:juice_up(1,1)
 				local grim = create_card('Spectral', G.consumeables, nil, nil, nil, nil, 'c_grim', nil)
 				grim.no_forced_edition = true
-				grim:set_edition({negative = true}, true)
 				grim.no_forced_edition = nil
 				grim:setQty(1)
+				grim:set_edition({negative = true}, true)
 				grim:set_cost()
 				grim:add_to_deck()
 				G.consumeables:emplace(grim)
@@ -378,7 +378,9 @@ SMODS.Joker {
 				may.pager(),
 				"{C:attention}Increases{} by {C:attention}#2#{} when {C:attention}hand{} is {C:attention}played{}",
 				may.pager(),
-				"{C:attention}Jokers{} with an {C:dark_edition}Edition{} give {X:purple,C:white}^#3#{} Mult & Chips",
+				"{X:mult,C:white}+^#3#{} Mult per {C:attention}Joker{} with an {C:dark_edition}Edition{}",
+				may.pager(), 
+				"{C:inactive}Currently ^#4# Mult{}"
 			},
 			may.add_fusion_text('Collector\'s Edition', 'Diskus Kollectum Maximus', may.get_condition('diskus_kollectum_maximus')),
 		}
@@ -392,10 +394,19 @@ SMODS.Joker {
 	pos = { x = 3, y = 12 },
 	soul_pos = { x = 0, y = 13 },
 	cost = 1000,
-	config = { extra = { blindcards = 20, cards_gain = 5, Emultchips = 144, } },
+	config = { extra = { blindcards = 20, cards_gain = 5, Emult = 14, } },
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_wheel_of_fortune
-		return { vars = { card.ability.extra.blindcards, card.ability.extra.cards_gain, card.ability.extra.Emultchips } }
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
+		local num = 1
+		if G.jokers then
+			for k, v in pairs(G.jokers.cards) do
+				if v.edition and v.edition.key then
+					num = num + card.ability.extra.Emult
+				end
+			end
+		end
+		return { vars = { card.ability.extra.blindcards, card.ability.extra.cards_gain, card.ability.extra.Emult, num } }
 	end,
 	calculate = function(self, card, context)
 		if context.before and not context.blueprint then
@@ -408,55 +419,26 @@ SMODS.Joker {
 		if context.setting_blind then
 			G.E_MANAGER:add_event(Event({ func = function()
 				card:juice_up(0.5, 0.5)
-				if Overflow then
-					local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-					G.consumeables:emplace(wheel)
-					wheel:setQty(card.ability.extra.blindcards)
-					wheel:add_to_deck()
-					wheel:set_edition({negative = true}, false, false)
-				else
-					for i=1, card.ability.extra.blindcards, 1 do
-						local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-						G.consumeables:emplace(wheel)
-						wheel:add_to_deck()
-						wheel:set_edition({negative = true}, false, false)
-						wheel:setQty(1)
-					end
-				end
+				local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
+				wheel:setQty(card.ability.extra.blindcards)
+				wheel:add_to_deck()
+			    wheel:set_edition({negative = true}, false, false)
+				G.consumeables:emplace(wheel)
 			return true end}))
 		end
-		if context.other_joker and context.other_joker.edition and context.other_joker ~= card then
-			G.E_MANAGER:add_event(Event({ func = function()
-				card:juice_up(0.5, 0.5)
-			return true end}))
-			return {
-				message = "^"..card.ability.extra.Emultchips.." Mult & Chips",
-				Emult_mod = card.ability.extra.Emultchips,
-				Echip_mod = card.ability.extra.Emultchips,
-				colour = G.C.PURPLE,
-				card = context.other_joker,
-				sound = 'may_eboth'
-			}
-		end
-		if context.forcetrigger then
-			G.E_MANAGER:add_event(Event({ func = function()
-				card:juice_up(0.5, 0.5)
-				if Overflow then
-					local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-					G.consumeables:emplace(wheel)
-					wheel:setQty(card.ability.extra.blindcards)
-					wheel:add_to_deck()
-					wheel:set_edition({negative = true}, false, false)
-				else
-					for i=1, card.ability.extra.blindcards, 1 do
-						local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-						G.consumeables:emplace(wheel)
-						wheel:add_to_deck()
-						wheel:set_edition({negative = true}, false, false)
-						wheel:setQty(1)
-					end
+        if context.joker_main or context.forcetrigger then
+			local num = 1
+			for k, v in pairs(G.jokers.cards) do
+				if v.edition and v.edition.key then
+					num = num + card.ability.extra.Emult
 				end
-			return true end}))
+			end 
+			if num > 1 then
+			    return {
+				    e_mult = num,
+				    card = card 
+			    }
+			end
 		end
 	end
 }
@@ -541,121 +523,5 @@ SMODS.Joker {
                 card = card, 
             }
         end
-	end
-}
-
-SMODS.Joker {
-	key = 'schematicum',
-	loc_txt = {
-		name = {'Schematicum', "{C:inactive,s:0.5}Universal Collapse + Blueprint{}"},
-		text = {
-			{
-				"{C:attention}Copies{} the abilities of {C:attention}adjacent Jokers{}",
-				may.pager(),
-				"{C:attention}Retrigger{} all copies of {C:attention}Blueprint #1#{} times",
-				may.pager(),
-				"Increase {C:spectral}Potent's{} Blueprint {C:mult}limit{} by {C:attention}#2#{}",
-			},
-			--may.add_fusion_text('Universal Collapse', 'Kepler', '{C:planet}Level up{} a {C:purple}Poker Hand{} to {C:planet}level{} {C:attention}200{}'),
-			{
-				"{C:inactive,E:1}Art by FirstTry{}"
-			}
-		}
-	},
-	config = { extra = { retrigger = 2, limit = 5 } },
-	pos = { x = 6, y = 1 },
-	soul_pos = { x = 6, y = 2 },
-	cost = 1000,
-	rarity = 'may_transcendent',
-	atlas = 'joker2',
-	blueprint_compat = false,
-	demicoloncompat = false,
-	no_tree = true,
-    loc_vars = function(self, info_queue, card)
-		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_potent
-		if card.area and card.area == G.jokers then
-			local left
-			for i = 1, #G.jokers.cards do
-				if G.jokers.cards[i] == card then left = G.jokers.cards[i - 1] end
-			end
-			local compatible_l = left and left ~= card and left.config.center.blueprint_compat
-			
-			local right
-			for i = 1, #G.jokers.cards do
-				if G.jokers.cards[i] == card then right = G.jokers.cards[i + 1] end
-			end
-			local compatible_r = right and right ~= card and right.config.center.blueprint_compat
-			main_end = {
-				{
-					n = G.UIT.C,
-					config = { align = "bm", minh = 0.4 },
-					nodes = {
-						{
-							n = G.UIT.C,
-							config = { ref_table = card, align = "m", colour = compatible_l and mix_colours(G.C.GREEN, G.C.JOKER_GREY, 0.8) or mix_colours(G.C.RED, G.C.JOKER_GREY, 0.8), r = 0.05, padding = 0.06 },
-							nodes = {
-								{ n = G.UIT.T, config = { text = ' ' .. localize('k_' .. (compatible_l and 'compatible' or 'incompatible')) .. ' ', colour = G.C.UI.TEXT_LIGHT, scale = 0.32 * 0.8 } },
-							}
-						}
-					}
-				},
-				{
-					n = G.UIT.C,
-					config = { align = "bm", minh = 0.4 },
-					nodes = {
-						{
-							n = G.UIT.C,
-							config = { ref_table = card, align = "m", colour = compatible_r and mix_colours(G.C.GREEN, G.C.JOKER_GREY, 0.8) or mix_colours(G.C.RED, G.C.JOKER_GREY, 0.8), r = 0.05, padding = 0.06 },
-							nodes = {
-								{ n = G.UIT.T, config = { text = ' ' .. localize('k_' .. (compatible_r and 'compatible' or 'incompatible')) .. ' ', colour = G.C.UI.TEXT_LIGHT, scale = 0.32 * 0.8 } },
-							}
-						}
-					}
-				}
-			}
-		end
-		return { vars = { card.ability.extra.retrigger, card.ability.extra.limit, }, main_end = main_end }
-    end,
-	add_to_deck = function(self, card, from_debuff)
-		if not from_debuff then
-			G.GAME.may_potent_limit = (G.GAME.may_potent_limit or 0) + card.ability.extra.limit
-		end
-	end,
-	remove_from_deck = function(self, card, from_debuff)
-		if not from_debuff then
-			G.GAME.may_potent_limit = (G.GAME.may_potent_limit or 0) - card.ability.extra.limit
-		end
-	end,
-    calculate = function(self, card, context)
-		if context.blueprint then return end
-		local left
-		for i = 1, #G.jokers.cards do
-			if G.jokers.cards[i] == card then left = G.jokers.cards[i - 1] end
-		end
-		local right
-		for i = 1, #G.jokers.cards do
-			if G.jokers.cards[i] == card then right = G.jokers.cards[i - 1] end
-		end
-
-		local effects_table = {}
-		for i = 1, #G.jokers.cards do
-			if G.jokers.cards[i] == left or G.jokers.cards[i] == right then
-				local effect = SMODS.blueprint_effect(card, G.jokers.cards[i], context)
-				if effect then
-					effect.colour = G.C.BLUE
-				end
-				effects_table[#effects_table+1] = effect
-			end
-		end
-		if context.retrigger_joker_check and not context.retrigger_joker then
-			if context.other_card and context.other_card.gc and context.other_card:gc().key == 'j_blueprint' then
-				return {
-					repetitions = card.ability.extra.retrigger,
-					message = localize('k_again_ex'),
-					card = card
-				}
-			end
-		end
-		return may.recursive_table(effects_table, 1)
 	end
 }

@@ -37,11 +37,11 @@ SMODS.Rarity{
 
 SMODS.Rarity{
 	key = 'mystery',
-	name = "??????",
+	name = "Paradoxical",
 	loc_txt = {
-		name = "??????"
+		name = "Paradoxical"
 	},
-	badge_colour = G.C.BLACK,
+	badge_colour = SMODS.Gradients.may_col_instability,
 	default_rate = 0,
 	pools = {["Joker"] = true}
 }
@@ -49,9 +49,9 @@ SMODS.Rarity{
 SMODS.Rarity{
 	key = 'transcendent',
 	loc_txt = {
-	name = "Transcendent"
+	name = "Ethereal"
 	},
-	badge_colour = G.C.DARK_EDITION,
+	badge_colour = SMODS.Gradients.may_col_e_otherworldly,
 	default_rate = 0,
 	pools = {["Joker"] = true}
 }
@@ -59,7 +59,7 @@ SMODS.Rarity{
 SMODS.Rarity{
 	key = 'surreal',
 	loc_txt = {
-		name = "Surreal"
+		name = "Opalescent"
 	},
 	badge_colour = SMODS.Gradients.may_col_surreal,
 	default_rate = 0,
@@ -69,7 +69,7 @@ SMODS.Rarity{
 SMODS.Rarity{
 	key = 'interdimensional',
 	loc_txt = {
-		name = "Interdimensional"
+		name = "Prismatic"
 	},
 	badge_colour = SMODS.Gradients.may_col_interdimensional,
 	default_rate = 0,
@@ -79,7 +79,7 @@ SMODS.Rarity{
 SMODS.Rarity{
 	key = 'ethereal',
 	loc_txt = {
-		name = "Ethereal",
+		name = "Demiurgic",
 	},
 	badge_colour = SMODS.Gradients.may_col_ethereal,
 	default_rate = 0,
@@ -88,9 +88,9 @@ SMODS.Rarity{
 
 SMODS.Rarity{
 	key = 'hyperascendant',
-	name = "HyperAscendant",
+	name = "Transcendent",
 	loc_txt = {
-		name = "HyperAscendant"
+		name = "Transcendent"
 	},
 	badge_colour = SMODS.Gradients.may_col_hyperascendant,
 	default_rate = 0,
@@ -99,5 +99,5 @@ SMODS.Rarity{
 
 -- Rarity badge function so the text can be scaled up
 may.hyperascendant_badge = function(self, card, badges)
-	badges[#badges + 1] = create_badge('HyperAscendant', SMODS.Gradients.may_col_hyperascendant, nil, 1.7)
+	badges[#badges + 1] = create_badge('Transcendent', SMODS.Gradients.may_col_hyperascendant, nil, 1.7)
 end 

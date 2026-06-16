@@ -147,7 +147,7 @@ SMODS.Joker {
 	},
 	config = { extra = { mult = 25, odds = 4, Xmult = 0.1 } },
 	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.extra.mult, (G.GAME.probabilities.normal or 1), card.ability.extra.odds, card.ability.extra.Xmult} }
+		return { vars = { card.ability.extra.mult, G.GAME.probabilities.normal, card.ability.extra.odds, card.ability.extra.Xmult} }
 	end,
 	rarity = 1,
 	atlas = 'joker1',
@@ -157,7 +157,7 @@ SMODS.Joker {
 	cost = 4,
 	calculate = function(self, card, context)
 		if context.cardarea == G.jokers and context.joker_main then
-			if pseudorandom('may_dead_pixel') < G.GAME.probabilities.normal / card.ability.extra.odds then	
+			if pseudorandom('may_dead_pixel') < 1 / card.ability.extra.odds then	
 				return {
 					Xmult_mod = card.ability.extra.Xmult,
 					message = "X"..card.ability.extra.Xmult.." Mult",
@@ -207,12 +207,12 @@ SMODS.Joker {
 	demicoloncompat = true,
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "may_level_multchips_tutorial", set = "Other" }
-        local normal, odds = SMODS.get_probability_vars(card, (G.GAME.probabilities.normal or 1), card.ability.extra.odds, "Illusion")
+        local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Illusion")
         return { vars = { normal, odds, card.ability.extra.mult } }
 	end, 
     calculate = function(self, card, context)
         if context.before and context.cardarea == G.jokers then
-            if SMODS.pseudorandom_probability(card, "may_illusion", (G.GAME.probabilities.normal or 1), card.ability.extra.odds, "Illusion") then 
+            if SMODS.pseudorandom_probability(card, "may_illusion", 1, card.ability.extra.odds, "Illusion") then 
                 card.ability.extra.temp_scale = G.GAME.hands[context.scoring_name].l_mult
                 SMODS.scale_card(card, {
 					ref_table = card.ability.extra,

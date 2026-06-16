@@ -230,13 +230,15 @@ SMODS.Joker {
 				may.pager(),
 			    "{C:attention}Increases{} by {C:attention}#2#{} when {C:purple}The Wheel of Fortune{} is used",
 				may.pager(),
-			    "{C:attention}Jokers{} with an {C:dark_edition}Edition{} give {X:purple,C:white}^^^#3#{} Mult & Chips",
-			    "{C:attention}Increases{} by {X:purple,C:white}#4#{} at the {C:attention}end of round{} if {C:attention}this Joker{} has an {C:dark_edition}Edition{}",
+			    "{X:mult,C:white}+^^^#3#{} Mult per {C:attention}Joker{} with an {C:dark_edition}Edition{}",
+			    "{C:attention}Increases{} by {C:attention}#4#{} at the {C:attention}end of round{} if {C:attention}this Joker{} has an {C:dark_edition}Edition{}",
+				may.pager(), 
+				"{C:inactive}Currently ^^^#5# Mult{}"
             }, 
             may.add_fusion_text('Planet Ibiza', 'Rondo Discoteca', may.get_condition('rondo_discoteca'))
 		}
 	},
-	config = { extra = { blindamount = 140, scale = 14, EEEmultchips = 14, EEEmultchips_gain = 14 } },
+	config = { extra = { blindcards = 140, scale = 14, EEEmult = 14, EEEmult_gain = 14 } },
 	pos = { x = 4, y = 11 },
 	soul_pos = { x = 5, y = 11 },
 	cost = 1414141,
@@ -251,38 +253,25 @@ SMODS.Joker {
     loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_wheel_of_fortune
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
-        return {vars = {card.ability.extra.blindamount, card.ability.extra.scale, card.ability.extra.EEEmultchips, card.ability.extra.EEEmultchips_gain,}}
+		local num = 1
+		if G.jokers then
+			for k, v in pairs(G.jokers.cards) do
+				if v.edition and v.edition.key then
+					num = num + card.ability.extra.EEEmult
+				end
+			end
+		end
+        return {vars = {card.ability.extra.blindcards, card.ability.extra.scale, card.ability.extra.EEEmult, card.ability.extra.EEEmult_gain, num}}
     end,
     calculate = function(self, card, context)
-		if context.other_joker and context.other_joker.edition then
-			G.E_MANAGER:add_event(Event({ func = function()
-				context.other_joker:juice_up(2, 2)
-			return true end}))
-			return {
-				message = "^^^"..card.ability.extra.EEEmultchips.." Mult & Chips",
-				EEEmult_mod = card.ability.extra.EEEmultchips,
-				EEEchip_mod = card.ability.extra.EEEmultchips,
-				colour = G.C.PURPLE,
-				sound = 'may_eeeboth'
-			}
-		end
 		if context.setting_blind then
 			G.E_MANAGER:add_event(Event({ func = function()
-				card:juice_up(1, 1)
-				if Overflow then
-					local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-					G.consumeables:emplace(wheel)
-					wheel:setQty(card.ability.extra.blindamount)
-					wheel:add_to_deck()
-					wheel:set_edition({negative = true}, false, false)
-				else
-					for i=1, card.ability.extra.blindamount, 1 do
-						local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-						G.consumeables:emplace(wheel)
-						wheel:add_to_deck()
-						wheel:set_edition({negative = true}, false, false)
-					end
-				end
+				card:juice_up(0.5, 0.5)
+				local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
+				wheel:setQty(card.ability.extra.blindcards)
+				wheel:add_to_deck()
+			    wheel:set_edition({negative = true}, false, false)
+				G.consumeables:emplace(wheel)
 			return true end}))
 		end
 		if context.using_consumeable and context.consumeable:gc().key == 'c_wheel_of_fortune' and not context.blueprint then
@@ -294,32 +283,27 @@ SMODS.Joker {
 		end
 		if context.end_of_round and context.cardarea == G.jokers and not context.blueprint then
 			if card.edition then
-				card.ability.extra.EEEmultchips = card.ability.extra.EEEmultchips + card.ability.extra.EEEmultchips_gain
+				card.ability.extra.EEEmult = card.ability.extra.EEEmult + card.ability.extra.EEEmult_gain
 				return {
 					message = 'Upgraded!',
-					colour = G.C.PURPLE,
+					colour = G.C.MULT,
 					card = card,
 				}
 			end
 		end
-		if context.forcetrigger then
-			G.E_MANAGER:add_event(Event({ func = function()
-				card:juice_up(1, 1)
-				if Overflow then
-					local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-					G.consumeables:emplace(wheel)
-					wheel:setQty(card.ability.extra.blindamount)
-					wheel:add_to_deck()
-					wheel:set_edition({negative = true}, false, false)
-				else
-					for i=1, card.ability.extra.blindamount, 1 do
-						local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-						G.consumeables:emplace(wheel)
-						wheel:add_to_deck()
-						wheel:set_edition({negative = true}, false, false)
-					end
+		if context.joker_main or context.forcetrigger then
+			local num = 1
+			for k, v in pairs(G.jokers.cards) do
+				if v.edition and v.edition.key then
+					num = num + card.ability.extra.EEEmult
 				end
-			return true end}))
+			end 
+			if num > 1 then
+			    return {
+				    eee_mult = num,
+				    card = card 
+			    }
+			end
 		end
 	end
 }

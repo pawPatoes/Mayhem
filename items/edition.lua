@@ -1,31 +1,4 @@
--- Editions & Shaders
-
-SMODS.Shader({key = 'shimmering', path = 'shimmering.fs'})
-SMODS.Shader({key = 'amber', path = 'amber.fs'})
-SMODS.Shader({key = 'omega', path = 'omega.fs'})
-SMODS.Shader({key = 'nostalgic', path = 'nostalgic.fs'})
-SMODS.Shader({key = 'otherworldly', path = 'otherworldly.fs'})
-SMODS.Shader({key = 'cosmic', path = 'cosmic.fs'})
-SMODS.Shader({key = 'print', path = 'print.fs'})
-SMODS.Shader({key = 'goldfoil', path = 'goldfoil.fs'})
-SMODS.Shader({key = 'misprint', path = 'misprint.fs'})
-SMODS.Shader({key = 'radioactive', path = 'radioactive.fs'})
-SMODS.Shader({key = 'bitcrush', path = 'bitcrush.fs'})
-SMODS.Shader({key = 'neon', path = 'neon.fs'})
-SMODS.Shader({key = 'magenta', path = 'magenta.fs'})
-SMODS.Shader({key = 'alloy', path = 'alloy.fs'})
-SMODS.Shader({key = 'inverted', path = 'inverted.fs'})
-SMODS.Shader({key = 'dichromatic', path = 'dichromatic.fs'})
-SMODS.Shader({key = 'laminated', path = 'laminated.fs'})
-SMODS.Shader({key = 'twilight', path = 'twilight.fs'})
-SMODS.Shader({key = 'ionized', path = 'ionized.fs'})
-SMODS.Shader({key = 'hypnotic', path = 'hypnotic.fs'})
-SMODS.Shader({key = 'kaleidoscopic', path = 'kaleidoscopic.fs'})
-SMODS.Shader({key = 'sharpened', path = 'sharpened.fs'})
-SMODS.Shader({key = 'light', path = 'light.fs'})
-SMODS.Shader({key = 'metallic', path = 'metallic.fs'})
-
-SMODS.Shader({key = 'semihologram', path = 'semihologram.fs'})
+-- Editions
 
 SMODS.Edition {
 	key = "shimmering",
@@ -148,9 +121,9 @@ SMODS.Edition {
 		text = {
 			"{X:mult,C:white}X0.5{} Mult per {C:attention}Steel Card{}",
 			"in full deck",
-			"{X:money,C:white}X0.03${} per {C:attention}Gold Card{}",
+			"{X:money,C:white}+1{} Interest Cap per {C:attention}Gold Card{}",
 			"in full deck",
-			"{C:inactive}Currently X#1# Mult and X#2#${}",
+			"{C:inactive}Currently X#1# Mult and +#2# Interest Cap{}",
 			"{C:inactive}Shader by Supernova{}"
 		}
 	},
@@ -159,12 +132,13 @@ SMODS.Edition {
 	badge_colour = HEX('cccccc'),
 	sound = { sound = "may_e_alloy", per = 1, vol = 0.9 },
 	unlocked = true,
-	config = { x_mult = 0.5, x_dollars = 0.03 },
+	config = { x_mult = 0.15, interest_cap = 1 },
 	in_shop = true,
 	weight = 5,
 	extra_cost = 9,
 	apply_to_float = true,
 	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
 		local steel = 0
 		local gold = 0
 		if G.GAME.blind then
@@ -176,7 +150,7 @@ SMODS.Edition {
 				end
 			end
 		end
-		return { vars = { 1 + (self.config.x_mult * steel), 1 + (self.config.x_dollars * gold) }, }
+		return { vars = { 1 + (self.config.x_mult * steel), gold }, }
 	end,
 	calculate = function(self, card, context)
 		if context.pre_joker or (context.main_scoring and context.cardarea == G.play) then
@@ -189,9 +163,11 @@ SMODS.Edition {
 					gold = gold + 1
 				end
 			end
+			G.E_MANAGER:add_event(Event({func = function()
+				may.ease_interest_cap(-1, gold)
+			return true end}))
 			return {
 				x_mult = 1 + (self.config.x_mult * steel),
-				x_dollars =  1 + (self.config.x_dollars * gold)
 			}
 		end
 	end, 
@@ -461,24 +437,28 @@ SMODS.Edition {
 		name = "Vignette",
 		label = "Vignette",
 		text = {
-			"{X:money,C:white}X1.05${}",
+			"{X:purple,C:white}+5{} Mult & Chips",
+			"{X:purple,C:white}X1.2{} Mult & Chips",
 			"{C:inactive}WIP Shader{}"
 		}
 	},
 	shader = 'shimmering',
 	discovered = true,
 	badge_colour = HEX('aaaaaa'),
-	config = { x_dollars = 1.05 },
+	config = { mult = 5, chips = 5, x_mult = 1.2, x_chips = 1.2 },
 	sound = { sound = "may_e_vignette", per = 1, vol = 0.9 },
 	unlocked = true,
 	in_shop = true,
 	weight = 7,
-	extra_cost = 6,
+	extra_cost = 5,
 	apply_to_float = true,
 	calculate = function(self, card, context)
 		if context.pre_joker or (context.main_scoring and context.cardarea == G.play) then
 			return {
-				x_dollars = 1.05
+				mult = 5,
+				chips = 5,
+				x_mult = 1.2,
+				x_chips = 1.2
 			}
 		end
 	end, 
@@ -583,6 +563,7 @@ SMODS.Edition {
 			"Scales {C:dark_edition}exponentially{} and {C:green}globally{}", 
 			"when any card with {C:dark_edition}Twilight Edition{}", 
 			"is triggered", 
+			"Does {C:mult}not{} {C:green}scale{} on {C:attention}playing cards{}", 
 			" ",
 			"{C:inactive,E:1}Shader by Oiiman{}"
 		}
@@ -601,17 +582,23 @@ SMODS.Edition {
 		return { vars = { G.GAME.may_twilight_amount or 5 } }
 	end,
 	calculate = function(self, card, context)
-		if context.pre_joker or (context.main_scoring and context.cardarea == G.play) then
+		if context.pre_joker then
 			local previous = G.GAME.may_twilight_amount or 5
-			G.GAME.may_twilight_amount = ((G.GAME.may_twilight_amount or 5) * 1.1) ^ 1.05
+			G.GAME.may_twilight_amount = math.min(1e300, ((G.GAME.may_twilight_amount or 5) ^ 1.05))
 			return {
 				mult = previous,
 				chips = previous,
 			}
 		end
+		if context.main_scoring and context.cardarea == G.play then 
+			return {
+				mult = (G.GAME.may_twilight_amount or 5),
+				chips = (G.GAME.may_twilight_amount or 5),
+			}
+		end
 	end,
 	in_shop = true,
-	weight = 8,
+	weight = 6,
 	extra_cost = 5,
 	apply_to_float = true,
 } 
@@ -641,7 +628,7 @@ SMODS.Edition {
     end, 
 	calculate = function(self, card, context)
 		if context.before and (context.cardarea == G.play or context.cardarea == G.jokers) then
-			level_up_hand(card, G.GAME.current_round.current_hand.handname, nil, 1)
+			level_up_hand(card, context.scoring_name, nil, 1)
 		end
 	end,
 	in_shop = true,

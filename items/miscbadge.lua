@@ -80,3 +80,12 @@ may_ascended_badge = {
 		'Ascended'
 	}
 }
+
+may_sly25_kratos_verde = {
+	colour = SMODS.Gradients.may_col_surreal,
+	text_colour = G.C.WHITE,
+	text = {
+		'Sly25 Winner',
+		'roland_shelby'
+	}
+}

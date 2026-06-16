@@ -1,33 +1,35 @@
 -- Retro cards 
 
-AllowBulkUse('retrocards')
-
 SMODS.Consumable {
 	key = 'easter_egg',
-	config = { extra = { jokers = 1 } },
+	config = { extra = { jokers = 1, mul = 1.5 } },
 	loc_txt = {
 		name = 'EASTER_EGG',
 		text = {
 			"Create {C:attention}#1# random{} {X:mult,C:white}Rare{} {C:attention}Joker{}",
-			"for {C:attention}every{} {C:money}Yotta Card{} you have {C:attention}used{} this run",
-			"{C:inactive}Will create #2# Jokers, requires room{}"
+			"if you have used {C:attention}#2#{} {C:money}Yotta Cards{} this run,",
+			"then {C:attention}increase{} {C:mult}requirement{} by {X:retrocards,C:white}X#3#{}", 
+			may.pager(55),
+			"{C:inactive}#4# Yotta Cards used this run{}", 
+			"{C:inactive}Requirement rounds up{}"
 		}
 	},
 	set = 'retrocards',
 	pos = { x = 1, y = 0 },
-    display_size = { w = 71, h = 71 }, 
+	display_size = { w = 71, h = 71 }, 
 	cost = 4,
 	unlocked = true,
 	discovered = true,
+	endless = true,
 	atlas = 'retro',
 	can_use = function(self, card)
-		return may.canuse() and #G.jokers.cards < G.jokers.config.card_limit and card.ability.extra.jokers * may.ctu('yottacards') ~= 0
+		return may.canuse() and may.ctu('yottacards') >= ((G.GAME.may_retro_stats or {}).easter_egg or 2)
 	end,
 	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.extra.jokers, card.ability.extra.jokers * may.ctu('yottacards') } }
+		return { vars = { card.ability.extra.jokers, ((G.GAME.may_retro_stats or {}).easter_egg or 2), card.ability.extra.mul, may.ctu('yottacards') } }
 	end,
 	use = function(self, card, area, copier)
-		for i = 1, math.min(card.ability.extra.jokers * may.ctu('yottacards'), G.jokers.config.card_limit - #G.jokers.cards) do
+		for i = 1, math.min(card.ability.extra.jokers, G.jokers.config.card_limit - #G.jokers.cards) do
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
 				if G.jokers.config.card_limit > #G.jokers.cards then
 					play_sound('timpani')
@@ -38,126 +40,128 @@ SMODS.Consumable {
 				end
 			return true end}))
 		end
+		G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
+		G.GAME.may_retro_stats.easter_egg = math.ceil((G.GAME.may_retro_stats.easter_egg or 2) * card.ability.extra.mul)
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
 	end,
-	bulk_use = function(self, card, area, copier, number)
-		for j = 1, number, 1 do
-			for i = 1, math.min(card.ability.extra.jokers * may.ctu('yottacards'), G.jokers.config.card_limit - #G.jokers.cards) do
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-					if G.jokers.config.card_limit > #G.jokers.cards then
-						play_sound('timpani')
-						local card2 = create_card('Joker', G.jokers, nil, 3, nil, nil, nil, 'may_easter_egg')
-						card2:add_to_deck()
-						G.jokers:emplace(card2)
-						card:juice_up(0.3, 0.5)
-					end
-				return true end}))
-			end
-		end
-	end
+	in_pool = function(self, args)
+        return G.GAME.may_endless_mode, { allow_duplicates = false }
+    end
 }
 
 SMODS.Consumable {
 	key = '1_up',
-	config = { extra = { dollars = 2 } },
+	config = { extra = { dollars = 25, mul = 1.75 } },
 	loc_txt = {
 		name = '1-UP',
 		text = {
-			"{C:money}+$#1#{} for {C:attention}every{} {C:spectral}Spectral Card{}",
-			"you have {C:attention}used{} this run",
-			"{C:inactive}Will give $#2#{}"
+			"{C:money}+$#1#{} if you have used", 
+			"{C:attention}#2#{} {C:spectral}Spectral Cards{} this run,",
+			"then {C:attention}increase{} {C:mult}requirement{} by {X:retrocards,C:white}X#3#{}", 
+			may.pager(55),
+			"{C:inactive}#4# Spectral Cards used this run{}", 
+			"{C:inactive}Requirement rounds up{}"
 		}
 	},
 	set = 'retrocards',
 	pos = { x = 2, y = 0 },
-    display_size = { w = 71, h = 71 },  
+	display_size = { w = 71, h = 71 },  
 	cost = 4,
 	unlocked = true,
 	discovered = true,
 	atlas = 'retro',
 	can_use = function(self, card)
-		return may.canuse()
+		return may.canuse() and may.ctu('Spectral') >= ((G.GAME.may_retro_stats or {}).one_up or 5)
 	end,
 	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.extra.dollars, card.ability.extra.dollars * may.ctu('Spectral') } }
+		return { vars = { card.ability.extra.dollars, ((G.GAME.may_retro_stats or {}).one_up or 5), card.ability.extra.mul, may.ctu('Spectral') } }
 	end,
 	use = function(self, card, area, copier)
-		ease_dollars(card.ability.extra.dollars * may.ctu('Spectral'))
-        G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-            play_sound('timpani')
-        return true end}))
+		G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
+			play_sound('timpani')
+		return true end}))
+		ease_dollars(card.ability.extra.dollars)
+		G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
+		G.GAME.may_retro_stats.one_up = math.ceil((G.GAME.may_retro_stats.one_up or 5) * card.ability.extra.mul)
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'}) 
 	end,
-	bulk_use = function(self, card, area, copier, number)
-		ease_dollars(number * card.ability.extra.dollars * may.ctu('Spectral'))
-        G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-            play_sound('timpani')
-        return true end}))
-	end
 }
 
 SMODS.Consumable {
 	key = 'lootbox',
-	config = { extra = { voucher_count = 12, voucher_gain = 1 } },
+	config = { extra = { cards = 5, mul = 1.75 } },
 	loc_txt = {
 		name = 'LOOTBOX',
 		text = {
-			"For {C:attention}every #1#{} {C:green}Vouchers{} redeemed,",
-			"{C:attention}redeem #2# random{} {C:green}Voucher{}",
-			"{C:inactive}Will redeem #3# Vouchers{}"
+			"Create {C:attention}#1#{} random {C:attention}Consumables{}", 
+			"if you have {C:money}redeemed{} {C:attention}#2#{} {C:green}Vouchers{},",
+			"then {C:attention}increase{} {C:mult}requirement{} by {X:retrocards,C:white}X#3#{}", 
+			may.pager(55),
+			"{C:inactive}#4# Vouchers redeemed this run{}", 
+			"{C:inactive}Does not require room{}",
+			"{C:inactive}Requirement rounds up{}"
 		}
 	},
 	set = 'retrocards',
 	pos = { x = 0, y = 1 },
-    display_size = { w = 71, h = 71 }, 
+	display_size = { w = 71, h = 71 }, 
 	cost = 4,
 	unlocked = true,
 	discovered = true,
 	atlas = 'retro',
 	can_use = function(self, card)
-		return may.canuse() and #(G.vouchers.cards or {}) >= card.ability.extra.voucher_count
+		return may.canuse() and #(G.vouchers.cards or {}) >= ((G.GAME.may_retro_stats or {}).lootbox or 5)
 	end,
 	loc_vars = function(self, info_queue, card)
-		if G.vouchers then
-			return { vars = { card.ability.extra.voucher_count, card.ability.extra.voucher_gain, 
-			math.floor(#(G.vouchers.cards or {}) / card.ability.extra.voucher_count) * card.ability.extra.voucher_gain } }
-		else
-			return { vars = { card.ability.extra.voucher_count, card.ability.extra.voucher_gain, 0} }
-		end
+		return { vars = { card.ability.extra.cards, ((G.GAME.may_retro_stats or {}).lootbox or 5), card.ability.extra.mul, #((G.vouchers or {}).cards or {}) } }
 	end,
 	use = function(self, card, area, copier)
-		may.massvoucher(nil, to_number(math.floor(#G.vouchers.cards / card.ability.extra.voucher_count) * card.ability.extra.voucher_gain))
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+			for i = 1, card.ability.extra.cards do
+				local choice = may.random_consumable('may_inverted_seal_card')
+				local card2 = create_card(choice.set, G.consumables, nil, nil, nil, nil, choice.key, "may_inverted_seal_card")
+				card2:add_to_deck()
+				G.consumeables:emplace(card2)
+			end
+			play_sound('may_bundle')
+			card:juice_up(0.5, 0.3)
+		return true end})) 
+		G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
+		G.GAME.may_retro_stats.lootbox = math.ceil((G.GAME.may_retro_stats.lootbox or 5) * card.ability.extra.mul)
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
 	end,
-	bulk_use = function(self, card, area, copier, number)
-		may.massvoucher(nil, to_number(math.floor(#G.vouchers.cards / card.ability.extra.voucher_count) * card.ability.extra.voucher_gain) * number)
-	end
 }
 
 SMODS.Consumable {
 	key = 'upgrade',
-	config = { extra = { editioncards = 1, planetcards = 40, } },
+	config = { extra = { cards = 4, mul = 2 } },
 	loc_txt = {
 		name = 'UPGRADE',
 		text = {
-			"Create {C:attention}#1# random{} {C:dark_edition}Modifier Card{}",
-			"for {C:attention}every #2#{} {C:planet}Planet Cards{}", 
-			"you have {C:attention}used{} this run",
-			"{C:inactive}Will create #3# Modifier Cards, requires room{}"
+			"Create {C:attention}#1#{} random {C:dark_edition}Modifier Card{}",
+			"if you have used {C:attention}#2#{} {C:planet}Planet Cards{},", 
+			"then {C:attention}increase{} {C:mult}requirement{} by {X:retrocards,C:white}X#3#{}", 
+			may.pager(55),
+			"{C:inactive}#4# Planet Cards used this run{}", 
+			"{C:inactive}Requires room{}", 
+			"{C:inactive}Requirement rounds up{}"
 		}
 	},
 	set = 'retrocards',
 	pos = { x = 0, y = 2 },
-    display_size = { w = 71, h = 71 },
+	display_size = { w = 71, h = 71 },
 	cost = 4,
 	unlocked = true,
 	discovered = true,
 	atlas = 'retro',
 	can_use = function(self, card)
-		return may.canuse() and may.ctu('Planet') >= card.ability.extra.planetcards
+		return may.canuse() and may.ctu('Planet') >= ((G.GAME.may_retro_stats or {}).upgrade or 10)
 	end,
 	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.extra.editioncards, card.ability.extra.planetcards, math.floor(may.ctu('Planet') / card.ability.extra.planetcards) * card.ability.extra.editioncards } }
+		return { vars = { card.ability.extra.cards, ((G.GAME.may_retro_stats or {}).upgrade or 10), card.ability.extra.mul, may.ctu('Planet') } }
 	end,
 	use = function(self, card, area, copier)
-		for i = 1, math.min(math.floor(may.ctu('Planet') / card.ability.extra.planetcards) * card.ability.extra.editioncards, G.consumeables.config.card_limit - #G.consumeables.cards) do
+		for i = 1, card.ability.extra.cards do
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
 				if G.consumeables.config.card_limit > #G.consumeables.cards then
 					play_sound('timpani')
@@ -168,377 +172,293 @@ SMODS.Consumable {
 				end
 			return true end}))
 		end
+		G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
+		G.GAME.may_retro_stats.upgrade = math.ceil((G.GAME.may_retro_stats.upgrade or 10) * card.ability.extra.mul)
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
 	end,
-	bulk_use = function(self, card, area, copier, number)
-		for i = 1, math.min(math.floor(may.ctu('Planet') / card.ability.extra.planetcards) * card.ability.extra.editioncards * number, G.consumeables.config.card_limit - #G.consumeables.cards) do
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-				if G.consumeables.config.card_limit > #G.consumeables.cards then
-					play_sound('timpani')
-					local card2 = create_card('editioncards', G.consumeables, nil, nil, nil, nil, nil, 'may_upgrade')
-					card2:add_to_deck()
-					G.consumeables:emplace(card2)
-					card:juice_up(0.3, 0.5)
-				end
-			return true end}))
-		end
-	end
 }
 
---[[SMODS.Consumable {
+SMODS.Consumable {
 	key = 'savescum',
-	config = { extra = { copies = 1, consumables = 35, } },
+	config = { extra = { copies = 2, mul = 1.5 } },
 	loc_txt = {
 		name = 'SAVESCUM',
 		text = {
-			"Create {C:attention}#1#{} {C:dark_edition}Negative{} copy of",
-            "the {C:attention}last consumable{} {C:money}sold{} this run", 
-            "with {C:mult}$0{} {C:money}sell value{}", 
-			"for {C:attention}every #2#{} {C:attention}consumables{} {C:attention}used{} this run",
-			"{C:inactive}Will create #3# copies, sell cost is{}", 
-            "{C:inactive}increased by Negative Edition, SAVESCUM excluded{}"
+			"Create {C:attention}#1#{} {C:dark_edition}Negative{} copies of",
+			"the {C:attention}last consumable{} {C:money}sold{} this run", 
+			"with {C:mult}$0{} {C:money}sell value{}", 
+			"if you have {C:mult}skipped{} {C:attention}#2# Booster Packs{},", 
+			"then {C:attention}increase{} {C:mult}requirement{} by {X:retrocards,C:white}X#3#{}", 
+			may.pager(55),
+			"{C:inactive}#4# Booster Packs skipped this run{}", 
+			"{C:inactive}Requirement rounds up{}", 
+			"{C:inactive}SAVESCUM excluded{}"
 		}
 	},
 	set = 'retrocards',
 	pos = { x = 3, y = 1 },
-    display_size = { w = 71, h = 71 },
+	display_size = { w = 71, h = 71 },
 	cost = 4,
 	unlocked = true,
 	discovered = true,
 	atlas = 'retro',
 	can_use = function(self, card)
-		return may.canuse() and G.GAME.may_last_consumable_sold and (G.GAME.may_last_consumable_sold ~= 'c_may_savescum')
+		return may.canuse() and G.GAME.may_last_consumable_sold and (G.GAME.may_last_consumable_sold ~= 'c_may_savescum') and (G.GAME.may_packs_skipped or 0) >= ((G.GAME.may_retro_stats or {}).savescum or 5)
 	end,
 	loc_vars = function(self, info_queue, card)
-        local fool_c = G.GAME.may_last_consumable_sold and G.P_CENTERS[G.GAME.may_last_consumable_sold] or nil
-        local may_last_consumable_sold = fool_c and localize { type = 'name_text', key = fool_c.key, set = fool_c.set } or localize('k_none')
-        local colour = ((not fool_c) or G.GAME.may_last_consumable_sold == 'c_may_savescum') and G.C.RED or G.C.SECONDARY_SET.retrocards
-        if fool_c and may_last_consumable_sold ~= 'c_may_savescum' then
-            info_queue[#info_queue + 1] = fool_c
-        end
-        local main_end = {
-            {
-                n = G.UIT.C,
-                config = { align = "bm", padding = 0.02 },
-                nodes = {
-                    {
-                        n = G.UIT.C,
-                        config = { align = "m", colour = colour, r = 0.05, padding = 0.05 },
-                        nodes = {
-                            { n = G.UIT.T, config = { text = ' ' .. may_last_consumable_sold .. ' ', colour = G.C.UI.TEXT_LIGHT, scale = 0.3, shadow = true } },
-                        }
-                    }
-                }
-            }
-        }
-		return { vars = { card.ability.extra.copies, card.ability.extra.consumables, math.floor(may.ctu() / card.ability.extra.consumables) * card.ability.extra.copies }, main_end = main_end }
+		local fool_c = G.GAME.may_last_consumable_sold and G.P_CENTERS[G.GAME.may_last_consumable_sold] or nil
+		local may_last_consumable_sold = fool_c and localize { type = 'name_text', key = fool_c.key, set = fool_c.set } or localize('k_none')
+		local colour = ((not fool_c) or G.GAME.may_last_consumable_sold == 'c_may_savescum') and G.C.RED or G.C.SECONDARY_SET.retrocards
+		if fool_c and may_last_consumable_sold ~= 'c_may_savescum' then
+			info_queue[#info_queue + 1] = fool_c
+		end
+		local main_end = {
+			{
+				n = G.UIT.C,
+				config = { align = "bm", padding = 0.02 },
+				nodes = {
+					{
+						n = G.UIT.C,
+						config = { align = "m", colour = colour, r = 0.05, padding = 0.05 },
+						nodes = {
+							{ n = G.UIT.T, config = { text = ' ' .. may_last_consumable_sold .. ' ', colour = G.C.UI.TEXT_LIGHT, scale = 0.3, shadow = true } },
+						}
+					}
+				}
+			}
+		}
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
+		return { vars = { card.ability.extra.copies, ((G.GAME.may_retro_stats or {}).savescum or 5), card.ability.extra.mul, (G.GAME.may_packs_skipped or 0) }, main_end = main_end }
 	end,
 	use = function(self, card, area, copier)
-	    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-			play_sound('timpani')
-			local card2 = create_card(G.P_CENTERS[G.GAME.may_last_consumable_sold].set, G.consumeables, nil, nil, nil, nil, G.GAME.may_last_consumable_sold, 'may_savescum')
-			card2:add_to_deck()
-			G.consumeables:emplace(card2)
-            card2:set_edition('e_negative')
-            card2.sell_cost = 0
-            card2:setQty(math.floor(may.ctu() / card.ability.extra.consumables) * card.ability.extra.copies)
-			card:juice_up(0.3, 0.5)
-		return true end}))
-	end,
-	bulk_use = function(self, card, area, copier, number)
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
 			play_sound('timpani')
 			local card2 = create_card(G.P_CENTERS[G.GAME.may_last_consumable_sold].set, G.consumeables, nil, nil, nil, nil, G.GAME.may_last_consumable_sold, 'may_savescum')
 			card2:add_to_deck()
 			G.consumeables:emplace(card2)
-            card2:set_edition('e_negative')
-            card2.sell_cost = 0
-            card2:setQty(math.floor(may.ctu() / card.ability.extra.consumables) * card.ability.extra.copies)
+			card2:set_edition('e_negative')
+			card2:setQty(card.ability.extra.copies)
+			card2.sell_cost = 0
 			card:juice_up(0.3, 0.5)
 		return true end}))
-	end
-}]] 
+		G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
+		G.GAME.may_retro_stats.savescum = math.ceil((G.GAME.may_retro_stats.savescum or 5) * card.ability.extra.mul)
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
+	end,
+}
 
 SMODS.Consumable {
 	key = 'gamble',
-	config = { extra = { wheels = 4, chips = 42, odds = 4 } },
+	config = { extra = { chips = 2, mul = 1.4 } },
 	loc_txt = {
 		name = 'GAMBLE',
 		text = {
-            "{C:green}#1# in #2#{} chance to", 
-            "give all {C:purple}Poker Hands{} {C:chips}+#3#{} Chips",
-			"for {C:attention}every #4#{} copies of", 
-            "{C:tarot}The Wheel of Fortune{} used this run,",
-			"{C:inactive}Will give +#5# Chips{}"
+			"Gives all {C:purple}Poker Hands{} {X:chips,C:white}X#1#{} Chips",
+			"if you have used {C:attention}#2#{} copies of", 
+			"{C:tarot}The Wheel of Fortune{} used this run,",
+			"then {C:attention}increase{} {C:mult}requirement{} by {X:retrocards,C:white}X#3#{}", 
+			may.pager(55),
+			"{C:inactive}#4# WoFs used this run{}", 
+			"{C:inactive}Requirement rounds up{}", 
 		}
 	},
 	set = 'retrocards',
 	pos = { x = 3, y = 0 },
-    display_size = { w = 71, h = 71 }, 
+	display_size = { w = 71, h = 71 }, 
 	cost = 4,
 	unlocked = true,
 	discovered = true,
 	atlas = 'retro',
 	can_use = function(self, card)
-		return may.canuse() and may.cu('c_wheel_of_fortune') >= card.ability.extra.wheels
+		return may.canuse() and may.cu('c_wheel_of_fortune') >= ((G.GAME.may_retro_stats or {}).gamble or 4)
 	end,
 	loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_CENTERS.c_wheel_of_fortune
-		local normal, odds = SMODS.get_probability_vars(card, (G.GAME.probabilities.normal or 1), card.ability.extra.odds, "GAMBLE")
-        return { vars = { normal, odds, card.ability.extra.chips, card.ability.extra.wheels, math.floor(may.cu('c_wheel_of_fortune') / card.ability.extra.wheels) * card.ability.extra.chips } }
+		info_queue[#info_queue + 1] = G.P_CENTERS.c_wheel_of_fortune
+		return { vars = { card.ability.extra.chips, ((G.GAME.may_retro_stats or {}).gamble or 4), card.ability.extra.mul, may.cu('c_wheel_of_fortune') } }
 	end,
 	use = function(self, card, area, copier)
-		if SMODS.pseudorandom_probability(card, "may_gamble", G.GAME.probabilities.normal, card.ability.extra.odds, "GAMBLE") then 
-            may.hand_mod_multchips_all('chips', -1, math.floor(may.cu('c_wheel_of_fortune') / card.ability.extra.wheels) * card.ability.extra.chips, false, card)
-        else 
-            G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-                attention_text({
-                    text = localize('k_nope_ex'),
-                    scale = 1.3,
-                    hold = 1.4,
-                    major = card,
-                    backdrop_colour = G.C.SECONDARY_SET.retrocards,
-                    align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and 'tm' or 'cm',
-                    offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
-                    silent = true
-                })
-                G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.06 * G.SETTINGS.GAMESPEED, blockable = false, blocking = false, func = function()
-                    play_sound('tarot2', 0.76, 0.4)
-                return true end}))
-                play_sound('tarot2', 1, 0.4)
-                card:juice_up(0.3, 0.5)
-            return true end}))
-        end
+		may.hand_multchips_all(card, nil, false, {0, card.ability.extra.chips})
+		may.ch()
+		G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
+		G.GAME.may_retro_stats.gamble = math.ceil((G.GAME.may_retro_stats.gamble or 4) * card.ability.extra.mul)
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
 	end,
-	bulk_use = function(self, card, area, copier, number)
-        local amount = 0
-		for i=1, number do
-            if SMODS.pseudorandom_probability(card, "may_gamble", G.GAME.probabilities.normal, card.ability.extra.odds, "GAMBLE") then 
-                amount = amount + 1
-            end 
-        end 
-        if amount > 0 then 
-            may.hand_mod_multchips_all('chips', -1, math.floor(may.cu('c_wheel_of_fortune') / card.ability.extra.wheels) * card.ability.extra.chips * amount, false, card)
-        else 
-            G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-                attention_text({
-                    text = localize('k_nope_ex'),
-                    scale = 1.3,
-                    hold = 1.4,
-                    major = card,
-                    backdrop_colour = G.C.SECONDARY_SET.retrocards,
-                    align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and 'tm' or 'cm',
-                    offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
-                    silent = true
-                })
-                G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.06 * G.SETTINGS.GAMESPEED, blockable = false, blocking = false, func = function()
-                    play_sound('tarot2', 0.76, 0.4)
-                return true end}))
-                play_sound('tarot2', 1, 0.4)
-                card:juice_up(0.3, 0.5)
-            return true end}))
-        end
-	end
 }
 
 SMODS.Consumable {
 	key = 'glitch',
-	config = { extra = { retrocards = 7, cards = 1 } },
+	config = { extra = { cards = 4, mul = 1.5 } },
 	loc_txt = {
 		name = 'G{s:1.3}LIT{}CH{s:0.7}HH{}{s:1.3}CH{}',
 		text = {
-			"Create {C:attention}#1# random{} playing card",
-            "with {C:dark_edition}ERROR Seal{} and shuffle it into your deck", 
-			"for {C:attention}every #2#{} {C:retrocards}Retro Cards{}", 
-			"you have {C:attention}used{} this run",
-			"{C:inactive}Will create #3# cards{}"
+			"Create {C:attention}#1# random{} playing cards",
+			"with {C:dark_edition}ERROR Seal{} and shuffle them into your deck", 
+			"if you have used {C:attention}#2#{} {C:retrocards}Retro Cards{} this run,", 
+			"then {C:attention}increase{} {C:mult}requirement{} by {X:retrocards,C:white}X#3#{}", 
+			may.pager(55),
+			"{C:inactive}#4# Retro Cards used this run{}", 
+			"{C:inactive}Requirement rounds up{}", 
 		}
 	},
 	set = 'retrocards',
 	pos = { x = 1, y = 1 },
-    display_size = { w = 71, h = 71 },
+	display_size = { w = 71, h = 71 },
 	cost = 4,
 	unlocked = true,
 	discovered = true,
 	atlas = 'retro',
 	can_use = function(self, card)
-		return may.canuse() and may.ctu('retrocards') >= card.ability.extra.retrocards
+		return may.canuse() and may.ctu('retrocards') >= ((G.GAME.may_retro_stats or {}).glitch or 5)
 	end,
 	loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_CENTERS.may_error_seal
-		return { vars = { card.ability.extra.cards, card.ability.extra.retrocards, math.floor(may.ctu('retrocards') / card.ability.extra.retrocards) * card.ability.extra.cards } }
+		info_queue[#info_queue + 1] = SMODS.Seals.may_error_seal
+		return { vars = { card.ability.extra.cards, ((G.GAME.may_retro_stats or {}).glitch or 5), card.ability.extra.mul, may.ctu('retrocards') } }
 	end,
 	use = function(self, card, area, copier)
-        local created = {}
-		for i = 1, math.floor(may.ctu('retrocards') / card.ability.extra.retrocards) * card.ability.extra.cards do
-            local new = create_playing_card(nil, G.play, nil, i ~= 1, {G.C.SECONDARY_SET.retrocards})
-            table.insert(created, new)
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-                play_sound('card1')
-                card:juice_up(0.3, 0.5)
-			return true end}))
-		end
-        for k, v in pairs(created) do
-            v:set_seal('may_error_seal', false, false)
-        end
-        for k, v in pairs(created) do
-            G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-                G.play:remove_card(v)
-                v:add_to_deck()
-                G.deck:emplace(v)
-                play_sound('card1')
-            return true end})) 
-        end
-	end,
-	bulk_use = function(self, card, area, copier, number)
 		local created = {}
-		for i = 1, math.floor((may.ctu('retrocards') + number) / card.ability.extra.retrocards) * card.ability.extra.cards do
-            local new = create_playing_card(nil, G.play, nil, i ~= 1, {G.C.SECONDARY_SET.retrocards}) 
-            table.insert(created, new)
+		for i = 1, card.ability.extra.cards do
+			local new = create_playing_card(nil, G.play, nil, i ~= 1, {G.C.SECONDARY_SET.retrocards})
+			table.insert(created, new)
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-                play_sound('card1')
-                card:juice_up(0.3, 0.5)
+				play_sound('card1')
+				card:juice_up(0.3, 0.5)
 			return true end}))
 		end
-        for k, v in pairs(created) do
-            v:set_seal('may_error_seal', false, false)
-        end
-        for k, v in pairs(created) do
-            G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-                G.play:remove_card(v)
-                v:add_to_deck()
-                G.deck:emplace(v)
-                play_sound('card1')
-            return true end})) 
-        end
-	end
+		for k, v in pairs(created) do
+			v:set_seal('may_error_seal', false, false)
+		end
+		for k, v in pairs(created) do
+			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
+				G.play:remove_card(v)
+				v:add_to_deck()
+				G.deck:emplace(v)
+				play_sound('card1')
+			return true end})) 
+		end
+		SMODS.calculate_context({ playing_card_added = true, cards = created })
+		G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
+		G.GAME.may_retro_stats.glitch = math.ceil((G.GAME.may_retro_stats.glitch or 5) * card.ability.extra.mul)
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
+	end,
 }
 
 SMODS.Consumable {
 	key = 'wrong_warp',
-	config = { extra = { skips = 2, tags = 1, } },
+	config = { extra = { tags = 5, mul = 1.3 } },
 	loc_txt = {
 		name = 'WRONG_WARP',
 		text = {
-			"Create {C:attention}#1# random Tag{}",
-			"for {C:attention}every #2#{} {C:attention}Blinds{}", 
-			"you have {C:attention}skipped{} this run",
-			"{C:inactive}Will create #3# Tags{}"
+			"Create {C:attention}#1# random Tags{}",
+			"if you have {C:attention}skipped #2#{} Blinds,", 
+			"then {C:attention}increase{} {C:mult}requirement{} by {X:retrocards,C:white}X#3#{}", 
+			may.pager(55),
+			"{C:inactive}#4# Blinds skipped this run{}", 
+			"{C:inactive}Requirement rounds up{}", 
 		}
 	},
 	set = 'retrocards',
 	pos = { x = 1, y = 2 },
-    display_size = { w = 71, h = 71 },
+	display_size = { w = 71, h = 71 },
 	cost = 4,
 	unlocked = true,
 	discovered = true,
 	atlas = 'retro',
 	can_use = function(self, card)
-		return may.canuse() and G.GAME.skips >= card.ability.extra.skips
+		return may.canuse() and G.GAME.skips >= ((G.GAME.may_retro_stats or {}).wrong_warp or 3)
 	end,
 	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.extra.tags, card.ability.extra.skips, math.floor(G.GAME.skips / card.ability.extra.skips) * card.ability.extra.tags } }
+		return { vars = { card.ability.extra.tags, ((G.GAME.may_retro_stats or {}).wrong_warp or 3), card.ability.extra.mul, G.GAME.skips } }
 	end,
 	use = function(self, card, area, copier)
-		for i = 1, math.floor(G.GAME.skips / card.ability.extra.skips) * card.ability.extra.tags do
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+			play_sound('may_bundle')
+			for i = 1, card.ability.extra.tags do
 				may.random_tag()
-                play_sound('tarot1')
-                card:juice_up(0.3, 0.5)
-			return true end}))
-		end
-	end,
-	bulk_use = function(self, card, area, copier, number)
-		for i = 1, math.floor(G.GAME.skips / card.ability.extra.skips) * card.ability.extra.tags * number do
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-				may.random_tag()
-                play_sound('tarot1')
-                card:juice_up(0.3, 0.5)
-			return true end}))
-		end
+			end
+			card:juice_up(0.3, 0.5)
+		return true end}))
+		G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
+		G.GAME.may_retro_stats.wrong_warp = math.ceil((G.GAME.may_retro_stats.wrong_warp or 3) * card.ability.extra.mul)
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
 	end
 }
 
 SMODS.Consumable {
 	key = 'out_of_bounds',
-	config = { extra = { sold = 20, slots = 1, } },
+	config = { extra = { slots = 1, mul = 2 } },
 	loc_txt = {
 		name = 'OUT_OF_BOUNDS',
 		text = {
 			"{C:green}+#1#{} {C:attention}Joker Slot{}",
-			"for {C:attention}every #2#{} {C:attention}Jokers{}", 
-			"you have {C:money}sold{} this run",
-			"{C:inactive}Will give #3# Joker Slots{}"
+			"if you have {C:money}sold{} {C:attention}#2# Jokers{},", 
+			"then {C:attention}increase{} {C:mult}requirement{} by {X:retrocards,C:white}X#3#{}", 
+			may.pager(55),
+			"{C:inactive}#4# Jokers sold this run{}", 
+			"{C:inactive}Requirement rounds up{}", 
 		}
 	},
 	set = 'retrocards',
 	pos = { x = 2, y = 1 },
-    display_size = { w = 71, h = 71 },
+	display_size = { w = 71, h = 71 },
 	cost = 4,
 	unlocked = true,
 	discovered = true,
 	atlas = 'retro',
 	can_use = function(self, card)
-		return may.canuse() and (G.GAME.may_jokers_sold or 0) >= card.ability.extra.sold
+		return may.canuse() and (G.GAME.may_jokers_sold or 0) >= ((G.GAME.may_retro_stats or {}).out_of_bounds or 6)
 	end,
 	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.extra.slots, card.ability.extra.sold, math.floor((G.GAME.may_jokers_sold or 0) / card.ability.extra.sold) * card.ability.extra.slots } }
+		return { vars = { card.ability.extra.slots, ((G.GAME.may_retro_stats or {}).out_of_bounds or 6), card.ability.extra.mul, (G.GAME.may_jokers_sold or 0) } }
 	end,
 	use = function(self, card, area, copier)
-		G.jokers:change_size(math.floor((G.GAME.may_jokers_sold or 0) / card.ability.extra.sold) * card.ability.extra.slots)
-        G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-            card:juice_up(0.3, 0.5)
-        return true end}))
+		G.jokers:change_size(card.ability.extra.slots)
+		G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
+			card:juice_up(0.3, 0.5)
+		return true end}))
+		G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
+		G.GAME.may_retro_stats.out_of_bounds = math.ceil((G.GAME.may_retro_stats.out_of_bounds or 6) * card.ability.extra.mul)
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
 	end,
-	bulk_use = function(self, card, area, copier, number)
-		G.jokers:change_size(math.floor((G.GAME.may_jokers_sold or 0) / card.ability.extra.sold) * card.ability.extra.slots * number)
-        G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-            card:juice_up(0.3, 0.5)
-        return true end}))
-	end
 }
 
 SMODS.Consumable {
 	key = 'bossfight',
-	config = { extra = { defeat = 5, tags = 1, } },
+	config = { extra = { tags = 3, mul = 1.75 } },
 	loc_txt = {
 		name = 'BOSSFIGHT',
 		text = {
-			"Gain {C:attention}#1# Ethereal Tag{}",
-			"for every {C:attention}#2# Boss Blinds{}",
-			"{C:green}defeated{} this run",
-			"{C:inactive}Will give #3# Ethereal Tags{}"
+			"Gives {C:attention}#1# Ethereal Tags{}",
+			"if you have {C:green}defeated{} {C:attention}#2# Boss Blinds{},",
+			"then {C:attention}increase{} {C:mult}requirement{} by {X:retrocards,C:white}X#3#{}", 
+			may.pager(55),
+			"{C:inactive}#4# Bosses defeated this run{}", 
+			"{C:inactive}Requirement rounds up{}", 
 		}
 	},
 	set = 'retrocards',
 	pos = { x = 0, y = 0 },
-    display_size = { w = 71, h = 71 },
+	display_size = { w = 71, h = 71 },
 	cost = 4,
 	unlocked = true,
 	discovered = true,
 	atlas = 'retro',
 	can_use = function(self, card)
-		return may.canuse() and (G.GAME.may_bosses_defeated or 0) >= card.ability.extra.defeat
+		return may.canuse() and (G.GAME.may_bosses_defeated or 0) >= ((G.GAME.may_retro_stats or {}).bossfight or 4)
 	end,
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_TAGS.tag_ethereal
-		return { vars = { card.ability.extra.tags, card.ability.extra.defeat, math.floor((G.GAME.may_bosses_defeated or 0) / card.ability.extra.defeat) * card.ability.extra.tags } }
+		return { vars = { card.ability.extra.tags, ((G.GAME.may_retro_stats or {}).bossfight or 4), card.ability.extra.mul, (G.GAME.may_bosses_defeated or 0) } }
 	end,
 	use = function(self, card, area, copier)
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-			play_sound('tarot1')
+			play_sound('may_bundle')
 			card:juice_up(0.3, 0.5)
-			for i = 1, math.floor((G.GAME.may_bosses_defeated or 0) / card.ability.extra.defeat) * card.ability.extra.tags do 
+			for i = 1, card.ability.extra.tags do 
 				add_tag(Tag('tag_ethereal')) 
 			end
 		return true end}))
+		G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
+		G.GAME.may_retro_stats.bossfight = math.ceil((G.GAME.may_retro_stats.bossfight or 4) * card.ability.extra.mul)
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
 	end,
-	bulk_use = function(self, card, area, copier, number)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-			play_sound('tarot1')
-			card:juice_up(0.3, 0.5)
-			for i = 1, math.floor((G.GAME.may_bosses_defeated or 0) / card.ability.extra.defeat) * card.ability.extra.tags * number do 
-				add_tag(Tag('tag_ethereal')) 
-			end
-		return true end}))
-	end
 }

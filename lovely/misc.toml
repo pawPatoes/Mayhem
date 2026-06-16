@@ -10,12 +10,8 @@ target = "game.lua"
 pattern = "function Game:splash_screen()"
 position = "after"
 payload = '''
-if not Noituus then
+if (not Noituus) and (not Overflow) then
     error("MAYHEM: Missing dependency: Noituus | Make sure it is installed properly.") 
-end
-	
-if (not Noituus) and Overflow then
-    error("MAYHEM: Overflow installed! Mayhem as of recently requires Noituus, a mod with similar functionality. Replace Overflow with it.")
 end'''
 match_indent = true
 overwrite = true
@@ -380,4 +376,31 @@ if G.vouchers then
 	end
 end 
 '''
+match_indent = true
+
+# Invisible Joker crash
+[[patches]]
+[patches.pattern]
+target = 'card.lua'
+pattern = "if self.ability.name == 'Invisible Joker' and (self.ability.invis_rounds >= self.ability.extra) and not context.blueprint then"
+position = 'at'
+payload = '''if false then'''
+match_indent = true 
+
+# Make Chips jiggle like Mult
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/game_object.lua"]'''
+pattern = '''calculation_keys = {'chips', 'h_chips', 'chip_mod', 'x_chips', 'xchips', 'Xchip_mod',},'''
+position = "after"
+payload = '''juice_on_update = true,'''
+match_indent = true
+
+# help
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/game_object.lua"]'''
+pattern = '''if ((self.pools and self.pools[k]) or (v.cards and v.cards[self.key])) then'''
+position = "at"
+payload = '''if ((self.pools and self.pools[k]) or (v.cards and v.cards[self.key])) and v.inject_card then'''
 match_indent = true

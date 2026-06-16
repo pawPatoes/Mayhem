@@ -42,7 +42,7 @@ SMODS.Gradient {
 
 SMODS.Gradient {
 	key = 'col_hyperascendant',
-	colours = {HEX('ff0000'), HEX('fbff00'), HEX('ff6200'), HEX('ff6200'), HEX('2bff00')},
+	colours = {HEX('00bbff'), HEX('0077ff'), HEX('020094'), HEX('12002e'), HEX('b300ff'), HEX('210105')},
 	interpolation = 'trig'
 }
 
@@ -60,7 +60,7 @@ SMODS.Gradient {
 
 SMODS.Gradient {
 	key = 'col_surreal',
-	colours = {HEX('baf5ca'), HEX('21001b'), HEX('d1c436')},
+	colours = {HEX('a07ce2'), HEX('7c8ce2'), HEX('31173a')},
 	interpolation = 'trig'
 }
 

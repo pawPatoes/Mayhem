@@ -1,9 +1,10 @@
 -- MAYHEM CORE
 
--- Mayhem is no longer in a single file (at last). Practically everything is now loaded in other files, so nothing much to see here.
-if not (Big and Big.arrow) then
-	error('!! OMEGANUM NOT ENABLED. PLEASE REMOVE MAYHEM FROM YOUR MODS FOLDER, SET TALISMAN TO OMEGANUM AND MOVE MAYHEM BACK.')
-end
+may = may or {}
+may.version = SMODS.current_mod.version
+may.info = { branch = 'main', from_source = false }
+SMODS.current_mod.debug_info = { Branch = may.info.branch, FromSource = may.info.from_source } 
+may.conf = SMODS.current_mod.config
 
 SMODS.current_mod.optional_features = {
 	retrigger_joker = true,
@@ -14,19 +15,17 @@ SMODS.current_mod.optional_features = {
 	},
 }
 
+if Talisman.forced_features and Talisman.forced_features.force_omeganum then
+	Talisman.forced_features.force_omeganum()
+else
+	if not (Big and Big.arrow) then
+		error('!! OMEGANUM NOT ENABLED. PLEASE REMOVE MAYHEM FROM YOUR MODS FOLDER, SET TALISMAN TO OMEGANUM AND MOVE MAYHEM BACK.')
+	end
+end
+
 maxArrow = 1e308
 
-may = may or {}
-
-may.version = SMODS.current_mod.version
-
-may.info = { branch = 'main', from_source = false }
-
--- Config
--- global for convenience and cross-mod whatevers
-may.conf = SMODS.current_mod.config
-
--- These are used everywhere 
+-- These are used everywhere
 function table_hasvalue(tab, val)
     for index, value in ipairs(tab) do
         if value == val then
@@ -44,8 +43,6 @@ function may.get_position(tab, item)
     end
     return 0
 end
-
-SMODS.current_mod.debug_info = { Branch = may.info.branch, FromSource = may.info.from_source } 
 
 -- Bulk load modules
 
@@ -66,14 +63,14 @@ end
 
 may.items = {
 	'audio.lua', 'atlas.lua', 'consumabletype.lua', 'miscbadge.lua', 'rarity.lua', 
-	'pack.lua', 'hands.lua', 'stake.lua', 'edition.lua', 'enhancement.lua', 'seal.lua', 
+	'pack.lua', 'hands.lua', 'shader.lua', 'edition.lua', 'enhancement.lua', 'seal.lua', 
 	'joker/init.lua', 'consumable/upsidedown.lua', --[['consumable/ascended.lua',]] 'consumable/tarot.lua', 'consumable/planet.lua', 'consumable/spectral.lua',
 	'consumable/yotta.lua', 'consumable/modifier.lua', 'consumable/retro.lua', 'blind.lua', 'achievement.lua', 'voucher/tier1_2.lua',
 	'voucher/tier3.lua', 'voucher/tier4.lua', 'voucher/bundle.lua', 'voucher/misc.lua', 'joker/common.lua', 'joker/uncommon.lua',
 	'joker/rare.lua', 'joker/epic.lua', 'joker/legendary.lua', 'joker/mystery.lua', 'joker/mythic.lua', 'joker/transcendent.lua',
 	'joker/interdimensional.lua', 'joker/ethereal.lua', 'joker/surreal.lua', 'joker/hyperascendant.lua', 'vanillatweaks.lua', 'debug.lua',
 	'tag.lua', 'deck.lua', 'scoreoperator.lua', 'taintedblind.lua', 'display.lua', 'voucher/tier3.lua', 
-	'consumable/misc.lua'
+	'consumable/misc.lua', 'stake.lua'
 }
 -- Cross-mod
 if #SMODS.find_mod('enf') ~= 0 then table.insert(may.items, 'cm/Engulf.lua') end

@@ -528,45 +528,10 @@ SMODS.Back {
 	},
 	apply = function(self)
 		G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-			--[[SMODS.add_card({ key = 'j_ring_master' })
-			for i=1, 60 do 
-				SMODS.add_card({ set = 'Planet' })
-				SMODS.add_card({ set = 'fxs_tokens' })
-				SMODS.add_card({ key = 'c_black_hole' })
-		    end
-			SMODS.add_card({ key = 'j_constellation' })
-			SMODS.add_card({ key = 'j_may_party_time' })
-			SMODS.add_card({ key = 'j_perkeo' })
-			level_up_hand(nil, 'High Card', true, 1e200)
-			level_up_hand(nil, 'Pair', true, to_big(1e100):arrow(1, 1e300))]] 
-			--[[for i = 1, 5 do
-			    SMODS.add_card({ key = 'c_may_thebe'})
-				SMODS.add_card({ key = 'c_may_janus'})
-				SMODS.add_card({ key = 'c_may_rings_of_saturn'})
-				SMODS.add_card({ key = 'c_may_rings_of_jupiter'})
-				SMODS.add_card({ key = 'c_may_rings_of_neptune'})
-				SMODS.add_card({ key = 'c_may_rings_of_uranus'})
-				SMODS.add_card({ key = 'c_pluto' })
-			end]] 
-			for i=1, 10 do 
-				local card2 = create_card('fxs_tokens', G.consumeables, nil, 0.8, nil, true, 'c_black_hole', 'monochrome_deck')
-			    card2:set_edition(SMODS.poll_edition({ guaranteed = true, pool = {'e_foil', 'e_holo', 'e_polychrome'}}), true, true)
-			    G.consumeables:emplace(card2)
-			    card2:add_to_deck()
-			end
-			for i=1, 10 do 
-				local card2 = create_card('fxs_tokens', G.consumeables, nil, 0.8, nil, true, 'c_may_gray_hole', 'monochrome_deck')
-			    card2:set_edition(SMODS.poll_edition({ guaranteed = true, pool = {'e_foil', 'e_holo', 'e_polychrome'}}), true, true)
-			    G.consumeables:emplace(card2)
-			    card2:add_to_deck()
-			end
-			for i=1, 20 do 
-			    local card2 = create_card('Voucher', G.consumeables, nil, 0.8, nil, true, nil, 'monochrome_deck')
-				G.consumeables:emplace(card2)
-				card2:add_to_deck()
-			end
-			G.GAME.may_endless_mode = true
-			--level_up_hand(nil, 'High Card', false, 1e30)
-		return true end}))
+			level_up_hand(nil, 'High Card', false, 1e100)
+			SMODS.change_booster_limit(10)
+			SMODS.add_card({ key = 'c_may_volcano'})
+			ease_round(30)
+		return true end})) 
 	end, 
 }

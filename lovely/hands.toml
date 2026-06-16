@@ -113,6 +113,7 @@ target = '''=[SMODS _ "src/utils.lua"]'''
 pattern = "if not instant then delay(1.3) end"
 position = "before"
 payload = '''
+	print(args.hands)
     if args.level_up then
         if G.GAME.may_temp_ring_levels and not instant then
 		    may.hlv((G.GAME.may_temp_ring_levels > 0 and '+' or '-')..number_format(math.abs(G.GAME.may_temp_ring_levels)))

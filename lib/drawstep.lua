@@ -1,4 +1,4 @@
--- Drawing steps for cards (eg midground layer on Surreals)
+-- Drawing steps for cards (eg midground layer on Opalescents)
 
 -- CCD interceptor
 -- Copy and paste from Cryptid
@@ -19,7 +19,6 @@ SMODS.DrawStep({
 })
 
 end
-
 
 SMODS.DrawStep({
 	key = 'upsd_spectral_laminate',
@@ -148,12 +147,8 @@ may.generic_soul_anims['diskus_spin'] = function(self, layer)
 		end
 		self.children.floating_sprite:draw_shader('dissolve', nil, nil, nil, self.children.center, 0.1 + (math.sin(G.TIMERS.REAL) * 0.03), rotate_mod or 0, 0, 0)
 		if self.edition then 
-			for k, v in pairs(G.P_CENTER_POOLS.Edition) do
-				--if v.apply_to_float then
-					if self.edition[v.key:sub(3)] then
-						self.children.floating_sprite:draw_shader(v.shader, nil, nil, nil, self.children.center, 0.1 + (math.sin(G.TIMERS.REAL) * 0.03), rotate_mod or 0, 0, 0)
-					end
-				--end
+			if G.P_CENTERS[self.edition.key].apply_to_float then
+				self.children.floating_sprite:draw_shader(G.P_CENTERS[self.edition.key].shader, nil, nil, nil, self.children.center, 0.1 + (math.sin(G.TIMERS.REAL) * 0.03), rotate_mod or 0, 0, 0)
 			end
 		end
 	end
@@ -166,12 +161,8 @@ may.generic_soul_anims['diskus_spin_fast'] = function(self, layer)
 		end
 		self.children.floating_sprite:draw_shader('dissolve', nil, nil, nil, self.children.center, 0.1 + (math.sin(G.TIMERS.REAL) * 0.04), rotate_mod or 0, 0, 0)
 		if self.edition then 
-			for k, v in pairs(G.P_CENTER_POOLS.Edition) do
-				--if v.apply_to_float then
-					if self.edition[v.key:sub(3)] then
-						self.children.floating_sprite:draw_shader(v.shader, nil, nil, nil, self.children.center, 0.1 + (math.sin(G.TIMERS.REAL) * 0.03), rotate_mod or 0, 0, 0)
-					end
-				--end
+			if G.P_CENTERS[self.edition.key].apply_to_float then
+				self.children.floating_sprite:draw_shader(G.P_CENTERS[self.edition.key].shader, nil, nil, nil, self.children.center, 0.1 + (math.sin(G.TIMERS.REAL) * 0.03), rotate_mod or 0, 0, 0)
 			end
 		end
 	end

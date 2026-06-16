@@ -1,13 +1,13 @@
 [manifest]
 version = "1.0.0"
 dump_lua = true
-priority = 1000
+priority = 1000000000
 
 # Custom loading screen things
 
 [[patches]] 
 [patches.pattern]
-target = '''=[SMODS _ "src/loader.lua"]'''
+target = '''=[SMODS _ "src/core.lua"]'''
 pattern = '''love.graphics.setColor(0.6, 0.8, 0.9, 1)'''
 position = "at"
 payload = '''love.graphics.setColor(0.5, 0, 0, 1)'''
@@ -16,25 +16,25 @@ overwrite = true
 
 [[patches]] 
 [patches.pattern]
-target = '''=[SMODS _ "src/loader.lua"]'''
-pattern = '''function loadMods(modsDirectory)'''
+target = '''=[SMODS _ "src/core.lua"]'''
+pattern = '''local catimg = NFS.getInfo(SMODS.path.."assets/cat.png") and love.graphics.newImage(love.filesystem.newFileData(NFS.read(SMODS.path.."assets/cat.png")))'''
 position = "before"
 payload = '''
-    may = {}
+	may = may or {}
 	
 	may.fun_facts = {
-	    "Mr. Nacho exists in real life, and is a bag of cheap tortilla chips from a German discount hypermarket.", 
+		"Mr. Nacho exists in real life, and is a bag of cheap tortilla chips from a German discount hypermarket.", 
 		"AAAA was the first Joker added to Mayhem, and used to be Uncommon.", 
 		"Mayhem was supposed to be vanilla+, and was called Stupidum.", 
 		"Universal Collapse has had 7 sprites in its history, 3 of which were never actually added.",
 		"If you like Mayhem's music, you should check out Mayhem Mega OST on the repository.",
 		"Update 0.0.2 alone took 2 months to develop, and practically doubled the mod.",
-	    "1.0.0 is actually 0.0.3, however I changed the versioning system. It also took 4 months to develop.",
+		"1.0.0 is actually 0.0.3, however I changed the versioning system. It also took 4 months to develop.",
 		"Diskus is one of the biggest reasons Mayhem requires Noituus.",
 		"Mayhem started in October 2024, it's just that I posted it in the Balatro server in July 2025.", 
-		"Shout-out to all of the people who posted Mayhem content on YouTube: Exattox, TheUnseenExplosion, Machine Gamer 728",
-		'Shout-out to my "Nacho" beta testers: _TekKen_, 2Much, Superb Thing, Violet, Astro, bdoy, DiamondFishes, Lyre, HuyCorn, Pakins', 
-		"Shout-out to all of the people who contributed art: _TekKen_, Violet, @silly_goober_0nthewall, mags, T3rragon, HuyCorn, Pakins, s_n_i_p_e_r., @daunas123. Placeholders by jenwalter666.",
+		"Shout-out to all Mayhem content creators: Exattox, TheUnseenExplosion, Machine Gamer 728, XZ0204, bdoy, pawPatoes, Kristian_0000, drplushie231",
+		'Shout-out to "Nacho" beta testers: _TekKen_, 2Much, Superb Thing, Violet, Astro, bdoy, DiamondFishes, Lyre, HuyCorn, Pakins, Grahkon, FirstTry, fokuto', 
+		"Shout-out to art contributors: _TekKen_, Violet, @silly_goober_0nthewall, mags, T3rragon, HuyCorn, Pakins, s_n_i_p_e_r., @daunas123, jenwalter666, XZ0204, FirstTry, therealten95.",
 		"I HATE CRYPTID I HATE CRYPTID I HATE CRYPTID I HATE CRYPTID I HATE CRYPTID I HATE CRYPTID",
 		"Tetration (^^) is repeated exponentiation, pentation (^^^) is repeated tetration. {2} = tetration, {3} = pentation, {4} = hexation...",
 		"ee5 = 1e(1e5) (1 with 100,000 zeroes); eee5 = e5#3; e5#3#2 = e5#(e5#3); e5#3#4 = e5#(e5#(e5#(e5#(e5#3)))); e5##2 = e5#5; e5##4 = e5#5#5#5#5",
@@ -57,9 +57,9 @@ payload = '''
 	
 	table.insert(may.fun_facts, "Including this one, there are currently "..(#may.fun_facts + 2).." possible fun facts here.")
 	if math.random(1000) == 100 then 
-	    may.fun_fact = "This fun fact has a 1 in 1000 chance of appearing."
+		may.fun_fact = "This fun fact has a 1 in 1000 chance of appearing."
 	else
-	    may.fun_fact = may.fun_facts[math.random(#may.fun_facts)]
+		may.fun_fact = may.fun_facts[math.random(#may.fun_facts)]
 	end
 '''
 match_indent = true
@@ -67,24 +67,33 @@ overwrite = true
 
 [[patches]] 
 [patches.pattern]
-target = '''=[SMODS _ "src/loader.lua"]'''
+target = '''=[SMODS _ "src/core.lua"]'''
 pattern = '''love.graphics.print("LOADING: " .. _next, realw / 2 - 150, realh / 2 + 40)'''
 position = "after"
 payload = '''
 
 	local function centered_text(rectX, rectY, rectWidth, rectHeight, text, size)
-	    local font = love.graphics.getFont()
-	    local textWidth = font:getWidth(text)
-	    local textHeight = font:getHeight()
-	    love.graphics.print(text, rectX+rectWidth/2, rectY+rectHeight/2, 0, size, size, textWidth/2, textHeight/2)
-    end 
+		local font = love.graphics.getFont()
+		local textWidth = font:getWidth(text)
+		local textHeight = font:getHeight()
+		love.graphics.print(text, rectX+rectWidth/2, rectY+rectHeight/2, 0, size, size, textWidth/2, textHeight/2)
+	end 
 	
 	centered_text(0, -65, realw, realh, "MAYHEM", 1)
 	centered_text(0, 120, realw, realh, "FUN FACT: "..(may.fun_fact or may.fun_facts and may.fun_facts[1] or "ERROR (something actually broke, please report this)") , 1)
 	
 	if not Talisman then
-	    error("MAYHEM: Missing dependency: Talisman | Make sure it is installed properly and is on a supported version. (>=2.4.0)")
+		error("MAYHEM: Missing dependency: Talisman | Make sure it is installed properly and is on a supported version. (>=2.4.0)")
 	end
 '''
+match_indent = true
+overwrite = true
+
+[[patches]] 
+[patches.pattern]
+target = '''=[SMODS _ "src/preflight/core.lua"]'''
+pattern = '''love.graphics.setColor(0, .5, 1, 1)'''
+position = "at"
+payload = '''love.graphics.setColor(0.5, 0, 0, 1)'''
 match_indent = true
 overwrite = true

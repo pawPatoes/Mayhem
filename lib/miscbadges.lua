@@ -104,7 +104,7 @@ function SMODS.create_mod_badges(obj, badges)
 	end
 	if obj then 
 		for k, v in pairs(may.misc_badges) do
-			if obj[k] then 
+			if obj[k] then
 				local scale_fac = {}
 				local scale_fac_len = 1
 				for i = 1, #v.text do
