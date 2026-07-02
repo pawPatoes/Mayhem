@@ -1,5 +1,5 @@
 -- Card abilities
--- Buttons are in hooks.lua
+-- Buttons are in ui.lua
 
 G.FUNCS.may_can_use_ourania_kleidaria_ability = function(e)
 	local joker
@@ -37,7 +37,7 @@ G.FUNCS.may_ourania_kleidaria_ability = function(e)
 end
 
 G.FUNCS.may_can_use_guacamole_ability = function(e)
-	if G.consumeables and #G.consumeables.cards < G.consumeables.config.card_limit then
+	if G.consumeables then
 		e.config.colour = G.C.DARK_EDITION
 		e.config.button = "may_guacamole_ability"
 	else
@@ -47,12 +47,14 @@ G.FUNCS.may_can_use_guacamole_ability = function(e)
 end
 
 G.FUNCS.may_guacamole_ability = function(e)
-	SMODS.add_card({ key = 'c_may_quac_n7' })
-	may.hypermoney(0, e.config.ref_table.ability.extra.x_dollars or 0.2)
+	local card2 = SMODS.create_card({ key = 'c_may_quac_n7' })
 	G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 		play_sound('tarot1')
 		play_sound('holo1')
+		card2:set_edition('e_negative')
+		card2:setQty(e.config.ref_table.ability.extra.copies)
 		e.config.ref_table:juice_up(0.3, 0.5)
 		e.config.ref_table:start_dissolve()
+		e.config.ref_table = nil 
 	return true end}))
 end  

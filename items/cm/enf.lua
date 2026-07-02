@@ -140,15 +140,17 @@ Engulf.EditionFuncs.e_may_laminated = function(card, hand, instant, amount, edit
 end
 
 Engulf.EditionFuncs.e_may_cosmic = function(card, hand, instant, amount, edition)
-	G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-        play_sound('timpani')
-		local new = create_card('Planet', G.consumeables, nil, nil, nil, nil, may.planethand(hand), 'may_cosmic_engulf')
-        new:add_to_deck()
-		new:setQty(amount)
-        G.consumeables:emplace(new)
-		new:juice_up(0.3, 0.5)
-        new:set_edition('e_negative')
-    return true end}))
+	if may.planethand(hand) then
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+			play_sound('timpani')
+			local new = create_card('Planet', G.consumeables, nil, nil, nil, nil, may.planethand(hand), 'may_cosmic_engulf')
+			new:add_to_deck()
+			new:setQty(amount)
+			G.consumeables:emplace(new)
+			new:juice_up(0.3, 0.5)
+			new:set_edition('e_negative')
+		return true end}))
+	end
 end
 
 -- Custom operations and hyperoperation sounds

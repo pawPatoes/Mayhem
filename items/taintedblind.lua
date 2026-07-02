@@ -623,7 +623,6 @@ SMODS.Blind {
 			"all Poker Hands"
 		}
 	},
-    
 	boss = {
 		min = 1,
 		max = 10
@@ -796,8 +795,7 @@ SMODS.Blind {
 			"On discard, unselected cards", 
 			"are discarded as well"
 		}
-	},
-    
+	}, 
 	boss = {
 		min = 1,
 		max = 10

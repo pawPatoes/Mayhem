@@ -40,26 +40,27 @@ SMODS.Gradient {
 	interpolation = 'trig'
 }
 
+
 SMODS.Gradient {
-	key = 'col_hyperascendant',
-	colours = {HEX('00bbff'), HEX('0077ff'), HEX('020094'), HEX('12002e'), HEX('b300ff'), HEX('210105')},
+	key = 'col_transcendent',
+	colours = {HEX('1d1649'), HEX('311649'), HEX('720c1f')},
 	interpolation = 'trig'
 }
 
 SMODS.Gradient {
-	key = 'col_ethereal',
+	key = 'col_demiurgic',
 	colours = {HEX('6f00ff'), HEX('ff00fb'), HEX('182052'), HEX('00e1ff')},
 	interpolation = 'trig'
 }
 
 SMODS.Gradient {
-	key = 'col_interdimensional',
+	key = 'col_prismatic',
 	colours = {HEX('34eb9b'), HEX('ffe600'), HEX('2c2054')},
 	interpolation = 'trig'
 }
 
 SMODS.Gradient {
-	key = 'col_surreal',
+	key = 'col_opalescent',
 	colours = {HEX('a07ce2'), HEX('7c8ce2'), HEX('31173a')},
 	interpolation = 'trig'
 }
@@ -153,6 +154,7 @@ SMODS.Gradient {
 
 may.C = {}
 may.C.score = HEX('f024ff')
+may.C.brown = HEX('946d54')
 
 local vanf_lc = loc_colour
 function loc_colour(_c, _default)
@@ -160,6 +162,7 @@ function loc_colour(_c, _default)
 		vanf_lc()
 	end
 	G.ARGS.LOC_COLOURS.may_score = may.C.score
+	G.ARGS.LOC_COLOURS.may_brown = may.C.brown
 	G.ARGS.LOC_COLOURS.may_instability = SMODS.Gradients.may_col_instability
     -- more hand level colors
     G.C.HAND_LEVELS[8] = G.C.PALE_GREEN
@@ -172,10 +175,10 @@ function loc_colour(_c, _default)
     G.C.HAND_LEVELS[15] = G.C.CHIPS
     G.C.HAND_LEVELS[16] = G.C.EDITION
     G.C.HAND_LEVELS[17] = G.C.DARK_EDITION
-    G.C.HAND_LEVELS[18] = SMODS.Gradients.may_col_interdimensional
-    G.C.HAND_LEVELS[19] = SMODS.Gradients.may_col_ethereal
-	G.C.HAND_LEVELS[20] = SMODS.Gradients.may_col_surreal 
-    G.C.HAND_LEVELS[21] = SMODS.Gradients.may_col_hyperascendant
+    G.C.HAND_LEVELS[18] = SMODS.Gradients.may_col_prismatic
+    G.C.HAND_LEVELS[19] = SMODS.Gradients.may_col_demiurgic
+	G.C.HAND_LEVELS[20] = SMODS.Gradients.may_col_opalescent
+    G.C.HAND_LEVELS[21] = SMODS.Gradients.may_col_transcendent
     G.C.MAX_HAND_LEVEL_COLOR = #G.C.HAND_LEVELS
 	return vanf_lc(_c, _default) 
 end

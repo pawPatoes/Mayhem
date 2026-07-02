@@ -30,6 +30,12 @@ SMODS.Joker {
 		return { vars = { card.ability.extra.Echip } }
 	end,
 	cost = 100,
+	attributes = {
+		'editions', 
+		'enhancements', 
+		'seals',
+		'echips'
+	}, 
 	calculate = function(self, card, context)
 		if context.before and context.cardarea == G.jokers and not context.blueprint then
 			local found
@@ -94,6 +100,13 @@ SMODS.Joker {
 	soul_pos = { x = 1, y = 0 },
 	cost = 141,
 	config = { extra = { blindcards = 14, Emult = 0.56 } },
+	attributes = {
+		'wheel',
+		'generation', 
+		'emult', 
+		'editions', 
+		'joker', 
+	}, 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_wheel_of_fortune
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
@@ -112,6 +125,7 @@ SMODS.Joker {
 			G.E_MANAGER:add_event(Event({ func = function()
 				card:juice_up(0.5, 0.5)
 				local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
+				wheel.no_variants = true
 				wheel:setQty(card.ability.extra.blindcards)
 				wheel:add_to_deck()
 			    wheel:set_edition({negative = true}, false, false)
@@ -164,6 +178,13 @@ SMODS.Joker {
 	pos = { x = 7, y = 4 },
 	soul_pos = { x = 8, y = 4 },
 	config = { extra = { Echip = 1, Echip_gain = 0.2, } },
+	attributes = {
+		'echips', 
+		'generation', 
+		'destroy_card', 
+		'stone', 
+		'scaling'
+	}, 
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_medusa
@@ -214,7 +235,7 @@ SMODS.Joker {
 			{
 				"{X:chips,C:white}X#1#{} Chips, earn {C:money}$#2#{} when opening a {C:attention}Booster Pack{}",
 				"{C:attention}earned money increases{} by {C:money}$#3#{} every {C:attention}2 skipped Booster Packs{}",
-				"When {C:attention}earned money{} reaches {C:money}$25{}, create an {C:dark_edition}Universal Collapse{} joker",
+				"When {C:attention}earned money{} reaches {C:money}$25{}, create an {C:dark_edition}Omniversal Catalyst{} joker",
 				"{C:inactive}(#4#, must have room, only works once){}",
 			},
 			{

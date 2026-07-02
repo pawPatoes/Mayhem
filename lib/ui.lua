@@ -3,43 +3,36 @@
 
 -- Custom text and color stuff with Score Operator
 -- Inspired by POLTERWORX, no code used however
-function may.cosmetic_score_operator(text, color, sound, no_juice, ignore_identical)
+function may.cosmetic_score_operator(text, color, sound, no_juice)
 	-- man
 	local op = G.HUD:get_UIE_by_ID('hand_text_area').children[1].children[2].UIBox:get_UIE_by_ID('hand_operator_container').children[1] 
-	G.GAME.may_last_cosmetic_score_op = G.GAME.may_last_cosmetic_score_op or {}
-	if ((G.GAME.may_last_cosmetic_score_op.text or '') ~= (text or 'a') and (G.GAME.may_last_cosmetic_score_op.color or {}) ~= (color or {1})) or ignore_identical then
-	    G.E_MANAGER:add_event(Event({trigger = 'immediate', func = function()
-		    G.GAME.may_cosmetic_op = true
-		    if text then
-			    op.config.text = text
-			    op.config.scale = 0.9 - (math.max(string.len(text) - 4, 0) * 0.05)
-		    end
-		    if color then 
-			    op.config.colour = color
-		    end
-		    if sound then
-			    if type(sound) == 'string' then 
-				    if sound ~= 'SILENT' then
-						play_sound(sound)
-				    end
-			    elseif type(sound) == 'table' then 
-				    play_sound(sound[1], sound[2], sound[3])
-			    elseif type(sound) == 'function' then 
-				    sound(text, color, no_juice)
-			    end 
-		    else
-			    play_sound('button', 1.1, 0.75)
-		    end
-		    if not no_juice then
-			    op:juice_up(0.8, 0.5)
-		    end
-		    G.HUD:get_UIE_by_ID('hand_text_area').UIBox:recalculate()
-        return true end}))
-	end
-	G.GAME.may_last_cosmetic_score_op = {
-		text = text,
-		color = color,
-	}
+	G.E_MANAGER:add_event(Event({trigger = 'immediate', func = function()
+	    G.GAME.may_cosmetic_op = true
+		if text then
+		    op.config.text = text
+		    op.config.scale = 0.9 - (math.max(string.len(text) - 4, 0) * 0.05)
+		end
+	    if color then 
+			op.config.colour = color
+    	end
+		if sound then
+		    if type(sound) == 'string' then 
+			    if sound ~= 'SILENT' then
+					play_sound(sound)
+				end
+			elseif type(sound) == 'table' then 
+			    play_sound(sound[1], sound[2], sound[3])
+		    elseif type(sound) == 'function' then 
+			    sound(text, color, no_juice)
+			end 
+    	else
+			play_sound('button', 1.1, 0.75)
+		end
+		if not no_juice then
+		    op:juice_up(0.8, 0.5)
+		end
+	    G.HUD:get_UIE_by_ID('hand_text_area').UIBox:recalculate()
+    return true end}))
 end
 
 function may.refresh_score_operator(delay, immediate)
@@ -224,20 +217,6 @@ G.FUNCS.may_sell_voucher = function(e)
 		    G.vouchers:remove_card(card)
 		    G.GAME.used_vouchers[key] = nil
 	    return true end})) 
-	    G.E_MANAGER:add_event(Event({func = function()
-		    if G and G.GAME and G.vouchers then
-				G.GAME.used_vouchers = {}
-				for i, v in ipairs(G.vouchers.cards) do
-				    if v ~= (card or {}) then
-					    G.GAME.used_vouchers[v.config.center_key] = true
-				    end
-			    end
-                G.E_MANAGER:add_event(Event({func = function()		
-					G.GAME.used_vouchers[key] = nil
-			    return true end}))
-            end
-		    card = nil
-	    return true end}))
 	    ease_dollars(value)
 	else
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2,func = function()
@@ -349,26 +328,6 @@ function G.FUNCS.tsj_specific(e, quiver, pulse, juice, shake_screen)
 		if juice then
 			e.config.object:juice_up()
 		end
-	end
-end
-
--- Automated Fusion notice generator
-function may.add_fusion_text(joker1, joker2, condition)
-	condition = condition or 'ERROR'
-	if may.conf.short_fusion then
-		return {
-			"{C:dark_edition}FUSION:{} {C:attention}"..joker1.."{} {C:chips}>>{} {C:attention}"..joker2.."{}",
-			"{C:may_surreal,s:1.1,u:may_surreal}CONDITION{}",
-			condition
-		}
-	else
-	    return {
-		    "This Joker can {C:dark_edition}fuse{} with", 
-			"{C:attention}"..joker1.."{} to create {C:attention}"..joker2.."{}", 
-		    may.pager(math.max(string.len(condition), string.len("This Joker can {C:dark_edition}fuse{} with")) * 0.6), 
-		    '{C:may_surreal,s:1.2,u:may_surreal}Fusion Condition{}', 
-		    condition
-	    }
 	end
 end
 
@@ -754,43 +713,55 @@ end
 
 -- support for hidden operators + cosmetic changes
 function change_operator(amount)
-	G.GAME.may_no_op_update = true
-	local order = SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or "multiply"].order + amount
-	if not order then return end
-	if G.GAME.current_scoring_calculation_key == "talisman_hyper" then
-		G.GAME.hyper_operator = (G.GAME.hyper_operator or 2) + amount
-		order = G.GAME.hyper_operator
-	end
-	local next = "add"
-	local keys = {}
-	for i, v in pairs(SMODS.Scoring_Calculations) do
-		if v.order then
-			keys[#keys+1] = i
-		end
-	end
-	table.sort(keys, function(a, b) return SMODS.Scoring_Calculations[a].order < SMODS.Scoring_Calculations[b].order end)
-	for i, v in pairs(keys) do
-		if SMODS.Scoring_Calculations[v].order <= order and not SMODS.Scoring_Calculations[v].hidden then
-			next = v
-		end
-	end
-	if next then
-		SMODS.set_scoring_calculation(next)
-	end
-	if amount > 0 then
-		G.E_MANAGER:add_event(Event({func = function()
-			play_sound('may_increase_operator')
-		return true end}))
-	else
-		G.E_MANAGER:add_event(Event({func = function()
-			play_sound('may_decrease_operator')
-		return true end}))
-	end
+    G.GAME.may_no_op_update = true
+    local current_key = G.GAME.current_scoring_calculation_key or "multiply"
+    local current_order = SMODS.Scoring_Calculations[current_key].order
+    local keys = {}
+    for i, v in pairs(SMODS.Scoring_Calculations) do
+        if v.order then keys[#keys+1] = i end
+    end
+    table.sort(keys, function(a, b) return SMODS.Scoring_Calculations[a].order < SMODS.Scoring_Calculations[b].order end)
+    local max_order = SMODS.Scoring_Calculations[keys[#keys]].order
+    local order
+
+    if current_key == "talisman_hyper" then
+        G.GAME.hyper_operator = (G.GAME.hyper_operator or 2) + amount
+        order = G.GAME.hyper_operator
+    else
+        local temporary_order = current_order + amount
+        if temporary_order > max_order then
+            G.GAME.hyper_operator = 2 + (temporary_order - max_order)
+            order = temporary_order
+        else
+            order = temporary_order
+        end
+    end
+    local next = nil
+    for _, v in ipairs(keys) do
+        if not SMODS.Scoring_Calculations[v].hidden then
+            if not next then next = v end
+            if SMODS.Scoring_Calculations[v].order <= order then
+                next = v
+            end
+        end
+    end
+    if next then
+        SMODS.set_scoring_calculation(next)
+    end
+    if amount > 0 then
+        G.E_MANAGER:add_event(Event({func = function()
+            play_sound('may_increase_operator')
+        return true end}))
+    else
+        G.E_MANAGER:add_event(Event({func = function()
+            play_sound('may_decrease_operator')
+        return true end}))
+    end
     G.E_MANAGER:add_event(Event({func = function() 
-	    G.E_MANAGER:add_event(Event({func = function()
-			G.GAME.may_no_op_update = nil 
-		return true end})) 
-	return true end}))
+        G.E_MANAGER:add_event(Event({func = function()
+            G.GAME.may_no_op_update = nil 
+        return true end})) 
+    return true end}))
 end
 
 local vanf_sssc = SMODS.set_scoring_calculation
@@ -823,6 +794,25 @@ function SMODS.current_mod.process_loc_text()
 	G.localization.misc.dictionary['k_may_booster_bundle'] = "Booster Bundle"
     G.localization.misc.dictionary['k_may_premium_pack'] = "Premium Pack"
 	G.localization.misc.dictionary['k_may_fusion_pack'] = "Fusion Pack"
+end
+
+function may.add_fusion_text(joker1, joker2, condition)
+	condition = condition or 'ERROR'
+	if may.conf.short_fusion then
+		return {
+			"{C:dark_edition}FUSION:{} {C:attention}"..joker1.."{} {C:chips}>>{} {C:attention}"..joker2.."{}",
+			"{C:may_opalescent,s:1.1,u:may_opalescent}CONDITION{}",
+			condition
+		}
+	else
+	    return {
+		    "This Joker can {C:dark_edition}fuse{} with", 
+			"{C:attention}"..joker1.."{} to create {C:attention}"..joker2.."{}", 
+		    may.pager(math.max(string.len(condition), string.len("This Joker can {C:dark_edition}fuse{} with")) * 0.6), 
+		    '{C:may_opalescent,s:1.2,u:may_opalescent}Fusion Condition{}', 
+		    condition
+	    }
+	end
 end
 
 -- Description buttons

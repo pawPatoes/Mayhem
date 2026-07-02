@@ -1,29 +1,54 @@
--- Edition Shaders
+-- Shaders
 
-SMODS.Shader({key = 'shimmering', path = 'edition/shimmering.fs'})
-SMODS.Shader({key = 'amber', path = 'edition/amber.fs'})
-SMODS.Shader({key = 'omega', path = 'edition/omega.fs'})
-SMODS.Shader({key = 'nostalgic', path = 'edition/nostalgic.fs'})
-SMODS.Shader({key = 'otherworldly', path = 'edition/otherworldly.fs'})
-SMODS.Shader({key = 'cosmic', path = 'edition/cosmic.fs'})
-SMODS.Shader({key = 'print', path = 'edition/print.fs'})
-SMODS.Shader({key = 'goldfoil', path = 'edition/goldfoil.fs'})
-SMODS.Shader({key = 'misprint', path = 'edition/misprint.fs'})
-SMODS.Shader({key = 'radioactive', path = 'edition/radioactive.fs'})
-SMODS.Shader({key = 'bitcrush', path = 'edition/bitcrush.fs'})
-SMODS.Shader({key = 'neon', path = 'edition/neon.fs'})
-SMODS.Shader({key = 'magenta', path = 'edition/magenta.fs'})
-SMODS.Shader({key = 'alloy', path = 'edition/alloy.fs'})
-SMODS.Shader({key = 'inverted', path = 'edition/inverted.fs'})
-SMODS.Shader({key = 'dichromatic', path = 'edition/dichromatic.fs'})
-SMODS.Shader({key = 'laminated', path = 'edition/laminated.fs'})
-SMODS.Shader({key = 'twilight', path = 'edition/twilight.fs'})
-SMODS.Shader({key = 'ionized', path = 'edition/ionized.fs'})
-SMODS.Shader({key = 'hypnotic', path = 'edition/hypnotic.fs'})
-SMODS.Shader({key = 'kaleidoscopic', path = 'edition/kaleidoscopic.fs'})
-SMODS.Shader({key = 'sharpened', path = 'edition/sharpened.fs'})
-SMODS.Shader({key = 'light', path = 'edition/light.fs'})
-SMODS.Shader({key = 'metallic', path = 'edition/metallic.fs'})
+may.shaders = {
+	shimmering = 'edition/shimmering.fs', 
+	amber = 'edition/amber.fs', 
+	omega = 'edition/omega.fs', 
+	nostalgic = 'edition/nostalgic.fs',
+	otherworldly = 'edition/otherworldly.fs',
+	cosmic = 'edition/cosmic.fs',
+	print = 'edition/print.fs',
+	goldfoil = 'edition/goldfoil.fs',
+	misprint = 'edition/misprint.fs',
+	radioactive = 'edition/radioactive.fs',
+	bitcrush = 'edition/bitcrush.fs',
+	neon = 'edition/neon.fs',
+	magenta = 'edition/magenta.fs', 
+	alloy = 'edition/alloy.fs',
+	inverted = 'edition/inverted.fs', 
+	dichromatic = 'edition/dichromatic.fs',
+	laminated = 'edition/laminated.fs', 
+	twilight = 'edition/twilight.fs',
+	ionized = 'edition/ionized.fs', 
+	hypnotic = 'edition/hypnotic.fs',
+	kaleidoscopic = 'edition/kaleidoscopic.fs', 
+	sharpened = 'edition/sharpened.fs', 
+	light = 'edition/light.fs', 
+	metallic = 'edition/metallic.fs', 
+	vignette = 'edition/vignette.fs', 
+	
+	transcendent = 'rarity/transcendent.fs',
+	
+	transcendent_bg = 'rarity/bg/transcendent_bg.fs', 
+	paradoxical_bg = 'rarity/bg/paradoxical_bg.fs', 
+	opalescent_bg = 'rarity/bg/opalescent_bg.fs', 
+	demiurgic_bg = 'rarity/bg/demiurgic_bg.fs', 
+	prismatic_bg = 'rarity/bg/prismatic_bg.fs', 
+	ethereal_bg = 'rarity/bg/ethereal_bg.fs', 
+	mythic_bg = 'rarity/bg/mythic_bg.fs', 
+	
+	paradoxical_text = 'rarity/text/paradoxical_text.fs', 
+	alpha_effect = 'rarity/misc/alpha_effect.fs', 
+	
+	semihologram = 'semihologram.fs', 
+}
+
+for k, v in pairs(may.shaders) do
+	SMODS.Shader {
+		key = k, 
+		path = v
+	} 
+end
 
 -- Screen Shaders
 
@@ -51,7 +76,3 @@ SMODS.ScreenShader({
 		}
 	end
 })
-
--- Other Shaders
-
-SMODS.Shader({key = 'semihologram', path = 'semihologram.fs'}) 

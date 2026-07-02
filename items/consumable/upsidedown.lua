@@ -24,10 +24,11 @@ SMODS.Consumable {
 	pos = { x = 9, y = 5 },
 	config = { extra = { dollars = 10 } },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	upsd_base = 'c_fool',
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
 	end,
@@ -74,10 +75,11 @@ SMODS.Consumable {
 	pos = { x = 8, y = 5 },
 	config = { extra = { dollars = 3, target_enhancement = 'm_lucky' } },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	upsd_base = 'c_magician',
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
 	end,
@@ -136,11 +138,11 @@ SMODS.Consumable {
 		name = 'ThT HiiH PrieseirP',
 		text = {
 			{
-				"{C:mult}Destroy{} all {C:dark_edition}CCDs{} held", 
-                "in hand", 
-                "Create {C:attention}#1#{} {C:dark_edition}Negative{} Consumable", 
-                "of the {C:attention}same type{} for each", 
-                "{C:mult}destroyed{} card"
+				"{C:mult}Destroy{} all held {C:tarot}Tarot{}, {C:planet}Planet{} and {C:spectral}Spectral{} Cards", 
+				"{C:money}+$#1#{} per {C:tarot}Tarot Card{}", 
+				"{C:planet}Level up{} all {C:purple}Poker Hands{} by {C:attention}#2#{} per {C:planet}Planet Card{}", 
+				"Create {C:attention}#3# Tag{} per {C:spectral}Spectral Card{}", 
+				"{C:inactive}Currently +$#4#, +#5# levels, #6# Tags{}"
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -149,49 +151,92 @@ SMODS.Consumable {
 	},
 	pos = { x = 7, y = 5 },
 	atlas = 'upside_down',
-    config = { extra = { cards = 1 } }, 
-	cost = 10,
+    config = { extra = { dollars = 6, levels = 0.5, tags = 1 } }, 
+	cost = 6,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_high_priestess', 
 	loc_vars = function(self, info_queue, card)
-		info_queue[#info_queue + 1] = { key = "may_ccd_tutorial", set = "Other" }
-        info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
-		return { vars = { card.ability.extra.cards } }
+		local tarot, planet, spectral = 0, 0, 0
+		if G.consumeables and G.consumeables.cards then
+			for k, v in pairs(G.consumeables.cards) do
+				if v:gc().set == 'Tarot' then 
+					tarot = tarot + v:getQty()
+				elseif v:gc().set == 'Planet' then 
+					planet = planet + v:getQty() 
+				elseif v:gc().set == 'Spectral' then 
+					spectral = spectral + v:getQty()
+				end
+			end
+		end
+		return { vars = { 
+			card.ability.extra.dollars,
+			card.ability.extra.levels,
+			card.ability.extra.tags, 
+			card.ability.extra.dollars * tarot,
+			card.ability.extra.levels * planet,
+			card.ability.extra.tags * spectral
+		} }
 	end,
 	can_use = function(self, card)
-		for k, v in pairs(G.hand.cards) do
-            if v.ability.consumeable then 
-                return may.canuse()
-            end
-        end 
-        return false
+		if G.consumeables and G.consumeables.cards then
+			for k, v in pairs(G.consumeables.cards) do
+				if v:gc().set == 'Tarot' or v:gc().set == 'Planet' or v:gc().set == 'Spectral' then 
+					return may.canuse()
+				end
+			end
+		end
+		return false
 	end,
 	use = function(self, card, area, copier)
-		local consumables = {}
-        local targets = {}
-        for k, v in pairs(G.hand.cards) do
-            if v.ability.consumeable then 
-                table.insert(targets, v)
-                table.insert(consumables, G.P_CENTERS[v].set)
-            end
-        end
-        for k, v in pairs(targets) do
-            G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-                v:start_dissolve()
-                play_sound('card3')
-            return true end})) 
-        end 
-        for k, v in pairs(consumables) do
-            for i=1, card.ability.extra.cards do 
-                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-                    local card2 = create_card(v, G.consumeables, nil, nil, nil, nil, nil, 'may_high_priestess_upsd')
-				    card2:set_edition({negative = true}, true)
-				    card2:add_to_deck()
-				    G.consumeables:emplace(card2)
-                return true end})) 
-            end
-        end
+		local tarot, planet, spectral = 0, 0, 0
+		for k, v in pairs(G.consumeables.cards) do
+			if v:gc().set == 'Tarot' then 
+				tarot = tarot + v:getQty()
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+					card:juice_up(0.3, 0.5)
+					v:juice_up(0.3, 0.5)
+					SMODS.destroy_cards({v})
+					play_sound('card3')
+				return true end})) 
+			elseif v:gc().set == 'Planet' then 
+				planet = planet + v:getQty() 
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+					card:juice_up(0.3, 0.5)
+					v:juice_up(0.3, 0.5)
+					SMODS.destroy_cards({v})
+					play_sound('card3')
+				return true end}))
+			elseif v:gc().set == 'Spectral' then 
+				spectral = spectral + v:getQty()
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+					card:juice_up(0.3, 0.5)
+					v:juice_up(0.3, 0.5)
+					SMODS.destroy_cards({v})
+					play_sound('card3')
+				return true end}))
+			end
+		end
+		if tarot > 0 then
+			G.E_MANAGER:add_event(Event({func = function()
+				card:juice_up(0.3, 0.5)
+				play_sound('timpani')
+			return true end}))
+			ease_dollars(card.ability.extra.dollars * tarot)
+		end
+		if planet > 0 then
+			may.level_up_all_hands(card, nil, false, card.ability.extra.levels * planet)
+		end
+		if spectral > 0 then 
+			for i = 1, card.ability.extra.tags * spectral do
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+					card:juice_up(0.3, 0.5)
+					play_sound('tarot1')
+					add_tag(Tag(get_next_tag_key("may_high_priestess_upsd")))
+				return true end})) 
+			end
+		end
 	end,
 }
 
@@ -215,10 +260,11 @@ SMODS.Consumable {
 	pos = { x = 6, y = 5 },
 	config = { extra = { bonus = 0.3, target_enhancement = 'm_mult' } },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_empress', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
 	end,
@@ -289,10 +335,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 5, y = 5 },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_emperor', 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		info_queue[#info_queue + 1] = { key = "may_ccd_tutorial", set = "Other" }
@@ -383,10 +430,11 @@ SMODS.Consumable {
 	pos = { x = 4, y = 5 },
 	config = { extra = { bonus = 0.3, target_enhancement = 'm_bonus' } },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_heirophant', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
 	end,
@@ -457,10 +505,11 @@ SMODS.Consumable {
 	pos = { x = 3, y = 5 },
 	config = { extra = { bonus = 0.6, target_enhancement = 'm_wild' } },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_lovers', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
 	end,
@@ -531,10 +580,11 @@ SMODS.Consumable {
 	pos = { x = 2, y = 5 },
 	config = { extra = { bonus = 10, target_enhancement = 'm_steel' } },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_chariot', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
 	end,
@@ -605,10 +655,11 @@ SMODS.Consumable {
 	pos = { x = 1, y = 5 },
 	config = { extra = { bonus = 65, target_enhancement = 'm_glass' } },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_justice', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
 	end,
@@ -678,10 +729,11 @@ SMODS.Consumable {
 	pos = { x = 0, y = 5 },
 	config = { extra = { x_dollars = 0.5, interest = 2 } },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_hermit', 
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
 		return { vars = { card.ability.extra.x_dollars, card.ability.extra.interest } }
@@ -715,10 +767,11 @@ SMODS.Consumable {
 	pos = { x = 9, y = 4 },
 	config = { extra = { interest_cap = 20 } },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_wheel_of_fortune', 
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
 		return { vars = { card.ability.extra.interest_cap } }
@@ -768,10 +821,11 @@ SMODS.Consumable {
 	pos = { x = 8, y = 4 },
 	config = { extra = { bonus = 10 } },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_strength', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
 	end,
@@ -829,7 +883,6 @@ SMODS.Consumable {
 		text = {
 			{
 				"{C:attention}Duplicate{} all {C:attention}selected playing cards{}",
-				"{C:attention}#1# Ante per{} selected {C:attention}card{}"
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -837,15 +890,12 @@ SMODS.Consumable {
 		}
 	},
 	pos = { x = 7, y = 4 },
-	config = { extra = { ante = -0.04 } },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
-	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.extra.ante } }
-	end,
+    no_grc = true,
+	upsd_base = 'c_hanged_man', 
 	can_use = function(self, card)
 		return may.canuse() and #G.hand.highlighted ~= 0
 	end,
@@ -862,7 +912,6 @@ SMODS.Consumable {
 			play_sound('card1')
 		end
 		playing_card_joker_effects(new_cards)
-		ease_ante(#G.hand.highlighted * card.ability.extra.ante)
 	end,
 }
 
@@ -886,11 +935,12 @@ SMODS.Consumable {
 	},
 	pos = { x = 6, y = 4 },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	config = { extra = { dollars = 10 } },
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_death', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
 	end,
@@ -929,11 +979,12 @@ SMODS.Consumable {
 	},
 	pos = { x = 5, y = 4 },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	config = { extra = { mul = 3 } },
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_temperance', 
 	can_use = function(self, card)
 		return may.canuse() and #G.jokers.cards >= 1 and #G.consumeables.cards >= 1
 	end,
@@ -986,10 +1037,11 @@ SMODS.Consumable {
 	pos = { x = 4, y = 4 },
 	config = { extra = { bonus = 0.3, target_enhancement = 'm_gold' } },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_devil', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
 	end,
@@ -1060,10 +1112,11 @@ SMODS.Consumable {
 	pos = { x = 3, y = 4 },
 	config = { extra = { bonus = 5, target_enhancement = 'm_stone' } },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_tower', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
 	end,
@@ -1133,11 +1186,12 @@ SMODS.Consumable {
 	},
 	pos = { x = 2, y = 4 },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	config = { extra = { target_suit = 'Diamonds', conv_suit = 'Clubs' } },
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_star', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
 	end,
@@ -1218,11 +1272,12 @@ SMODS.Consumable {
 	},
 	pos = { x = 1, y = 4 },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	config = { extra = { target_suit = 'Clubs', conv_suit = 'Hearts' } },
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_moon', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
 	end,
@@ -1303,11 +1358,12 @@ SMODS.Consumable {
 	},
 	pos = { x = 0, y = 4 },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	config = { extra = { target_suit = 'Hearts', conv_suit = 'Spades' } },
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_sun', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
 	end,
@@ -1387,11 +1443,12 @@ SMODS.Consumable {
 	},
 	pos = { x = 9, y = 3 },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	config = { extra = { tarots = 4 } },
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_judgement', 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		return { vars = { card.ability.extra.tarots } }
@@ -1447,11 +1504,12 @@ SMODS.Consumable {
 	},
 	pos = { x = 8, y = 3 },
 	atlas = 'upside_down',
-	cost = 10,
+	cost = 6,
 	unlocked = true,
 	config = { extra = { target_suit = 'Spades', conv_suit = 'Diamonds' } },
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_world', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
 	end,
@@ -1515,7 +1573,7 @@ SMODS.Consumable {
 
 -- Upside Down Planets
 
--- original planet key, name, hand1, hand2, x, y
+-- original planet key, name, hand1, hand2, x, y, base key
 may.upside_down_planets = {
 	{'mercury', 'MercreM', 'Pair', 'Two Pair', 9, 2},
 	{'venus', 'VeneV', 'Three of a Kind', 'Straight', 8, 2},
@@ -1523,11 +1581,14 @@ may.upside_down_planets = {
 	{'mars', 'MaaM', 'Four of a Kind', 'Straight Flush', 6, 2},
 	{'jupiter', 'JupipuJ', 'Flush', 'Full House', 5, 2},
 	{'saturn', 'SattaS', 'Straight', 'Flush', 4, 2},
-	{'uranus', 'UraarU', 'Two Pair', 'Three of a Kind', 3, 2},
+	{'uranus', 'NeptpeN', 'Straight Flush', 'may_Royal Flush', 2, 2},
+	{'neptune', 'UraarU', 'Two Pair', 'Three of a Kind', 3, 2},
 	{'pluto', 'PlulP', 'High Card', 'Pair', 1, 2},
 	{'planet_x', 'PlaalP X', 'Five of a Kind', 'Flush House', 0, 3},
 	{'ceres', 'CereC', 'Flush House', 'Flush Five', 1, 3},
 	{'eris', 'ErrE', 'Flush Five', 'High Card', 6, 3},
+	
+	--{'proxima_centauri', 'ProxorP CentneC', 'may_Royal Flush', 'Five of a Kind', 6, 3, 'may_proxima_centauri'},
 }
 
 for k, v in pairs(may.upside_down_planets) do
@@ -1550,12 +1611,13 @@ for k, v in pairs(may.upside_down_planets) do
 		pos = { x = v[5], y = v[6] },
 		config = { extra = { hand1 = v[3], hand2 = v[4] } },
 		atlas = 'upside_down',
-		cost = 10,
+		cost = 6,
 		unlocked = true,
 		discovered = true,
-    no_grc = true, 
+		no_grc = true,
+		upsd_base = 'c_'..(v[7] or v[1]), 
 		loc_vars = function(self, info_queue, card)
-			return { vars = { v[3], v[4] } }
+			return { vars = { localize(v[3], 'poker_hands'), localize(v[4], 'poker_hands') } }
 		end,
 		can_use = function(self, card)
 			return may.canuse() and to_big(G.GAME.hands[card.ability.extra.hand1].level) > to_big(1)
@@ -1581,101 +1643,6 @@ for k, v in pairs(may.upside_down_planets) do
 	}
 end
 
-SMODS.Consumable {
-	key = 'neptune_upsd',
-	set = 'upside_down_planets',
-	name = 'NeptpeN',
-	loc_txt = {
-		name = "NeptpeN",
-		text = {
-			{
-				"{C:mult}Level down{} {C:purple}Straight Flush{}",
-				"{C:planet}Level up{} {C:purple}Royal Flush{} by {C:attention}3{}",
-			},
-			{
-				"{C:inactive,E:1}Art by _TeKKen_{}"
-			},
-		}
-	},
-	pos = { x = 2, y = 2 },
-	config = { extra = { hand1 = 'Straight Flush', hand2 = 'may_Royal Flush' } },
-	atlas = 'upside_down',
-	cost = 10,
-	unlocked = true,
-	discovered = true,
-    no_grc = true, 
-	can_use = function(self, card)
-		return may.canuse() and to_big(G.GAME.hands[card.ability.extra.hand1].level) > to_big(1)
-	end,
-	use = function(self, card, area, copier)
-		may.th(card.ability.extra.hand1)
-		if to_number(G.GAME.hands[card.ability.extra.hand1].level) > 1 then
-			level_up_hand(card, card.ability.extra.hand1, nil, -1)
-		else
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-				play_sound('tarot2')
-			return true end}))
-		end
-		delay(1.3)
-		may.th(card.ability.extra.hand2)
-		level_up_hand(card, card.ability.extra.hand2, nil, 3)
-		delay(1.3)
-		may.ch()
-	end,
-	in_pool = function(self, args)
-		return SMODS.is_poker_hand_visible('Straight Flush') and SMODS.is_poker_hand_visible('may_Royal Flush')
-	end
-}
-
-SMODS.Consumable {
-	key = 'proxima_centauri_upsd',
-	set = 'upside_down_planets',
-	name = 'ProxorP CentneC',
-	loc_txt = {
-		name = "ProxorP CentneC",
-		text = {
-			{
-				"{C:mult}Level down{} {C:purple}Royal Flush{}",
-				"{C:planet}Level up{} {C:purple}Five of a Kind{} by {C:attention}3{}",
-			},
-			{
-				"{C:inactive,E:1}Art by _TeKKen_{}"
-			},
-		}
-	},
-	pos = { x = 0, y = 2 },
-	config = { extra = { hand1 = 'may_Royal Flush', hand2 = 'Five of a Kind' } },
-	atlas = 'placeholder',
-	cost = 10,
-	unlocked = true,
-	discovered = true,
-    no_grc = true, 
-	can_use = function(self, card)
-		return may.canuse()
-	end,
-	use = function(self, card, area, copier)
-		may.th(card.ability.extra.hand1)
-		if to_number(G.GAME.hands[card.ability.extra.hand1].level) > 1 then
-			level_up_hand(card, card.ability.extra.hand1, nil, -1)
-		else
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-				play_sound('tarot2')
-			return true end}))
-		end
-		delay(1.3)
-		may.th(card.ability.extra.hand2)
-		level_up_hand(card, card.ability.extra.hand2, nil, 3)
-		delay(1.3)
-		may.ch()
-	end,
-	in_pool = function(self, args)
-		return G.GAME.hands['Five of a Kind'].visible, { allow_duplicates = false }
-	end,
-	in_pool = function(self, args)
-		return SMODS.is_poker_hand_visible('Straight Flush') and SMODS.is_poker_hand_visible('may_Royal Flush')
-	end
-}
-
 -- Upside Down Spectrals
 
 SMODS.Consumable {
@@ -1696,10 +1663,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 9, y = 1 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_familiar', 
 	can_use = function(self, card)
 		return may.canuse()
 	end,
@@ -1738,10 +1706,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 8, y = 1 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_grim', 
 	can_use = function(self, card)
 		return may.canuse()
 	end,
@@ -1780,10 +1749,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 7, y = 1 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_incantation', 
 	can_use = function(self, card)
 		return may.canuse()
 	end,
@@ -1823,10 +1793,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 6, y = 1 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_talisman', 
 	can_use = function(self, card)
 		for k, v in pairs(G.playing_cards) do 
 			if v.seal and v.seal == 'Gold' then 
@@ -1896,10 +1867,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 5, y = 1 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_aura', 
 	can_use = function(self, card)
 		local other
 		for k, v in pairs(G.hand.highlighted) do 
@@ -1954,10 +1926,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 4, y = 1 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_wraith', 
 	can_use = function(self, card) 
 		if G.jokers then 
 			for k, v in pairs(G.jokers.cards) do
@@ -2004,10 +1977,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 3, y = 1 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_sigil', 
 	can_use = function(self, card)
 		return may.canuse() and G.hand and #G.hand.highlighted == (1 + (card.area == G.hand and 1 or 0))
 	end,
@@ -2055,10 +2029,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 2, y = 1 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_ouija', 
 	can_use = function(self, card)
 		return may.canuse() and G.hand and #G.hand.highlighted == (1 + (card.area == G.hand and 1 or 0))
 	end,
@@ -2107,10 +2082,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 1, y = 1 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_ectoplasm', 
 	loc_vars = function(self, info_queue, card) 
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 	end, 
@@ -2166,10 +2142,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 0, y = 1 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_immolate', 
 	can_use = function(self, card)
 		return may.canuse() and G.hand and #G.hand.highlighted <= (5 + (card.area == G.hand and 1 or 0))
 	end,
@@ -2211,10 +2188,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 9, y = 0 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_ankh', 
 	can_use = function(self, card)
 		local joker_keys = {}
 		if G.jokers then
@@ -2273,10 +2251,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 8, y = 0 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_deja_vu', 
 	can_use = function(self, card)
 		local joker_available
 		local seal
@@ -2338,10 +2317,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 7, y = 0 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_hex', 
 	loc_vars = function(self, info_queue, card) 
 		info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
 		info_queue[#info_queue + 1] = G.P_CENTERS.e_polychrome
@@ -2388,10 +2368,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 6, y = 0 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_trance', 
 	can_use = function(self, card) 
 		local joker_available
 		local seal
@@ -2456,10 +2437,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 5, y = 0 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_medium', 
 	can_use = function(self, card)
 		for k, v in pairs(G.playing_cards) do 
 			if v.seal and v.seal == 'Purple' then 
@@ -2506,10 +2488,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 4, y = 0 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_cryptid', 
 	can_use = function(self, card)
 		return may.canuse()
 	end,
@@ -2554,10 +2537,11 @@ SMODS.Consumable {
 	pos = { x = 7, y = 3 },
 	soul_pos = { x = 3, y = 0 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_soul', 
 	custom_soul_anim = function(self, layer)
 		local scale_mod = 0.05 - 0.05 * math.sin(1.8 * G.TIMERS.REAL) - 0.07 * math.sin(0.5 * (G.TIMERS.REAL - math.floor(G.TIMERS.REAL)) * math.pi * 14) * ( 1 + (G.TIMERS.REAL - math.floor(G.TIMERS.REAL))) ^ 1.5
         local rotate_mod = 0.1 * math.sin(1.219 * G.TIMERS.REAL) - 0.07 * math.sin((G.TIMERS.REAL) * math.pi * 5) * (1 + (G.TIMERS.REAL - math.floor(G.TIMERS.REAL))) ^ 1.7
@@ -2615,10 +2599,11 @@ SMODS.Consumable {
 	},
 	pos = { x = 0, y = 2 },
 	atlas = 'upside_down',
-	cost = 50,
+	cost = 8,
 	unlocked = true,
 	discovered = true,
-    no_grc = true, 
+    no_grc = true,
+	upsd_base = 'c_black_hole', 
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.tags } }
     end, 

@@ -20,6 +20,13 @@ SMODS.Joker {
 	blueprint_compat = true,
 	cost = 3,
 	demicoloncompat = true,
+	attributes = {
+		'chips', 
+		'scaling', 
+		'enhancements', 
+		'seals', 
+		'editions'
+	}, 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.chips_gain, card.ability.extra.chips } }
 	end,
@@ -72,6 +79,9 @@ SMODS.Joker {
 	demicoloncompat = true,
 	pos = { x = 2, y = 0 },
 	cost = 4,
+	attributes = {
+		'xmult', 
+	}, 
 	calculate = function(self, card, context)
 		if context.cardarea == G.jokers and context.joker_main then
 			return {
@@ -155,6 +165,11 @@ SMODS.Joker {
 	pos = { x = 2, y = 7 },
 	demicoloncompat = true,
 	cost = 4,
+	attributes = {
+		'mult', 
+		'xmult', 
+		'chance'
+	}, 
 	calculate = function(self, card, context)
 		if context.cardarea == G.jokers and context.joker_main then
 			if pseudorandom('may_dead_pixel') < 1 / card.ability.extra.odds then	
@@ -210,6 +225,11 @@ SMODS.Joker {
         local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Illusion")
         return { vars = { normal, odds, card.ability.extra.mult } }
 	end, 
+	attributes = {
+		'mult', 
+		'scaling', 
+		'chance'
+	}, 
     calculate = function(self, card, context)
         if context.before and context.cardarea == G.jokers then
             if SMODS.pseudorandom_probability(card, "may_illusion", 1, card.ability.extra.odds, "Illusion") then 

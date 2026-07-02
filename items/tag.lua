@@ -357,7 +357,7 @@ end
 	end,
 }]]
 
-SMODS.Tag {
+--[[SMODS.Tag {
 	atlas = "tag",
 	pos = { x = 6, y = 1 },
 	min_ante = 7,
@@ -392,4 +392,4 @@ SMODS.Tag {
 	in_pool = function(self, args)
         return G.GAME.may_endless_mode, { allow_duplicates = true }
     end
-}
+}]] 

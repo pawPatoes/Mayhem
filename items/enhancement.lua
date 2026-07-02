@@ -168,7 +168,7 @@ SMODS.Enhancement {
 	loc_txt = {
 		name = 'Platinum Card',
 		text = {
-			"{X:money,C:white}X1.1${} at the", 
+			"{C:money}+0.1{} Interest at the", 
             "end of round",
             "if {C:attention}held in hand{}",
 		}
@@ -179,12 +179,12 @@ SMODS.Enhancement {
 	weight = 0,
 	discovered = true,
 	atlas = 'enhancement',
+	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
+	end,
 	calculate = function(self, card, context)
 		if context.playing_card_end_of_round and context.cardarea == G.hand then
-			return {
-				x_dollars = 1.1, 
-                card = card 
-			}
+			may.ease_interest(-1, 0.1)
 		end
 	end,
     in_pool = function(self, args)
@@ -342,47 +342,38 @@ SMODS.Enhancement {
 	end
 }
 
---[[SMODS.Enhancement {
+SMODS.Enhancement {
 	key = 'titanium',
 	loc_txt = {
 		name = 'Titanium Card',
 		text = {
-			'{X:money,C:white}X1.1${} but {X:attention,C:white}X3{} {C:attention}Blind Size{}',
-			'when scored', 
-            '{C:mult}Self destructs{} after scoring', 
-            'if played'
+			"If {C:attention}held in hand{}, {X:chips,C:white}+X0.2{} Chips", 
+			"per {C:attention}Titanium Card{} in played hand"
 		}
 	},
 	pos = { x = 8, y = 0 },
 	unlocked = true,
 	replace_base_card = false,
-	weight = 0,
+	weight = .3,
 	discovered = true,
 	atlas = 'enhancement',
 	calculate = function(self, card, context)
-		if context.cardarea == G.play and context.main_scoring then
-			G.E_MANAGER:add_event(Event({trigger = 'before', func = function()
-				G.GAME.blind.chips = G.GAME.blind.chips:mul(3)
-				G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-				G.hand_text_area.blind_chips:juice_up()
-				play_sound('may_blind_size')
-			return true end}))
-			return {
-				x_dollars = 1.1, 
-                card = card,
-			}
+		if context.cardarea == G.hand and context.main_scoring then
+			local num = 0
+			for k, v in pairs(G.play.cards) do
+				if SMODS.has_enhancement(v, 'm_may_titanium') then
+					num = num + 1
+				end
+			end 
+			if num > 0 then
+				return {
+					x_chips = 1 + (num * 0.2), 
+                	card = card,
+				}
+			end
 		end
-        if context.after and context.cardarea == G.play then 
-            G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-                card:start_dissolve()
-                card = nil 
-            return true end})) 
-        end
 	end, 
-    in_pool = function(self, args)
-        return G.GAME.may_endless_mode, { allow_duplicates = true }
-    end
-}]] 
+}
 
 SMODS.Enhancement {
 	key = 'geometric',

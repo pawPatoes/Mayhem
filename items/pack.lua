@@ -249,7 +249,7 @@ SMODS.Booster {
 SMODS.Booster {
 	key = "b_editioncard1",
 	kind = 'may_modifiercard',
-	atlas = "booster",
+	atlas = "placeholder_booster",
 	pos = { x = 0, y = 0 },
 	config = { extra = 3, choose = 1 },
 	cost = 6,
@@ -298,8 +298,8 @@ SMODS.Booster {
 SMODS.Booster {
 	key = "b_jumbo_modifiercard1",
 	kind = 'may_modifiercard',
-	atlas = "booster",
-	pos = { x = 1, y = 0 },
+	atlas = "placeholder_booster",
+	pos = { x = 0, y = 0 },
 	config = { extra = 6, choose = 1 },
 	cost = 8,
 	weight = .9,
@@ -347,8 +347,8 @@ SMODS.Booster {
 SMODS.Booster {
 	key = "b_mega_editioncard1",
 	kind = 'may_modifiercard',
-	atlas = "booster",
-	pos = { x = 2, y = 0 },
+	atlas = "placeholder_booster",
+	pos = { x = 0, y = 0 },
 	config = { extra = 6, choose = 2 },
 	cost = 10,
 	weight = .8,
@@ -1204,7 +1204,7 @@ SMODS.Booster {
 	draw_hand = false,
 	endless = true,
 	create_card = function(self, card)
-		return create_card("Fusable_NOBP", G.pack_cards, nil, nil, true, true, nil, "may_fpack")
+		return SMODS.create_card({set = "Joker", attributes = {'base_fusable'}, area = G.pack_cards})
 	end,
 	ease_background_colour = function(self)
 		ease_colour(G.C.DYN_UI.MAIN, G.C.BLACK)
@@ -1239,7 +1239,7 @@ SMODS.Booster {
 					table.insert(pool, v)
 				end 
 			end
-			local ccard = create_card("Joker", G.jokers, nil, nil, nil, nil, may.random_consumable('diha', nil, nil, pool, true), "diha").key
+			local ccard = SMODS.create_card({set = "Joker", attributes = {'base_fusable'}})
 			ccard:set_edition({ negative = true }, true)
 			ccard:add_to_deck()
 			G.jokers:emplace(ccard)

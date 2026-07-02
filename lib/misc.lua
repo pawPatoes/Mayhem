@@ -1,273 +1,5 @@
 -- Misc
 
--- Unredeem vouchers 
--- stolen from Cryptid
-function Card:unredeem(silent)
-	if self.ability.set == "Voucher" then
-		if not self then
-			return
-		end
-		local card = copy_card(self)
-		card.ability.extra = copy_table(self.ability.extra)
-		if not silent then
-		    local area
-		    if G.STATE == G.STATES.HAND_PLAYED then
-			    if not G.redeemed_vouchers_during_hand then
-				    G.redeemed_vouchers_during_hand = CardArea(G.play.T.x, G.play.T.y, G.play.T.w, G.play.T.h, { type = "play", card_limit = 5 })
-			    end
-			    area = G.redeemed_vouchers_during_hand
-		    else
-			    area = G.play
-		    end
-		    if card.facing == "back" then
-			    card:flip()
-		    end
-		    card:start_materialize()
-		    area:emplace(card)
-		end
-		card.cost = 0
-		card.shop_voucher = false
-		local current_round_voucher = G.GAME.current_round.voucher
-		if not self.debuff then
-		    self:unapply_to_run()
-		end
-		if not silent then
-		    stop_use()
-			card.no_ui = true
-			self.no_ui = true
-		    if not self.config.center.discovered then
-			    discover_card(self.config.center)
-		    end
-		    self.states.hover.can = false			
-			local top_dynatext = nil
-			local bot_dynatext = nil
-			G.E_MANAGER:add_event(Event({trigger = "after", delay = 0.4, func = function()
-				top_dynatext = DynaText({
-					string = localize({
-						type = "name_text",
-						set = self.config.center.set,
-						key = self.config.center.key,
-					}),
-					colours = { G.C.RED },
-					rotate = 1,
-					shadow = true,
-					bump = true,
-					float = true,
-					scale = 0.9,
-					pop_in = 0.6 / G.SPEEDFACTOR,
-					pop_in_rate = 1.5 * G.SPEEDFACTOR,
-				})
-				bot_dynatext = DynaText({
-					string = "Unredeemed...",
-					colours = { G.C.RED },
-					rotate = 2,
-					shadow = true,
-					bump = true,
-					float = true,
-					scale = 0.9,
-					pop_in = 1.4 / G.SPEEDFACTOR,
-					pop_in_rate = 1.5 * G.SPEEDFACTOR,
-					pitch_shift = 0.25,
-				})
-				self:juice_up(0.3, 0.5)
-				play_sound("card1")
-				play_sound("timpani")
-				self.children.top_disp = UIBox({
-				    definition = {n = G.UIT.ROOT, config = { align = "tm", r = 0.15, colour = G.C.CLEAR, padding = 0.15 }, nodes = {
-						{n = G.UIT.O, config = { object = top_dynatext } },
-					}},
-					config = { align = "tm", offset = { x = 0, y = 0 }, parent = self },
-				})
-				self.children.bot_disp = UIBox({
-				    definition = {n = G.UIT.ROOT, config = { align = "tm", r = 0.15, colour = G.C.CLEAR, padding = 0.15 }, nodes = {
-						{ n = G.UIT.O, config = { object = bot_dynatext } },
-					}},
-				    config = { align = "bm", offset = { x = 0, y = 0 }, parent = self },
-				})
-			return true end}))
-			delay(0.6)
-			G.E_MANAGER:add_event(Event({trigger = "after", delay = 2.6, func = function()
-				top_dynatext:pop_out(4)
-				bot_dynatext:pop_out(4)
-			return true end}))
-			G.E_MANAGER:add_event(Event({trigger = "after", delay = 0.5, func = function()
-				self.children.top_disp:remove()
-				self.children.top_disp = nil
-				self.children.bot_disp:remove()
-				self.children.bot_disp = nil
-			return true end}))
-	    end
-		G.GAME.current_round.voucher = current_round_voucher
-		if not silent then
-		    G.E_MANAGER:add_event(Event({trigger = "after", delay = 0, func = function()
-				card:start_dissolve()
-			    self:start_dissolve()
-		    return true end}))
-		end
-		G.E_MANAGER:add_event(Event({func = function()
-			if G and G.GAME and G.vouchers then
-			    G.GAME.used_vouchers = {}
-			    for i, v in ipairs(G.vouchers.cards) do
-					if v ~= (card or {}) and v ~= (self or {}) then
-						G.GAME.used_vouchers[v.config.center_key] = true
-					end
-				end
-            end
-		return true end})) 
-	end
-end
-
-function Card:unapply_to_run(center)
-	local center_table = {
-		name = center and center.name or self and self.ability.name,
-		extra = self and self.ability.extra or center and center.config.extra,
-	}
-	local obj = center or self.config.center
-	if obj.unredeem and type(obj.unredeem) == "function" then
-		obj:unredeem(self)
-		return
-	end
-
-	if center_table.name == "Overstock" or center_table.name == "Overstock Plus" then
-		G.E_MANAGER:add_event(Event({
-			func = function()
-				change_shop_size(-1)
-				return true
-			end,
-		}))
-	end
-	if center_table.name == "Tarot Merchant" or center_table.name == "Tarot Tycoon" then
-		G.E_MANAGER:add_event(Event({
-			func = function()
-				G.GAME.tarot_rate = G.GAME.tarot_rate / 2
-				return true
-			end,
-		}))
-	end
-	if center_table.name == "Planet Merchant" or center_table.name == "Planet Tycoon" then
-		G.E_MANAGER:add_event(Event({
-			func = function()
-				G.GAME.planet_rate = G.GAME.planet_rate / 2
-				return true
-			end,
-		}))
-	end
-	if center_table.name == "Hone" or center_table.name == "Glow Up" then
-		G.E_MANAGER:add_event(Event({
-			func = function()
-				G.GAME.edition_rate = G.GAME.edition_rate / 2
-				return true
-			end,
-		}))
-	end
-	if center_table.name == "Magic Trick" then
-		G.E_MANAGER:add_event(Event({
-			func = function()
-				G.GAME.playing_card_rate = 0
-				return true
-			end,
-		}))
-	end
-	if center_table.name == "Crystal Ball" then
-		G.E_MANAGER:add_event(Event({
-			func = function()
-				G.consumeables.config.card_limit = G.consumeables.config.card_limit - 1
-				return true
-			end,
-		}))
-	end
-	if center_table.name == "Clearance Sale" then
-		G.E_MANAGER:add_event(Event({
-			func = function()
-				G.GAME.discount_percent = 0
-				for k, v in pairs(G.I.CARD) do
-					if v.set_cost then
-						v:set_cost()
-					end
-				end
-				return true
-			end,
-		}))
-	end
-	if center_table.name == "Liquidation" then
-		G.E_MANAGER:add_event(Event({
-			func = function()
-				G.GAME.discount_percent = 25
-				for k, v in pairs(G.I.CARD) do
-					if v.set_cost then
-						v:set_cost()
-					end
-				end
-				return true
-			end,
-		}))
-	end
-	if center_table.name == "Reroll Surplus" or center_table.name == "Reroll Glut" then
-		G.E_MANAGER:add_event(Event({
-			func = function()
-				G.GAME.round_resets.reroll_cost = G.GAME.round_resets.reroll_cost + 2
-				G.GAME.current_round.reroll_cost = math.max(0, G.GAME.current_round.reroll_cost + 2)
-				return true
-			end,
-		}))
-	end
-	if center_table.name == "Seed Money" then
-		G.E_MANAGER:add_event(Event({
-			func = function()
-				G.GAME.interest_cap = 25
-				return true
-			end,
-		}))
-	end
-	if center_table.name == "Money Tree" then
-		G.E_MANAGER:add_event(Event({
-			func = function()
-				if G.GAME.used_vouchers.v_seed_money then
-					G.GAME.interest_cap = 50
-				else
-					G.GAME.interest_cap = 25
-				end
-				return true
-			end,
-		}))
-	end
-	if center_table.name == "Grabber" or center_table.name == "Nacho Tong" then
-		G.GAME.round_resets.hands = G.GAME.round_resets.hands - 1
-		ease_hands_played(-1)
-	end
-	if center_table.name == "Paint Brush" or center_table.name == "Palette" then
-		G.hand:change_size(-1)
-	end
-	if center_table.name == "Wasteful" or center_table.name == "Recyclomancy" then
-		G.GAME.round_resets.discards = G.GAME.round_resets.discards - 1
-		ease_discard(-1)
-	end
-	if center_table.name == "Antimatter" then
-		G.E_MANAGER:add_event(Event({
-			func = function()
-				if G.jokers then
-					G.jokers.config.card_limit = G.jokers.config.card_limit - 1
-				end
-				return true
-			end,
-		}))
-	end
-	if center_table.name == "Hieroglyph" or center_table.name == "Petroglyph" then
-		ease_ante(center_table.extra)
-		G.GAME.round_resets.blind_ante = G.GAME.round_resets.blind_ante or G.GAME.round_resets.ante
-		G.GAME.round_resets.blind_ante = G.GAME.round_resets.blind_ante + 1
-
-		if center_table.name == "Hieroglyph" then
-			G.GAME.round_resets.hands = G.GAME.round_resets.hands + 1
-			ease_hands_played(1)
-		end
-		if center_table.name == "Petroglyph" then
-			G.GAME.round_resets.discards = G.GAME.round_resets.discards + 1
-			ease_discard(1)
-		end
-	end
-end
-
 -- Taken from Entropy 
 function Card:is_playing_card()
     if not G.deck then return end
@@ -312,30 +44,6 @@ function may.generate_arrow_text(arrow, threshold)
 	return str
 end
 
-function generate_fact_text(fact, threshold)
-	local str = ""
-	if fact < (threshold or 10) then
-		for i=1, to_number(fact), 1 do
-			str = str .. '!'
-		end
-	else
-		str = '!('..fact..')'
-	end
-	return str
-end
-
-function generate_expofact_text(fact, threshold)
-	local str = ""
-	if fact < (threshold or 10) then
-		for i=1, to_number(fact), 1 do
-			str = str .. '^!'
-		end
-	else
-		str = '^!('..fact..')'
-	end
-	return str
-end
-
 function may.get_joker_count(rarity)
 	local num = 0
 	if G.jokers then
@@ -349,12 +57,12 @@ function may.get_joker_count(rarity)
 end
 
 may.score_operator_colors = {
-	'may_col_interdimensional', 
-	'may_col_ethereal',
-	'may_col_surreal', 
+	'may_col_prismatic', 
+	'may_col_demiurgic',
+	'may_col_opalescent', 
 	'may_col_instability', 
 	'may_col_e_otherworldly', 
-	'may_col_hyperascendant', 
+	'may_col_ethereal', 
 	'may_col_big_operator',
 	'may_col_huge_operator', 
 }
@@ -424,19 +132,7 @@ end
 
 function may.ease_interest(arrow, mod, silent)
 	mod = to_big(mod)
-	G.GAME.interest_amount = to_big(G.GAME.interest_amount or 0)
-	if arrow >= 0 then
-		G.GAME.interest_amount = G.GAME.interest_amount:arrow(arrow, mod)
-	else
-		if arrow == -1 then
-			G.GAME.interest_amount = G.GAME.interest_amount:add(mod)
-		elseif arrow == -2 then
-			G.GAME.interest_amount = G.GAME.interest_amount:sub(mod)
-		elseif arrow == -3 then
-			G.GAME.interest_amount = G.GAME.interest_amount:div(mod)
-		end
-	end
-	G.GAME.interest_amount = to_number(G.GAME.interest_amount)
+	G.GAME.interest_amount = to_number(to_big(G.GAME.interest_amount or 0):arrow(arrow, mod))
 	if not silent then
 		local handarea = G.HUD:get_UIE_by_ID('hand_text_area')
 		delay(0.5)
@@ -461,19 +157,7 @@ end
 
 function may.ease_interest_cap(arrow, mod, silent)
 	mod = to_big(mod)
-	G.GAME.interest_cap = to_big(G.GAME.interest_cap or 0)
-	if arrow >= 0 then
-		G.GAME.interest_cap = G.GAME.interest_cap:arrow(arrow, mod)
-	else
-		if arrow == -1 then
-			G.GAME.interest_cap = G.GAME.interest_cap:add(mod)
-		elseif arrow == -2 then
-			G.GAME.interest_cap = G.GAME.interest_cap:sub(mod)
-		elseif arrow == -3 then
-			G.GAME.interest_cap = G.GAME.interest_cap:div(mod)
-		end
-	end
-	G.GAME.interest_cap = to_number(G.GAME.interest_cap)
+	G.GAME.interest_cap = to_number(to_big(G.GAME.interest_cap or 0):arrow(arrow, mod))
 	if not silent then
 		local handarea = G.HUD:get_UIE_by_ID('hand_text_area')
 		delay(0.5)
@@ -502,18 +186,7 @@ function may.change_blind_size(arrow, mod)
 		blind_chips:update()
 	end
 	G.E_MANAGER:add_event(Event({trigger = 'immediate',func = function()
-		local text = ''
-		if arrow >= 1 then
-			text = may.generate_arrow_text(arrow, 4)
-		elseif arrow == 0  then
-			text = 'X'
-		elseif arrow == -1 then
-			text = '+'
-		elseif arrow == -2 then
-			text = '-'
-		elseif arrow <= -3 then
-			text = '/'
-		end
+		local text = may.generate_arrow_text(arrow)
 		local col = G.C.IMPORTANT
 		attention_text({
 			text = text..(to_number(mod) or 0),
@@ -530,52 +203,7 @@ end
 
 function may.ease_instability(arrow, mod, silent)
 	mod = to_big(mod)
-	G.GAME.may_instability = to_big(G.GAME.may_instability or 0)
-	if arrow >= 0 then
-		G.GAME.may_instability = G.GAME.may_instability:arrow(arrow, mod)
-	else
-		if arrow == -1 then
-			G.GAME.may_instability = G.GAME.may_instability:add(mod)
-		elseif arrow == -2 then
-			G.GAME.may_instability = G.GAME.may_instability:sub(mod)
-		elseif arrow == -3 then
-			G.GAME.may_instability = G.GAME.may_instability:div(mod)
-		end
-	end
-	G.GAME.may_instability = to_number(G.GAME.may_instability)
-	G.GAME.may_instability_threshold = G.GAME.may_instability_threshold or 8
-	G.GAME.may_instability_increase = G.GAME.may_instability_increase or 10
-	local activated = 0
-	while G.GAME.may_instability >= G.GAME.may_instability_threshold do
-	    G.GAME.may_instability_threshold = G.GAME.may_instability_threshold * 2
-		activated = activated + 1
-		G.GAME.may_instability_blind_increases = G.GAME.may_instability_blind_increases or {}
-		local N = 0
-		if G.jokers then
-		    for k, v in pairs(G.jokers.cards) do
-				if v:gc().rarity == 'may_hyperascendant' then
-					N = 35
-					break
-				elseif v:gc().rarity == 'may_surreal' then
-					N = math.max(4, N)
-				elseif v:gc().rarity == 'may_ethereal' then
-					N = math.max(3, N)
-				elseif v:gc().rarity == 'may_interdimensional' then
-					N = math.max(2, N)
-				elseif v:gc().rarity == 'may_transcendent' or v:gc().rarity == 'may_mythic' then
-					N = math.max(1, N)
-				end
-			end
-		end
-		table.insert(G.GAME.may_instability_blind_increases, {N, G.GAME.may_instability_increase})
-		G.GAME.may_instability_increase = math.min(1e300, to_big(G.GAME.may_instability_increase) ^ 3)
-		may.change_blind_size(N, G.GAME.may_instability_increase)
-	end
-	if activated > 0 then
-	    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-		    play_sound('may_instability_threshold')
-		return true end}))
-	end
+	G.GAME.may_instability = to_number(to_big(G.GAME.may_instability or 0):arrow(arrow, mod))
 	if not silent then
 		local handarea = G.HUD:get_UIE_by_ID('hand_text_area')
 		delay(0.5)
@@ -620,18 +248,7 @@ function may.hypermoney(arrow, amount, silent)
 			if not Talisman.config_file.disable_anims then
 				G.ROOM.jiggle = G.ROOM.jiggle + (arrow/5)
 				local dollar_UI = G.HUD:get_UIE_by_ID('dollar_text_UI')
-				local text = ''
-				if arrow == 0 then
-					text = 'X'..tostring(math.abs(amount))..localize('$')
-				elseif arrow == 1 then
-					text = '^'..tostring(math.abs(amount))..localize('$')
-				elseif arrow == 2 then
-					text = '^^'..tostring(math.abs(amount))..localize('$')
-				elseif arrow == 3 then
-					text = '^^^'..tostring(math.abs(amount))..localize('$')
-				elseif arrow > 3 then
-					text = '{'..arrow..'}'..tostring(math.abs(amount))..localize('$')
-				end
+				local text = may.generate_arrow_text(arrow)..tostring(math.abs(amount))..localize('$')
 				dollar_UI.config.object:update()
 				G.HUD:recalculate()
 				attention_text({
@@ -652,9 +269,9 @@ function may.hypermoney(arrow, amount, silent)
 				end
 				if arrow > 0 then
 					if may.conf.Shakiness.unlimitquiver then
-						G.FUNCS.tsj_specific(dollar_UI, 0, arrow*4, true)
+						G.FUNCS.tsj_specific(dollar_UI, 0, arrow * 4, true)
 					else
-						G.FUNCS.tsj_specific(dollar_UI, 0, math.min(may.conf.Shakiness.pulselimit, arrow*4), true)
+						G.FUNCS.tsj_specific(dollar_UI, 0, math.min(may.conf.Shakiness.pulselimit, arrow * 4), true)
 					end
 				end
 			end
@@ -662,7 +279,16 @@ function may.hypermoney(arrow, amount, silent)
 	end
 end
 
-local randtext = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"," ","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9","+","-","?","!","$","%","[","]","(",")",}
+local randtext = {
+	"A","B","C","D","E","F","G","H","I","J",
+	"K","L","M","N","O","P","Q","R","S","T",
+	"U","V","W","X","Y","Z"," ","a","b","c",
+	"d","e","f","g","h","i","j","k","l","m",
+	"n","o","p","q","r","s","t","u","v","w",
+	"x","y","z","0","1","2","3","4","5","6",
+	"7","8","9","+","-","?","!","$","%","[",
+	"]","(",")"
+}
 
 function may.obfuscatedtext(length)
 	local str = ""
@@ -683,140 +309,58 @@ function may.get_operation_sound(operation, chipsmult)
 			'may_eee_level', 
 			'may_hex_level'
 		}
-		return operation == 'eq' and 'may_eq_level' or tab[operation + 2]
+		return operation == 'eq' and 'may_eq_level' or tab[math.min(operation + 2, #tab)]
 	end
-	if may.conf.CustomHyperoperations then
-		if chipsmult == 'chips' then
-			if operation == 'eq' then
-				return 'may_eqchip'
-			elseif operation == -1 then
-				return 'chips1'
-			elseif operation == 0 then
-				return 'talisman_xchip'
-			elseif operation == 1 then
-				return 'talisman_echip'
-			elseif operation == 2 then
-				return 'talisman_eechip'
-			elseif operation == 3 then
-				return 'talisman_eeechip'
-			elseif operation == 4 then
-				return 'may_hexchip'
-			elseif operation == 5 then
-				return 'may_hepchip'
-			elseif operation == 6 then
-				return 'may_octchip'
-			elseif operation == 7 then
-				return 'may_ennchip'
-			elseif operation == 8 then
-				return 'may_decchip'
-			elseif operation == 9 then
-				return 'may_undchip'
-			elseif operation == 10 then
-				return 'may_doechip'
-			elseif operation >= 11 then
-				return 'may_trechip'
-			end
-		elseif chipsmult == 'mult' then
-			if operation == 'eq' then
-				return 'may_eqmult'
-			elseif operation == -1 then
-				return 'multhit1'
-			elseif operation == 0 then
-				return 'multhit2'
-			elseif operation == 1 then
-				return 'talisman_emult'
-			elseif operation == 2 then
-				return 'talisman_eemult'
-			elseif operation == 3 then
-				return 'talisman_eeemult'
-			elseif operation == 4 then
-				return 'may_hexmult'
-			elseif operation == 5 then
-				return 'may_hepmult'
-			elseif operation == 6 then
-				return 'may_octmult'
-			elseif operation == 7 then
-				return 'may_ennmult'
-			elseif operation == 8 then
-				return 'may_decmult'
-			elseif operation == 9 then
-				return 'may_undmult'
-			elseif operation == 10 then
-				return 'may_doemult'
-			elseif operation >= 11 then
-				return 'may_tremult'
-			end
-		elseif chipsmult == 'dollars' then
-			if operation == 'eq' then
-				return 'may_eqdollars'
-			elseif operation == -1 then
-				return 'coin3'
-			elseif operation >= 0 then
-				return 'may_bigmoney'
-			end
-		elseif chipsmult == 'score' then
-			if operation == 'eq' then
-				return 'may_eqscore'
-			elseif operation == -1 then
-				return 'may_addscore'
-			elseif operation == 0 then
-				return 'may_xscore'
-			elseif operation == 1 then
-				return 'may_escore'
-			elseif operation == 2 then
-				return 'may_eescore'
-			elseif operation == 3 then
-				return 'may_eeescore'
-			elseif operation == 4 then
-				return 'may_hexscore'
-			end
-		end
-	else
-		if chipsmult == 'chips' then
-			if operation == -1 then
-				return 'chips1'
-			elseif operation == 0 then
-				return 'talisman_xchip'
-			elseif operation == 1 then
-				return 'talisman_echip'
-			elseif operation == 2 then
-				return 'talisman_eechip'
-			elseif operation >= 3 then
-				return 'talisman_eeechip'
-			end
-		elseif chipsmult == 'mult' then
-			if operation == -1 then
-				return 'multhit1'
-			elseif operation == 0 then
-				return 'multhit2'
-			elseif operation == 1 then
-				return 'talisman_emult'
-			elseif operation == 2 then
-				return 'talisman_eemult'
-			elseif operation >= 3 then
-				return 'talisman_eeemult'
-			end
-		elseif chipsmult == 'dollars' then
-			if operation == -1 then
-				return 'coin3'
-			elseif operation == 0 then
-				return 'may_bigmoney'
-			end
-		elseif chipsmult == 'score' then
-			if operation == -1 then
-				return 'may_addscore'
-			elseif operation == 0 then
-				return 'may_xscore'
-			elseif operation == 1 then
-				return 'may_escore'
-			elseif operation == 2 then
-				return 'may_eescore'
-			elseif operation == 3 then
-				return 'may_eeescore'
-			elseif operation == 4 then
-				return 'may_hexscore'
-			end
-		end
+	if chipsmult == 'chips' then
+		local tab = {
+			'chips1', 
+			'talisman_xchip', 
+			'talisman_echip', 
+			'talisman_eechip',
+			'talisman_eeechip',
+			'may_hexchip',
+			'may_hepchip',
+			'may_octchip',
+			'may_ennchip',
+			'may_decchip',
+			'may_undchip',
+			'may_doechip',
+			'may_trechip',
+		}
+		return operation == 'eq' and 'may_eqchip' or tab[math.min(operation + 2, may.conf.CustomHyperoperations and #tab or 5)]
+	elseif chipsmult == 'mult' then
+		local tab = {
+			'multhit1', 
+			'multhit2', 
+			'talisman_emult', 
+			'talisman_eemult',
+			'talisman_eeemult',
+			'may_hexmult',
+			'may_hepmult',
+			'may_octmult',
+			'may_ennmult',
+			'may_decmult',
+			'may_undmult',
+			'may_doemult',
+			'may_tremult',
+		}
+		return operation == 'eq' and 'may_eqchip' or tab[math.min(operation + 2, may.conf.CustomHyperoperations and #tab or 5)]
+	elseif chipsmult == 'dollars' then
+		local tab = {
+			'coin3', 
+			'may_bigmoney', 
+		}
+		return operation == 'eq' and 'may_eqdollar' or tab[math.min(operation + 2, #tab)]
+	elseif chipsmult == 'score' then
+		local tab = {
+			'may_addscore', 
+			'may_xscore', 
+			'may_escore', 
+			'may_eescore',
+			'may_eeescore',
+			'may_hexscore',
+		}
+		return operation == 'eq' and 'may_eqscore' or tab[math.min(operation + 2, may.conf.CustomHyperoperations and #tab or 5)]
 	end
 end
 
@@ -935,7 +479,7 @@ end
 
 -- Gets the Nominal Chips of a playing card
 function Card:may_get_nominal_chips()
-    return (not SMODS.has_no_rank(self)) and self.base.nominal * (G.GAME.playing_card_multiplier or 1) * (self.ability.nominal_multiplier or 1)
+    return ((not SMODS.has_no_rank(self)) and self.base.nominal * (G.GAME.playing_card_multiplier or 1) * (self.ability.nominal_multiplier or 1)) or 0
 end
 
 -- Plays the composite gong sound, like when balancing with Plasma Deck
@@ -943,6 +487,53 @@ function may.gong()
     play_sound('gong', 0.94, 0.3)
     play_sound('gong', 0.94*1.5, 0.2)
     play_sound('tarot1', 1.5)
+end
+
+function may.op_from_rarity(key)
+	local tab = {
+		{'may_mythic', 1},
+		{'may_ethereal', 1},
+		{'may_prismatic', 2}, 
+		{'may_demiurgic', 3},
+	}
+	for k, v in pairs(tab) do
+		if v[1] == key then 
+			return v[2]
+		end
+	end
+	return 0
+end
+
+-- i love talisman
+function may.get_score_operator()
+	local op = SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or "multiply"].order
+	if (G.GAME.current_scoring_calculation_key or '') == 'talisman_hyper' then
+		op = G.GAME.hyper_operator or 2
+    end 
+	return op
+end
+
+-- Returns Global Hyperoperator 
+function may.global_op()
+	if not G.jokers then 
+		return 0 
+	end
+	local ret = 0
+	for k, v in pairs(G.jokers.cards) do
+		ret = math.max(ret, may.op_from_rarity(v:gc().rarity))
+	end
+	for k, v in pairs(G.jokers.cards) do
+		if v:gc().global_op then 
+			ret = math.max(ret, v:gc().global_op(v, v:gc()))
+		end
+	end
+	for k, v in pairs(G.jokers.cards) do 
+		if v.ability and type(v.ability.extra) == 'table' and v.ability.extra.arrow then
+			ret = math.max(ret, v.ability.extra.arrow)
+		end
+	end
+	ret = math.max(ret, may.get_score_operator())
+	return ret
 end
 
 -- Creates a random Tag, set boss to true if Boss Tag can be generated
@@ -1079,7 +670,7 @@ function Card:may_explode(dissolve_colours, explode_time_fac, no_sound)
     }))
 end
 
--- taken from Finity
+-- Taken from Finity
 function may.recursive_table(table_return_table, index)
 	local ret = table_return_table[index]
 	if index <= #table_return_table then
@@ -1228,167 +819,9 @@ function may.redeem_specific(card)
     return true end}))
 end
 
--- Fix naneinf flames
--- Taken from Entropy
---[[G.FUNCS.flame_handler = function(e)
-	if (type(SMODS.get_scoring_parameter('chips', true)) == 'number' or type(SMODS.get_scoring_parameter('chips', true)) == 'table') and (type(SMODS.get_scoring_parameter('mult', true)) == 'number' or type(SMODS.get_scoring_parameter('mult', true)) == 'table') then
-		G.ARGS.score_intensity.true_score = to_big(G.GAME.current_scoring_calculation:func(SMODS.get_scoring_parameter('chips', true), SMODS.get_scoring_parameter('mult', true), true))
-	else
-		G.ARGS.score_intensity.true_score = to_big(0)
-	end
-    G.C.UI_CHIPLICK = G.C.UI_CHIPLICK or {1, 1, 1, 1}
-    G.C.UI_MULTLICK = G.C.UI_MULTLICK or {1, 1, 1, 1}
-    for i=1, 3 do
-        G.C.UI_CHIPLICK[i] = math.min(math.max(((((may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.get_transcendence_color(may.transcendence) or G.C.BLUE)[i]*0.5+G.C[(may.transcendence or 0) > 4 and 'BLACK' or 'YELLOW'][i]*0.5) + 0.1)^2, 0.1), 1)
-        G.C.UI_MULTLICK[i] = math.min(math.max(((((may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.get_transcendence_color(may.transcendence) or G.C.RED)[i]*0.5+G.C[(may.transcendence or 0) > 4 and 'BLACK' or 'YELLOW'][i]*0.5) + 0.1)^2, 0.1), 1)
-    end
-
-    G.ARGS.flame_handler = G.ARGS.flame_handler or {
-        chips = {
-            id = 'flame_chips', 
-            arg_tab = 'chip_flames',
-            colour = (may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.get_transcendence_color(may.transcendence) or G.C.BLUE,
-            accent = G.C.UI_CHIPLICK
-        },
-        mult = {
-            id = 'flame_mult', 
-            arg_tab = 'mult_flames',
-            colour = (may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.get_transcendence_color(may.transcendence) or G.C.RED,
-            accent = G.C.UI_MULTLICK
-        }
-    }
-    for k, v in pairs(G.ARGS.flame_handler) do
-        if e.config.id == v.id then 
-        if not e.config.object:is(Sprite) or e.config.object.ID ~= v.ID then 
-            e.config.object:remove()
-            e.config.object = Sprite(0, 0, 2.5, 2.5, G.ASSET_ATLAS["ui_1"], {x = 2, y = 0})
-            v.ID = e.config.object.ID
-            G.ARGS[v.arg_tab] = {
-                intensity = 0,
-                real_intensity = 0,
-                intensity_vel = 0,
-                colour_1 = v.colour,
-                colour_2 = v.accent,
-                timer = G.TIMERS.REAL
-            }      
-            e.config.object:set_alignment({
-                major = e.parent,
-                type = 'bmi',
-                offset = {x=0,y=0},
-                xy_bond = 'Weak'
-            })
-            e.config.object:define_draw_steps({{
-				shader = 'flame',
-				send = {
-					{name = 'time', ref_table = G.ARGS[v.arg_tab], ref_value = 'timer'},
-					{name = 'amount', ref_table = G.ARGS[v.arg_tab], ref_value = 'real_intensity'},
-					{name = 'image_details', ref_table = e.config.object, ref_value = 'image_dims'},
-					{name = 'texture_details', ref_table = e.config.object.RETS, ref_value = 'get_pos_pixel'},
-					{name = 'colour_1', ref_table =  G.ARGS[v.arg_tab], ref_value = 'colour_1'},
-					{name = 'colour_2', ref_table =  G.ARGS[v.arg_tab], ref_value = 'colour_2'},
-					{name = 'id', val =  e.config.object.ID},
-				}
-			}})
-            e.config.object:get_pos_pixel()
-        end
-        local _F = G.ARGS[v.arg_tab]
-        local exptime = math.exp(-0.4*G.real_dt)
-        if to_big(G.ARGS.score_intensity.true_score) >= to_big(G.ARGS.score_intensity.required_score) and to_big(G.ARGS.score_intensity.required_score) > to_big(0) then
-            _F.intensity = ((G.pack_cards and not G.pack_cards.REMOVED) or (G.TAROT_INTERRUPT)) and 0 or math.max(0., math.log(G.ARGS.score_intensity.true_score+1, 5)-2)
-            if type(_F.intensity) == "table" then
-                if _F.intensity > to_big(120) then
-                    _F.intensity = 120
-                else
-                    _F.intensity = _F.intensity:to_number()
-                end
-            elseif _F.intensity > 120 then
-                _F.intensity = 120
-            end
-        else
-            _F.intensity = 0
-        end
-        _F.timer = _F.timer + G.real_dt*(1 + _F.intensity*0.2)
-        if _F.intensity_vel < 0 then _F.intensity_vel = _F.intensity_vel*(1 - 10*G.real_dt) end
-        _F.intensity_vel = (1-exptime)*(_F.intensity - _F.real_intensity)*G.real_dt*25 + exptime*_F.intensity_vel
-        _F.real_intensity = math.max(0, _F.real_intensity + _F.intensity_vel)
-        
-        _F.real_intensity = (G.cry_flame_override and G.cry_flame_override['duration'] > 0) and ((_F.real_intensity + G.cry_flame_override['intensity'])/2) or _F.real_intensity
-        if to_big(_F.real_intensity) > to_big(120) then
-            _F.real_intensity = 120
-        end
-        _F.change = (_F.change or 0)*(1 - 4.*G.real_dt) + ( 4.*G.real_dt)*(_F.real_intensity < _F.intensity - 0.0 and 1 or 0)*_F.real_intensity
-        _F.change = (G.cry_flame_override and G.cry_flame_override['duration'] > 0) and ((_F.change + G.cry_flame_override['intensity'])/2) or _F.change
-        end
-    end
-end]]
-
--- Overriding because i have no idea how a lovely patch could do what this does (cards drawn inside celetsial packs, code injected in a very specific spot)
-function Game:update_celestial_pack(dt)
-    if self.buttons then self.buttons:remove(); self.buttons = nil end
-    if self.shop then G.shop.alignment.offset.y = G.ROOM.T.y+11 end
-
-    if not G.STATE_COMPLETE then
-        G.STATE_COMPLETE = true
-        G.CONTROLLER.interrupt.focus = true
-        G.E_MANAGER:add_event(Event({
-            trigger = 'immediate',
-            func = function()
-                ease_background_colour_blind(G.STATES.PLANET_PACK)
-                G.booster_pack_stars = Particles(1, 1, 0,0, {
-                    timer = 0.07,
-                    scale = 0.1,
-                    initialize = true,
-                    lifespan = 15,
-                    speed = 0.1,
-                    padding = -4,
-                    attach = G.ROOM_ATTACH,
-                    colours = {G.C.WHITE, HEX('a7d6e0'), HEX('fddca0')},
-                    fill = true
-                })
-                G.booster_pack_meteors = Particles(1, 1, 0,0, {
-                    timer = 2,
-                    scale = 0.05,
-                    lifespan = 1.5,
-                    speed = 4,
-                    attach = G.ROOM_ATTACH,
-                    colours = {G.C.WHITE},
-                    fill = true
-                })
-                G.booster_pack = UIBox{
-                    definition = create_UIBox_celestial_pack(), 
-                    config = {
-                        align="tmi",
-                        offset = {x=0,y=G.ROOM.T.y + 9},
-                        major = G.hand,
-                        bond = 'Weak'
-                    }
-                }
-                G.booster_pack.alignment.offset.y = -2.2
-                G.ROOM.jiggle = G.ROOM.jiggle + 3 
-                G.E_MANAGER:add_event(Event({
-                    trigger = 'immediate',
-                    func = function()
-                        G.FUNCS.draw_from_deck_to_hand()
-
-                        G.E_MANAGER:add_event(Event({
-                            trigger = 'after',
-                            delay = 0.5,
-                            func = function()
-                                G.CONTROLLER:recall_cardarea_focus('pack_cards')
-                                return true
-                            end}))
-                        return true
-                    end
-                }))
-                return true
-            end
-        }))  
-    end
-end
-
 -- Custom ease_colour intended for Transcendence, does not add events unless smooth_ease is set to true, and has other optimizations
 function may.ease_colour(col, target, smooth_ease)
-	if smooth_ease and may.transcendence < 13 then
+	if smooth_ease and (may.transcendence or 0) < 13 then
 		local function EASE(ref_table, ref_value, mod)
 			G.E_MANAGER:add_event(Event({
                 trigger = 'ease',
@@ -1412,28 +845,50 @@ function may.ease_colour(col, target, smooth_ease)
 	end
 end
 
+function may.ease_blind_colour(inblind, blind_col, smooth_ease)
+    if not inblind then return end
+    blind_col = blind_col or get_blind_main_colour(inblind.config.blind.key or "")
+    local dark_col = mix_colours(blind_col, G.C.BLACK, 0.4)
+
+    may.ease_colour(G.C.DYN_UI.MAIN, blind_col, smooth_ease)
+    may.ease_colour(G.C.DYN_UI.DARK, dark_col, smooth_ease)
+
+    local boss_main, boss_dark
+    if not inblind.boss and inblind.name then
+        boss_main = darken(G.C.BLACK, 0.05)
+        boss_dark = lighten(G.C.BLACK, 0.07)
+    else
+        boss_main = blind_col
+        boss_dark = mix_colours(blind_col, G.C.BLACK, 0.2)
+    end
+
+    may.ease_colour(G.C.DYN_UI.BOSS_MAIN, boss_main, smooth_ease)
+    may.ease_colour(G.C.DYN_UI.BOSS_DARK, boss_dark, smooth_ease)
+end
+
+
 -- why isn't this in smods, and if it is why haven't i heard of it yet
 function may.has_card(key)
 	return #SMODS.find_card(key) ~= 0
 end
 
+function may.get_highest_special_voucher_tier(key)
+	local ret = 0
+	for k, v in pairs(G.vouchers.cards) do
+		if v:gc().special_tier and v:gc().special_tier[1] == key then 
+			ret = math.max(ret, v:gc().special_tier[2])
+		end
+	end
+	return ret
+end
+
 -- Spawns in applicable Special Vouchers
-function may.handle_special_vouchers(round)
-	round = round or G.GAME.round
+function may.handle_special_vouchers()
+	--[[round = round or G.GAME.round
 	if G.GAME.may_endless_mode then
-		if round % 9 == 0 then
-			if not may.has_card('v_may_astronomy_1') then
-				SMODS.add_voucher_to_shop('v_may_astronomy_1')
-				G.E_MANAGER:add_event(Event({func = function()
-					play_sound('may_positive')
-				return true end}))
-			elseif not may.has_card('v_may_astronomy_2') then
-				SMODS.add_voucher_to_shop('v_may_astronomy_2')
-				G.E_MANAGER:add_event(Event({func = function()
-				    play_sound('may_positive')
-				return true end}))
-			elseif not may.has_card('v_may_astronomy_3') then
-				SMODS.add_voucher_to_shop('v_may_astronomy_3')
+		if round % 1 == 0 then
+			if not may.has_card('v_may_astronomy_'..(may.get_highest_special_voucher_tier('astronomy') + 1)) then
+				SMODS.add_voucher_to_shop('v_may_astronomy_'..(may.get_highest_special_voucher_tier('astronomy') + 1))
 				G.E_MANAGER:add_event(Event({func = function()
 				    play_sound('may_positive')
 				return true end}))
@@ -1454,5 +909,70 @@ function may.handle_special_vouchers(round)
 				play_sound('may_positive')
             return true end}))
 		end
+	end]] 
+	for k, v in pairs(G.P_CENTER_POOLS.Voucher) do 
+		if v.special_voucher_behavior then 
+			local spawn, sound, func, duplicates = v.special_voucher_behavior(v) 
+			if spawn and (duplicates or not may.has_card(v.key)) then
+				SMODS.add_voucher_to_shop(v.key)
+				G.E_MANAGER:add_event(Event({func = function()
+					if sound then 
+						if type(sound) == 'string' then 
+							play_sound(sound)
+						else 
+							play_sound(sound[1], sound[2], sound[3])
+						end
+					else 
+						play_sound('may_positive')
+					end
+            	return true end}))
+				if func then 
+					func(v)
+				end
+			end
+		end
 	end
 end
+
+function may.stack_op(num, arrow, amt)
+	if arrow == -1 then
+		return num * amt
+	elseif arrow == 0 then
+		return num ^ amt
+	elseif arrow == 1 then
+		return (math.abs(amt) == 1 and num or num ^ amt)
+	else
+		for i = 1, math.min(to_number(amt), 1000) do
+			num = to_big(num):arrow(arrow, num)
+		end
+		return num
+	end
+end
+
+function may.rep_arrow(num1, arrow, num2, amt)
+	if arrow == -1 then
+		return num1 + num2 * amt
+	elseif arrow == 0 then
+		return num1 * num2 ^ amt
+	elseif arrow == 1 then
+		return num1 ^ (num2 ^ amt)
+	else
+		for i = 1, math.min(to_number(amt), 1000) do
+			num1 = to_big(num1):arrow(arrow, num2)
+		end
+		return num1
+	end
+end
+
+function may.get_run_stage()
+	if not G.GAME.blind then 
+		return 'pre-endless'
+	end
+	for k, v in pairs(G.jokers.cards) do 
+		if v:gc().rarity == 'may_transcendent' then
+			return 'post-transcendent'
+		end
+	end
+	return G.GAME.may_endless_mode and 'endless' or 'pre-endless'
+end
+	

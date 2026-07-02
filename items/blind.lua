@@ -8,7 +8,7 @@ SMODS.Blind {
 		text = { 
 			"Base Chips is",
 			"set to half of",
-			"Base Mult"
+			"base Mult"
 		}
     },
 	modify_hand = function(self, cards, poker_hands, text, mult, hand_chips)
@@ -36,19 +36,19 @@ SMODS.Blind {
 	end
 }
 
---[[SMODS.Blind {
+SMODS.Blind {
 	key = 'half',
-	config = { canchange = true },
 	loc_txt = {
 		name = 'The Half',
 		text = { 
-			"Mult is ignored",
-			"when calculating",
-			"score"
-		}
+			"Halve hands", 
+			"and discards", 
+			"(rounds down)"
+		} 
     },
-	disable = function(self)
-		self.config.canchange = false
+	set_blind = function(self)
+		ease_hands_played(-math.ceil(G.GAME.round_resets.hands * 0.5))
+		ease_discard(-math.ceil(G.GAME.round_resets.discards * 0.5))
 	end,
 	boss = {
 		min = 1,
@@ -56,37 +56,35 @@ SMODS.Blind {
 	}, 
 	boss_colour = HEX('7A09FA'),
 	dollars = 5,
-	mult = 0.3,
+	mult = 1,
 	atlas = "blind",
 	pos = {x = 0, y = 2},
 	in_pool = function(self)
-		return G.GAME.round_resets.ante > 5
+		return G.GAME.round_resets.ante > 4
 	end
-}]] 
+}
 
 SMODS.Blind {
 	key = 'strike',
 	loc_txt = {
 		name = 'The Strike',
 		text = { 
-			"Playing cards",
-			"have negative",
-            "Nominal Chips"
+			"Played cards", 
+			"multiply base Chips", 
+			"by X0.85"
 		}
     },
-	disable = function(self)
-		G.GAME.playing_card_multiplier = math.abs(G.GAME.playing_card_multiplier or 1)
-	end,
-	defeat = function(self)
-		G.GAME.playing_card_multiplier = math.abs(G.GAME.playing_card_multiplier or 1)
-	end,
-	set_blind = function(self)
-		G.GAME.playing_card_multiplier = -math.abs(G.GAME.playing_card_multiplier or 1)
-	end,
 	boss = {
 		min = 1,
 		max = 10
 	}, 
+	calculate = function(self, blind, context)
+		if context.before and context.scoring_hand then
+			return {
+				x_chips = 0.85 ^ context.scoring_hand
+			}
+		end
+	end, 
 	boss_colour = HEX('D3FC7E'),
 	dollars = 5,
 	mult = 1.5,
@@ -130,38 +128,34 @@ SMODS.Blind {
 	pos = {x = 0, y = 3},
 }
 
---[[SMODS.Blind {
+SMODS.Blind {
 	key = 'philosopher',
-	config = { safe_hands = {} },
 	loc_txt = {
 		name = 'The Philosopher',
 		text = { 
-			"You can only play",
-			"4 random Poker Hands"
+			"+1 Hand Size", 
+			"Numbered cards", 
+			"are debuffed"
 		}
     },
-	debuff_hand = function(self, cards, hand, handname, check)
-		if not table_hasvalue(self.config.safe_hands, handname) and not G.GAME.blind.disabled then
-			G.GAME.blind.triggered = true
-			return true
+	calculate = function(self, blind, context)
+		if context.setting_blind and not blind.disabled then
+			G.hand:change_size(-1)
+			G.GAME.round_resets.temp_handsize = (G.GAME.round_resets.temp_handsize or 0) - 1
 		end
-		return false
-	end,
-	set_blind = function(self)
-		for i=1, 4, 1 do
-			table.insert(self.config.safe_hands, may.rndhand())
+		if not blind.disabled and context.debuff_card and context.debuff_card.area ~= G.jokers and not context.debuff_card:is_face() then
+            return {
+                debuff = true
+        	} 
 		end
-	end,
-	disable = function(self)
-		self.config.safe_hands = {}
-	end,
+	end, 
 	boss = {
 		min = 1,
 		max = 10
 	}, 
 	boss_colour = HEX('bf00ff'),
 	dollars = 5,
-	mult = 2,
+	mult = 1.5,
 	atlas = "blind",
 	pos = {x = 0, y = 4},
 	in_pool = function(self)
@@ -171,18 +165,14 @@ SMODS.Blind {
 
 SMODS.Blind {
 	key = 'hourglass',
-	config = { can_apply = true },
 	loc_txt = {
 		name = 'The Hourglass',
 		text = { 
-			"When hand is played,",
-			"apply Eternal to a random",
-			"Joker",
+			"Apply Eternal to", 
+			"rightmost non-Eternal",
+			"Joker when selected"
 		}
     },
-	disable = function(self)
-		self.config.can_apply = false
-	end,
 	boss = {
 		min = 1,
 		max = 10
@@ -192,43 +182,33 @@ SMODS.Blind {
 	mult = 2,
 	atlas = "blind",
 	pos = {x = 0, y = 5},
-	press_play = function(self)
-		if self.config.can_apply and #G.jokers.cards ~= 0 then
+	calculate = function(self, blind, context)
+		if context.setting_blind and not blind.disabled and #G.jokers.cards ~= 0 then
+			local joker
+			for k, v in pairs(G.jokers.cards) do
+				if SMODS.is_eternal(G.jokers.cards[#G.jokers.cards - k + 1]) then
+					joker = v
+					break
+				end
+			end
 			G.E_MANAGER:add_event(Event({trigger = "after", delay = 0.15, func = function()
-				local joker = pseudorandom_element(G.jokers.cards, pseudoseed('may_hourglass'))
+				joker:juice_up(0.3, 0.5)
 				play_sound("tarot1")
 				joker:set_eternal(true)
+				SMODS.juice_up_blind()
 			return true end}))
 		end
 	end,
 }
 
--- After hand is played context (taken from Cryptid)
-local vanf_gfep = G.FUNCS.evaluate_play
-function G.FUNCS.evaluate_play(e)
-	vanf_gfep(e)
-	SMODS.calculate_context({after_play = true})
-	G.GAME.blind:may_after_play()
-end
-
-function Blind:may_after_play()
-	if not self.disabled then
-		local obj = self.config.blind
-		if obj.may_after_play and type(obj.may_after_play) == "function" then
-			return obj:may_after_play()
-		end
-	end
-end
-
 SMODS.Blind {
 	key = 'bug',
-	config = { can_increase = true },
 	loc_txt = {
 		name = 'The Bug',
 		text = { 
-			"^^2 Blind Size",
-			"if played hand reaches",
-			"any Transcendence level"
+			"Cards without",
+			"Enhancements, Editions", 
+			"or Seals are debuffed", 
 		}
     },
 	boss = {
@@ -240,19 +220,21 @@ SMODS.Blind {
 	mult = 2,
 	atlas = "blind",
 	pos = {x = 0, y = 6},
-	may_after_play = function(self)
-		if G.GAME.chips >= G.GAME.blind.chips * 1e100 then
-			local to_ease = G.GAME.blind.chips
-			SMODS.juice_up_blind()
-			G.E_MANAGER:add_event(Event({trigger = 'ease', blocking = false, ref_table = G.GAME.blind, ref_value = 'chips', 
-			ease_to = to_big(get_blind_amount(G.GAME.round_resets.ante) * G.GAME.starting_params.ante_scaling * 2):arrow(2, 2),
-			delay = 0.5, func = (function(t) 
-				play_sound('may_blind_size')
-				return math.floor(t) 
-			end)}))
+	calculate = function(self, blind, context)
+        if not blind.disabled then
+            if context.debuff_card and context.debuff_card.area ~= G.jokers then
+				if SMODS.has_enhancement(context.debuff_card, 'c_base') and not context.debuff_card.edition and not context.debuff_card.seal then
+                	return {
+                    	debuff = true
+                	}
+				end
+            end
 		end
-	end,
-}]]
+	end, 
+	in_pool = function(self)
+		return G.GAME.round_resets.ante > 6
+	end
+}
 
 SMODS.Blind {
 	key = 'calculator',
@@ -291,12 +273,12 @@ SMODS.Blind {
 
 SMODS.Blind {
 	key = 'candle',
-	config = { can_decrease = true },
+	config = { hands = {} },
 	loc_txt = {
 		name = 'The Candle',
 		text = { 
-			"Level down discarded",
-			"Poker Hands by 3"
+			"-1 hand when discarding", 
+			"-1 discard before scoring"
 		}
     },
 	disable = function(self)
@@ -313,9 +295,12 @@ SMODS.Blind {
 	pos = {x = 0, y = 8},
 	calculate = function(self, blind, context)
 		if context.pre_discard then
-			local text,disp_text = G.FUNCS.get_poker_hand_info(G.hand.highlighted)
-			level_up_hand(blind, text, nil, math.max(-3, -G.GAME.hands[text].level))
-			may.ch()
+			ease_hands_played(-1)
+			SMODS.juice_up_blind()
+		end
+		if context.before then
+			ease_discard(-1)
+			SMODS.juice_up_blind()
 		end
 	end,
 	in_pool = function(self)
@@ -393,36 +378,21 @@ SMODS.Blind {
 	pos = {x = 0, y = 10},
 }
 
---[[SMODS.Blind {
+SMODS.Blind {
 	key = 'fall',
-	config = { can_decrease = true },
 	loc_txt = {
 		name = 'The Fall',
 		text = { 
-			"When hand is played,",
-			"set the Nominal Chips multiplier",
-			"of all cards in full deck",
-			"to X0.01 the highest card rank",
-			"in scoring hand",
+			"Temporarily decrease", 
+			"Hand Size by 1 after", 
+			"each hand"
 		}
     },
-	disable = function(self)
-		self.config.can_decrease = false
-	end,
 	calculate = function(self, blind, context)
-		if context.before and self.config.can_decrease then
-			local highest_rank = 0
-			for k, v in pairs(context.scoring_hand) do
-				if v:get_id() > highest_rank then
-					highest_rank = v:get_id()
-				end
-			end
-			for k, v in pairs(G.playing_cards) do
-				v.ability.nominal_multiplier = highest_rank * 0.01
-				if table_hasvalue(G.hand.cards, v) or table_hasvalue(G.play.cards, v) then
-					v:juice_up()
-					play_sound('may_nominal_chips')
-				end
+		if context.after then 
+			if not blind.disabled then
+				G.hand:change_size(-1)
+				G.GAME.round_resets.temp_handsize = (G.GAME.round_resets.temp_handsize or 0) - 1
 			end
 		end
 	end,
@@ -435,7 +405,7 @@ SMODS.Blind {
 	mult = 2,
 	atlas = "blind",
 	pos = {x = 0, y = 11},
-}]] 
+}
 
 SMODS.Blind {
 	key = 'fifth',
@@ -468,24 +438,35 @@ SMODS.Blind {
 }
 
 SMODS.Blind {
-	key = 'squid',
+	key = 'aquatic',
 	loc_txt = {
-		name = 'The Squid',
+		name = 'The Aquatic',
 		text = { 
-			"X0.5 Blind Size",
-			"if played hand is Straight",
+			"Temporarily offsets", 
+			"rank of all cards in", 
+			"full deck by -1"
 		}
     },
-	disable = function(self)
-		G.GAME.blind.chips = get_blind_amount(G.GAME.round_resets.ante) * G.GAME.starting_params.ante_scaling * 2
-		G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-		play_sound('tarot1')
-	end,
-	press_play = function(self)
-		if G.GAME.current_round.current_hand.handname == localize("Straight", 'poker_hands') then
-			G.GAME.blind.chips = G.GAME.blind.chips * 0.5
-			G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-			play_sound('may_blind_size')
+	calculate = function(self, blind, context)
+		if context.setting_blind then
+			if not blind.disabled then
+				for k, v in pairs(G.playing_cards) do 
+					assert(SMODS.modify_rank(v, -1))
+					G.E_MANAGER:add_event(Event({func = function()
+						play_sound('tarot1', 0.5)
+						v:juice_up(0.3, 0.5)
+					return true end})) 
+				end
+			end
+		end
+		if context.end_of_round and context.game_over == false and context.main_eval and not blind.disabled then 
+			for k, v in pairs(G.playing_cards) do 
+				assert(SMODS.modify_rank(v, 1))
+				G.E_MANAGER:add_event(Event({func = function()
+					play_sound('tarot1', 0.75)
+					v:juice_up(0.3, 0.5)
+				return true end})) 
+			end
 		end
 	end,
 	boss = {
@@ -494,7 +475,7 @@ SMODS.Blind {
 	}, 
 	boss_colour = HEX('B626A2'),
 	dollars = 5,
-	mult = 3.5,
+	mult = 2,
 	atlas = "blind",
 	pos = {x = 0, y = 13},
 }
@@ -534,30 +515,28 @@ SMODS.Blind {
 	end
 }
 
---[[SMODS.Blind {
+SMODS.Blind {
 	key = 'coffin',
 	config = { can_debuff = true },
 	loc_txt = {
 		name = 'The Coffin',
 		text = { 
-			"Played cards are",
-			"permanently debuffed",
-			"after scoring"
+			"Randomly discards 25%",
+			"of your deck when selected,", 
+			"rounded down"
 		}
     },
 	disable = function(self)
 		self.config.can_debuff = false
 	end,
 	calculate = function(self, blind, context)
-		if context.after and self.config.can_debuff then
-			G.E_MANAGER:add_event(Event({trigger = "after", delay = 0.75, func = function()
-				for k, v in pairs(context.scoring_hand) do
-					SMODS.debuff_card(v, true, 'may_coffin')
-					v:juice_up()
+		if context.setting_blind then
+			if not blind.disabled then
+				for i = 1, math.floor(#G.playing_cards * 0.25) do 
+					local card = pseudorandom_element(G.deck.cards, pseudoseed('may_coffin'))
+					draw_card(card.area, G.discard, 100, 'up', false, v)
 				end
-				play_sound('tarot1')
-				SMODS.juice_up_blind()
-			return true end}))
+			end
 		end
 	end,
 	boss = {
@@ -569,35 +548,32 @@ SMODS.Blind {
 	mult = 2,
 	atlas = "blind",
 	pos = {x = 0, y = 15},
-}]] 
+}
 
---[[SMODS.Blind {
+SMODS.Blind {
 	key = 'fork',
 	config = { can_debuff = true, debuffed = {} },
 	loc_txt = {
 		name = 'The Fork',
 		text = { 
-			"Discarding debuffs all",
-			"cards held in hand",
-			"that were not discarded",
+			"Discards all", 
+			"cards with an Enhancement,", 
+			"Seal or Edition from full deck", 
+			"when selected"
 		}
     },
 	disable = function(self)
 		self.config.can_debuff = false
 	end,
 	calculate = function(self, blind, context)
-		if context.pre_discard and self.config.can_debuff then
-			G.E_MANAGER:add_event(Event({trigger = "after", delay = 0.75, func = function()
-				for k, v in pairs(G.hand.cards) do
-					if not table_hasvalue(context.full_hand, v) then
-						SMODS.debuff_card(v)
-						v:juice_up()
-						table.insert(self.config.debuffed, v)
+		if context.setting_blind then 
+			if not blind.disabled then
+				for k, v in pairs(G.playing_cards) do
+					if v.edition or v.seal or not SMODS.has_enhancement(v, 'c_base') then 
+						draw_card(v.area, G.discard, 100, 'up', false, v)
 					end
 				end
-				play_sound('tarot1')
-				SMODS.juice_up_blind()
-			return true end}))
+			end
 		end
 	end,
 	boss = {
@@ -606,18 +582,18 @@ SMODS.Blind {
 	}, 
 	boss_colour = HEX('DAC651'),
 	dollars = 5,
-	mult = 2,
+	mult = 1.5,
 	atlas = "blind",
 	pos = {x = 0, y = 16},
-}]] 
+}
 
 SMODS.Blind {
 	key = 'pole',
 	loc_txt = {
 		name = 'The Pole',
 		text = { 
-			"Only most played Poker Hand",
-			"scores"
+			"Only most played",
+			"Poker Hand scores"
 		}
     },
 	debuff_hand = function(self, cards, hand, handname, check)
@@ -673,30 +649,18 @@ SMODS.Blind {
 
 SMODS.Blind {
 	key = 'branches',
-	config = { can_spawn = true },
 	loc_txt = {
 		name = 'The Branches',
 		text = { 
-			"If played hand is most played",
-			"Poker Hand, fill empty",
-			"Joker Slots with Eternal",
-			"copies of Joker"
+			"Lose all empty",
+			"Joker and Consumable Slots", 
+			"when selected"
 		}
     },
-	disable = function(self)
-		self.config.can_spawn = false
-	end,
 	calculate = function(self, blind, context)
-		if context.before and G.GAME.current_round.current_hand.handname == may.favhand() then
-			if self.config.can_spawn then
-				for i=1, G.jokers.config.card_limit - #G.jokers.cards, 1 do
-					local card2 = create_card('Joker', G.jokers, nil, nil, nil, nil, 'j_joker', 'may_trident')
-					G.jokers:emplace(card2)
-					play_sound('tarot1')
-					card2:add_to_deck()
-					card2:set_eternal(true)
-				end
-			end
+		if context.setting_blind and not blind.disabled then
+			G.jokers:change_size(G.jokers.config.card_limit - #G.jokers.cards)
+			G.consumeables:change_size(G.consumeables.config.card_limit - #G.consumeables.cards)
 		end
 	end,
 	boss = {
@@ -709,36 +673,36 @@ SMODS.Blind {
 	atlas = "blind",
 	pos = {x = 0, y = 19},
     in_pool = function(self, args)
-        return G.GAME.round_resets.ante > 4
+        return G.GAME.round_resets.ante > 2
     end
 }
 
---[["SMODS.Blind {
+SMODS.Blind {
 	key = 'runaway',
-	config = { multiplier = 300 },
 	loc_txt = {
 		name = 'The Runaway',
 		text = { 
-			"+#1#% Blind Size",
-			"-30% per blind skipped this run",
+			"#1# Blind Size",
+			"unless a Blind was", 
+			"skipped this Ante", 
+			"G is your highest hyperoperator"
 		}
     },
 	collection_loc_vars = function(self, info_queue, card)
-		return { vars = { 300 } }
+		return { vars = { '{G}4' } }
 	end,
 	loc_vars = function(self, info_queue, card)
-		return { vars = { (self.config.multiplier or 300) - ( G.GAME.skips * 30 ) } }
+		return { vars = { '{G}4' } }
 	end,
-	disable = function(self)
-		G.GAME.blind.chips = get_blind_amount(G.GAME.round_resets.ante) * G.GAME.starting_params.ante_scaling * 2
-		G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-		play_sound('tarot1')
-	end,
-	set_blind = function(self)
-		G.GAME.blind.chips = (get_blind_amount(G.GAME.round_resets.ante) * G.GAME.starting_params.ante_scaling * 2) * (((self.config.multiplier or 300) - ( G.GAME.skips * 30 )) * 0.01)
-		G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-		play_sound('may_blind_size')
-	end,
+	calculate = function(self, blind, context)
+		if context.setting_blind and not blind.disabled and not G.GAME.may_runaway then
+			G.E_MANAGER:add_event(Event({func = function()
+				G.GAME.blind.chips = to_big(G.GAME.blind.chips):arrow(may.global_op, 4)
+				G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+				play_sound('may_blind_size') 
+			return true end}))
+		end
+	end, 
 	boss = {
 		min = 1,
 		max = 10
@@ -751,7 +715,7 @@ SMODS.Blind {
 	in_pool = function(self)
 		return G.GAME.round_resets.ante > 4
 	end
-}]] 
+}
 
 SMODS.Blind {
 	key = 'downpour',
@@ -864,36 +828,41 @@ SMODS.Blind {
 	end
 }
 
---[[SMODS.Blind {
-	key = 'trigonometry',
+SMODS.Blind {
+	key = 'abstract',
 	config = { can_decrease = true, pre_decrease = 0 },
 	loc_txt = {
-		name = 'The Trigonometry',
+		name = 'The Abstract',
 		text = { 
-			"Score Operator is",
-			"temporarily set to +" 
+			"Hand must contain", 
+			"a Suitless or Rankless", 
+			"card"
 		}
     },
-	disable = function(self)
-		self.config.can_decrease = false
-	end,
-	set_blind = function(self)
-		self.config.pre_decrease = G.GAME.current_scoring_calculation_key
-		SMODS.set_scoring_calculation('add')
-	end,
-	defeat = function(self)
-		SMODS.set_scoring_calculation(self.config.pre_decrease or 'multiply')
-	end, 
 	boss = {
 		min = 1,
 		max = 10
 	}, 
 	boss_colour = HEX('B94364'),
 	dollars = 5,
-	mult = 0.4,
+	mult = 2,
 	atlas = "blind",
 	pos = {x = 0, y = 24},
-}]] 
+	get_loc_debuff_text = function(self)
+		return "Hand must contain a Suitless or Rankless card"
+	end,
+	debuff_hand = function(self, cards, hand, handname, check)
+		for k, v in pairs(cards) do
+			if SMODS.has_no_rank(v) or SMODS.has_no_suit(v) then 
+				return false
+			end
+		end
+		return true
+	end,
+	in_pool = function(self)
+		return G.GAME.round_resets.ante > 6
+	end
+}
 
 	-- UltraBlinds
 

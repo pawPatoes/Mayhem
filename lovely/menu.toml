@@ -18,15 +18,7 @@ match_indent = true
 target = "game.lua"
 pattern = "replace_card.states.visible = false"
 position = "before"
-payload = '''
-	if may.conf.Menu then
-		if may.mode == 1 then
-			replace_card:set_ability(G.P_CENTERS.m_mult, true, true)
-		else
-			replace_card:set_ability(G.P_CENTERS.m_may_super_mult, true, true)
-		end
-	end
-'''
+payload = '''replace_card:set_ability(G.P_CENTERS.m_mult, false, false)'''
 match_indent = true
 overwrite = false
 

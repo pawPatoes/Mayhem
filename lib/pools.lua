@@ -1,4 +1,6 @@
 -- Joker Pools
+-- ALL OF THIS IS DEPRECATED
+
 -- Pools in G.P_CENTER_POOLS are created in lib/menu.lua
 
 -- Deprecated
@@ -22,8 +24,21 @@ function may.is_food(card)
 	return card:may_is_pool('Food')
 end
 
+-- deprecated
 function may.is_pool_center(center, pool)
-	if pool == 'Food' then
+	local conv = {
+		{'Food', 'food'}, 
+		{'HandSpecific', 'hand_specific'}, 
+		{'Fusable', 'base_fusable'},
+	}
+	for k, v in pairs(conv) do
+		if pool == conv[k][1] then 
+			pool = conv[k][2]
+			break
+		end
+	end
+	return center.attributes and center.attributes[pool]
+	--[[if pool == 'Food' then
 		if center.pools and center.pools.Food then
 			return true
 		end
@@ -48,7 +63,7 @@ function may.is_pool_center(center, pool)
 	    if center.pools then
 			return not (not center.pools[pool])
 		end 
-	end 
+	end]]
 end
 
 function Card:may_is_pool(key)
