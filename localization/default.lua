@@ -5,16 +5,10 @@ return {
 			mayhem = {
 				name = 'Mayhem', 
 				text = {
-					--[["{C:dark_edition}Fuse{} compatible {C:attention}Jokers{} in {C:attention}long fusion chains{}", 
-					"to get new {C:may_ethereal,E:1}much more powerful{} Jokers and {C:mult,E:1}break Balatro{}",
-					"{C:may_col_mayhem_gradient}Mayhem{} {C:mult,E:1}will however fight back{}", 
-					"Play on {C:may_col_eternum_green,E:1}Eternum Mode{} if you want to", 
-					"{C:mult,E:1}watch the game crumble{} {C:dark_edition,E:1}unimpeded{}",]] 
 					"Ever thought {C:attention,E:1}Balatro{} runs are {C:mult}too short{}?", 
 					"{C:may_col_mayhem_gradient,E:1}Mayhem{} adds {C:green}elaborate{} {C:attention}Joker{} {C:may_col_instability}fusion chains{}, resulting in", 
-					"{C:may_surreal,E:1}omnipotent{} {C:attention}Jokers{} capable of scoring {C:may_interdimensional,E:1}incomprehensibly large numbers{}",
+					"{C:may_opalescent,E:1}omnipotent{} {C:attention}Jokers{} capable of scoring {C:may_prismatic,E:1}incomprehensibly large numbers{}",
 					"That, however, {C:mult}doesn't{} mean you will not face any {C:mult,E:1}challenges{}",
-					"Play on {C:may_col_eternum_green,E:1}Eternum{} mode if you just want to watch the game {C:attention,E:1}burn{}", 
 					" ",
 					"{C:green,E:1,s:2}Thanks for playing!{}", 
 					" ",
@@ -396,7 +390,7 @@ return {
 			may_level_multchips_tutorial = {
 				name = "Level Mult/Chips",
 				text = {
-					"{C:may_ethereal}Level{} {C:mult}Mult{}/{C:chips}Chips{} is",
+					"{C:may_demiurgic}Level{} {C:mult}Mult{}/{C:chips}Chips{} is",
 					"the {C:mult}Mult{}/{C:chips}Chips{} a", 
 					"{C:purple}Poker Hand{} gains",
 					"when it is {C:planet}leveled up{}"
@@ -433,27 +427,28 @@ return {
 					"{C:inactive}3.2 Interest, $15 owned -> +$9.6{}"
 				},
 			},
-			may_ultrablind = {
-				name = "UltraBlind",
+			may_global_op_tutorial = {
+				name = "G - Global Operator", 
 				text = {
-					"Special powerful {C:attention}Boss Blind{} that can appear",
-					"after {C:attention}Ante 8{}",
-					"{C:inactive,s:0.7,E:1}Be careful...{}"
-				},
-			},
+					"{C:may_prismatic}G{} is the current {C:may_prismatic}Global Operator{}", 
+					"It is based on the {C:green}highest{} {C:dark_edition}hyperoperation{}", 
+					"amongst your {C:attention}Jokers{} and {C:dark_edition}Score Operator{}",
+				}
+			}, 
 			
 			may_enf_cosmic = {
 				name = "Consumable Cosmic Ability",
 				text = {
 					"Creates {C:dark_edition}Negative{} copies of the {C:planet}Planet Cards{}", 
 					"corresponding to the {C:purple}Poker Hands{}", 
-					"that are {C:planet}leveled up{}"
+					"that are {C:planet}leveled up{}",
+					"{C:inactive}If they exist{}"
 				},
 			},
 			may_enf_inverted = {
 				name = "Consumable Inverted Ability",
 				text = {
-					"{C:money}+0.01 Interest{}"
+					"{C:money}+0.01{} Interest when used"
 				},
 			},
 			may_enf_twilight = {
@@ -586,9 +581,14 @@ return {
 		    may_notif_overflow_d3 = 'You can find Noituus in the Dependencies ZIP on the Codeberg release.',
 			
 			may_notif_smods_1 = 'Steamodded notice', 
-		    may_notif_smods_d1 = 'Mayhem is incredibly unstable with Steamodded 1221a.', 
-		    may_notif_smods_d2 = 'It is recommended you use SMODS 1224a and above,', 
+		    may_notif_smods_d1 = 'Mayhem is unstable with your Steamodded version.', 
+		    may_notif_smods_d2 = 'It is recommended you use a previous or newer version,', 
 		    may_notif_smods_d3 = 'as crashes will be frequent.',
+			
+			may_notif_config_1 = 'Settings refactor', 
+		    may_notif_config_d1 = '1.4.0 brings an internal refactor to the mod\'s settings', 
+		    may_notif_config_d2 = 'This unfortunately causes most of your settings', 
+		    may_notif_config_d3 = 'to be reset. You will have to set them back again.',
 			
 			may_notif_welcome_1 = 'Welcome to Mayhem!', 
 		    may_notif_welcome_d1 = 'This is your first time playing Mayhem! Thanks!', 

@@ -36,7 +36,7 @@ vec4 effect(vec4 color, Image tex, vec2 tc, vec2 pc)
 
     //undo the recenter
     tc = (tc + vec2(1.0))/2.0;
-
+	
     //Create the horizontal glitch offset effects
     MY_HIGHP_OR_MEDIUMP number offset_l = 0.;
     MY_HIGHP_OR_MEDIUMP number offset_r = 0.;
@@ -67,6 +67,31 @@ vec4 effect(vec4 color, Image tex, vec2 tc, vec2 pc)
     //Apply mask and bulging effect
 	MY_HIGHP_OR_MEDIUMP vec4 crt_tex = Texel( tex, tc);
 
+	//Add bloom
+    MY_HIGHP_OR_MEDIUMP vec4 col = vec4(0.0);
+    MY_HIGHP_OR_MEDIUMP float bloom = 0.0;
+	vec3 final_bloom = vec3(0.0);
+
+    if (bloom_fac > 0.00001 && crt_intensity > 0.000001){
+        bloom = 0.03*(max(0., (min(crt_intensity, 1.))/(0.16*0.3)));
+        MY_HIGHP_OR_MEDIUMP float bloom_dist = 0.0015*float(BLOOM_AMT);
+        MY_HIGHP_OR_MEDIUMP vec4 samp;
+        MY_HIGHP_OR_MEDIUMP float cutoff = 0.6;
+
+        for (int i = -BLOOM_AMT; i <= BLOOM_AMT; ++i)
+            for (int j = -BLOOM_AMT; j <= BLOOM_AMT; ++j){
+                samp = Texel( tex, tc + (bloom_dist/float(BLOOM_AMT))*vec2(float(i), float(j)));
+				samp.r = max(1./(1.-cutoff)*samp.r - 1./(1.-cutoff) + 1., 0.);
+				samp.g = max(1./(1.-cutoff)*samp.g - 1./(1.-cutoff) + 1., 0.);
+				samp.b = max(1./(1.-cutoff)*samp.b - 1./(1.-cutoff) + 1., 0.);
+				col += min(min(samp.r,samp.g),samp.b) * (2. - float(abs(float(i+j)))/float(BLOOM_AMT+BLOOM_AMT));
+        }   
+
+        col.rgb /= float(BLOOM_AMT*BLOOM_AMT);
+        col.a = 1.0;
+		final_bloom += bloom*col.rgb;
+    }
+	
     //intensity multiplier for any visual artifacts
     MY_HIGHP_OR_MEDIUMP float artifact_amplifier = (abs(clamp(offset_l, clamp(offset_r, -1.0, 0.0), 1.0))*glitch_intensity > 0.9 ? 3. : 1.);
 
@@ -83,13 +108,14 @@ vec4 effect(vec4 color, Image tex, vec2 tc, vec2 pc)
         if (offset_l < 0.99 && offset_l > 0.01) rgb_result.r = rgb_result.g*1.5;
         if (offset_r > -0.99 && offset_r < -0.01) rgb_result.g = rgb_result.r*1.5;
     }
-
+	
     //Add the pixel scanline overlay, a repeated 'pixel' mask that doesn't actually render the real image. If these pixels were used to render the image it would be too harsh
 	MY_HIGHP_OR_MEDIUMP vec3 rgb_scanline = 1.0*vec3( 
         clamp(-0.3+2.0*sin( tc.y * scanlines-3.14/4.0) - 0.8*clamp(sin( tc.x*scanlines*4.0), 0.4, 1.0), -1.0, 2.0),
         clamp(-0.3+2.0*cos( tc.y * scanlines) - 0.8*clamp(cos( tc.x*scanlines*4.0), 0.0, 1.0), -1.0, 2.0),
         clamp(-0.3+2.0*cos( tc.y * scanlines -3.14/3.0) - 0.8*clamp(cos( tc.x*scanlines*4.0-3.14/4.0), 0.0, 1.0), -1.0, 2.0));
 	
+	rgb_result += final_bloom;
 	rgb_result += crt_tex.rgb * rgb_scanline * crt_intensity * artifact_amplifier;
 	
     //Add in some noise
@@ -99,37 +125,14 @@ vec4 effect(vec4 color, Image tex, vec2 tc, vec2 pc)
 	rgb_result = (1.0-clamp( noise_fac*artifact_amplifier, 0.0,1.0 ))*rgb_result + dx * clamp( noise_fac*artifact_amplifier, 0.0,1.0 ) * vec3(1.0,1.0,1.0);
 
     //contrast and brightness correction for the CRT effect, also adjusting brightness for bloom
-    rgb_result -= vec3(0.55 - 0.02*(artifact_amplifier - 1. - crt_amout_adjusted*bloom_fac*0.7));
-    rgb_result = rgb_result*(1.0 + 0.14 + crt_amout_adjusted*(0.012 - bloom_fac*0.12));
+    rgb_result -= vec3(0.55 - 0.02*(artifact_amplifier - 1.));
+    rgb_result = rgb_result*(1.0 + 0.14 + crt_amout_adjusted*0.012);
     rgb_result += vec3(0.5);
 
     //Prepare the final colour to return
     MY_HIGHP_OR_MEDIUMP vec4 final_col = vec4( rgb_result*1.0, 1.0 );
-
-    //Finally apply bloom
-    MY_HIGHP_OR_MEDIUMP vec4 col = vec4(0.0);
-    MY_HIGHP_OR_MEDIUMP float bloom = 0.0;
-
-    if (bloom_fac > 0.00001 && crt_intensity > 0.000001){
-        bloom = 0.03*(max(0., (crt_intensity)/(0.16*0.3)));
-        MY_HIGHP_OR_MEDIUMP float bloom_dist = 0.0015*float(BLOOM_AMT);
-        MY_HIGHP_OR_MEDIUMP vec4 samp;
-        MY_HIGHP_OR_MEDIUMP float cutoff = 0.6;
-
-        for (int i = -BLOOM_AMT; i <= BLOOM_AMT; ++i)
-            for (int j = -BLOOM_AMT; j <= BLOOM_AMT; ++j){
-                samp = Texel( tex, tc + (bloom_dist/float(BLOOM_AMT))*vec2(float(i), float(j)));
-                samp.r = max(1./(1.-cutoff)*samp.r - 1./(1.-cutoff) + 1., 0.);
-                samp.g = max(1./(1.-cutoff)*samp.g - 1./(1.-cutoff) + 1., 0.);
-                samp.b = max(1./(1.-cutoff)*samp.b - 1./(1.-cutoff) + 1., 0.);
-                col += min(min(samp.r,samp.g),samp.b) * (2. - float(abs(float(i+j)))/float(BLOOM_AMT+BLOOM_AMT));
-        }   
-
-        col /= float(BLOOM_AMT*BLOOM_AMT);
-        col.a = final_col.a;
-    }
-
-    return (final_col*(1. -1.*bloom) + bloom*col)*mask;
+	
+    return (final_col*mask);
 }
 
 

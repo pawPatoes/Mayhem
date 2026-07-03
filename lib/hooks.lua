@@ -114,22 +114,54 @@ end
 
 local vanf_suph = SMODS.upgrade_poker_hands
 function SMODS.upgrade_poker_hands(args)
+	if type(args.hands) ~= 'table' then 
+		args.hands = {args.hands}
+	end
+	local ast10_money
 	if args.level_up then
 		if G.GAME.may_ring_bonuses and (G.GAME.may_ring_bonuses.levels or 0) ~= 0 then
 		    args.level_up = (args.level_up or 1) + G.GAME.may_ring_bonuses.levels
 		    G.GAME.may_temp_ring_levels = G.GAME.may_ring_bonuses.levels
 		    G.GAME.may_ring_bonuses.levels = 0
 	    end
-	    if #SMODS.find_card('v_may_astronomy_1') ~= 0 then
-		    args.level_up = math.max((args.level_up or 1), 0) * (2 ^ #SMODS.find_card('v_may_astronomy_1'))
+		local pre_astronomy = (args.level_up or 1)
+	    if #SMODS.find_card('v_may_astronomy_1') ~= 0 and (args.level_up or 1) > 0 then
+		    args.level_up = (args.level_up or 1) * (2 ^ #SMODS.find_card('v_may_astronomy_1'))
 	    end
-	    if #SMODS.find_card('v_may_astronomy_3') ~= 0 and hand ~= may.favhand() then
+	    if #SMODS.find_card('v_may_astronomy_3') ~= 0 and (hand ~= may.favhand() or may.has_card('v_may_astronomy_5')) then
 		    args.level_up = args.level_up * (4 ^ #SMODS.find_card('v_may_astronomy_3'))
 	    end
+		if #SMODS.find_card('v_may_astronomy_4') ~= 0 then
+			local avg = 0
+			local num = 0
+			for k, v in pairs(G.GAME.hands) do 
+				if SMODS.is_poker_hand_visible(k) then
+					avg = avg + v.level
+					num = num + 1
+				end
+			end
+			avg = avg / num
+			if G.GAME.hands[args.hands[1]].level < avg then
+				args.level_up = (args.level_up or 1) * (5 ^ #SMODS.find_card('v_may_astronomy_4'))
+			end
+		end
+	    if #SMODS.find_card('v_may_astronomy_6') ~= 0 and (args.level_up or 1) > 0 then
+		    args.level_up = (args.level_up or 1) * (50 ^ #SMODS.find_card('v_may_astronomy_6'))
+	    end 
+		if #SMODS.find_card('v_may_astronomy_9') ~= 0 and (args.level_up or 1) > 0 then
+		    args.level_up = (args.level_up or 1) ^ ((1 + (G.GAME.hands[args.hands[1]].played * 0.025)) ^ #SMODS.find_card('v_may_astronomy_9'))
+	    end
+		if #SMODS.find_card('v_may_astronomy_10') ~= 0 and (args.level_up or 1) > 0 then
+		    args.level_up = (args.level_up or 1) * (may.global_op() ^ ((pre_astronomy ^ G.GAME.hands[args.hands[1]].played) * 5))
+			ast10_money = pre_astronomy * G.GAME.hands[args.hands[1]].played
+    	end
 	end
 	vanf_suph(args)
 	if args.level_up then
 		may.toggle_ring_display(false)
+		if ast10_money then
+			may.hand_dollars(args.from, args.hands[1], args.instant, -1, ast10_money)
+		end
 	end
 end 
 
@@ -140,16 +172,16 @@ function G.FUNCS.select_blind(e)
 	if not G.GAME.may_initialized_start_timers then
 		if may.conf.round_punishment then
 			may.add_round_timer(57, 'mythic_scale_warning')
-			may.add_round_timer(117, 'transcendent_scale_warning')
-			may.add_round_timer(147, 'interdimensional_scale_warning')
-			may.add_round_timer(207, 'ethereal_scale_warning')
-			may.add_round_timer(297, 'hyperascendant_scale_warning')
+			may.add_round_timer(117, 'ethereal_scale_warning')
+			may.add_round_timer(147, 'prismatic_scale_warning')
+			may.add_round_timer(207, 'demiurgic_scale_warning')
+			may.add_round_timer(297, 'transcendent_scale_warning')
 		
 			may.add_round_timer(60, 'mythic_scale')
-			may.add_round_timer(120, 'transcendent_scale')
-			may.add_round_timer(150, 'interdimensional_scale')
-			may.add_round_timer(210, 'ethereal_scale')
-			may.add_round_timer(300, 'hyperascendant_scale')
+			may.add_round_timer(120, 'ethereal_scale')
+			may.add_round_timer(150, 'prismatic_scale')
+			may.add_round_timer(210, 'demiurgic_scale')
+			may.add_round_timer(300, 'transcendent_scale')
 		end
 		G.GAME.may_initialized_start_timers = true
 	end
@@ -208,24 +240,18 @@ function get_blind_amount(ante)
 	local big0_5 = to_big(0.5)
 	-- Fix decimal ante
 	local amount = to_big(vanf_gba(math.floor(ante)) * (big1 + (ante - math.floor(ante)))) 
-	if (G.GAME.may_instability or 0) > 0 then
-		amount = to_big(amount):arrow(1, to_big(big1 + (to_big(G.GAME.may_instability) * big0_1)))
-	    amount = FALLBACK(amount, ante)
-	end
-	if G.GAME.may_instability_blind_increases and #G.GAME.may_instability_blind_increases > 0 then
-		for k, v in ipairs(G.GAME.may_instability_blind_increases) do
-		    amount = to_big(amount):arrow(v[1], to_big(v[2]))
-        end
+	if (G.GAME.may_instability or 0) > 0 and may.has_card('j_may_omniversal_catalyst') then
+		amount = to_big(amount):arrow(may.global_op(), to_big(big1 + (to_big(G.GAME.may_instability) * big0_1)))
 	    amount = FALLBACK(amount, ante)
 	end
 	if may.conf.scaling then
 		ante = to_big(math.abs(ante or 1))
 		local mythic = to_big(G.GAME.may_mythic_scaling or 0)
-		local transcendent = to_big(G.GAME.may_transcendent_scaling or 0)
-		local interdimensional = to_big(G.GAME.may_interdimensional_scaling or 0) 
 		local ethereal = to_big(G.GAME.may_ethereal_scaling or 0)
-		local surreal = to_big(G.GAME.may_surreal_scaling or 0)
-		local hyperascendant = to_big(G.GAME.may_hyperascendant_scaling or 0)
+		local prismatic = to_big(G.GAME.may_prismatic_scaling or 0) 
+		local demiurgic = to_big(G.GAME.may_demiurgic_scaling or 0)
+		--local surreal = to_big(G.GAME.may_surreal_scaling or 0)
+		local transcendent = to_big(G.GAME.may_transcendent_scaling or 0)
 		if mythic > to_big(0) then
 			amount = to_big(amount):arrow(1, to_big(((mythic * ((big20 + (to_big(ante) * big0_1)) + big1)))))
 		    amount = FALLBACK(amount, ante)
@@ -238,16 +264,16 @@ function get_blind_amount(ante)
 			amount = to_big(amount):arrow(2, to_big((interdimensional * ((big20 + (to_big(ante) * big0_3)) + big1))))
 		    amount = FALLBACK(amount, ante)
 	    end
-		if ethereal > to_big(0) then 
-			amount = to_big(amount):arrow(3, to_big((ethereal * ((big35 + (to_big(ante) * big0_35)) + big1))))
+		if demiurgic > to_big(0) then 
+			amount = to_big(amount):arrow(3, to_big((demiurgic * ((big35 + (to_big(ante) * big0_35)) + big1))))
 		    amount = FALLBACK(amount, ante)
 	    end
-		if surreal > to_big(0) then 
+		--[[if surreal > to_big(0) then 
 			amount = to_big(amount):arrow(4, to_big(surreal * (to_big(ante) * big0_1) + big1_5))
 		    amount = FALLBACK(amount, ante)
-	    end
-		if hyperascendant > to_big(0) then
-			amount = to_big(amount):arrow(to_big(math.floor(big3 + to_big(ante):logBase(big3) * (hyperascendant + big1))), to_big((hyperascendant * ((big50 + (to_big(ante) * big0_5)) + big1))))
+	    end]] 
+		if transcendent > to_big(0) then
+			amount = to_big(amount):arrow(to_big(math.floor(big3 + to_big(ante):logBase(big3) * (transcendent + big1))), to_big((transcendent * ((big50 + (to_big(ante) * big0_5)) + big1))))
 		end
 	end
 	amount = FALLBACK(amount, ante)
@@ -320,7 +346,8 @@ end
 local vanf_ed = ease_dollars
 function ease_dollars(mod, instant)
 	if to_big(mod) == to_big(0) then instant = true end
-    vanf_ed(mod, to_big(mod or 0) == to_big(0) and true or instant)
+	mod = mod * (G.GAME.may_money_multiplier or 1)
+    vanf_ed(mod, instant)
 end
 
 -- Taken from Partner
@@ -347,6 +374,7 @@ function end_round()
 	vanf_er()
 	if G.GAME.blind_on_deck == 'Boss' then
 		G.GAME.may_bosses_defeated = (G.GAME.may_bosses_defeated or 0) + 1
+		G.GAME.may_runaway = false
 	end
 	if G.GAME.may_daredevil_active then
 		change_operator(-G.GAME.may_daredevil_active)
@@ -425,31 +453,6 @@ G.FUNCS.end_consumeable = function(e, delayfac)
 	local prev_state = G.STATE
 	vanf_gfec(e, delayfac)
 	G.STATE = prev_state
-	--[[G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.2, func = function()
-        G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.1, func = function()
-            G.TAROT_INTERRUPT = nil
-			--G.STATE = prev_state
-            G.CONTROLLER.locks.use = false
-			if G.booster_pack and G.booster_pack.alignment then
-                G.booster_pack.alignment.offset.y = G.booster_pack.alignment.offset.py
-                G.booster_pack.alignment.offset.py = nil
-			end
-            if G.shop and G.shop.alignment then 
-                G.shop.alignment.offset.y = G.shop.alignment.offset.py
-                G.shop.alignment.offset.py = nil
-				G.STATE = G.STATES.SHOP
-            end
-            if G.blind_select and G.blind_select.alignment then
-                G.blind_select.alignment.offset.y = G.blind_select.alignment.offset.py
-                G.blind_select.alignment.offset.py = nil
-				G.STATE = G.STATES.BLIND_SELECT
-            end
-            if G.round_eval and G.round_eval.alignment then
-                G.round_eval.alignment.offset.y = G.ROOM.T.y + 15
-                G.round_eval.alignment.offset.x = 0
-            end
-        return true end}))
-    return true end}))]] 
 end
 
 local vanf_caath = CardArea.add_to_highlighted
@@ -475,4 +478,65 @@ local vanf_sb = G.FUNCS.skip_booster
 G.FUNCS.skip_booster = function(e)
 	vanf_sb(e)
 	G.GAME.may_packs_skipped = (G.GAME.may_packs_skipped or 0) + 1
+end
+
+local vanf_sb = G.FUNCS.skip_blind
+function G.FUNCS.skip_blind(e)
+	vanf_sb(e)
+	G.GAME.may_runaway = true
+end
+
+local vanf_ii = SMODS.injectItems
+function SMODS.injectItems(...)
+    vanf_ii(...)
+	for k, v in pairs(G.P_CENTERS) do
+		if may.is_fusable(v) then
+			if not may.is_fusion(v) then
+				SMODS.add_attribute('base_fusable', {v.key})
+				SMODS.add_attribute('fusable', {v.key})
+			else
+				SMODS.add_attribute('fusable', {v.key})
+				SMODS.add_attribute('fusion', {v.key})
+			end
+		else
+			if may.is_fusion(v) then
+				SMODS.add_attribute('fusion', {v.key})
+			end
+		end
+		if v.rarity == 'may_mythic' then
+			v.hoverbg_shader = v.hoverbg_shader or "may_mythic_bg"
+			v.hoverbg_colour = v.hoverbg_colour or HEX("666666")	
+		elseif v.rarity == 'may_ethereal' then
+			v.hoverbg_shader = v.hoverbg_shader or "may_ethereal_bg"
+			v.hoverbg_colour = v.hoverbg_colour or HEX("666666")
+			v.bordertextbg_shader = v.bordertextbg_shader or "may_alpha_effect"
+		elseif v.rarity == 'may_prismatic' then
+			v.hoverbg_shader = v.hoverbg_shader or "may_prismatic_bg"
+			v.hoverbg_colour = v.hoverbg_colour or HEX("666666")
+			v.bordertextbg_shader = v.bordertextbg_shader or "may_alpha_effect"
+		elseif v.rarity == 'may_transcendent' then
+			v.hoverbg_shader = v.hoverbg_shader or "may_transcendent_bg"
+			v.hoverbg_colour = v.hoverbg_colour or HEX("666666")
+			v.bordertextbg_shader = v.bordertextbg_shader or "may_alpha_effect"
+			v.bordertextbg_colour = v.bordertextbg_colour or HEX("FFFFFF")
+			v.set_card_type_badge = v.set_card_type_badge or may.transcendent_badge
+		elseif v.rarity == 'may_paradoxical' then
+			v.hoverbg_shader = v.hoverbg_shader or "may_paradoxical_bg"
+			v.hoverbg_colour = v.hoverbg_colour or HEX("aaaaaa")
+			v.bordertextbg_shader = v.bordertextbg_shader or "may_alpha_effect"
+			v.bordertextbg_colour = v.bordertextbg_colour or HEX("FFFFFF")
+			v.set_card_type_badge = v.set_card_type_badge or may.paradoxical_badge
+		end
+	end
+end
+
+local vanf_cc = create_card
+function create_card(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
+	local card = vanf_cc(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
+	if G.STAGE ~= G.STAGES.MAIN_MENU and card.gc and card:gc() then
+		if card:has_attribute('hand_specific') and may.has_card('v_may_astronomy_6') then
+			card:set_ability(G.P_CENTERS.c_black_hole)
+		end
+	end
+	return card
 end

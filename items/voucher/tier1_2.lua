@@ -576,9 +576,6 @@ SMODS.Voucher {
         G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
             play_sound('may_error_seal')
 		return true end}))
-        for i=1, 15 do
-            may.h(may.obfuscatedtext(math.random(4, 7)), may.obfuscatedtext(math.random(4, 7)), may.obfuscatedtext(math.random(4, 7)), may.obfuscatedtext(math.random(4, 7)))
-        end
         may.ch()
     end, 
 	calculate = function(self, card, context)
@@ -677,9 +674,6 @@ SMODS.Voucher {
         G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
             play_sound('may_error_seal')
 		return true end}))
-        for i=1, 15 do
-            may.h(may.obfuscatedtext(math.random(4, 7)), may.obfuscatedtext(math.random(4, 7)), may.obfuscatedtext(math.random(4, 7)), may.obfuscatedtext(math.random(4, 7)))
-        end
         may.ch()
     end, 
 	calculate = function(self, card, context)
@@ -846,7 +840,7 @@ SMODS.Voucher {
 		text = {
 			"{C:dark_edition}Upside Down{} Consumables", 
 			"will appear {X:attention,C:white}35%{} more {C:green}frequently{}",
-			may.pager(), 
+			may.pager(40), 
 			"{C:inactive}#1# in #2# >> #1# in #3#{}"
 		}
 	},
@@ -869,7 +863,7 @@ SMODS.Voucher {
 		text = {
 			"{C:dark_edition}Upside Down{} Consumables", 
 			"will appear {X:attention,C:white}50%{} more {C:green}frequently{}", 
-			may.pager(55), 
+			may.pager(40), 
 			"{C:inactive}#1# in #2# >> #1# in #3#{}"
 		}
 	},

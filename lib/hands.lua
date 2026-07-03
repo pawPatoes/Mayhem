@@ -14,7 +14,7 @@ function may.no_context_lvl_up(card, hand, instant, amount)
 end
 
 -- Gets the least played Poker Hand 
-function lphand()
+function may.lphand()
 	if not G.GAME then return 0 else
 		local chosen_hand = 'High Card'
 		local lowest_amount = math.huge
@@ -26,12 +26,6 @@ function lphand()
 		end
 		return chosen_hand
 	end
-end
-
--- Get level of most played Poker Hand 
-function get_mphand_level()
-	if not G.GAME then return 0 end
-	return G.GAME.hands[may.favhand()].level 
 end
 
 function may.get_all_ph_mult(ignore)
@@ -149,7 +143,6 @@ function may.level_up_hand_hyper(card, hand, instant, amount, arrow)
 	end
 end
 
--- Equals level basically, used in stuff like Mangas
 function may.set_hand_level(card, hand, instant, mod)
 	if hand and G.GAME.hands[hand] then
 		local previous = { mult = G.GAME.hands[hand].mult, chips = G.GAME.hands[hand].chips, level = G.GAME.hands[hand].level }
@@ -628,14 +621,26 @@ function may.hand_multchips(card, hand, instant, chips, mult)
 	    if chips[1] == 'eq' then
 			G.GAME.hands[hand].chips = to_big(chips[2])
 	    else
-			G.GAME.hands[hand].chips = to_big(G.GAME.hands[hand].chips):arrow(chips[1], chips[2])
+			if chips[3] and chips[3] > 1 and chips[1] > 1 then 
+				for i = 1, math.min(to_number(chips[3]), 1000) do
+					G.GAME.hands[hand].chips = to_big(G.GAME.hands[hand].chips):arrow(chips[1], chips[2])
+				end
+			else 
+				G.GAME.hands[hand].chips = to_big(G.GAME.hands[hand].chips):arrow(chips[1], may.stack_op(chips[2], chips[1], (chips[3] or 1)))
+			end
 		end
 	end
 	if mult then
 	    if mult[1] == 'eq' then
 			G.GAME.hands[hand].mult = to_big(mult[2])
 	    else
-			G.GAME.hands[hand].mult = to_big(G.GAME.hands[hand].mult):arrow(mult[1], mult[2])
+			if mult[3] and mult[3] > 1 and mult[1] > 1 then 
+				for i = 1, math.min(to_number(mult[3]), 1000) do
+					G.GAME.hands[hand].mult = to_big(G.GAME.hands[hand].mult):arrow(mult[1], mult[2])
+				end
+			else 
+				G.GAME.hands[hand].mult = to_big(G.GAME.hands[hand].mult):arrow(mult[1], may.stack_op(mult[2], mult[1], (mult[3] or 1)))
+			end
 		end
 	end
 	if to_big(G.GAME.hands[hand].chips):isNaN() then
@@ -648,34 +653,50 @@ function may.hand_multchips(card, hand, instant, chips, mult)
 		may.h(localize(hand, 'poker_hands'), prev_chips, prev_mult, G.GAME.hands[hand].level)
 		delay(0.5)
 		if chips then 
+			local operand = may.round(math.abs(chips[2]), 3)
 			local op = may.generate_arrow_text(chips[1])
 			local op_num = chips[1]
 			if chips[1] == -1 and to_big(chips[2]) < to_big(0) then
 				op = '-'
 				op_num = -2
 			end
+			if (chips[3] or 1) > 1 then 
+				if chips[1] > 1 then
+					operand = operand..' (X'..chips[3]..')'
+				else
+					operand = may.stack_op(chips[2], chips[1], chips[3])
+				end
+			end
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
 				G.TAROT_INTERRUPT_PULSE = true
 				play_sound(may.get_operation_sound(op_num, 'chips'))
 				if card then card:juice_up(0.8, 0.5) end
 			return true end}))
-			may.hc(op..may.round(math.abs(chips[2]), 3), true)
+			may.hc(op..operand, true)
 			delay(0.2)
 			may.hc(G.GAME.hands[hand].chips, false)
 		end
 		if mult then 
+			local operand = may.round(math.abs(mult[2]), 3)
 			local op = may.generate_arrow_text(mult[1])
 			local op_num = mult[1]
 			if mult[1] == -1 and to_big(mult[2]) < to_big(0) then
 				op = '-'
 				op_num = -2
 			end
+			if (mult[3] or 1) > 1 then 
+				if mult[1] > 1 then
+					operand = operand..' (X'..mult[3]..')'
+				else
+					operand = may.stack_op(mult[2], mult[1], mult[3])
+				end
+			end
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
 			    G.TAROT_INTERRUPT_PULSE = true
 				play_sound(may.get_operation_sound(op_num, 'mult'))
 				if card then card:juice_up(0.8, 0.5) end
 			return true end}))
-			may.hm(op..may.round(math.abs(mult[2]), 3), true)
+			may.hm(op..operand, true)
 			delay(0.2)
 			may.hm(G.GAME.hands[hand].mult, false)
 		end
@@ -700,11 +721,19 @@ function may.hand_multchips_all(card, ignore, instant, chips, mult, hand_text)
 		may.h(hand_text or (not ignore and 'All Hands' or 'Other Hands'), '...', '...', '...')
 		delay(0.5)
 		if chips then 
+			local operand = chips[2]
 			local op = may.generate_arrow_text(chips[1])
 			local op_num = chips[1]
 			if chips[1] == -1 and to_big(chips[2]) < to_big(0) then
 				op = '-'
 				op_num = -2
+			end
+			if (chips[3] or 1) > 1 then 
+				if chips[1] > 1 then
+					operand = operand..' (X'..chips[3]..')'
+				else
+					operand = may.stack_op(chips[2], chips[1], chips[3])
+				end
 			end
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
 				G.TAROT_INTERRUPT_PULSE = true
@@ -714,11 +743,19 @@ function may.hand_multchips_all(card, ignore, instant, chips, mult, hand_text)
 			may.hc(op..math.abs(chips[2]), true)
 		end
 		if mult then 
+			local operand = mult[2]
 			local op = may.generate_arrow_text(mult[1])
 			local op_num = mult[1]
 			if mult[1] == -1 and to_big(mult[2]) < to_big(0) then
 				op = '-'
 				op_num = -2
+			end
+			if (mult[3] or 1) > 1 then 
+				if mult[1] > 1 then
+					operand = operand..' (X'..mult[3]..')'
+				else
+					operand = may.stack_op(mult[2], mult[1], mult[3])
+				end
 			end
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
 				G.TAROT_INTERRUPT_PULSE = true
@@ -835,7 +872,7 @@ function may.jovianhand(hand)
 			break
 		end
 	end
-	return key or 'c_may_thebe'
+	return key
 end
 
 -- Gets the Saturnian Moon corresponding to a specific Poker Hand
@@ -847,5 +884,5 @@ function may.saturnianhand(hand)
 			break
 		end
 	end
-	return key or 'c_may_janus'
+	return key
 end 

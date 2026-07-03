@@ -439,10 +439,11 @@ SMODS.Edition {
 		text = {
 			"{X:purple,C:white}+5{} Mult & Chips",
 			"{X:purple,C:white}X1.2{} Mult & Chips",
-			"{C:inactive}WIP Shader{}"
+			" ", 
+			"{C:inactive,E:1}Shader by fokuto{}"
 		}
 	},
-	shader = 'shimmering',
+	shader = 'vignette',
 	discovered = true,
 	badge_colour = HEX('aaaaaa'),
 	config = { mult = 5, chips = 5, x_mult = 1.2, x_chips = 1.2 },
@@ -517,11 +518,7 @@ SMODS.Edition{
 		name = "Nostalgic",
 		label = "Nostalgic",
 		text = {
-            "When {C:attention}Blind{} is {C:attention}selected{}", 
-            "create a copy of", 
-            "{C:tarot}The Fool{} or {C:planet}Dysnomia{}", 
-            "{C:green}regardless{} of {C:attention}card area{}", 
-            "{C:inactive}Requires room{}"
+            "{X:chips,C:white}X1.3{} Chips and {C:money}+$2{}"
 		}
 	},
 	shader = 'nostalgic',
@@ -530,26 +527,17 @@ SMODS.Edition{
 	sound = { sound = "may_e_nostalgic", per = 1, vol = 0.9 },
 	unlocked = true,
 	in_shop = true,
-	weight = 3,
-	extra_cost = 11,
+	weight = 5,
+	extra_cost = 8,
 	apply_to_float = true,
-    loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_CENTERS.c_fool
-        info_queue[#info_queue + 1] = G.P_CENTERS.c_may_dysnomia
-    end,
+	config = { x_chips = 1.3, p_dollars = 2 },
     calculate = function(self, card, context)
-        if context.setting_blind then 
-            if G.consumeables and #G.consumeables.cards < G.consumeables.config.card_limit then 
-                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-                    local choice = pseudorandom_element({'c_fool', 'c_may_dysnomia'}, pseudoseed('may_nostalgic'))
-                    SMODS.add_card({ key = choice })
-                    card_eval_status_text(card, 'extra', nil, nil, nil, { message = {(choice == 'c_fool' and '+The Fool' or '+Dysnomia')}, colour = (choice == 'c_fool' and G.C.SECONDARY_SET.Tarot or G.C.SECONDARY_SET.Planet), delay = 0.45})
-                return true end}))
-            end 
-        end 
-    end, 
-	in_pool = function(self, args)
-        return G.GAME.may_endless_mode, { allow_duplicates = true }
+        if context.pre_joker or (context.main_scoring and context.cardarea == G.play) then
+			return {
+				x_chips = self.config.x_chips,
+				p_dollars = self.config.p_dollars
+			}
+		end
     end
 }
 

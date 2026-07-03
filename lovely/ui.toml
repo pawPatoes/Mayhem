@@ -1,0 +1,219 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 1000
+
+## entropy stuff
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''function create_badge(_string, _badge_col, _text_col, scaling)
+    scaling = scaling or 1'''
+position = "at"
+payload = '''function create_badge(_string, _badge_col, _text_col, scaling, _shader)
+    scaling = scaling or 1'''
+match_indent = true
+ 
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''{n=G.UIT.R, config={align = "cm", colour = _badge_col or G.C.GREEN, r = 0.1, minw = 2, minh = 0.4*scaling, emboss = 0.05, padding = 0.03*scaling}, nodes={'''
+position = "at"
+payload = '''{n=G.UIT.R, config={align = "cm", colour = _badge_col or G.C.GREEN, shader = _shader, r = 0.1, minw = 2, minh = 0.4*scaling, emboss = 0.05, padding = 0.03*scaling}, nodes={'''
+match_indent = true
+ 
+
+## hacky method of preventing repeat patches
+## _draw()
+[[patches]]
+[patches.pattern]
+target = "engine/ui.lua"
+pattern = '''-- don't duplicate the line
+        love.graphics.polygon((_type == 'line' or _type == 'line_emboss') and 'line' or "fill", self.pixellated_rect[_type].vertices)'''
+position = "at"
+payload = '''-- [ THE PATCH WAS USED UP ]''' # haha funny deltarune reference
+match_indent = true
+
+
+## UIBox shaders
+## UIElement:draw_pixellated_rect()
+[[patches]]
+[patches.pattern]
+target = "engine/ui.lua"
+pattern = '''love.graphics.polygon((_type == 'line' or _type == 'line_emboss') and 'line' or "fill", self.pixellated_rect[_type].vertices)'''
+position = "at"
+payload = '''
+    local function _draw()
+        -- for those copying this patch: DO NOT REMOVE THE COMMENT BELOW
+        -- don't duplicate the line
+        love.graphics.polygon((_type == 'line' or _type == 'line_emboss') and 'line' or "fill", self.pixellated_rect[_type].vertices)
+    end
+
+    local function _draw_layer(shader, send)
+        local args = {
+            G.TIMERS.REAL/28,
+            G.TIMERS.REAL
+        }
+        
+        if shader == "none" or shader == "dissolve" then
+            _draw()
+            return
+        elseif send then
+            for k, v in ipairs(send) do
+                local val = v.val or (v.func and v.func(self))
+
+                -- thanks talisman
+                if Talisman and type(val) == "table" and is_number(val) then
+                	if val > to_big(1e300) then
+                		val = 1e300
+                	else
+                		val = val:tonumber()
+                	end
+                end
+
+                G.SHADERS[shader]:send(v.name, val)
+            end
+        elseif shader == "vortex" then
+            G.SHADERS['vortex']:send('vortex_amt', G.TIMERS.REAL - (G.vortex_time or 0))
+        else
+            local key = SMODS.Shaders[shader].original_key
+            G.SHADERS[shader]:send(key, args)
+        end
+
+        love.graphics.setShader(G.SHADERS[shader], G.SHADERS[shader])
+        _draw()
+        love.graphics.setShader()
+    end
+
+    if self.config.shader then
+        -- simple single shader
+        if type(self.config.shader) == "string" then
+            _draw_layer(self.config.shader)
+
+        -- more complex shader calls
+        elseif type(self.config.shader) == "table" then
+            -- one shader pass with a custom send
+            if self.config.shader.shader then
+                _draw_layer(self.config.shader.shader, self.config.shader.send)
+
+            -- list of shaders
+            elseif #shader > 0 then
+                for _, v in ipairs(self.config.shader) do
+                    if type(v) == "string" then
+                        _draw_layer(v.shader)
+                    elseif type(v) == "table" then
+                        _draw_layer(v.shader, v.send)
+                    end
+                end
+            end
+        end
+
+    -- no shader
+    else
+        _draw()
+    end
+'''
+match_indent = true
+
+## restore
+## _draw()
+[[patches]]
+[patches.pattern]
+target = "engine/ui.lua"
+pattern = '''-- [ THE PATCH WAS USED UP ]'''
+position = "at"
+payload = '''-- don't duplicate the line
+love.graphics.polygon((_type == 'line' or _type == 'line_emboss') and 'line' or "fill", self.pixellated_rect[_type].vertices)'''
+match_indent = true
+
+## no more entropy stuff
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''
+local ret_val = {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={'''
+position = "at"
+payload = '''bordertextbg_shader = card.config.center and card.config.center.bordertextbg_shader or "none"
+bordertextbg_colour = card.config.center and card.config.center.bordertextbg_colour or G.C.UI.BACKGROUND_WHITE
+local ret_val = {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''{n=G.UIT.C, config={align = "cm", func = 'show_infotip',object = Moveable(),ref_table = next(info_boxes) and info_boxes or nil}, nodes={
+{n=G.UIT.R, config={padding = outer_padding, r = 0.12, colour = lighten(G.C.JOKER_GREY, 0.5), emboss = 0.07}, nodes={
+{n=G.UIT.R, config={align = "cm", padding = 0.07, r = 0.1, colour = adjust_alpha(card_type_background, 0.8)}, nodes={'''
+position = "at"
+payload = '''{n=G.UIT.C, config={align = "cm", func = 'show_infotip',object = Moveable(),ref_table = next(info_boxes) and info_boxes or nil, shader = bordertextbg_shader}, nodes={
+{n=G.UIT.R, config={padding = outer_padding, r = 0.12, colour = bordertextbg_colour, shader = bordertextbg_shader, emboss = 0.07}, nodes={
+{n=G.UIT.R, config={align = "cm", padding = 0.07, r = 0.1, colour = bg_colour, shader = bg_shader}, nodes={'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''AUT.ccd and desc_from_rows(AUT.ccd.main) or nil,
+name_from_rows(AUT.name, is_playing_card and G.C.WHITE or nil),
+desc_from_rows(AUT.main),'''
+position = "at"
+payload = '''AUT.ccd and desc_from_rows(AUT.ccd.main, nil, nil, bordertextbg_shader, bordertextbg_colour) or nil,
+name_from_rows(AUT.name, is_playing_card and G.C.WHITE or nil),
+desc_from_rows(AUT.main, nil, nil, bordertextbg_shader, bordertextbg_colour),'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''
+info_boxes = {{n=G.UIT.R, config = {align="cm", padding = 0.05, card_pos = card.T.x }, nodes = info_cols}}'''
+position = "at"
+payload = '''local bg_shader = card.config.center and card.config.center.hoverbg_shader or "none"
+local bg_colour = may.conf.joker_shaders and card.config.center and card.config.center.hoverbg_colour or adjust_alpha(card_type_background, 0.8)
+info_boxes = {{n=G.UIT.R, config = {align="cm", padding = 0.05, card_pos = card.T.x }, nodes = info_cols}}'''
+match_indent = true
+	  
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''return {n=G.UIT.R, config={align = "cm", colour = desc_nodes.background_colour or empty and G.C.CLEAR or G.C.UI.BACKGROUND_WHITE, r = 0.1, padding = 0.04, minw = 2, minh = 0.8, emboss = not empty and 0.05 or nil, filler = true, main_box_flag = desc_nodes.main_box_flag and true or nil}, nodes={
+      {n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes=t}
+    }}'''
+position = "at"
+payload = '''
+if (bordertextbg_colour == nil or not may.conf.joker_shaders) then bordertextbg_colour = desc_nodes.background_colour end
+return {n=G.UIT.R, config={align = "cm", colour = bordertextbg_colour or empty and G.C.CLEAR or G.C.UI.BACKGROUND_WHITE, r = 0.1, padding = 0.04, minw = 2, minh = 0.8, emboss = not empty and 0.05 or nil, filler = true, main_box_flag = desc_nodes.main_box_flag and true or nil, shader = bordertextbg_shader}, nodes={
+	{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes=t}
+}}
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''function desc_from_rows(desc_nodes, empty, maxw)'''
+position = "at"
+payload = '''function desc_from_rows(desc_nodes, empty, maxw, bordertextbg_shader, bordertextbg_colour)'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''multi_boxes[#multi_boxes+1] = desc_from_rows(box)'''
+position = "at"
+payload = '''
+local bordertextbg_shader = may.conf.joker_shaders and card.config.center and card.config.center.bordertextbg_shader or "none"
+local bordertextbg_colour = may.conf.joker_shaders and card.config.center and card.config.center.bordertextbg_colour or G.C.UI.BACKGROUND_WHITE
+multi_boxes[#multi_boxes+1] = desc_from_rows(box, nil, nil, bordertextbg_shader, bordertextbg_colour)
+'''
+match_indent = true
+
+
+##smods pls fix
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/utils.lua"]'''
+pattern = '''G.SHADERS[shader]:send("uie_details", {element.VT.x * tile_scale, element.VT.y * tile_scale, element.VT.w * tile_scale, element.VT.h * tile_scale})'''
+position = "at"
+payload = '''G.SHADERS[shader]:send("uie_details", {element.VT.x * tile_scale + element.container.T.x * tile_scale, element.VT.y * tile_scale + element.container.T.y * tile_scale, element.VT.w * tile_scale, element.VT.h * tile_scale})'''
+match_indent = true

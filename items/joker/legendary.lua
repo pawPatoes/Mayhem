@@ -1,6 +1,6 @@
 -- Legendary Jokers
 
-local BA_messages = {
+may.blue_album_messages = {
 	"What's with these homies dissing my girl?",
 	"Where i come from is a piece of crap",
 	"Why do they gotta front?",
@@ -23,9 +23,9 @@ SMODS.Joker {
 				"This Joker {C:attention}gains{} {X:mult,C:white}^#1#{} Mult", 
 				"if hand is played while {C:attention}Joker Slots{}",
 				"are {C:mult}not{} {C:attention}fully occupied{}",
-				may.pager(30),
+				may.pager(40),
 				"{C:inactive}Currently {X:mult,C:white}^#2#{} {C:inactive}Mult{}",
-				may.pager(30),
+				may.pager(40),
 				"{C:inactive,E:1,s:0.7}#3#{}",
 			},
 			{
@@ -41,10 +41,15 @@ SMODS.Joker {
 	immutable = true,
 	pos = { x = 2, y = 6 },
 	cost = 20,
+	attributes = {
+		'joker_slot', 
+		'emult', 
+		'scaling'
+	}, 
 	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.extra.Emult_gain, card.ability.extra.Emult, BA_messages[math.random(#BA_messages)] } }
-   end,
-   add_to_deck = function(self, card, from_debuff)
+		return { vars = { card.ability.extra.Emult_gain, card.ability.extra.Emult, may.blue_album_messages[math.random(#may.blue_album_messages)] } }
+    end,
+    add_to_deck = function(self, card, from_debuff)
 		if (not from_debuff) and may.conf.JokerEffects then
 			play_sound("may_weezer")
 		end
@@ -87,13 +92,18 @@ SMODS.Joker {
 	loc_txt = {
 		name = 'Mr. Nacho',
 		text = {
-			"{X:money,C:white}+X#1#${} per owned {C:attention}Food Joker{}",
-			"{C:inactive}Excludes self, currently X#2#${}", 
-			may.pager(45), 
-            "{C:inactive,E:1,s:0.7}It is unknown if he's just{}",
-			"{C:inactive,E:1,s:0.7}very fancy or an omnipotent god of destruction.{}", 
-			"{C:inactive,E:1,s:0.7}Most believe it's the latter.{}"
-		}
+			{
+				"{X:money,C:white}+X#1#${} per owned {C:attention}Food Joker{}",
+				"{C:inactive}Excludes self, currently X#2#${}", 
+				may.pager(45), 
+				"{C:inactive,s:0.7,E:1}He is actually an omnipotent hypergod.{}", 
+				"{C:inactive,s:0.7,E:1}This is just his more passive form.{}", 
+				"{C:inactive,s:0.5,E:1}Maybe you can be the one to unleash his full power...{}"
+			}, 
+			{
+				"{C:inactive,E:1}Art by HuyCorn{}"
+			}
+		}, 
 	},
 	config = { extra = { x_dollars = 0.15 } },
 	rarity = 4,
@@ -103,8 +113,12 @@ SMODS.Joker {
 	immutable = true,
 	pos = { x = 1, y = 13 },
 	soul_pos = { x = 2, y = 13 },
-	pools = { Food = true },
 	cost = 20,
+	attributes = {
+		'food', 
+		'economy', 
+		'joker'
+	}, 
 	loc_vars = function(self, info_queue, card)
 		local amount = 0
 		for k, v in pairs((G.jokers or { cards = {} }).cards) do
@@ -159,6 +173,11 @@ SMODS.Joker {
 	pos = { x = 0, y = 4 },
 	soul_pos = { x = 1, y = 4 },
 	cost = 20,
+	attributes = {
+		'queen', 
+		'hearts', 
+		'generation', 
+	}, 
 	loc_vars = function(self, info_queue, card)
 		local fool_c = G.GAME.last_consumable and G.P_CENTERS[G.GAME.last_consumable] or nil
 		local last_consumable = fool_c and localize { type = 'name_text', key = fool_c.key, set = fool_c.set } or localize('k_none')
@@ -212,6 +231,63 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
+	key = 'mr_moneybags',
+	loc_txt = {
+		name = 'Mr. Moneybags',
+		text = {
+			{
+				"When {C:attention}Blind{} is selected, {X:chips,C:white}X#1#{} hands,", 
+				"but {X:money,C:white}+X#2#{} global money gain per {C:mult}lost{} {C:chips}hand{}", 
+				"until {C:attention}end of round{}", 
+				"{C:inactive}Currently #3#, hands round up{}", 
+				may.pager(55),
+				"{C:inactive,E:1,s:0.7}I use banknotes as wrapping paper{}", 
+				"{C:inactive,E:1,s:0.7}for my sandwiches!{}",
+			},
+			{
+				"{C:inactive,E:1}Art by TBA{}", 
+				"{C:inactive,E:1}Character from Big Money!{}"
+			}
+		}
+	},
+	config = { extra = { x_hands = 0.5, mul = 0.2, lost = 0 } },
+	rarity = 4,
+	atlas = 'placeholder',
+	blueprint_compat = true,
+	demicoloncompat = true,
+	pos = { x = 1, y = 0 },
+	soul_pos = { x = 2, y = 0 },
+	cost = 20,
+	attributes = {
+		'hands', 
+		'economy'
+	}, 
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.x_hands, card.ability.extra.mul, (#(G.hand or { cards = {} }).cards == 0 and not G.booster_pack) and 'INACTIVE' or 'X'..(1 + (G.GAME.round_resets.hands * 0.5 * card.ability.extra.mul)) } }
+	end,
+	calculate = function(self, card, context)
+		if (context.setting_blind and card.area == G.jokers) or context.blueprint then 
+			card.ability.extra.lost = G.GAME.round_resets.hands * card.ability.extra.x_hands
+			ease_hands_played(math.floor(G.GAME.round_resets.hands * -card.ability.extra.x_hands))
+			G.GAME.may_money_multiplier = (G.GAME.may_money_multiplier or 1) + (card.ability.extra.lost * card.ability.extra.mul) 
+			return {
+				message = '+X'..(card.ability.extra.lost * card.ability.extra.mul)..' Money Gain', 
+				colour = G.C.MONEY, 
+				card = card
+			}
+		end
+		if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then 
+			G.GAME.may_money_multiplier = (G.GAME.may_money_multiplier or 1) - (card.ability.extra.lost * card.ability.extra.mul)
+			return {
+				message = 'Reset!', 
+				colour = G.C.MONEY, 
+				card = card
+			}
+		end
+	end, 
+}
+
+SMODS.Joker {
 	key = 'thatch',
 	loc_txt = {
 		name = 'Thatch',
@@ -248,6 +324,10 @@ SMODS.Joker {
 	blueprint_compat = false,
 	demicoloncompat = false,
 	cost = 20,
+	attributes = {
+		'generation', 
+		'scaling'
+	}, 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.money, card.ability.extra.money_req, card.ability.extra.voucher, card.ability.extra.pack, card.ability.extra.increase } }
 	end,
@@ -318,6 +398,11 @@ SMODS.Joker {
 	pos = { x = 1, y = 0 },
 	soul_pos = { x = 2, y = 0 },
 	cost = 20,
+	attributes = {
+		'xchips', 
+		'spades', 
+		'permabonus', 
+	}, 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.x_chips } }
 	end,
@@ -340,8 +425,6 @@ SMODS.Joker {
 		end
 	end, 
 }
-
-
 
 SMODS.Joker {
 	key = 'corey',
@@ -371,6 +454,12 @@ SMODS.Joker {
 	pos = { x = 2, y = 5 },
 	soul_pos = { x = 3, y = 5 },
 	cost = 20,
+	attributes = {
+		'xmult', 
+		'scaling',
+		'passive', 
+		'permabonus'
+	}, 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS['m_may_shadow']
 		return { vars = { card.ability.extra.x_mult, card.ability.extra.mult } }
@@ -417,7 +506,7 @@ SMODS.Joker {
 				"{C:inactive,s:0.7,E:1}Ho-ho-ho!{}",
 			},
 			{
-				"{C:inactive,E:1}Music from Rolling Sky by Cheetah Mobile{}"
+				"{C:inactive,E:1}Music from Rolling Sky{}"
 			}
 		}
 	},
@@ -429,6 +518,10 @@ SMODS.Joker {
 	pos = { x = 1, y = 6 },
 	soul_pos = { x = 5, y = 3 },
 	cost = 20,
+	attributes = {
+		'generation', 
+		'hand_type'
+	}, 
 	add_to_deck = function(self, card, from_debuff)
 		if not from_debuff then
 			play_sound("may_st_bells")
@@ -458,14 +551,14 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
-	key = 'doomsday_device',
+	key = 'alex343xd',
 	loc_txt = {
-		name = 'Doomsday Device',
+		name = 'alex343xd',
 		text = {
             {
-			    "{C:may_surreal,s:2,E:1}??????{}",
-                "{C:dark_edition,X:black}#1#/15{}", 
-				may.pager(30), 
+			    "{C:may_instability,s:2,E:may_alex343xd_name}??????{}",
+                "{C:may_instability,X:black}#1#/100{}", 
+				may.pager(35),
                 "{C:inactive,E:1,s:0.7}h{}",
             }, 
             {
@@ -481,26 +574,28 @@ SMODS.Joker {
     immutable = true, 
     endless = true, 
 	cost = 1,
+	attributes = {
+		'xmult', 
+		'joker'
+	}, 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { G.GAME.may_instability or 0 } }
 	end,
 	calculate = function(self, card, context)
 		if context.selling_card and context.card.ability.set == "Joker" and not context.blueprint then 
-            if context.card:gc().key == 'j_may_universal_collapse' then
-                may.hand_mod_multchips_all('mult', 0, card.ability.extra.Xmult, false, card)
-            end 
+            may.hand_mod_multchips_all('mult', 0, card.ability.extra.Xmult, false, card) 
         end
 		if context.end_of_round and context.game_over == false and context.main_eval then
-			if (G.GAME.may_instability or 0) >= 15 then
+			if (G.GAME.may_instability or 0) >= 100 then
                 G.E_MANAGER:add_event(Event({delay = 0.1, func = function() 
                     play_sound('may_big_score1')
-                    play_sound('may_hyperascendant_joker', 0.5)
+                    play_sound('may_transcendent_joker', 0.5)
                     G.ROOM.jiggle = G.ROOM.jiggle + 5
                     card:juice_up(2, 2)
-                    card:set_ability(G.P_CENTERS['j_may_doomsday_device_ascended'])
+                    card:set_ability(G.P_CENTERS['j_may_alex343xd_ascended'])
                     card:set_cost() 
                     if may.conf.Mode == 1 and may.conf.fusion_punishment then 
-                        may.add_round_timer(6, 'ethereal_fuse')
+                        may.add_round_timer(6, 'demiurgic_fuse')
                         may.a('Demiurgic scaling will activate in 6 rounds!', '5', 0.5, G.C.RED) 
                     end
                 return true end}))

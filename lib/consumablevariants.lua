@@ -1,81 +1,26 @@
 -- Consumable variants
--- code mostly taken from POLTERWORX
--- you will need to copy this and replace may_ with your mod prefix if you add empowered consumables
 
-may.can_be_upsd = {
-	'fool',
-	'magician',
-	'high_priestess',
-	'empress',
-	'emperor',
-	'heirophant',
-	'lovers',
-	'chariot',
-	'justice',
-	'hermit',
-	'wheel_of_fortune',
-	'strength',
-	'hanged_man',
-	'death',
-	'temperance',
-	'devil',
-	'tower',
-	'star',
-	'moon',
-	'sun',
-	'judgement',
-	'world',
+-- Deprecated, kept for compatibility
+-- Add upsd_base to your center instead
+may.can_be_upsd = {}
 
-	'mercury',
-	'venus',
-	'earth',
-	'mars',
-	'jupiter',
-	'saturn',
-	'uranus',
-	'neptune',
-	'pluto',
-	'planet_x',
-	'ceres',
-	'eris',
-	'may_proxima_centauri',
-	
-	'familiar',
-	'grim', 
-	'incantation',
-	'talisman',
-	'aura',
-	'wraith',
-	'sigil',
-	'ouija',
-	'ectoplasm',
-	'immolate',
-	'ankh',
-	'deja_vu',
-	'hex',
-	'trance',
-	'medium',
-	'cryptid',
-	'soul',
-	'black_hole'
-}
+function may.has_upsd(key)
+	for k, v in pairs(G.P_CENTERS) do
+		if (v.upsd_base or '') == key then
+			return true
+		end
+	end
+	return false
+end
 
-may.can_be_ascended = {
-	'fool',
-	'magician',
-	'high_priestess',
-	'empress',
-	'hermit',
-	
-	'pluto',
-	
-	'familiar',
-	
-	'may_planetae', 
-	'may_cupiditas',
-	'may_potestas',
-    'may_speculum'
-}
+function may.get_upsd(key)
+	for k, v in pairs(G.P_CENTERS) do
+		if (v.upsd_base or '') == key then
+			return v
+		end
+	end
+	return
+end
 
 local ccr = create_card
 function create_card(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
@@ -87,48 +32,16 @@ function create_card(_type, area, legendary, _rarity, skip_materialize, soulable
         if not G.GAME.may_upsd_rate then
 			G.GAME.may_upsd_rate = 80
 		end
-		-- Ascended 
-		if G.GAME.selected_back.effect.center.original_key ~= 'celestial_hierarchy_deck' then
-			for k, v in pairs(may.can_be_ascended) do
-				if pseudorandom('spawn_ascended') < 1 / G.GAME.may_asc_rate and card:gc().key == ('c_'..v) and G.P_CENTERS['c_may_'..v.. '_asc'] and not G.GAME.banned_keys['c_may_'..v.. '_asc'] then
-					G.E_MANAGER:add_event(Event({trigger = 'after', blockable = false, blocking = false, func = function()
-						if card then
-							card:set_ability(G.P_CENTERS['c_may_'..v..'_asc'])
-							card:set_cost()
-							if card:gc().set ~= 'yottacards' then
-							    play_sound('may_c_ascended', 1, 1.5)
-								card:juice_up(1, 1)
-							else
-								play_sound('may_ascended_yotta')
-								card:juice_up(2, 2)
-								G.ROOM.jiggle = G.ROOM.jiggle + 0.7
-							end
-						end
-					return true end}))
-					break
-				end
-			end
-		else
-			
-        end
-		-- Upside down
-		if G.GAME.may_upside_down_deck then
-			for k, v in pairs(may.can_be_upsd) do
-				if card:gc().key == ('c_'..v) and G.P_CENTERS['c_may_'..v..'_upsd'] and not G.GAME.banned_keys['c_may_'..v.. '_upsd'] then
-					card:set_ability(G.P_CENTERS['c_may_'..v..'_upsd'])
-					card:set_cost()
-					break
-				end
-			end
-		else
-			if pseudorandom('may_spawn_upsd') < 1 / G.GAME.may_upsd_rate then 
-				for k, v in pairs(may.can_be_upsd) do
-					if card:gc().key == ('c_'..v) and G.P_CENTERS['c_may_'..v..'_upsd'] and not G.GAME.banned_keys['c_may_'..v.. '_upsd'] then
-						card:set_ability(G.P_CENTERS['c_may_'..v..'_upsd'])
+		
+		if card.gc then	
+			-- Upside down
+			if (G.GAME.may_upside_down_deck or SMODS.pseudorandom_probability(card, "may_spawn_upsd", 1, G.GAME.may_upsd_rate, "Upside Down")) and may.has_upsd(card:gc().key) and not G.GAME.banned_keys[may.get_upsd(card:gc().key).key] then
+				G.E_MANAGER:add_event(Event({func = function()
+					if (not card.no_upsd) and (not card.no_variants) then 
+						card:set_ability(G.P_CENTERS[may.get_upsd(card:gc().key).key])
 						card:set_cost()
-						break
 					end
-				end
+				return true end}))
 			end
 		end
 		-- Play special card sounds		
@@ -155,32 +68,6 @@ function create_card(_type, area, legendary, _rarity, skip_materialize, soulable
 					play_sound('may_ascended_yotta')
 					card:juice_up(2, 2)
 					G.ROOM.jiggle = G.ROOM.jiggle + 20
-				return true end}))
-			return true end}))
-		end
-		if card and card:gc().planet_rarity == 2 then
-			G.E_MANAGER:add_event(Event({func = function()
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.5, blockable = false, blocking = false, func = function()
-					play_sound('may_rare_planet', 1, 0.75)
-					card:juice_up(1, 0.5)
-				return true end}))
-			return true end}))
-		end
-		if card and card:gc().planet_rarity == 3 then
-			G.E_MANAGER:add_event(Event({func = function()
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.5, blockable = false, blocking = false, func = function()
-					play_sound('may_legendary_planet', 1, 0.75)
-					card:juice_up(1, 0.5)
-					G.ROOM.jiggle = G.ROOM.jiggle + 3
-				return true end}))
-			return true end}))
-		end
-		if card and card:gc().planet_rarity == 4 then
-			G.E_MANAGER:add_event(Event({func = function()
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.5, blockable = false, blocking = false, func = function()
-					play_sound('may_mythic_planet', 1, 0.75)
-					card:juice_up(1, 0.5)
-					G.ROOM.jiggle = G.ROOM.jiggle + 5
 				return true end}))
 			return true end}))
 		end

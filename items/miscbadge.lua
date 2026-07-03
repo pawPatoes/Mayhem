@@ -8,15 +8,6 @@ may_wip_badge = {
 	}
 }
 
-may_hidden_enhancement = {
-	colour = SMODS.Gradients.may_col_hidden_enhancement,
-	text_colour = G.C.WHITE,
-	text = {
-		'Hidden Enhancement',
-		'Can only be found randomly'
-	}
-}
-
 may_rare = {
 	colour = G.C.RARITY[3],
 	text_colour = G.C.WHITE,
@@ -82,7 +73,7 @@ may_ascended_badge = {
 }
 
 may_sly25_kratos_verde = {
-	colour = SMODS.Gradients.may_col_surreal,
+	colour = SMODS.Gradients.may_col_opalescent,
 	text_colour = G.C.WHITE,
 	text = {
 		'Sly25 Winner',

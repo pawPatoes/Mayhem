@@ -138,7 +138,7 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'UPGRADE',
 		text = {
-			"Create {C:attention}#1#{} random {C:dark_edition}Modifier Card{}",
+			"Create {C:attention}#1#{} random {C:dark_edition}Modifier Cards{}",
 			"if you have used {C:attention}#2#{} {C:planet}Planet Cards{},", 
 			"then {C:attention}increase{} {C:mult}requirement{} by {X:retrocards,C:white}X#3#{}", 
 			may.pager(55),

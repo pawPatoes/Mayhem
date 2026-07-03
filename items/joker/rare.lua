@@ -20,6 +20,9 @@ SMODS.Joker {
 	config = { extra = { Xmult = 4, } },
 	cost = 8,
     endless = true, 
+	attributes = {
+		'xmult'
+	}, 
 	loc_vars = function(self, info_queue, card)
         return {vars = { card.ability.extra.Xmult } }
 	end,
@@ -62,6 +65,10 @@ SMODS.Joker {
 	endless = true,
 	cost = 6,
 	config = { extra = { Emult = 1.5 } },
+	attributes = {
+		'emult', 
+		'hand_type'
+	}, 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.Emult } }
 	end,
@@ -88,6 +95,252 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
+	key = 'canyon',
+	loc_txt = {
+		name = 'Canyon',
+		text = {
+			{
+				"{X:chips,C:white}X#1#{} Chips", 
+                "{C:green}Increases{} by {X:chips,C:white}+X#2#{} when a", 
+				"{C:attention}number card{} is {C:mult}destroyed{}", 
+				"{C:mult}Resets{} when {C:attention}Boss Blind{} is {C:green}defeated{}", 
+			},
+			{
+				"{C:inactive,E:1}Art by _TeKKen_{}", 
+			},
+		}
+	},
+	config = { extra = { x_chips = 1, x_chips_gain = 0.5 } },
+	rarity = 3,
+	atlas = 'joker2',
+	pos = { x = 0, y = 9 },
+	blueprint_compat = false,
+	demicoloncompat = false,
+	cost = 10,
+	attributes = {
+		'xchips', 
+		'face', 
+		'resets', 
+	}, 
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.x_chips, card.ability.extra.x_chips_gain } }
+	end,
+	calculate = function(self, card, context)
+		if context.remove_playing_cards and not context.blueprint then
+            local num = 0
+            for k, v in pairs(context.removed) do
+                if not v:is_face() then 
+					num = num + 1
+				end
+            end
+            if num > 0 then
+                SMODS.scale_card(card, {
+					ref_table = card.ability.extra,
+					ref_value = "x_chips",
+					scalar_value = "x_chips_gain",
+					scaling_message = {
+						colour = G.C.CHIPS
+					}
+				})
+            end
+        end
+        if context.joker_main then
+            return {
+                x_chips = card.ability.extra.x_chips,
+				card = card
+            }
+        end
+		if context.end_of_round and context.game_over == false and context.main_eval and context.beat_boss then
+			card.ability.extra.x_chips = 1
+			return {
+				message = 'Reset!', 
+				colour = G.C.CHIPS, 
+				card = card
+			}
+		end
+	end
+}
+
+SMODS.Joker {
+	key = 'tribulation',
+	loc_txt = {
+		name = 'Tribulation',
+		text = {
+			{
+				"{C:attention}Jacks{} give {X:chips,C:white}X#1#{} Chips",
+				"when scored", 
+			},
+			{
+				"{C:inactive,E:1}Art by _TeKKen_{}", 
+			},
+		}
+	},
+	config = { extra = { x_chips = 1.75 } },
+	rarity = 3,
+	atlas = 'joker2',
+	pos = { x = 1, y = 9 },
+	blueprint_compat = false,
+	demicoloncompat = false,
+	cost = 10,
+	attributes = {
+		'xchips', 
+		'jack', 
+	}, 
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.x_chips } }
+	end,
+	calculate = function(self, card, context)
+		if context.individual and context.cardarea == G.play and context.other_card:get_id() == 11 then
+			return {
+				x_chips = card.ability.extra.x_chips, 
+				card = card 
+			}
+		end
+	end
+}
+
+SMODS.Joker {
+	key = 'yorker',
+	loc_txt = {
+		name = 'Yorker',
+		text = {
+			{
+				"{C:mult}Discarded{} cards {C:green}gain{}", 
+				"{X:chips,C:white}+X#1#{} Chips"
+			},
+			{
+				"{C:inactive,E:1}Art by _TeKKen_{}", 
+			},
+		}
+	},
+	config = { extra = { x_chips = 0.1 } },
+	rarity = 3,
+	atlas = 'joker2',
+	pos = { x = 2, y = 9 },
+	blueprint_compat = false,
+	demicoloncompat = false,
+	cost = 10,
+	attributes = {
+		'xchips', 
+		'jack', 
+	}, 
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.x_chips } }
+	end,
+	calculate = function(self, card, context)
+		if context.discard then
+			context.other_card.ability.perma_x_chips = (context.other_card.ability.perma_x_chips or 0) + card.ability.extra.x_chips 
+			return {
+				message = 'Upgraded!', 
+				colour = G.C.CHIPS, 
+				message_card = context.other_card, 
+				sound = 'may_permabonus'
+			}
+		end
+	end
+}
+
+SMODS.Joker {
+	key = 'chicken',
+	loc_txt = {
+		name = 'Chicken',
+		text = {
+			{
+				"{C:green}+#1#{} {C:chips}hand{} and {C:mult}discard{}", 
+				"against {C:mult}non-{}{C:attention}Boss Blinds{}"
+			},
+			{
+				"{C:inactive,E:1}Art by _TeKKen_{}", 
+			},
+		}
+	},
+	config = { extra = { mod = 1 } },
+	rarity = 3,
+	atlas = 'joker2',
+	pos = { x = 3, y = 9 },
+	blueprint_compat = false,
+	demicoloncompat = false,
+	cost = 10,
+	attributes = {
+		'discard', 
+		'hands', 
+	}, 
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.mod } }
+	end,
+	calculate = function(self, card, context)
+		if context.setting_blind and not G.GAME.blind.config.blind.boss then
+			ease_hands_played(card.ability.extra.mod)
+			ease_discard(card.ability.extra.mod)
+			return {
+                message = '+'..card.ability.extra.mod..' hand & discard', 
+				colour = G.C.GREEN,
+                card = card,
+            }
+		end
+	end
+}
+
+SMODS.Joker {
+	key = 'percolator',
+	loc_txt = {
+		name = 'Percolator',
+		text = {
+			{
+				"When {C:attention}entering shop{}, {C:green}#1# in #2#{} chance", 
+				"to apply {C:dark_edition}Negative{} to a random held {C:attention}Consumable{}", 
+				"{C:mult}without{} an {C:dark_edition}Edition{}"
+			},
+			{
+				"{C:inactive,E:1}Art by _TeKKen_{}", 
+			},
+		}
+	},
+	config = { extra = { odds = 2 } },
+	rarity = 3,
+	atlas = 'joker2',
+	pos = { x = 4, y = 9 },
+	blueprint_compat = false,
+	demicoloncompat = false,
+	cost = 10,
+	attributes = {
+		'editions', 
+		'chance', 
+	}, 
+	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
+		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Percolator")
+		return { vars = { normal, odds } }
+	end,
+	calculate = function(self, card, context)
+		if context.starting_shop then
+			if SMODS.pseudorandom_probability(card, "may_percolator", 1, card.ability.extra.odds, "Percolator") then  
+				G.E_MANAGER:add_event(Event({func = function() 
+					local total, checked, center = 0, 0, nil
+					for i = 1, #G.consumeables.cards do
+						if not (G.consumeables.cards[i]:gc().hidden or G.consumeables.cards[i]:gc().no_doe or G.consumeables.cards[i]:gc().no_perkeo) then
+							total = total + (G.consumeables.cards[i]:getQty())
+						end
+					end
+					local poll = pseudorandom(pseudoseed('percolator')) * total
+					for i = 1, #G.consumeables.cards do
+						checked = checked + (G.consumeables.cards[i]:getQty())
+						if checked >= poll then
+							center = G.consumeables.cards[i]
+							break
+						end
+					end
+					if center then
+						center:set_edition('e_negative')
+						card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'Negative!'}, colour = G.C.DARK_EDITION, delay = 0.45})
+					end
+				return true end}))
+			end
+		end
+	end
+}
+
+SMODS.Joker {
 	key = 'pea',
 	loc_txt = {
         name = 'Pea',
@@ -109,6 +362,9 @@ SMODS.Joker {
 	demicoloncompat = true,
 	pos = { x = 5, y = 17 },
 	cost = 6,
+	attributes = {
+		'xmult'
+	}, 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS.m_steel
 		return { vars = { card.ability.extra.Xmult } }
@@ -419,7 +675,7 @@ SMODS.Joker {
 				"{X:mult,C:white}^#1#{} Mult if",
 				"{C:attention}this Joker{} has an {C:dark_edition}Edition{}",
 			},
-			may.add_fusion_text('Diskus Kollectum', 'Diskus Kollectum Maximus', may.get_condition('diskus_kollectum_maximus'))
+			may.add_fusion_text('Diskus Kollectum', 'Diskus Dominus', may.get_condition('diskus_dominus'))
 		}
 	},
 	config = { extra = { Emult = 1.15 } },
@@ -433,6 +689,10 @@ SMODS.Joker {
 	blueprint_compat = true,
 	pos = { x = 3, y = 5 },
 	cost = 5,
+	attributes = {
+		'emult', 
+		'editions'
+	}, 
 	calculate = function(self, card, context)
 		if context.joker_main and card.edition then
 			return {
@@ -478,6 +738,10 @@ SMODS.Joker {
 		return { vars = { card.ability.extra.Xchips} }
 	end,
 	blueprint_compat = true,
+	attributes = {
+		'xchips', 
+		'editions'
+	},
 	calculate = function(self, card, context)
 		if context.other_joker and context.other_joker.edition and card ~= context.other_joker then
 			G.E_MANAGER:add_event(Event({ func = function()
@@ -516,13 +780,18 @@ SMODS.Joker {
 			},
 		}
 	},
-	config = { extra = { cards = 7 } },
+	config = { extra = { cards = 5 } },
 	rarity = 3,
 	atlas = 'joker1',
 	blueprint_compat = true,
 	demicoloncompat = true,
 	pos = { x = 5, y = 9 },
 	cost = 6,
+	attributes = {
+		'wheel', 
+		'generation', 
+		'editions'
+	}, 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_wheel_of_fortune
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
@@ -535,9 +804,9 @@ SMODS.Joker {
 				local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
                 wheel:setQty(math.ceil(card.ability.extra.cards))
 				wheel:add_to_deck()
-                wheel.sell_cost = 0
                 wheel:set_edition('e_negative')
 				G.consumeables:emplace(wheel)
+				wheel.sell_cost = 0 
                 play_sound('timpani')
 			return true end}))
 		end
@@ -556,7 +825,7 @@ SMODS.Joker {
                 "held {C:planet}Planet Cards{} and increases {X:chips,C:white}XChips{} by {X:chips,C:white}+X#2#{}", 
 				"{C:inactive}Currently {X:chips,C:white}X#3#{} {C:inactive}Chips{}"
 			},
-			may.add_fusion_text('Universal Collapse', 'Storm', may.get_condition('storm')),
+			may.add_fusion_text('Omniversal Catalyst', 'Intergalactic Tempest', may.get_condition('intergalactic_tempest')),
 		}
 	},
 	config = { extra = { Xchips_gain = .05, Xchips = 0.05 } },
@@ -568,6 +837,11 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	atlas = 'joker1',
+	attributes = {
+		'xchips', 
+		'destroy_card', 
+		'planet'
+	}, 
 	loc_vars = function(self, info_queue, card)
         local amount = 0
         if G.consumeables then
@@ -624,7 +898,7 @@ SMODS.Joker {
 				"if played Poker Hand is {C:attention}Royal Flush{}",
 				"{C:inactive}Currently {X:mult,C:white}X#2#{} {C:inactive}Mult{}",
 			},
-			may.add_fusion_text('Universal Collapse', 'Little Prince', may.get_condition('little_prince'))
+			may.add_fusion_text('Omniversal Catalyst', 'Little Prince', may.get_condition('little_prince'))
 		}
 	},
 	config = { extra = { Xmult_gain = 2, Xmult = 1 } },
@@ -637,6 +911,11 @@ SMODS.Joker {
 	demicoloncompat = true,
 	no_tree = true,
 	atlas = 'joker1',
+	attributes = {
+		'xmult', 
+		'scaling', 
+		'hand_type'
+	}, 
 	loc_vars = function(self, info_queue, card)
         return {vars = {card.ability.extra.Xmult_gain, card.ability.extra.Xmult}}
     end,
@@ -686,6 +965,9 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	atlas = 'joker1',
+	attributes = {
+		'planet'
+	}, 
 	loc_vars = function(self, info_queue, card)
         return {vars = { card.ability.extra.levels } }
     end,
@@ -751,6 +1033,13 @@ SMODS.Joker {
 	demicoloncompat = true,
 	endless = true,
 	atlas = 'joker1',
+	attributes = {
+		'sauce', 
+		'food',
+		'chance',
+		'hearts', 
+		'emult', 
+	}, 
 	loc_vars = function(self, info_queue, card)
         return {vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds, card.ability.extra.Emult }}
     end,
@@ -807,6 +1096,13 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	atlas = 'joker1',
+	attributes = {
+		'sauce', 
+		'food', 
+		'diamonds',
+		'chance', 
+		'economy'
+	}, 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
         return {vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds, card.ability.extra.interest_cap } }
@@ -856,6 +1152,13 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	atlas = 'joker1',
+	attributes = {
+		'sauce',
+		'food', 
+		'spades', 
+		'chance', 
+		'modifier_card'
+	}, 
 	loc_vars = function(self, info_queue, card)
         return {vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds } }
     end,
@@ -900,7 +1203,7 @@ SMODS.Joker {
 		text = {
 			{
 				"Played {C:clubs}Clubs{} have a {C:green}#1# in #2#{} chance",
-				"to give {C:attention}+#3# Card Selection Limit{} when scored",
+				"to give {C:purple}+#3#{} Card Selection Limit when scored",
 				"if {C:attention}Hand Size{} is {C:attention}bigger{} than {X:attention,C:white}X#4#{} {C:attention}Card Selection Limit{}",
 			},
 			{
@@ -917,6 +1220,12 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	atlas = 'joker1',
+	attributes = {
+		'sauce', 
+		'food',
+		'clubs', 
+		'chance', 
+	}, 
 	loc_vars = function(self, info_queue, card)
         return {vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds, card.ability.extra.selectionlimit, card.ability.extra.multiplier }}
     end,
@@ -951,7 +1260,7 @@ SMODS.Joker {
 				"Scoring {C:attention}10s{} have a",
 				"{C:green}#2# in #3#{} chance to give {C:money}$#1#{}",
 			},
-			may.add_fusion_text('Universal Collapse', 'Ultimate Hurley', may.get_condition('ultimate_hurley')),
+			may.add_fusion_text('Omniversal Catalyst', 'Ultimate Hurley', may.get_condition('ultimate_hurley')),
 			{
 				"{C:inactive,E:1}Concept by therealten95{}"
 			},
@@ -1006,7 +1315,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	pos = { x = 1, y = 4 },
-	cost = 6,
+	cost = 6, 
 	calculate = function(self, card, context)
 		if context.joker_main then
 			local tag_key
@@ -1073,6 +1382,11 @@ SMODS.Joker {
 	blueprint_compat = false,
 	demicoloncompat = false,
 	cost = 7,
+	attributes = {
+		'economy', 
+		'danny_h', 
+		'passive', 
+	}, 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.slots, math.abs(card.ability.extra.p_dollars) } }
 	end,
@@ -1104,9 +1418,8 @@ SMODS.Joker {
 		text = {
             {
                 "{C:dark_edition,E:1,s:1.5}Special Ability{}", 
-                "Create a copy of {X:legendary,C:white}QUAC-N7{}", 
-				"{X:money,C:white}X#1#${}, and {C:mult}self destructs{}", 
-				"{C:inactive}Requires room{}",
+                "Create {C:attention}#1#{} {C:dark_edition}Negative{} copies of {C:planet}QUAC-N7{}", 
+				"and {C:mult}self destructs{}", 
 				"{C:inactive,E:1,s:0.7}I hope we're not gonna overscore too much...{}"
             }, 
 			{
@@ -1115,29 +1428,75 @@ SMODS.Joker {
 		}
 	},
 	pos = { x = 5, y = 5 },
-	cost = 10,
+	cost = 6,
 	rarity = 3,
-	config = { extra = { x_dollars = 0.2 } },
+	config = { extra = { copies = 8 } },
 	unlocked = true,
 	discovered = true,
 	atlas = 'joker2',
 	blueprint_compat = true,
 	demicoloncompat = true,
+	attributes = {
+		'on_sell', 
+		'generation', 
+		'planet', 
+		'food', 
+	}, 
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = G.P_CENTERS.c_may_quac_n7
-		return {vars = { card.ability.extra.x_dollars } }
+		return {vars = { card.ability.extra.copies } }
     end,
     calculate = function(self, card, context)
 		if context.forcetrigger then 
-			SMODS.add_card({ key = 'c_may_quac_n7' })
-			may.hypermoney(0, card.ability.extra.x_dollars or 0.2)
+			local card2 = SMODS.create_card({ key = 'c_may_quac_n7' })
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 				play_sound('tarot1')
 				play_sound('holo1')
+				card2:set_edition('negative')
+				card2:setQty(card.ability.extra.copies)
 				card:juice_up(0.3, 0.5)
 				card:start_dissolve()
 				card = nil 
 			return true end}))
+		end
+	end
+}
+
+SMODS.Joker {
+	key = 'aaaa',
+	loc_txt = {
+		name = 'AAAA',
+		text = {
+			{
+				"Retrigger all",
+				"played {C:attention}Aces #1#{} times",
+			},
+			may.add_fusion_text('Omniversal Catalyst', 'Acum', may.get_condition('acum'))
+		}
+	},
+	config = { extra = { repetitions = 3 } },
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.repetitions } }
+	end,
+	rarity = 3,
+	atlas = 'joker1',
+	blueprint_compat = true,
+	demicoloncompat = false,
+	pos = { x = 4, y = 5 },
+	cost = 11, 
+	attributes = {
+		'ace', 
+		'retrigger'
+	}, 
+	calculate = function(self, card, context)
+		if context.repetition and context.cardarea == G.play then
+			if context.other_card:get_id() == 14 then		
+				return {
+					message = 'AAAAgain!',
+					repetitions = card.ability.extra.repetitions,
+					card = card,
+				}
+			end
 		end
 	end
 }

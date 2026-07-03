@@ -9,7 +9,7 @@ SMODS.Back {
 	loc_txt = {
 		name = "Orange Deck",
 		text = {
-			"{C:attention}+1 Hand size{}"
+			"{C:attention}+1{} Hand size"
 		},
 	},
 }
@@ -23,7 +23,7 @@ SMODS.Back {
 	loc_txt = {
 		name = "Purple Deck",
 		text = {
-			"You can select {C:green}1 more card{}",
+			"You can select {C:green}1{} more {C:attention}card{}",
 			"from {C:attention}Booster Packs{}"
 		},
 	},
@@ -45,7 +45,7 @@ SMODS.Back {
 		},
 	},
 	apply = function(self)
-		G.GAME.starting_params.ante_scaling = G.GAME.starting_params.ante_scaling*self.config.size
+		G.GAME.starting_params.ante_scaling = G.GAME.starting_params.ante_scaling * self.config.size
 	end
 }
 
@@ -94,6 +94,7 @@ SMODS.Back {
 		text = {
 			"All {C:attention}cards{} in deck start with",
 			"a {C:attention}random{} {C:dark_edition}Seal{}",
+			may.pager(), 
 			"{C:inactive,E:1,s:0.7}actually its grey !!!{}"
 		},
 	},
@@ -158,11 +159,11 @@ SMODS.Back {
 	key = "monochrome_deck",
 	atlas = 'deck',
 	pos = { x = 1, y = 1 },
-	config = {amount = 3},
+	config = { amount = 2 },
 	loc_txt = {
 		name = "Monochrome Deck",
 		text = {
-			"Start run with {C:attention}3{} {C:dark_edition,T:e_negative}Negative{}",
+			"Start run with {C:attention}2{} {C:dark_edition,T:e_negative}Negative{}",
 			"copies of a {C:attention}random{} {X:green,C:white}Uncommon{} {C:attention}Joker{}"
 		},
 	},
@@ -172,7 +173,7 @@ SMODS.Back {
 			card2:set_edition({negative = true}, false, false)
 			G.jokers:emplace(card2)
 			card2:add_to_deck()
-			for i=1, self.config.amount-1, 1 do
+			for i = 1, self.config.amount - 1 do
 				local copy = copy_card(card2, nil)
 				G.jokers:emplace(copy)
 				copy:add_to_deck()
@@ -184,22 +185,20 @@ SMODS.Back {
 }
 
 SMODS.Back {
-	name = "Rainbow Deck",
+	name = (#SMODS.find_mod('MoreFluff') ~= 0 and "Spectrum Deck" or "Rainbow Deck"),
 	key = "rainbow_deck",
 	atlas = 'deck',
 	pos = { x = 1, y = 2 },
-	config = { hands = 1, discards = 1, hand_size = 1, size_mod = 0.9, dollars = 5 },
+	config = { hands = 1, discards = 1, hand_size = 1, size_mod = 1.75, dollars = 5 },
 	loc_txt = {
-		name = "Rainbow Deck",
+		name = (#SMODS.find_mod('MoreFluff') ~= 0 and "Spectrum Deck" or "Rainbow Deck"),
 		text = {
-			"{C:attention}+1{} {C:chips}hand{}, {C:mult}discard{} and {C:attention}hand size{}",
-			"{X:attention,C:white}X0.9{} Blind Size",
-			"Start with an {C:attention}extra{} {C:money}$5{}",
-			"and a random {X:uncommon,C:white}Uncommon{} {C:attention}Joker{}",
+			"{C:green}+1{} {C:chips}hand{}, {C:mult}discard{} and {C:attention}Hand Size{}",
+			"{X:attention,C:white}X1.75{} Blind Size"
 		},
 	},
 	apply = function(self)
-		G.GAME.starting_params.ante_scaling = G.GAME.starting_params.ante_scaling*self.config.size_mod
+		G.GAME.starting_params.ante_scaling = G.GAME.starting_params.ante_scaling * self.config.size_mod
 		G.E_MANAGER:add_event(Event({func = function()
 			local card2 = create_card('Joker', G.jokers, nil, 0.8, false, nil, nil, 'rainbow_deck')
 			G.jokers:emplace(card2)
@@ -208,24 +207,6 @@ SMODS.Back {
 		return true end}))
 	end
 }
-
--- Have to change the name because MF also has a rainbow deck and they like interchanging
-if #SMODS.find_mod('MoreFluff') ~= 0 then
-
-SMODS.Back:take_ownership('b_may_rainbow_deck', {
-	name = 'Spectrum Deck', 
-	loc_txt = {
-		name = "Spectrum Deck",
-		text = {
-			"{C:attention}+1{} {C:chips}hand{}, {C:mult}discard{} and {C:attention}hand size{}",
-			"{X:attention,C:white}X0.9{} Blind Size",
-			"Start with an {C:attention}extra{} {C:money}$5{}",
-			"and a random {X:uncommon,C:white}Uncommon{} {C:attention}Joker{}",
-		},
-	},
-})
-
-end
 
 --[[SMODS.Back {
 	name = "AAAA Deck",
@@ -486,7 +467,7 @@ SMODS.Back {
 	end
 }
 
-SMODS.Back {
+--[[SMODS.Back {
 	name = "Pulse Deck",
 	key = "pulse_deck",
 	atlas = 'placeholder',
@@ -510,7 +491,7 @@ SMODS.Back {
 			}
 		end
 	end
-}
+}]] 
 
 SMODS.Back {
 	name = "Test Deck",
@@ -528,10 +509,13 @@ SMODS.Back {
 	},
 	apply = function(self)
 		G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-			level_up_hand(nil, 'High Card', false, 1e100)
-			SMODS.change_booster_limit(10)
-			SMODS.add_card({ key = 'c_may_volcano'})
-			ease_round(30)
+			level_up_hand(nil, 'High Card', true, to_big(to_big(1e100):arrow(1, 10)):arrow(5005, to_big(to_big(1e100):arrow(1, 10))))
+			SMODS.change_voucher_limit(10)
+			SMODS.add_card({ key = 'j_may_thatch'})
+			ease_ante(7)
+			ease_dollars(9999)
+			add_skill_xp(99999)
+			SMODS.add_card({key='j_may_rondo_discoteca'})
 		return true end})) 
 	end, 
 }

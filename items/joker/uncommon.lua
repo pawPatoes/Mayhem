@@ -19,6 +19,11 @@ SMODS.Joker {
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.size, card.ability.extra.dollars } }
 	end,
+	attributes = {
+		'xblindsze', 
+		'passive', 
+		'economy'
+	}, 
 	add_to_deck = function(self, card, from_debuff)
 		if not from_debuff then
 			may.change_blind_size(0, 1.3)
@@ -72,6 +77,9 @@ SMODS.Joker {
 	demicoloncompat = true,
 	pos = { x = 3, y = 17 },
 	cost = 5,
+	attributes = {
+		'economy'
+	}, 
 	calculate = function(self, card, context)
 		if context.joker_main or context.forcetrigger and not (G.hand.config.highlighted_limit == #G.play.cards) then
 			return {
@@ -101,6 +109,9 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	immutable = true,
+	attributes = {
+		'destroy_card'
+	}, 
 	calculate = function(self, card, context)
 		if ((context.after and context.cardarea == G.jokers) or context.forcetrigger) and #G.hand.cards > 0 then
 			card2 = pseudorandom_element(G.hand.cards, pseudoseed("paper_shredder_selection"))
@@ -126,7 +137,7 @@ SMODS.Joker {
 				"{C:attention}Gives{} {X:green,C:white}X#1#{} the {C:planet}level{}",
 				"of played Poker Hand as {C:mult}+Mult{}",
 			},
-			may.add_fusion_text('Universal Collapse', 'Cosmos', may.get_condition('cosmos'))
+			may.add_fusion_text('Omniversal Catalyst', 'Cosmos', may.get_condition('cosmos'))
 		}
 	},
 	config = { extra = { mul = 3 } },
@@ -138,6 +149,10 @@ SMODS.Joker {
 	discovered = true,
 	blueprint_compat = true,
 	atlas = 'joker1',
+	attributes = {
+		'mult', 
+		'space'
+	}, 
     loc_vars = function(self, info_queue, card)
         return {vars = { card.ability.extra.mul } }
     end,
@@ -176,6 +191,11 @@ SMODS.Joker {
 		return { vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds } }
 	end,
 	cost = 4,
+	attributes = {
+		'chance', 
+		'modify_card', 
+		'enhancements'
+	}, 
 	calculate = function(self, card, context)
 		if context.before and context.cardarea == G.jokers and pseudorandom('may_mana_orb') < G.GAME.probabilities.normal / card.ability.extra.odds then
 			local enhance = {}
@@ -236,6 +256,12 @@ SMODS.Joker {
 	demicoloncompat = true,
 	pos = { x = 0, y = 2 },
 	cost = 4,
+	attributes = {
+		'generation', 
+		'enhancements', 
+		'editions', 
+		'seals'
+	}, 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.amount } }
 	end,
@@ -393,6 +419,12 @@ SMODS.Joker {
 	pos = { x = 2, y = 5 },
 	cost = 8,
 	config = { extra = { odds = 2, } },
+	attributes = {
+		'wheel', 
+		'chance', 
+		'generation', 
+		'tarot'
+	}, 
 	loc_vars = function(self, info_queue, card)
         local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Wheel of Eternity")
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_wheel_of_fortune
@@ -452,6 +484,10 @@ SMODS.Joker {
 	demicoloncompat = true,
 	pos = { x = 6, y = 0 },
 	cost = 5,
+	attributes = {
+		'chance', 
+		'tarot'
+	}, 
 	calculate = function(self, card, context)
 		if (context.using_consumeable and context.consumeable:gc().set == 'Tarot' and SMODS.pseudorandom_probability(card, "may_zodiac", 1, card.ability.extra.odds, "Zodiac")) or context.forcetrigger then 
             may.th(may.favhand())
@@ -476,7 +512,7 @@ SMODS.Joker {
 				may.pager(),
                 "{C:inactive}(Requires room){}"
 			},
-			may.add_fusion_text('Bismuth Joker', 'Rocco Pfilosofia', may.get_condition('rocco_pfilosofia')),
+			may.add_fusion_text('Bismuth Joker', 'Eternity Stone', may.get_condition('eternity_stone')),
 			{
 				"{C:inactive,E:1}Art by s_n_i_p_e_r.{}"
 			}
@@ -489,6 +525,11 @@ SMODS.Joker {
 	blueprint_compat = false,
 	demicoloncompat = true,
 	cost = 4,
+	attributes = {
+		'stone', 
+		'chance', 
+		'generation'
+	}, 
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = G.P_CENTERS.c_may_deimos
         local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Cement Joker")
@@ -538,6 +579,11 @@ SMODS.Joker {
 	blueprint_compat = false,
 	demicoloncompat = true,
 	cost = 4,
+	attributes = {
+		'stone', 
+		'modify_card', 
+		'xchips'
+	}, 
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = G.P_CENTERS.m_stone
 		return { vars = { card.ability.extra.x_chips } }
@@ -585,6 +631,9 @@ SMODS.Joker {
 	blueprint_compat = false,
 	demicoloncompat = true,
 	cost = 4,
+	attributes = {
+		'food', 
+	}, 
 	calculate = function(self, card, context)
 		if context.end_of_round and context.cardarea == G.jokers and not (context.individual and context.cardarea == G.play) and G.GAME.blind.boss and not card.gone then
 			delay(0.5)
@@ -637,6 +686,9 @@ SMODS.Joker {
 	demicoloncompat = false,
 	pos = { x = 4, y = 0 },
 	cost = 5,
+	attributes = {
+		'xchips'
+	}, 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.Xchips } }
 	end,

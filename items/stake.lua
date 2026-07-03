@@ -313,7 +313,7 @@ SMODS.Stake {
 			name = 'Citrine Sticker',
 			text = {
 				'Used this {C:attention}Joker{}',
-				'to win on {C:attention}Uranium{}',
+				'to win on {C:attention}Citrine{}',
 				'{C:attention}Stake{} difficulty',
 			},
 		},

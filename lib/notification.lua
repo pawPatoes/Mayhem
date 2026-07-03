@@ -28,7 +28,7 @@ function may.display_welcome_notification()
 			G.FUNCS.overlay_menu({
 				definition = create_UIBox_may_welcome_notif(),
 			})
-			play_sound('may_transcendent_joker')
+			play_sound('may_ethereal_joker')
 			return true 
 	    end
 	end}), "unlock")
@@ -489,6 +489,73 @@ may.notifications = {
 										n = G.UIT.T,
 										config = {
 											text = localize("may_notif_cry_d3"),
+											scale = 0.5,
+											colour = G.C.BLACK,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+		end,
+	},
+	config = {
+		nodes = function()
+			return {
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+					colour = empty and G.C.CLEAR or G.C.UI.BACKGROUND_WHITE,
+					r = 0.1,
+					padding = 0.04,
+					minw = 2,
+					minh = 0.8,
+					emboss = not empty and 0.05 or nil,
+					filler = true,
+				},
+				nodes = {
+					{
+						n = G.UIT.R,
+						config = { align = "cm", padding = 0.03 },
+						nodes = {
+							{
+								n = G.UIT.R,
+								config = { align = "cm", padding = 0 },
+								nodes = {
+									{
+										n = G.UIT.T,
+										config = {
+											text = localize("may_notif_config_d1"),
+											scale = 0.5,
+											colour = G.C.BLACK,
+										},
+									},
+								},
+							},
+							{
+								n = G.UIT.R,
+								config = { align = "cm", padding = 0 },
+								nodes = {
+									{
+										n = G.UIT.T,
+										config = {
+											text = localize("may_notif_config_d2"),
+											scale = 0.5, 
+											colour = G.C.BLACK,
+										},
+									},
+								},
+							},
+							{
+								n = G.UIT.R,
+								config = { align = "cm", padding = 0 },
+								nodes = {
+									{
+										n = G.UIT.T,
+										config = {
+											text = localize("may_notif_config_d3"),
 											scale = 0.5,
 											colour = G.C.BLACK,
 										},

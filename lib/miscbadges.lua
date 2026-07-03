@@ -32,7 +32,7 @@ may.misc_badges = {
 		col = G.C.FILTER
 	}, 
 	endless = {
-		text = {'Endless-Exclusive'}, 
+		text = {'Endless'}, 
 		col = G.C.PURPLE
 	}, 
 	reserve = {
@@ -42,6 +42,10 @@ may.misc_badges = {
 	indestructible = {
 		text = {'Indestructible', '(Fusing excluded)'}, 
 		col = G.C.BLACK
+	}, 
+	post_transcendent = {
+		text = {'Post-Transcendent'}, 
+		col = SMODS.Gradients.may_col_instability
 	}, 
 }
 

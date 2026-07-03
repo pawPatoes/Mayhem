@@ -4653,7 +4653,7 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..card.ability.extra.x_mult..' Mult'}, colour = G.C.MULT, delay = 0.45})
-			may.hand_multchips_all(card, false, nil, {0, card.ability.extra.x_mult})
+			may.hand_multchips_all(card, false, nil, nil, {0, card.ability.extra.x_mult})
 		end
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
@@ -4662,6 +4662,7 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		may.ch()
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -4679,7 +4680,7 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..card.ability.extra.x_mult ^ number..' Mult'}, colour = G.C.MULT, delay = 0.45})
-			may.hand_multchips_all(card, false, nil, {0, card.ability.extra.x_chips ^ number})
+			may.hand_multchips_all(card, false, nil, nil, {0, card.ability.extra.x_mult ^ number})
 		end
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
@@ -4688,6 +4689,7 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		may.ch()
 	end,
     in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do
@@ -4871,7 +4873,7 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..(card.ability.extra.x_mult * (card.ability.extra.mul ^ #targets))..' Mult'}, colour = G.C.MULT, delay = 0.45})
-			may.hand_multchips_all(card, false, nil, {0, (card.ability.extra.x_mult * (card.ability.extra.mul ^ #targets))})
+			may.hand_multchips_all(card, false, nil, nil, {0, (card.ability.extra.x_mult * (card.ability.extra.mul ^ #targets))})
 		end
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
@@ -4880,6 +4882,7 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		may.ch()
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -4897,7 +4900,7 @@ SMODS.Consumable {
 		end
 		for k, v in pairs(targets) do 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..((card.ability.extra.x_mult * (card.ability.extra.mul ^ #targets)) ^ number)..' Mult'}, colour = G.C.MULT, delay = 0.45})
-			may.hand_multchips_all(card, false, nil, {0, ((card.ability.extra.x_mult * (card.ability.extra.mul ^ #targets)) ^ number)})
+			may.hand_multchips_all(card, false, nil, nil, {0, ((card.ability.extra.x_mult * (card.ability.extra.mul ^ #targets)) ^ number)})
 		end
 		for k, v in pairs(targets) do 
 			local percent = 1.15 - (k-0.999)/(#targets-0.998)*0.3
@@ -4906,6 +4909,7 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		may.ch()
 	end,
     in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do

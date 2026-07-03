@@ -1,34 +1,23 @@
 -- Menu
 
-if may.conf.Mode == 1 then
-	if math.random(1, 70) == 70 then
-		SMODS.Atlas({
-		    key = "titlecard",
-		    path = "mehm_titlecard.png",
-		    px = 197,
-		    py = 43,
-	    })
-	else
-	    SMODS.Atlas({
-		    key = "titlecard",
-		    path = "may_titlecard.png",
-		    px = 197,
-		    py = 43,
-	    })
-	end
+if math.random(1, 70) == 70 then
+	SMODS.Atlas({
+	    key = "titlecard",
+		path = "mehm_titlecard.png",
+	    px = 197,
+	    py = 43,
+	})
 else
 	SMODS.Atlas({
-		key = "titlecard",
-		path = "etm_titlecard.png",
-		px = 204,
-		py = 43,
+	    key = "titlecard",
+		path = "may_titlecard.png",
+	    px = 197,
+	    py = 43,
 	})
 end
 
+-- Used to contain buggy SMODS versions, minimum SMODS required for Mayhem has increased however so no point in keeping older versions
 may.unstable_smods = {
-	'1.0.0~BETA-1221a', 
-	'1.0.0~BETA-1501a', 
-	'1.0.0~BETA-1503a'
 }
 
 local oldfunc = Game.main_menu
@@ -56,40 +45,9 @@ Game.main_menu = function(change_context)
 	    }) do
 		    table.insert(SMODS.calculation_keys, v)
 	    end
-		-- Create pools 
-		G.E_MANAGER:add_event(Event({func = function()
-			G.P_CENTER_POOLS.HandSpecific = G.P_CENTER_POOLS.HandSpecific or {}
-			G.P_CENTER_POOLS.Food = G.P_CENTER_POOLS.Food or {}
-			G.P_CENTER_POOLS.Fusable = G.P_CENTER_POOLS.Fusable or {}
-			G.P_CENTER_POOLS.Fusable_NOBP = G.P_CENTER_POOLS.Fusable_NOBP or {}
-			SMODS.ObjectTypes.Food = { default = 'j_ice_cream' }
-			SMODS.ObjectTypes.HandSpecific = { default = 'c_pluto' }
-			SMODS.ObjectTypes.Fusable = { default = 'j_may_nebula' }
-			SMODS.ObjectTypes.Fusable_NOBP = { default = 'j_may_nebula' }
-			for k, v in pairs(G.P_CENTERS) do
-				if v.pools then 
-					for k2, v2 in pairs(v.pools) do
-						if not G.P_CENTER_POOLS[v2] then G.P_CENTER_POOLS[v2] = {} end
-						table.insert(G.P_CENTER_POOLS[v2], v)
-					end
-				end
-				if may.is_pool_center(v, 'HandSpecific') then
-					table.insert(G.P_CENTER_POOLS.HandSpecific, v)
-				end
-				if may.is_pool_center(v, 'Food') then
-					table.insert(G.P_CENTER_POOLS.Food, v)
-				end
-				if may.is_pool_center(v, 'Fusable') then
-					table.insert(G.P_CENTER_POOLS.Fusable, v)
-				end
-				if may.is_pool_center(v, 'Fusable_NOBP') then
-					table.insert(G.P_CENTER_POOLS.Fusable_NOBP, v)
-				end
-			end
-		return true end}))
 	end
 	local ret = oldfunc(change_context)
-	if may.conf.Menu then 
+	if may.conf.custom_menu then 
 		G.SPLASH_BACK:define_draw_steps({{
 		    shader = "splash",
 			send = {
@@ -133,28 +91,6 @@ Game.main_menu = function(change_context)
 			G.ROOM.jiggle = G.ROOM.jiggle + 0.1
             G.may_titlecard:juice_up(0.05, 0.1)
 		return true end}))
-		
-		--[[ Add random card to the main menu
-        local chosen = math.random(1, #may.menu_cards)
-        local newcard = create_card(G.P_CENTERS[may.menu_cards[chosen, G.title_top, nil, nil, nil, nil, may.menu_cards[chosen], 'may_title_card')
-        G.title_top:emplace(newcard)
-        newcard:start_materialize()
-        newcard:resize(1.32)
-        newcard.no_ui = true
-        newcard.ability.title_card = true
-        -- Recenter the title
-        G.title_top.T.w = G.title_top.T.w * 1.7675
-        G.title_top.T.x = G.title_top.T.x - 0.8
-        G.E_MANAGER:add_event(Event({trigger = "after", delay = 0, blockable = false, blocking = false, func = function()
-            if change_context == "splash" then
-                newcard.states.visible = true
-                newcard:start_materialize({ G.C.BLACK, G.C.RARITY['may_ethereal'] }, true, 2.5)
-            else
-                newcard.states.visible = true
-                newcard:start_materialize({ G.C.BLACK, G.C.RARITY['may_ethereal'] }, nil, 1.2)
-            end
-			newcard:set_edition(may.menu_editions[math.random(1, #may.menu_editions)], false, false)
-        return true end}))]] 
 		
 		-- Add particles to main menu
         G.menu_particles = Particles(1, 1, 0, 0, {
@@ -215,6 +151,12 @@ Game.main_menu = function(change_context)
 	if table_hasvalue(may.unstable_smods, SMODS.version) then
 		may.display_notification('smods', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
     end 
+	--[[ Config notice 
+	if not may.conf.notices.config then
+		may.display_notification('config', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
+		may.conf.notices.config = true 
+		G:save_settings()
+    end]] 
 	return ret
 end
 
@@ -227,16 +169,15 @@ may.menu_cards = {
 	'j_may_ah_yes_the_store',
 	'j_may_diskus_distruktum',
 	'j_may_kids_drawing',
-	'j_may_spadus', 
-	'j_may_universal_collapse',
-	'j_may_fortuno',
-    'j_may_doomsday_device', 
+	'j_may_as_ultimatum', 
+	--'j_may_fortuno',
+    'j_may_alex343xd', 
     'j_may_astro', 
-    'j_may_ad_infinitum', 
+    --'j_may_ad_infinitum', 
     'j_may_party_time', 
     'j_may_world_destroyer',
 	'j_may_guacamole',
-	'j_may_universal_collapse',
+	'j_may_omniversal_catalyst',
 	'j_may_anniversary_cake',
 	
 	--'c_may_kivaaritehdas',
@@ -252,12 +193,14 @@ may.menu_cards = {
     'c_may_galileo',
 	'c_may_gem', 
     'c_may_potestas', 
+	'c_may_mult_card', 
 	
 	'v_may_extended_selection', 
 	'v_may_increment', 
 	'v_may_booster_surplus', 
     'v_may_card_merchant', 
     'v_may_transcend_1', 
+	'v_may_endless_mode'
 }
 
 may.menu_editions = {
@@ -271,20 +214,22 @@ may.menu_editions = {
 	'e_may_hypnotic', 
 	'e_may_twilight', 
 } 
-local chosen = may.menu_cards[math.random(1, #may.menu_cards)]
 
-SMODS.current_mod.menu_cards = function()
-	return {
-		{ key = chosen },
-		func = function()
-			for k, v in pairs(G.title_top.cards) do
-				if v:gc().key == chosen then
-						v:set_ability(G.P_CENTERS[may.menu_cards[math.random(1, #may.menu_cards)]])
-						v:resize(1.32)
-						v:set_edition(may.menu_editions[math.random(1, #may.menu_editions)], false, false)
-					break
+if may.conf.custom_menu then
+	local chosen = may.menu_cards[math.random(1, #may.menu_cards)]
+	SMODS.current_mod.menu_cards = function()
+		return {
+			{ key = chosen },
+			func = function()
+				for k, v in pairs(G.title_top.cards) do
+					if v:gc().key == chosen then
+							v:set_ability(G.P_CENTERS[may.menu_cards[math.random(1, #may.menu_cards)]])
+							v:resize(1.32)
+							v:set_edition(may.menu_editions[math.random(1, #may.menu_editions)], false, false)
+						break
+					end
 				end
 			end
-		end
-	}
+		}
+	end
 end

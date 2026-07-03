@@ -23,7 +23,7 @@ SMODS.Joker {
 				"{C:inactive}Hand level-ups are silent{}"
 			},
 			{
-				"{C:inactive,E:1}Music and idea from Rolling Sky by Cheetah Mobile{}"
+				"{C:inactive,E:1}Music and idea from Rolling Sky{}"
 			},
 		}
 	},
@@ -36,8 +36,22 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	atlas = 'joker2',
+	attributes = {
+		'xblindsize', 
+		'suit', 
+		'hearts', 
+		'diamonds', 
+		'clubs', 
+		'spades', 
+		'mult', 
+		'economy', 
+		'x_chips', 
+		'chips', 
+		'emult', 
+		'planet',
+	}, 
 	loc_vars = function(self, info_queue, card)
-        return {vars = {  card.ability.extra.x_blind_size, card.ability.extra.mult, card.ability.extra.p_dollars, card.ability.extra.x_chips, card.ability.extra.hand_chips, card.ability.extra.e_mult, card.ability.extra.levels, card.ability.extra.add_levels }}
+        return {vars = { card.ability.extra.x_blind_size, card.ability.extra.mult, card.ability.extra.p_dollars, card.ability.extra.x_chips, card.ability.extra.hand_chips, card.ability.extra.e_mult, card.ability.extra.levels, card.ability.extra.add_levels }}
     end,
     calculate = function(self, card, context)
 		if (context.individual and context.cardarea == G.play) or (context.individual and context.cardarea == G.play and context.blueprint) then
@@ -120,7 +134,7 @@ SMODS.Joker {
 				"level by {C:attention}#3#{} for the {C:attention}next{} round",
 				"{X:attention,C:white}X#4#{} Blind Size",
 			},
-			may.add_fusion_text('Universal Collapse', 'Party Time', may.get_condition('party_time'))
+			may.add_fusion_text('Omniversal Catalyst', 'Party Time', may.get_condition('party_time'))
 		}
 	},
 	config = { extra = { odds = 10, mod = 1, blindmult = 10, active = false } },
@@ -133,6 +147,11 @@ SMODS.Joker {
 	blueprint_compat = false,
 	demicoloncompat = false,
 	atlas = 'joker1',
+	attributes = {
+		'hands', 
+		'chance', 
+		'xblindsize'
+	}, 
 	loc_vars = function(self, info_queue, card)
         return {vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds, card.ability.extra.mod, card.ability.extra.blindmult }}
     end,
@@ -182,6 +201,11 @@ SMODS.Joker {
 	demicoloncompat = true,
 	pos = { x = 3, y = 6 },
 	cost = 12,
+	attributes = {
+		'xmult', 
+		'scaling', 
+		'joker'
+	}, 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.Xmult, card.ability.extra.Xmult_gain, G.jokers and ((#(G.jokers.cards or {})*card.ability.extra.Xmult) + 1) or 0 } }
 	end,
@@ -331,6 +355,10 @@ SMODS.Joker {
 	immutable = true,
 	pos = { x = 4, y = 7 },
 	cost = 12,
+	attributes = {
+		'emult', 
+		'three'
+	}, 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.Emult } }
 	end,
@@ -370,11 +398,14 @@ SMODS.Joker {
 	},
 	config = { extra = { retrigger = 1 } },
 	pos = { x = 6, y = 1 },
-	cost = 25,
+	cost = 15,
 	rarity = may.epic_key,
 	atlas = 'joker2',
 	blueprint_compat = false,
 	demicoloncompat = false,
+	attributes = {
+		'retrigger'
+	}, 
     loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS.j_blueprint
 		info_queue[#info_queue + 1] = G.P_CENTERS.j_brainstorm
@@ -437,7 +468,10 @@ SMODS.Joker {
 	atlas = 'joker2',
 	blueprint_compat = false,
 	demicoloncompat = false,
-	pools = { Food = true },
+	attributes = {
+		'food', 
+		'generation', 
+	}, 
     loc_vars = function(self, info_queue, card)
 		local rarities = {'Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'}
 		local colors = {'Common', 'Uncommon', 'Rare', may.epic_key, 'Legendary'}
@@ -502,7 +536,7 @@ SMODS.Joker {
 		text = {
 			{
 				"Played {C:attention}cards{} give {X:chips,C:white}+X#1#{} Chips",
-				"per {C:attention}condition{} below that is {C:green}satisfied{}:",
+				"when scored per {C:attention}condition{} below that is {C:green}satisfied{}:",
 				may.pager(),
 				"Card has {C:dark_edition}Lime Seal{}, {C:dark_edition}Radioactive Edition{},",
 				"{C:clubs}Clubs{} suit, {C:dark_edition}Super Mult{}/{C:dark_edition}Grid{}/{C:dark_edition}Overgrown{} Enhancement",
@@ -524,6 +558,13 @@ SMODS.Joker {
 	misc_badge = may_sly25_kratos_verde,
 	pos = { x = 8, y = 6 },
 	cost = 12,
+	attributes = {
+		'xchips', 
+		'enhancements', 
+		'editions', 
+		'seals', 
+		'clubs', 
+	}, 
 	loc_vars = function(self, info_queue, card)
 		for k, v in pairs({'e_may_radioactive', 'm_may_super_mult', 'm_may_grid', 'm_may_overgrown'}) do
 			info_queue[#info_queue + 1] = G.P_CENTERS[v]
@@ -576,6 +617,9 @@ SMODS.Joker {
 	blueprint_compat = false,
 	demicoloncompat = false,
 	cost = 7,
+	attributes = {
+		'passive', 
+	}, 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.slots } }
 	end,
@@ -587,42 +631,4 @@ SMODS.Joker {
 	remove_from_deck = function(self, card, from_debuff)
 		SMODS.change_voucher_limit(-card.ability.extra.slots)
 	end,
-}
-
-SMODS.Joker {
-	key = 'aaaa',
-	loc_txt = {
-		name = 'AAAA',
-		text = {
-			{
-				"Retrigger all",
-				"played {C:attention}Aces #1#{} times",
-			},
-			may.add_fusion_text('Universal Collapse', 'Acum', may.get_condition('acum'))
-		}
-	},
-	config = { extra = { repetitions = 4 } },
-	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.extra.repetitions} }
-	end,
-	rarity = may.epic_key,
-	atlas = 'joker1',
-	blueprint_compat = true,
-	demicoloncompat = false,
-	pos = { x = 4, y = 5 },
-	cost = 11,
-	calculate = function(self, card, context)
-		if context.repetition and context.cardarea == G.play then
-			if context.other_card:get_id() == 14 then		
-				return {
-					message = 'AAAAgain!',
-					repetitions = card.ability.extra.repetitions,
-					card = card,
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-						card:juice_up(.5, .5)
-					return true end }))	
-				}
-			end
-		end
-	end
 }

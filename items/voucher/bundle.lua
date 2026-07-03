@@ -1,7 +1,7 @@
 -- Voucher Bundles-- 2 Vouchers
-for i=1, 4 do
-    SMODS.Voucher {	key = '2_voucher_bundle_'..i,	loc_txt = {		name = "2 Voucher Bundle",		text = {			"Redeem {C:attention}#1#{} random {C:green}Vouchers{}",		}	},	pos = { x = i-1, y = 0 },	atlas = 'may_voucher_bundle',	config = { extra = { vouchers = 2 } },	cost = 15,	unlocked = true,
-    pools = { VoucherBundle = true }, 
+for i = 1, 4 do
+local colors = {'green', 'may_score', 'planet', 'attention'}SMODS.Voucher {	key = '2_voucher_bundle_'..i,	loc_txt = {		name = "{C:"..colors[i].."}2{} Voucher Bundle",		text = {			"Redeem {C:attention}#1#{} random {C:green}Vouchers{}",		}	},	pos = { x = i-1, y = 0 },	atlas = 'may_voucher_bundle',	config = { extra = { vouchers = 2 } },	cost = 15,	unlocked = true,
+	attributes = {		'voucher_bundle',	},
 	may_unsellable_voucher = true,
     set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Voucher Bundle', get_type_colour(self or card.config, card), nil, 1.2)
@@ -11,7 +11,7 @@ for i=1, 4 do
 
 end-- 3 Vouchers
 
-for i=1, 4 doSMODS.Voucher {	key = '3_voucher_bundle_'..i,	loc_txt = {		name = "3 Voucher Bundle",		text = {			"Redeem {C:attention}#1#{} random {C:green}Vouchers{}",		}	},	pos = { x = i-1, y = 1 },	atlas = '003_temp',	config = { extra = { vouchers = 3 } },	requires = {'v_may_2_voucher_bundle_'..i},	cost = 20,	unlocked = true,
+for i = 1, 4 dolocal colors = {'blue', 'purple', 'may_brown', 'attention'}SMODS.Voucher {	key = '3_voucher_bundle_'..i,	loc_txt = {		name = "{C:"..colors[i].."}3{} Voucher Bundle",		text = {			"Redeem {C:attention}#1#{} random {C:green}Vouchers{}",		}	},	pos = { x = i-1, y = 1 },	atlas = '003_temp',	config = { extra = { vouchers = 3 } },	requires = {'v_may_2_voucher_bundle_'..i},	cost = 20,	unlocked = true,
     pools = { VoucherBundle = true }, 
 	may_unsellable_voucher = true,
     set_card_type_badge = function(self, card, badges)

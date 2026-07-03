@@ -278,7 +278,7 @@ function Big:factorexate(times)
 end
 
 function Big:modocate(amount)
-	return self * amount + ( 1 + math.log10(self) * self)
+	return self * amount + (1 + math.log10(self) * self)
 end
 
 -- Overwriting because patching doesn't work for mysterious reasons

@@ -209,14 +209,6 @@ target = "game.lua"
 pattern = "G.GAME.blind:load(saveTable.BLIND)"
 position = "after"
 payload = '''
-	if #(G.GAME.may_displays or {}) ~= 0 then
-        G.E_MANAGER:add_event(Event({func = function()
-		    for k, v in pairs(G.GAME.may_displays) do
-				v = nil
-		    end 
-		    G.GAME.may_displays = {}
-		return true end})) 
-	end
 	if #(G.play.cards or {}) ~= 0 then 
 	    G.E_MANAGER:add_event(Event({func = function()
 		    for k, v in pairs(G.play.cards) do
@@ -250,6 +242,7 @@ payload = '''
         })
         G.transcendence_particles.fade_alpha = 1
 	end
+	
 '''
 match_indent = true
 
@@ -404,3 +397,29 @@ pattern = '''if ((self.pools and self.pools[k]) or (v.cards and v.cards[self.key
 position = "at"
 payload = '''if ((self.pools and self.pools[k]) or (v.cards and v.cards[self.key])) and v.inject_card then'''
 match_indent = true
+
+# disable win screen
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''play_sound('win')
+            G.SETTINGS.paused = true
+
+            G.FUNCS.overlay_menu{
+                definition = create_UIBox_win(),
+                config = {no_esc = true}
+            }'''
+position = "at"
+payload = '''-- MEHM SUPREMACY'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = '''functions/state_events.lua'''
+pattern = '''win_game()
+                                G.GAME.won = true'''
+position = "at"
+payload = '''-- MEHM SUPREMACY'''
+match_indent = true
+overwrite = true
