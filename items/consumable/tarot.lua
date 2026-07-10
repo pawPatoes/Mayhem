@@ -485,7 +485,7 @@ SMODS.Consumable {
 	end
 }
 
---[[SMODS.Consumable {
+SMODS.Consumable {
 	key = 'mecha',
 	set = 'Tarot',
 	loc_txt = {
@@ -506,7 +506,6 @@ SMODS.Consumable {
 	cost = 3,
 	config = { max_highlighted = 1, mod_conv = "m_may_titanium" },
 	unlocked = true,
-    endless = true,
 	can_use = function(self, card)
 		return may.canuse() and #G.hand.highlighted <= (card.ability.max_highlighted + (card.area == G.hand and 1 or 0)) and #G.hand.highlighted > (card.area == G.hand and 1 or 0)
 	end,
@@ -515,10 +514,7 @@ SMODS.Consumable {
 		return { vars = { card.ability.max_highilghted or self.config.max_highlighted } }
 	end,
 	discovered = true, 
-    in_pool = function(self, args)
-        return G.GAME.may_endless_mode, { allow_duplicates = false }
-    end
-}]] 
+}
 
 SMODS.Consumable {
 	key = 'axiom',

@@ -120,11 +120,13 @@ payload = '''
 			    may.hand_lvl_multchips(args.from, hand, instant, (G.GAME.may_ring_bonuses.lev_chips or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.lev_chips or 0} or nil, (G.GAME.may_ring_bonuses.lev_mult or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.lev_mult or 0} or nil)
 			    G.GAME.may_ring_bonuses.lev_mult = 0
 				G.GAME.may_ring_bonuses.lev_chips = 0
+				may.refresh_score_operator() 
 		    end
 		    if (G.GAME.may_ring_bonuses.score or 0) ~= 0 or (G.GAME.may_ring_bonuses.dollars or 0) ~= 0  then
 			    may.hand_mod_score_dollars_composite(args.from, hand, instant, (G.GAME.may_ring_bonuses.score or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.score} or nil, (G.GAME.may_ring_bonuses.dollars or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.dollars} or nil)
 			    G.GAME.may_ring_bonuses.score = 0
 			    G.GAME.may_ring_bonuses.dollars = 0 
+				may.refresh_score_operator()
 		    end
 		    if (G.GAME.may_ring_bonuses.mult or 0) ~= 0 or (G.GAME.may_ring_bonuses.chips or 0) ~= 0 then
 			    may.hand_multchips(args.from, hand, instant, (G.GAME.may_ring_bonuses.chips or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.chips} or nil, (G.GAME.may_ring_bonuses.mult or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.mult} or nil)
@@ -136,7 +138,6 @@ payload = '''
 					Engulf.EditionHand(card, hand, v[1], v[2], instant)
 				end
 			end]]
-			may.refresh_score_operator()
 	    end
 	end
 	if args.level_up and not args.no_context then

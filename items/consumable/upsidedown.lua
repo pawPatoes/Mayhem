@@ -157,6 +157,7 @@ SMODS.Consumable {
 	discovered = true,
     no_grc = true,
 	upsd_base = 'c_high_priestess', 
+	show_ring_display = true,
 	loc_vars = function(self, info_queue, card)
 		local tarot, planet, spectral = 0, 0, 0
 		if G.consumeables and G.consumeables.cards then
@@ -907,8 +908,6 @@ SMODS.Consumable {
 			G.deck.config.card_limit = G.deck.config.card_limit + 1
 			table.insert(G.playing_cards, _card)
 			G.hand:emplace(_card)
-			_card:start_materialize(nil, _first_dissolve)
-			_first_dissolve = true
 			play_sound('card1')
 		end
 		playing_card_joker_effects(new_cards)
@@ -1616,6 +1615,7 @@ for k, v in pairs(may.upside_down_planets) do
 		discovered = true,
 		no_grc = true,
 		upsd_base = 'c_'..(v[7] or v[1]), 
+		show_ring_display = true,
 		loc_vars = function(self, info_queue, card)
 			return { vars = { localize(v[3], 'poker_hands'), localize(v[4], 'poker_hands') } }
 		end,
@@ -1872,6 +1872,7 @@ SMODS.Consumable {
 	discovered = true,
     no_grc = true,
 	upsd_base = 'c_aura', 
+	show_ring_display = true,
 	can_use = function(self, card)
 		local other
 		for k, v in pairs(G.hand.highlighted) do 
@@ -2161,8 +2162,6 @@ SMODS.Consumable {
 			G.deck.config.card_limit = G.deck.config.card_limit + 1
 			table.insert(G.playing_cards, _card)
 			G.hand:emplace(_card)
-			_card:start_materialize(nil, _first_dissolve)
-			_first_dissolve = true
 		end
 		playing_card_joker_effects(new_cards)
 		may.hand_mod_multchips(may.favhand(), 'mult', 0, #G.hand.highlighted*0.5)
@@ -2479,7 +2478,7 @@ SMODS.Consumable {
 			{
 				"{C:mult}Destroys{} all {C:attention}duplicates{}",
 				"of a {C:attention}random playing card{}",
-				"{C:money}+5 Interest Cap{}",
+				"{C:money}+5{} Interest Cap",
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"

@@ -4723,6 +4723,7 @@ SMODS.Consumable {
 	discovered = true,
 	reserve = true, 
 	atlas = 'modifier',
+	show_ring_display = true,
 	can_use = function(self, card)
 		if G.hand then
 			for k, v in pairs(G.hand.cards) do 

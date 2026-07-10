@@ -631,6 +631,7 @@ SMODS.Consumable {
 	atlas = 'may_spectral',
 	cost = 4,
 	unlocked = true,
+	show_ring_display = true,
 	can_use = function(self, card)
 		return may.canuse()
 	end,
@@ -661,7 +662,12 @@ SMODS.Consumable {
 	cost = 4,
 	unlocked = true,
 	can_use = function(self, card)
-		return may.canuse()
+		for k, v in pairs(G.jokers.cards) do 
+			if not v:may_is_fusion() then
+				return may.canuse()
+			end
+		end
+		return false
 	end,
 	discovered = true,
 	use = function(self, card, area, copier)
@@ -672,7 +678,7 @@ SMODS.Consumable {
 			end
 		end
 		local choice = pseudorandom_element(pool, pseudoseed('may_nemesis'))
-		local value = choice.sell_value * card.ability.extra.mul
+		local value = choice.sell_cost * card.ability.extra.mul
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 			choice:juice_up(0.3, 0.5)
 			choice:start_dissolve()
@@ -803,8 +809,8 @@ SMODS.Consumable {
 		}
 	},
 	config = { extra = { odds = 2 } },
-	pos = { x = 2, y = 6 },
-	atlas = '003_temp',
+	pos = { x = 5, y = 4 },
+	atlas = 'spectral',
 	cost = 4,
 	unlocked = true,
 	can_use = function(self, card)
@@ -1062,8 +1068,8 @@ SMODS.Consumable {
 	loc_txt = {
 		name = "Finalize",
 		text = {
-			"Apply {C:dark_edition}Alloy{}, {C:dark_edition}Dichromatic{}",
-			"or {C:dark_edition}Inverted{} to {C:attention}#1#{} selected",
+			"{C:green}#1# in #2#{} chance to apply {C:dark_edition}Shimmering{},",
+			"{C:dark_edition}Laminated{} or {C:dark_edition}Vignette{} to {C:attention}#3#{} selected",
 			"{C:attention}playing card{}"
 		}
 	},
@@ -1071,8 +1077,7 @@ SMODS.Consumable {
 	atlas = 'placeholder',
 	cost = 4,
 	unlocked = true,
-	config = { extra = { cards = 1 } },
-	endless = true,
+	config = { extra = { cards = 1, odds = 2 } },
 	can_use = function(self, card)
 		for k, v in pairs(G.hand.highlighted) do
 			if v.edition then
@@ -1082,23 +1087,41 @@ SMODS.Consumable {
 		return may.canuse() and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.extra.cards
 	end,
 	loc_vars = function(self, info_queue, card)
-		info_queue[#info_queue + 1] = G.P_CENTERS.e_may_alloy
-		info_queue[#info_queue + 1] = G.P_CENTERS.e_may_dichromatic
-		info_queue[#info_queue + 1] = G.P_CENTERS.e_may_inverted
-		return { vars = { card.ability.extra.cards } }
+		info_queue[#info_queue + 1] = G.P_CENTERS.e_may_vignette
+		info_queue[#info_queue + 1] = G.P_CENTERS.e_may_shimmering
+		info_queue[#info_queue + 1] = G.P_CENTERS.e_may_laminated
+		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Finalize")
+		return { vars = { normal, odds, card.ability.extra.cards } }
 	end,
 	discovered = true,
 	use = function(self, card, area, copier)
-		for k, v in pairs(G.hand.highlighted) do
-			v:set_edition(pseudorandom_element({'e_may_alloy', 'e_may_dichromatic', 'e_may_inverted'}, pseudoseed('may_finalize')))
+		if SMODS.pseudorandom_probability(card, "may_finalize", 1, card.ability.extra.odds, "Finalize") then 
+			for k, v in pairs(G.hand.highlighted) do
+				v:set_edition(SMODS.poll_edition({guaranteed = true, pool = {'e_may_vignette', 'e_may_laminated', 'e_may_shimmering'}}))
+			end
+			G.E_MANAGER:add_event(Event({trigger = "after", delay = 0.2, func = function()
+				G.hand:unhighlight_all()
+			return true end}))
+		else
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+                attention_text({
+                    text = localize('k_nope_ex'),
+                    scale = 1.3,
+                    hold = 1.4,
+                    major = card,
+                    backdrop_colour = G.C.SECONDARY_SET.Spectral,
+                    align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and 'tm' or 'cm',
+                    offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
+                    silent = true
+                })
+                G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.06 * G.SETTINGS.GAMESPEED, blockable = false, blocking = false, func = function()
+                    play_sound('tarot2', 0.76, 0.4)
+                return true end}))
+                play_sound('tarot2', 1, 0.4)
+                card:juice_up(0.3, 0.5)
+            return true end}))
 		end
-		G.E_MANAGER:add_event(Event({trigger = "after", delay = 0.2, func = function()
-			G.hand:unhighlight_all()
-		return true end}))
 	end,
-	in_pool = function(self, args)
-		return G.GAME.may_endless_mode, { allow_duplicates = false }
-	end
 }
 
 SMODS.Consumable {
@@ -1311,7 +1334,7 @@ for k, v in pairs(may.generic_spectral_planets) do
 		set = 'Spectral',
 		name = v[2],
 		loc_txt = {
-			name = {v[2], "{C:dark_edition,s:0.7}Spectral Planet{}"}, 
+			name = v[2],
 			text = {
 				"Use the {C:planet}Jovian Moon{} and {C:planet}Saturnian Moon{}",
 				"of {C:attention}#1#{} then",
@@ -1331,6 +1354,7 @@ for k, v in pairs(may.generic_spectral_planets) do
 			'spectral_planet',
 		},
 		unlocked = true,
+		show_ring_display = true,
 		can_use = function(self, card)
 			return may.canuse()
 		end,
@@ -1338,6 +1362,9 @@ for k, v in pairs(may.generic_spectral_planets) do
 			return { vars = { card.ability.extra.hand, card.ability.extra.level } }
 		end,
 		discovered = true,
+		set_card_type_badge = function(self, card, badges)
+			badges[1] = create_badge('Spectral Planet', get_type_colour(self or card.config, card), nil, 1.2)
+		end,
 		use = function(self, card, area, copier)
 			G.E_MANAGER:add_event(Event({func = function()
 				play_sound('card3')
@@ -1384,7 +1411,7 @@ SMODS.Consumable {
 	set = 'Spectral',
 	name = 'Gray Hole',
 	loc_txt = {
-		name = {"Gray Hole", "{C:dark_edition,s:0.7}Spectral Planet{}"}, 
+		name = "Gray Hole",
 		text = {
 			"{C:planet}Level up{} a {C:attention}random{}", 
 			"{C:purple}Poker Hand{} by {C:attention}#1#{}"
@@ -1402,6 +1429,7 @@ SMODS.Consumable {
 		'spectral_planet',
 	},
 	unlocked = true,
+	show_ring_display = true,
 	can_use = function(self, card)
 		return may.canuse()
 	end,
@@ -1409,6 +1437,9 @@ SMODS.Consumable {
 		return { vars = { card.ability.extra.level } }
 	end,
 	discovered = true,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Planet', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
 	use = function(self, card, area, copier)
 		local hand = may.rndhand()
 		may.th(hand)
@@ -1445,13 +1476,11 @@ SMODS.Consumable {
 	set = 'Spectral',
 	name = 'Galileo',
 	loc_txt = {
-		name = {"Galileo", "{C:dark_edition,s:0.7}Spectral Planet{}"}, 
+		name = "Galileo",
 		text = {
 			"Create {C:dark_edition}Negative{} copies of", 
 			"the {C:attention}last{} {C:attention}5{} {X:common,C:white}Common{} {C:planet}Planet Cards{}", 
 			"used this run", 
-			"{C:inactive}Will create fewer if less than{}", 
-			"{C:inactive}5 Planet Cards were used this run{}"
 		}
 	},
 	pos = { x = 3, y = 2 },
@@ -1467,6 +1496,9 @@ SMODS.Consumable {
 	unlocked = true,
 	can_use = function(self, card)
 		return may.canuse() and #(G.GAME.may_galileo_data or {}) > 0
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Planet', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
@@ -1487,6 +1519,9 @@ SMODS.Consumable {
 			return true end}))
 		end
 	end,
+	in_pool = function(self, args)
+		return #(G.GAME.may_galileo_data or {}) >= 5
+	end 
 }
 
 SMODS.Consumable {
@@ -1494,11 +1529,14 @@ SMODS.Consumable {
 	set = 'Spectral',
 	name = 'Icarus',
 	loc_txt = {
-		name = {"Icarus", "{C:dark_edition,s:0.7}Spectral Planet{}"}, 
+		name = "Icarus",
 		text = {
 			"Levels up {C:attention}R{} random {C:purple}Poker Hands{} by {C:chips}C{}",
+			may.pager(),
 			"{C:attention}R{} is the number of cards {C:attention}held in hand{}",
-			"{C:chips}C{} is the sum of card {C:attention}Nominal Chips{} held in hand {X:attention,C:white}X0.05{}",
+			"{C:chips}C{} is the sum of card {C:attention}Nominal Chips{}", 
+			"held in hand {X:attention,C:white}X0.05{}",
+			may.pager(),
 			"{C:inactive}R = #1#, C = #2#, duplicate hands are allowed{}"
 		}
 	},
@@ -1510,10 +1548,15 @@ SMODS.Consumable {
 	soul_set = 'Planet', 
 	soul_rate = may.spectral_planet_rate,
 	immutable = true,
+	reserve = true,
 	attributes = {
 		'spectral_planet',
 	},
 	unlocked = true,
+	show_ring_display = true,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Planet', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
 	loc_vars = function(self, info_queue, card)
 		local c, r = 0, 0
 		if G.hand and #G.hand.cards > 0 then
@@ -1556,6 +1599,8 @@ SMODS.Consumable {
 			card:juice_up(0.8, 0.5)
 		return true end}))
 		may.hlv('+'..number_format(c), true)
+		delay(0.3)
+		may.ch()
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local c = 0
@@ -1585,10 +1630,54 @@ SMODS.Consumable {
 			card:juice_up(0.8, 0.5)
 		return true end}))
 		may.hlv('+'..number_format(c), true)
+		delay(0.3)
+		may.ch()
 	end,
 }
 
--- Rare Spectrals
+-- Hidden Spectrals
+
+SMODS.Consumable {
+	key = 'clan',
+	set = 'Spectral',
+	name = 'Clan',
+	loc_txt = {
+		name = "Clan",
+		text = {
+			"{C:attention}Selects{} a random {C:dark_edition}Seal{} and applies", 
+			"it to {C:attention}all{} cards {C:attention}held in hand{}", 
+			may.pager(45), 
+			"{C:mult}Overwrites{} {C:dark_edition}Seals{} of {C:attention}unselected{} cards,", 
+			"if any"
+		}
+	},
+	pos = { x = 3, y = 4 },
+	soul_pos = { x = 4, y = 4 },
+	atlas = 'may_spectral',
+	misc_badge = may_uncommon_badge,
+	cost = 10,
+	unlocked = true,
+	can_use = function(self, card)
+		return may.canuse() and #G.hand.cards ~= 0
+	end,
+	discovered = true,
+	no_grc = true, 
+	hidden = true,
+	soul_rate = 0.05,
+	use = function(self, card, area, copier)
+		local choice = SMODS.poll_seal({ guaranteed = true })
+		for k, v in pairs(G.hand.cards) do
+			if not (v.seal and table_hasvalue(G.hand.highlighted, v)) then 
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.15, func = function() 
+					v:set_seal(choice)
+					card:juice_up(0.3, 0.5)
+					v:juice_up(0.3, 0.5)
+					play_sound('tarot1')
+				return true end})) 
+			end
+		end 
+	end,
+}
 
 --[[SMODS.Consumable {
 	key = 'prestige',

@@ -53,7 +53,7 @@ Game.main_menu = function(change_context)
 			send = {
 				{ name = "time", ref_table = G.TIMERS, ref_value = "REAL_SHADER" },
 				{ name = "vort_speed", val = 0.4 },
-				{ name = "colour_1", ref_table = SMODS.Gradients, ref_value = may.conf.Mode == 1 and "may_col_mayhem_gradient" or "may_col_eternum_green" },
+				{ name = "colour_1", ref_table = SMODS.Gradients, ref_value = "may_col_mayhem_gradient" },
 				{ name = "colour_2", ref_table = G.C, ref_value = 'BLACK' },
 			},
 		}})
@@ -63,7 +63,7 @@ Game.main_menu = function(change_context)
 		G.may_titlecard:set_alignment({major = G.title_top, type = 'cm', bond = 'Strong', offset = { x = 5, y = 3.5 }})
 		G.may_titlecard:define_draw_steps({{shader = 'dissolve'}})
 		G.may_titlecard.tilt_var = { mx = 0.2, my = 0, dx = 0, dy = 0, amt = 0.1 }
-		G.may_titlecard.dissolve_colours = { SMODS.Gradients[may.conf.Mode == 1 and 'may_col_mayhem_gradient' or 'may_col_eternum_green'], G.C.BLACK }
+		G.may_titlecard.dissolve_colours = { SMODS.Gradients.may_col_mayhem_gradient, G.C.BLACK }
 		G.may_titlecard.dissolve = 1
 		G.may_titlecard.states.collide.can = true
 		function G.may_titlecard:click()
@@ -101,7 +101,7 @@ Game.main_menu = function(change_context)
             speed = 0.2,
             padding = -1,
             attach = G.ROOM_ATTACH,
-            colours = { G.C.BLACK, SMODS.Gradients[may.conf.Mode == 1 and "may_col_mayhem_gradient" or "may_col_eternum_green"] },
+            colours = { G.C.BLACK, SMODS.Gradients.may_col_mayhem_gradient },
             fill = true
         })
         G.menu_particles.fade_alpha = 0.7
@@ -110,7 +110,7 @@ Game.main_menu = function(change_context)
 		-- Display Mayhem version on title screen
 		if may.conf.show_version then
 		    UIBox({
-                definition = {n = G.UIT.ROOT, config = { align = "cm", colour = SMODS.Gradients[may.conf.Mode == 1 and "may_col_mayhem_gradient_dark2" or "may_col_eternum_green_dark2"] }, nodes = 
+                definition = {n = G.UIT.ROOT, config = { align = "cm", colour = SMODS.Gradients.may_col_mayhem_gradient_dark2 }, nodes = 
 					{{n = G.UIT.T, config = { scale = 0.3, text = "Mayhem "..may.version, colour = G.C.UI.TEXT_LIGHT}}
                 }},
                 config = { align = "tri", bond = "Weak", offset = { x = 0, y = 0.58 }, major = G.ROOM_ATTACH }

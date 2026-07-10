@@ -451,7 +451,7 @@ end)
  
 	-- Ethereal
 
-may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_nebula', nil, nil, 'j_may_cosmos', 200, 'may_ethereal_joker', nil, 0, function()
+may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_nebula', nil, nil, 'j_may_cosmos', 400, 'may_ethereal_joker', nil, 0, function()
 	for k, v in pairs(G.GAME.hands) do
 		if to_big(v.level) >= to_big(45) then
 			return true
@@ -460,7 +460,7 @@ may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_nebula', ni
 	return false
 end)
 
-may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_aaaa', nil, nil, 'j_may_acum', 222, 'may_ethereal_joker', nil, 0, function()
+may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_aaaa', nil, nil, 'j_may_acum', 444, 'may_ethereal_joker', nil, 0, function()
 	local count = 0
 	for k, v in pairs(G.playing_cards) do
 		if v:get_id() == 14 then
@@ -473,19 +473,19 @@ may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_aaaa', nil,
 	return false
 end)
 
-may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_destroyer', nil, nil, 'j_may_paragon', 250, 'may_ethereal_joker', nil, 0, function()
+may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_destroyer', nil, nil, 'j_may_paragon', 450, 'may_ethereal_joker', nil, 0, function()
 	return may.ctu('Planet') > 20
 end)
 
-may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_royale', nil, nil, 'j_may_little_prince', 210, 'may_ethereal_joker', nil, 0, function()
+may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_royale', nil, nil, 'j_may_little_prince', 420, 'may_ethereal_joker', nil, 0, function()
 	return G.GAME.hands['may_Royal Flush'].played >= 1
 end)
 
-may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_daredevil', nil, nil, 'j_may_party_time', 210, 'may_ethereal_joker', nil, 0, function()
+may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_daredevil', nil, nil, 'j_may_party_time', 450, 'may_ethereal_joker', nil, 0, function()
 	return ((G.GAME.may_prismatic_scaling or 0) > 0 or (G.GAME.may_demiurgic_scaling or 0) > 0 or (G.GAME.may_opalescent_scaling or 0) > 0 or (G.GAME.may_transcendent_scaling or 0) > 0) 
 end)
 
-may.fusions:add_fusion('j_may_diskus', nil, nil, 'j_may_collectionist', nil, nil, 'j_may_diskus_kollectum', 214, 'may_ethereal_joker', nil, 0, function()
+may.fusions:add_fusion('j_may_diskus', nil, nil, 'j_may_collectionist', nil, nil, 'j_may_diskus_kollectum', 414, 'may_ethereal_joker', nil, 0, function()
 	if #G.consumeables.cards == 0 then return false end
 	local count = 0
 	for k, v in pairs(G.consumeables.cards) do
@@ -499,13 +499,13 @@ may.fusions:add_fusion('j_may_diskus', nil, nil, 'j_may_collectionist', nil, nil
 	return false 
 end)
 
-may.fusions:add_fusion('j_may_bedrock_joker', nil, nil, 'j_stone', nil, nil, 'j_may_bismuth_joker', 220, 'may_ethereal_joker', nil, 0, function()
+may.fusions:add_fusion('j_may_bedrock_joker', nil, nil, 'j_stone', nil, nil, 'j_may_bismuth_joker', 415, 'may_ethereal_joker', nil, 0, function()
 	return (G.GAME.may_stones_destroyed or 0) >= 20
 end)
 
 	-- Prismatic 
  
-may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_acum', nil, nil, 'j_may_acum_universum', 555, 'may_prismatic_joker', nil, 0.8, function()
+may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_acum', nil, nil, 'j_may_acum_universum', 888, 'may_prismatic_joker', nil, 0.8, function()
 	local count = 0
 	for k, v in pairs(G.playing_cards) do
 		if v:get_id() == 14 then
@@ -518,7 +518,7 @@ may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_acum', nil,
 	return false
 end)
 
-may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_cosmos', nil, nil, 'j_may_kepler', 500, 'may_prismatic_joker', nil, 0.8, function()
+may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_cosmos', nil, nil, 'j_may_kepler', 800, 'may_prismatic_joker', nil, 0.8, function()
 	for k, v in pairs(G.GAME.hands) do
 		if to_big(v.level) >= to_big(100) then
 			return true
@@ -527,7 +527,7 @@ may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_cosmos', ni
 	return false
 end)
 
-may.fusions:add_fusion('j_may_diskus_kollectum', nil, nil, 'j_may_collectors_edition', nil, nil, 'j_may_diskus_dominus', 560, 'may_prismatic_joker', nil, 0.8, function()
+may.fusions:add_fusion('j_may_diskus_kollectum', nil, nil, 'j_may_collectors_edition', nil, nil, 'j_may_diskus_dominus', 814, 'may_prismatic_joker', nil, 0.8, function()
 	if #G.consumeables.cards == 0 then return false end
 	local count = 0
 	for k, v in pairs(G.consumeables.cards) do
@@ -541,21 +541,21 @@ may.fusions:add_fusion('j_may_diskus_kollectum', nil, nil, 'j_may_collectors_edi
 	return false
 end)
 
-may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_intergalactic_tempest', nil, nil, 'j_may_world_destroyer', 500, 'may_prismatic_joker', nil, 0.8, function()
+may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_intergalactic_tempest', nil, nil, 'j_may_world_destroyer', 800, 'may_prismatic_joker', nil, 0.8, function()
 	return may.ctu('Planet') > 50
 end)
 
-may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_party_time', nil, nil, 'j_may_aurora_rave', 600, 'may_prismatic_joker', nil, 0.8, function()
+may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_party_time', nil, nil, 'j_may_aurora_rave', 900, 'may_prismatic_joker', nil, 0.8, function()
 	return ((G.GAME.may_demiurgic_scaling or 0) > 0 or (G.GAME.may_opalescent_scaling or 0) > 0 or (G.GAME.may_transcendent_scaling or 0) > 0) 
 end)
 
-may.fusions:add_fusion('j_may_bismuth_joker', nil, nil, 'j_may_cement_joker', nil, nil, 'j_may_rocco_pfilosofia', 520, 'may_prismatic_joker', nil, 0.8, function()
+may.fusions:add_fusion('j_may_bismuth_joker', nil, nil, 'j_may_cement_joker', nil, nil, 'j_may_eternity_stone', 830, 'may_prismatic_joker', nil, 0.8, function()
 	return (G.GAME.may_stones_destroyed or 0) >= 40
 end)
 
 	-- Demiurgic 
   
-may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_acum_universum', nil, nil, 'j_may_acum_multiplexum', 1111, 'may_demiurgic_joker', nil, 1, function()
+may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_acum_universum', nil, nil, 'j_may_acum_multiplexum', 2222, 'may_demiurgic_joker', nil, 1, function()
 	local count = 0
 	for k, v in pairs(G.playing_cards) do
 		if v:get_id() == 14 then
@@ -568,7 +568,7 @@ may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_acum_univer
 	return false
 end)
 
-may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_kepler', nil, nil, 'j_may_keplers_dream', 1e3, 'may_demiurgic_joker', nil, 1, function()
+may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_kepler', nil, nil, 'j_may_keplers_dream', 2000, 'may_demiurgic_joker', nil, 1, function()
 	for k, v in pairs(G.GAME.hands) do
 		if to_big(v.level) >= to_big(250) then
 			return true
@@ -577,7 +577,7 @@ may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_kepler', ni
 	return false
 end)
 
-may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_diskus_kollectum_maximus', nil, nil, 'j_may_diskus_distruktum', 1e3, 'may_demiurgic_joker', nil, 1, function()
+may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_diskus_dominus', nil, nil, 'j_may_diskus_distruktum', 2000, 'may_demiurgic_joker', nil, 1, function()
 	if #G.consumeables.cards == 0 then return false end
 	local count = 0
 	for k, v in pairs(G.consumeables.cards) do
@@ -591,7 +591,7 @@ may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_diskus_koll
 	return false
 end)
 
-may.fusions:add_fusion('j_may_wizard_university', nil, nil, 'j_may_aurora_rave', nil, nil, 'j_may_planet_ibiza', 1.5e3, 'may_demiurgic_joker', nil, 1, function()
+may.fusions:add_fusion('j_may_wizard_university', nil, nil, 'j_may_aurora_rave', nil, nil, 'j_may_planet_ibiza', 2500, 'may_demiurgic_joker', nil, 1, function()
 	local count = 0
 	for k, v in pairs(G.playing_cards) do
 		if v.config.center.key ~= 'c_base' then
@@ -604,17 +604,17 @@ may.fusions:add_fusion('j_may_wizard_university', nil, nil, 'j_may_aurora_rave',
 	return false
 end)
 
-may.fusions:add_fusion('j_may_zodiac', nil, nil, 'j_may_world_destroyer', nil, nil, 'j_may_astral_expunger', 1e3, 'may_demiurgic_joker', nil, 1, function()
+may.fusions:add_fusion('j_may_zodiac', nil, nil, 'j_may_world_destroyer', nil, nil, 'j_may_astral_expunger', 200, 'may_demiurgic_joker', nil, 1, function()
 	return may.ctu('Tarot') > 50
 end)
 
-may.fusions:add_fusion('j_may_rocco_pfilosofia', nil, nil, 'j_may_omniversal_catalyst', nil, nil, 'j_may_infinity_stone', 1.3e3, 'may_demiurgic_joker', nil, 1, function()
+may.fusions:add_fusion('j_may_eternity_stone', nil, nil, 'j_may_omniversal_catalyst', nil, nil, 'j_may_rock_of_paramountcy', 2300, 'may_demiurgic_joker', nil, 1, function()
 	return (G.GAME.may_stones_destroyed or 0) >= 80
 end)
 
 	-- Transcendent 
 
-may.fusions:add_fusion('j_may_acum_multiplexum', nil, nil, 'j_may_keplers_dream', nil, nil, 'j_may_as_ultimatum', 3333, 'may_transcendent_joker', nil, 1.5, function()
+may.fusions:add_fusion('j_may_acum_multiplexum', nil, nil, 'j_may_keplers_dream', nil, nil, 'j_may_as_ultimatum', 5555, 'may_transcendent_joker', nil, 1.5, function()
 	for k, v in pairs(G.GAME.hands) do
 		if to_big(v.level) >= to_big(350) then
 			return true
@@ -623,7 +623,7 @@ may.fusions:add_fusion('j_may_acum_multiplexum', nil, nil, 'j_may_keplers_dream'
 	return false
 end)
 
-may.fusions:add_fusion('j_may_diskus_distruktum', nil, nil, 'j_may_planet_ibiza', nil, nil, 'j_may_rondo_discoteca', 4000, 'may_transcendent_joker', nil, 1.5, function()
+may.fusions:add_fusion('j_may_diskus_distruktum', nil, nil, 'j_may_planet_ibiza', nil, nil, 'j_may_rondo_discoteca', 5000, 'may_transcendent_joker', nil, 1.5, function()
     local op = SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or "multiply"].order
 	if G.GAME.current_scoring_calculation_key == 'talisman_hyper' then
 	    op = G.GAME.hyper_operator
@@ -631,6 +631,6 @@ may.fusions:add_fusion('j_may_diskus_distruktum', nil, nil, 'j_may_planet_ibiza'
 	return may.ctu('Planet') >= 100 and op >= 3
 end)
 
-may.fusions:add_fusion('j_may_infinity_stone', nil, nil, 'j_may_astral_expunger', nil, nil, 'j_may_zodium_calamitas', 3.5e3, 'may_transcendent_joker', nil, 1.5, function()
+may.fusions:add_fusion('j_may_rock_of_paramountcy', nil, nil, 'j_may_astral_expunger', nil, nil, 'j_may_zodium_calamitas', 5500, 'may_transcendent_joker', nil, 1.5, function()
 	return (G.GAME.may_stones_destroyed or 0) >= 100 and may.ctu('Tarot') >= 100
 end)

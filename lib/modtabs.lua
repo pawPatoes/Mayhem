@@ -46,6 +46,10 @@ may.setting_tips = {
 		"in a small box on the {C:chips}main menu{}, like how", 
 		"{C:attention,E:1}Balatro{} or {C:tarot,E:1}Steamodded{} do it"
 	}, 
+	tutorial_tooltips = {
+		"If enabled, {C:attention}tooltips{} will appear on certain {C:attention}cards{} {C:green}explaining{}", 
+		"certain {C:may_col_mayhem_gradient,E:1}Mayhem{} {C:dark_edition}mechanics{}"
+	}, 
 	
 	tr_effects = {
 		"Changes how {C:mult}intense{} and {C:attention}diverse{} the {C:tarot}visual effects{}", 
@@ -154,7 +158,7 @@ may.setting_tips = {
 	
 	menu_music = {
 		"Changes the {C:tarot}theme{} that plays on the {C:chips}main menu{}", 
-		"{C:dark_edition}AUTO{}: Chooses the {C:tarot}menu theme{} corresponding to your current {C:attention}mode{}", 
+		"{C:dark_edition}AUTO{}: {C:mult}Currently non-functional.{} Chooses the {C:attention}default{} {C:may_col_mayhem_gradient,E:1}Mayhem{} theme", 
 		"{C:attention}DEFAULT{}: Uses the default {C:attention,E:1}Balatro{} {C:tarot}theme{} or the {C:tarot}theme{} of another {C:purple}mod{}", 
 		"with {C:mult}lesser{} {C:chips}priority{}"
 	}, 
@@ -244,6 +248,14 @@ SMODS.current_mod.extra_tabs = function()
 								}},
 								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
 									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "show_version" },
+								}},
+							}},
+							{n = G.UIT.R, config = { align = "cm", padding = 0 }, nodes = {
+								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
+									{ n = G.UIT.T, config = { text = 'Tutorial tooltips', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.tutorial_tooltips } }},
+								}},
+								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
+									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "tutorial_tooltips" },
 								}},
 							}},
 						}}

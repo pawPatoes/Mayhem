@@ -2,16 +2,16 @@
 
 may.blue_album_messages = {
 	"What's with these homies dissing my girl?",
-	"Where i come from is a piece of crap",
+	"Where I come from is a piece of crap",
 	"Why do they gotta front?",
 	"but it weer :blue_heart:",
 	"What did we ever do to these guys",
-	"That made them so violent?",
+	"that made them so violent?",
 	"In the mini-mall",
 	"5 Pcs. Tweezer Set",
-	"It's a crying shame I'm all alone",
+	"It's a crying shame I'm all alone.",
 	"Why bother?",
-	"This happened to be twice before"
+	"This happened to be twice before."
 }
 	
 SMODS.Joker {
@@ -20,7 +20,7 @@ SMODS.Joker {
 		name = 'Blue Album',
 		text = {
 			{
-				"This Joker {C:attention}gains{} {X:mult,C:white}^#1#{} Mult", 
+				"This Joker {C:attention}gains{} {X:mult,C:white}+^#1#{} Mult", 
 				"if hand is played while {C:attention}Joker Slots{}",
 				"are {C:mult}not{} {C:attention}fully occupied{}",
 				may.pager(40),
@@ -57,32 +57,35 @@ SMODS.Joker {
 	calculate = function(self, card, context)
 		if context.before and not context.blueprint then
 			if #G.jokers.cards + G.GAME.joker_buffer < G.jokers.config.card_limit then
-				card.ability.extra.Emult = card.ability.extra.Emult + card.ability.extra.Emult_gain
-				return {
-					card = card,
-					message = "Upgraded!",
-					colour = G.C.MULT
-				}
+				SMODS.scale_card(card, {
+                    ref_table = card.ability.extra,
+                    ref_value = "Emult",
+                    scalar_value = "Emult_gain",
+					scaling_message = {
+                        colour = G.C.MULT, 
+						message = "It's a crying shame I'm all alone. (Upgraded!)"
+					}
+                })
 			end
 		end
 		if context.joker_main and card.ability.extra.Emult > 1 then
-			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-				play_sound('may_weezer')
-			return true end}))
 			return {
 				Emult_mod = card.ability.extra.Emult,
-				message = "What's with these homies dissing my ^"..card.ability.extra.Emult.." Mult",
+				message = "What's with these homies dissing my ^"..card.ability.extra.Emult.." Mult?",
 				card = card,
 				colour = G.C.RED,	
 			}
 		end
 		if context.forcetrigger then
-			card.ability.extra.Emult = card.ability.extra.Emult + card.ability.extra.Emult_gain
-			return {
-				card = card,
-				message = "Upgraded!",
-				colour = G.C.MULT
-			}
+			SMODS.scale_card(card, {
+                ref_table = card.ability.extra,
+                ref_value = "Emult",
+                scalar_value = "Emult_gain",
+				scaling_message = {
+                    colour = G.C.MULT, 
+					message = "It's a crying shame I'm all alone. (Upgraded!)"
+				}
+             })
 		end
 	end
 }
@@ -111,6 +114,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	immutable = true,
+	discovered = true, 
 	pos = { x = 1, y = 13 },
 	soul_pos = { x = 2, y = 13 },
 	cost = 20,
@@ -132,7 +136,7 @@ SMODS.Joker {
 		if context.joker_main or context.forcetrigger then
 			local amount = 0
 			for k, v in pairs(G.jokers.cards) do
-			    if v:may_is_pool('Food') and v ~= card then
+			    if v:has_attribute('food') and v ~= card then
 				    amount = amount + 1
 			    end
 		    end
@@ -149,7 +153,7 @@ SMODS.Joker {
 SMODS.Joker {
 	key = 'doggo',
 	loc_txt = {
-		name = {'DOGGO', "{C:dark_edition,s:0.7}Content creator insert:{} {C:may_ethereal,u:may_ethereal,s:0.7}TheUnseenExplosion{}"},
+		name = 'DOGGO',
 		text = {
 			{
 				"When a {C:attention}Queen{} of {C:hearts}Hearts{} is {C:attention}discarded{},",
@@ -166,17 +170,25 @@ SMODS.Joker {
 		}
 	},
 	rarity = 4,
-	atlas = '003_temp',
+	atlas = 'joker2',
 	blueprint_compat = true,
 	demicoloncompat = true,
 	immutable = true,
-	pos = { x = 0, y = 4 },
-	soul_pos = { x = 1, y = 4 },
+	pos = { x = 2, y = 1 },
+	soul_pos = { x = 3, y = 1 },
 	cost = 20,
 	attributes = {
 		'queen', 
 		'hearts', 
 		'generation', 
+	}, 
+	misc_badge = {
+		colour = SMODS.Gradients.may_col_instability,
+		text_colour = G.C.WHITE,
+		text = {
+			'Content Creator',
+			'TheUnseenExplosion'
+		}
 	}, 
 	loc_vars = function(self, info_queue, card)
 		local fool_c = G.GAME.last_consumable and G.P_CENTERS[G.GAME.last_consumable] or nil
@@ -214,7 +226,6 @@ SMODS.Joker {
 				if not G.P_CENTERS[G.GAME.last_consumable].hidden then
 					G.E_MANAGER:add_event(Event({delay = 0.1, func = function()
 						local new = create_card(G.P_CENTERS[G.GAME.last_consumable].set, G.consumeables, nil, nil, nil, nil, G.GAME.last_consumable, nil)
-						new:setQty(1)
 						new.no_forced_edition = true
 						new:set_edition('e_negative', true)
 						new.no_forced_edition = nil
@@ -241,8 +252,7 @@ SMODS.Joker {
 				"until {C:attention}end of round{}", 
 				"{C:inactive}Currently #3#, hands round up{}", 
 				may.pager(55),
-				"{C:inactive,E:1,s:0.7}I use banknotes as wrapping paper{}", 
-				"{C:inactive,E:1,s:0.7}for my sandwiches!{}",
+				"{C:inactive,E:1,s:0.7}I worked so hard to be born rich!{}",
 			},
 			{
 				"{C:inactive,E:1}Art by TBA{}", 
@@ -535,6 +545,7 @@ SMODS.Joker {
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 				if G.consumeables and #G.consumeables.cards < G.consumeables.config.card_limit then 
 				    play_sound('timpani')
+					play_sound('may_positive')
 				    play_sound('may_st_hohoho')
 				    SMODS.add_card({ key = 'c_may_present' })
 					card:juice_up(0.3, 0.5)
@@ -568,9 +579,9 @@ SMODS.Joker {
 	},
 	config = { extra = { Xmult = 1.5 } },
 	rarity = 4,
-	atlas = 'temp_doomsdaydevice',
-	pos = { x = 0, y = 0 },
-    soul_pos = { x = 1, y = 0 }, 
+	atlas = 'joker2',
+	pos = { x = 1, y = 2 },
+    soul_pos = { x = 2, y = 2 }, 
     immutable = true, 
     endless = true, 
 	cost = 1,

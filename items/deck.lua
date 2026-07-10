@@ -493,7 +493,7 @@ SMODS.Back {
 	end
 }]] 
 
-SMODS.Back {
+--[[SMODS.Back {
 	name = "Test Deck",
 	key = "test_deck",
 	atlas = 'deck',
@@ -518,4 +518,4 @@ SMODS.Back {
 			SMODS.add_card({key='j_may_rondo_discoteca'})
 		return true end})) 
 	end, 
-}
+}]] 

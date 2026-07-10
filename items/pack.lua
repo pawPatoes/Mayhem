@@ -5,7 +5,7 @@ SMODS.Booster {
 	kind = 'may_premium',
 	atlas = "placeholder_booster",
 	pos = { x = 0, y = 0 },
-	config = { extra = 3, choose = 1 },
+	config = { extra = 2, choose = 1 },
 	cost = 6,
 	weight = .9,
 	draw_hand = false,
@@ -87,7 +87,7 @@ SMODS.Booster {
 	kind = 'may_premium',
 	atlas = "placeholder_booster",
 	pos = { x = 0, y = 0 },
-	config = { extra = 5, choose = 1 },
+	config = { extra = 4, choose = 1 },
 	cost = 9,
 	weight = .8,
 	draw_hand = false,
@@ -169,8 +169,8 @@ SMODS.Booster {
 	kind = 'may_premium',
 	atlas = "placeholder_booster",
 	pos = { x = 0, y = 0 },
-	config = { extra = 5, choose = 2 },
-	cost = 12,
+	config = { extra = 5, choose = 1 },
+	cost = 11,
 	weight = .7,
 	draw_hand = false,
 	particles = function(self)
@@ -392,6 +392,7 @@ SMODS.Booster {
 		end
 	}
 }
+
 for i=1, 2 do
 	
 SMODS.Booster {
@@ -557,77 +558,6 @@ SMODS.Booster {
 		return G.GAME.round >= 9, { allow_duplicates = true }
 	end
 }
-
--- have to use pseudorandom element because all of the yotta cards are technically hidden
-may.yotta_cards = {
-	'c_may_planetae',
-	'c_may_cupiditas',
-	'c_may_potestas'
-}
-
-may.asc_yotta_cards = {
-	'c_may_planetae_asc',
-	'c_may_cupiditas_asc',
-	'c_may_potestas_asc'
-}
-
-if may.conf.content.WIP and may.conf.Mode == 2 then
-
-SMODS.Booster {
-	key = "b_yottacard1",
-	kind = 'yottacard',
-	atlas = "placeholder_booster",
-	pos = { x = 0, y = 0 },
-	config = { extra = 1, choose = 1 },
-	cost = 100,
-	weight = .5,
-	misc_badge = may_wip_badge,
-	draw_hand = false,
-	endless = true, 
-	create_card = function(self, card)
-		return create_card("yottacards", G.pack_cards, nil, nil, true, true, pseudorandom_element(may.yotta_cards, pseudoseed('may_yotta_pack')), "may_yottapack")
-	end,
-	ease_background_colour = function(self)
-		ease_colour(G.C.DYN_UI.MAIN, G.C.BLACK)
-		ease_background_colour({ new_colour = G.C.BLACK, special_colour = G.C.YELLOW, contrast = 2 })
-	end,
-	loc_vars = function(self, info_queue, card)
-		local cfg = (card and card.ability) or self.config
-		return { vars = { cfg.choose, cfg.extra } }
-	end, 
-	loc_txt = {
-		name = "Yotta Card Pack",
-		text = {
-			"Choose {C:attention}#1#{} random {C:money}Yotta Card{}",
-			"to be used immediately"
-		},
-	},
-	update_pack = function(self, dt)
-		ease_colour(G.C.DYN_UI.MAIN, G.C.BLACK)
-		if (G.pack_cards and G.pack_cards.cards and G.pack_cards.cards[1] and G.pack_cards.cards[1].ability.set == "ascendedyottas") then
-			ease_background_colour({ new_colour = G.C.BLACK, special_colour = SMODS.Gradients.may_col_asc_yotta, contrast = 2 })
-		else
-			ease_background_colour({ new_colour = G.C.BLACK, special_colour = G.C.YELLOW, contrast = 2 })
-		end
-		SMODS.Booster.update_pack(self, dt)
-	end,
-	group_key = "k_may_yotta_pack",
-	cry_digital_hallucinations = {
-		colour = G.C.YELLOW,
-		loc_key = "may_cry_plus_yotta",
-		create = function()
-			local ccard = create_card("yottacards", G.consumables, nil, nil, nil, nil, pseudorandom_element(may.yotta_cards, pseudoseed('may_yotta_pack')), "diha")
-			ccard:set_edition({ negative = true }, true)
-			ccard:add_to_deck()
-			G.consumeables:emplace(ccard)
-		end
-	}, 
-	in_pool = function(self, args)
-		return G.GAME.may_endless_mode, { allow_duplicates = true }
-	end
-}
-
-end
 
 for i=1, 4 do
 	
@@ -967,28 +897,7 @@ SMODS.Booster {
 			local ccard = create_card(choice, G.consumables, nil, nil, nil, nil, nil, "diha")
 			ccard:set_edition({ negative = true }, true)
 			ccard:add_to_deck()
-			if choice == 'Voucher' then
-				if not G.P_CENTERS[ccard:gc().key] then return end
-				local area
-				if G.STATE == G.STATES.HAND_PLAYED then
-					if not G.redeemed_vouchers_during_hand then
-						G.redeemed_vouchers_during_hand = CardArea(G.play.T.x, G.play.T.y, G.play.T.w, G.play.T.h, {type = 'play', card_limit = 5})
-					end
-					area = G.redeemed_vouchers_during_hand
-				else
-					area = G.play
-				end
-				ccard:start_materialize()
-				area:emplace(ccard)
-				ccard.cost=0
-				ccard.shop_voucher=false
-				ccard:redeem()
-				G.E_MANAGER:add_event(Event({delay = 0,func = function() 
-					ccard:start_dissolve()
-				return true end}))
-			else
-				G.consumeables:emplace(ccard)
-			end
+			G.consumeables:emplace(ccard)
 		end
 	}
 }
@@ -1042,28 +951,7 @@ SMODS.Booster {
 			local ccard = create_card(choice, G.consumables, nil, nil, nil, nil, nil, "diha")
 			ccard:set_edition({ negative = true }, true)
 			ccard:add_to_deck()
-			if choice == 'Voucher' then
-				if not G.P_CENTERS[ccard:gc().key] then return end
-				local area
-				if G.STATE == G.STATES.HAND_PLAYED then
-					if not G.redeemed_vouchers_during_hand then
-						G.redeemed_vouchers_during_hand = CardArea(G.play.T.x, G.play.T.y, G.play.T.w, G.play.T.h, {type = 'play', card_limit = 5})
-					end
-					area = G.redeemed_vouchers_during_hand
-				else
-					area = G.play
-				end
-				ccard:start_materialize()
-				area:emplace(ccard)
-				ccard.cost=0
-				ccard.shop_voucher=false
-				ccard:redeem()
-				G.E_MANAGER:add_event(Event({delay = 0,func = function() 
-					ccard:start_dissolve()
-				return true end}))
-			else
-				G.consumeables:emplace(ccard)
-			end
+			G.consumeables:emplace(ccard)
 		end
 	}
 }
@@ -1117,28 +1005,7 @@ SMODS.Booster {
 			local ccard = create_card(choice, G.consumables, nil, nil, nil, nil, nil, "diha")
 			ccard:set_edition({ negative = true }, true)
 			ccard:add_to_deck()
-			if choice == 'Voucher' then
-				if not G.P_CENTERS[ccard:gc().key] then return end
-				local area
-				if G.STATE == G.STATES.HAND_PLAYED then
-					if not G.redeemed_vouchers_during_hand then
-						G.redeemed_vouchers_during_hand = CardArea(G.play.T.x, G.play.T.y, G.play.T.w, G.play.T.h, {type = 'play', card_limit = 5})
-					end
-					area = G.redeemed_vouchers_during_hand
-				else
-					area = G.play
-				end
-				ccard:start_materialize()
-				area:emplace(ccard)
-				ccard.cost=0
-				ccard.shop_voucher=false
-				ccard:redeem()
-				G.E_MANAGER:add_event(Event({delay = 0,func = function() 
-					ccard:start_dissolve()
-				return true end}))
-			else
-				G.consumeables:emplace(ccard)
-			end
+			G.consumeables:emplace(ccard)
 		end
 	}
 }

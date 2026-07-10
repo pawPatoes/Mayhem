@@ -188,7 +188,8 @@ SMODS.Joker {
 	pos = { x = 3, y = 2 },
 	config = { extra = { odds = 3 } },
 	loc_vars = function(self, info_queue, card)
-		return { vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds } }
+		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Mana Orb")
+		return { vars = { normal, odds } }
 	end,
 	cost = 4,
 	attributes = {
@@ -197,16 +198,14 @@ SMODS.Joker {
 		'enhancements'
 	}, 
 	calculate = function(self, card, context)
-		if context.before and context.cardarea == G.jokers and pseudorandom('may_mana_orb') < G.GAME.probabilities.normal / card.ability.extra.odds then
-			local enhance = {}
-			for k, v in ipairs(G.P_CENTER_POOLS['Enhanced']) do
-				if v.key ~= 'm_stone' then
-					table.insert(enhance, v)
-				end
-			end
+		if context.before and context.cardarea == G.jokers and SMODS.pseudorandom_probability(card, "may_mana_orb", 1, card.ability.extra.odds, "Mana Orb") then
 			for k, v in ipairs(context.scoring_hand) do
 				if v.ability.name == 'c_base' then
-					v:set_ability(pseudorandom_element(enhance, pseudoseed('may_mana_orb')), nil, true)
+					G.E_MANAGER:add_event(Event({func = function()
+						v:juice_up(0.3, 0.5)
+						v:set_ability(SMODS.poll_enhancement({ guaranteed = true, no_replace = true }), nil, true)
+						play_sound('tarot1', 1, 0.7)
+					return true end})) 
 				end
 			end
 			return {
@@ -217,21 +216,19 @@ SMODS.Joker {
 			}
 		end
 		if context.forcetrigger then
-			local enhance = {}
-			for k, v in ipairs(G.P_CENTER_POOLS['Enhanced']) do
-				if v.key ~= 'm_stone' then
-					table.insert(enhance, v)
+			for k, v in ipairs(context.scoring_hand) do
+				if v.ability.name == 'c_base' then
+					G.E_MANAGER:add_event(Event({func = function()
+						v:juice_up(0.3, 0.5)
+						v:set_ability(SMODS.poll_enhancement({ guaranteed = true, no_replace = true }), nil, true)
+						play_sound('tarot1', 1, 0.7)
+					return true end})) 
 				end
 			end
-			for k, v in ipairs(context.scoring_hand) do
-				v:set_ability(pseudorandom_element(enhance, pseudoseed('may_mana_orb')), nil, true)
-			end
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-				play_sound('holo1')
-			return true end}))
 			return {
 				card = card,
 				message = "Enhancements!",
+				sound = 'holo1',
 				colour = G.C.DARK_EDITION
 			}
 		end
@@ -488,6 +485,7 @@ SMODS.Joker {
 		'chance', 
 		'tarot'
 	}, 
+	show_ring_display = true,
 	calculate = function(self, card, context)
 		if (context.using_consumeable and context.consumeable:gc().set == 'Tarot' and SMODS.pseudorandom_probability(card, "may_zodiac", 1, card.ability.extra.odds, "Zodiac")) or context.forcetrigger then 
             may.th(may.favhand())

@@ -1,6 +1,6 @@
--- ethereal Jokers
+-- Ethereal Jokers
 
-SMODS.Joker {
+--[[SMODS.Joker {
 	key = 'little_prince',
 	loc_txt = {
 		name = {'Little Prince', "{C:inactive,s:0.5}Omniversal Catalyst + Royale{}"},
@@ -52,7 +52,7 @@ SMODS.Joker {
 			}
 		end
 	end
-}
+}]] 
 
 SMODS.Joker {
 	key = 'party_time',
@@ -79,15 +79,17 @@ SMODS.Joker {
 	atlas = 'joker1',
 	blueprint_compat = false,
 	demicoloncompat = true,
+	endless = true,
 	pos = { x = 3, y = 3 },
 	soul_pos = { x = 2, y = 3 },
-	cost = 1000,
+	cost = 300,
 	attributes = {
 		'chance', 
 		'xblindsize'
 	}, 
 	loc_vars = function(self, info_queue, card)
-		return { vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds, card.ability.extra.mod, card.ability.extra.blindmult } }
+		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Party Time")
+		return { vars = { normal, odds, card.ability.extra.mod, card.ability.extra.blindmult } }
 	end,
 	add_to_deck = function(self, card, from_debuff)
 		if not from_debuff then
@@ -103,7 +105,7 @@ SMODS.Joker {
 	end,
 	calculate = function(self, card, context)
 		if context.after and context.cardarea == G.jokers and not context.blueprint then
-			if pseudorandom('may_party_time') < G.GAME.probabilities.normal / card.ability.extra.odds then
+			if SMODS.pseudorandom_probability(card, "may_party_time", 1, card.ability.extra.odds, "Party Time") then
 				if not card.ability.extra.active then
 					card.ability.extra.active = true
 					change_operator(card.ability.extra.mod)
@@ -200,10 +202,11 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	immutable = true,
+	endless = true,
 	atlas = 'joker1',
 	pos = { x = 5, y = 5 },
 	soul_pos = { x = 0, y = 6 },
-	cost = 1000,
+	cost = 444,
 	attributes = {
 		'generation', 
 		'ace', 
@@ -212,6 +215,7 @@ SMODS.Joker {
 	}, 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_grim
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		return { vars = { card.ability.extra.repetitions, card.ability.extra.e_mult } }
 	end,
 	calculate = function(self, card, context)
@@ -228,9 +232,6 @@ SMODS.Joker {
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
 				card:juice_up(0.3, 0.5)
 				local grim = create_card('Spectral', G.consumeables, nil, nil, nil, nil, 'c_grim', nil)
-				grim.no_forced_edition = true
-				grim.no_forced_edition = nil
-				grim:setQty(1)
 				grim:set_edition({negative = true}, true)
 				grim:set_cost()
 				grim:add_to_deck()
@@ -247,11 +248,8 @@ SMODS.Joker {
 		end
 		if context.forcetrigger then
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-				card:juice_up(1,1)
+				card:juice_up(0.3, 0.5)
 				local grim = create_card('Spectral', G.consumeables, nil, nil, nil, nil, 'c_grim', nil)
-				grim.no_forced_edition = true
-				grim.no_forced_edition = nil
-				grim:setQty(1)
 				grim:set_edition({negative = true}, true)
 				grim:set_cost()
 				grim:add_to_deck()
@@ -281,7 +279,7 @@ SMODS.Joker {
 	config = { extra = { Echip_gain = 0.5, Echip = 1, temp_scale = 0} },
 	pos = { x = 2, y = 4 },
 	soul_pos = { x = 3, y = 4 },
-	cost = 1000,
+	cost = 300,
 	rarity = 'may_ethereal',
 	unlocked = true,
 	immutable = true,
@@ -289,6 +287,7 @@ SMODS.Joker {
 	atlas = 'joker1',
 	blueprint_compat = true,
 	demicoloncompat = true,
+	endless = true,
 	attributes = {
 		'echips', 
 		'planet', 
@@ -360,11 +359,12 @@ SMODS.Joker {
 	config = { extra = { Emult = 1 } },
 	pos = { x = 5, y = 6 },
 	soul_pos = { x = 0, y = 7 },
-	cost = 1000,
+	cost = 300,
 	rarity = 'may_ethereal',
 	atlas = 'joker1',
 	blueprint_compat = true,
 	demicoloncompat = true,
+	endless = true,
 	attributes = {
 		'emult'
 	}, 
@@ -417,7 +417,7 @@ SMODS.Joker {
 	custom_soul_anim = 'diskus_spin',
 	pos = { x = 3, y = 12 },
 	soul_pos = { x = 0, y = 13 },
-	cost = 1000,
+	cost = 314,
 	config = { extra = { blindcards = 20, cards_gain = 5, Emult = 14, } },
 	attributes = {
 		'generation', 
@@ -509,7 +509,7 @@ SMODS.Joker {
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_medusa
 		return { vars = { card.ability.extra.Echip, card.ability.extra.Echip_gain, card.ability.extra.Echip_gain2 } }
 	end,
-	cost = 1000,
+	cost = 350,
 	attributes = {
 		'echips', 
 		'generation', 

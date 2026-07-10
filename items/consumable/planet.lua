@@ -1,32 +1,5 @@
 -- Planet cards
 
-may.rare_planet_rate = 0.003
-may.legendary_planet_rate = 0.0003
-may.mythic_planet_rate = 0.00006
-
-may.rare_planets = {
-	'c_may_vespia',
-	'c_may_stos',
-	'c_may_triton',
-	'c_may_yryx',
-	'c_may_pallas', 
-	'c_may_parthenope'
-}
-
-may.legendary_planets = {
-	'c_may_kivaaritehdas',
-	'c_may_quac_n7',
-	'c_may_opolisis',
-	'c_may_en_7b',
-}
-
-may.mythic_planets = {
-	'c_may_amadeus',
-	'c_may_eryndra',
-	'c_may_gaea',
-	'c_may_matakka'
-}
-
 SMODS.Consumable {
 	set = 'Planet',
 	key = 'proxima_centauri',
@@ -93,7 +66,8 @@ SMODS.Consumable {
 	pos = { x = 3, y = 4 },
 	config = { extra = { cards = 2 } }, 
 	atlas = 'planet',
-	ignore_allplanets = true,
+	ignore_allplanets = true, 
+	no_ring_display = true,
 	loc_txt = {
 		name = 'Sun',
 		text = {
@@ -157,6 +131,7 @@ SMODS.Consumable {
 	config = { extra = { cards = 1 } }, 
 	atlas = 'planet',
 	ignore_allplanets = true,
+	no_ring_display = true, 
 	loc_txt = {
 		name = 'Dysnomia', 
 		text = {
@@ -309,6 +284,7 @@ SMODS.Consumable {
 		badges[1] = create_badge('Plutonian Moon', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
 	reserve = true,
+	no_ring_display = true,
 	loc_txt = {
 		name = 'Charon',
 		text = {
@@ -380,6 +356,7 @@ SMODS.Consumable {
 	pos = { x = 3, y = 1 },
 	atlas = 'planet',
 	config = { extra = { planets = 4 } },
+	no_ring_display = true, 
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Plutonian Moon', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
@@ -589,6 +566,7 @@ SMODS.Consumable {
 	pos = { x = 4, y = 1 },
 	atlas = 'planet',
 	endless = true,
+	no_ring_display = true, 
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Dwarf Planet', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
@@ -731,6 +709,7 @@ SMODS.Consumable {
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Haumean Moon', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
+	no_ring_display = true, 
 	loc_txt = {
 		name = 'Namaka',
 		text = {
@@ -897,6 +876,7 @@ SMODS.Consumable {
 	atlas = 'planet',
 	config = { extra = { Xchips = 0.2, cards = 0 } },
 	ignore_allplanets = true,
+	no_ring_display = true, 
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Martian Moon', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
@@ -1108,6 +1088,7 @@ SMODS.Consumable {
 	reserve = true,
 	ignore_allplanets = true,
 	may_persist_after_use = true,
+	no_ring_display = true, 
 	loc_txt = {
 		name = 'Gersemi',
 		text = {
@@ -1184,6 +1165,7 @@ SMODS.Consumable {
 	no_grc = true,
 	no_doe = true, 
 	hidden = true, 
+	no_ring_display = true, 
 	soul_rate = 0,
 	loc_txt = {
 		name = 'Gersemi {C:green}(Active){}',
@@ -1243,6 +1225,7 @@ SMODS.Consumable {
 	key = 'mangas',
 	pos = { x = 1, y = 0 },
 	atlas = 'planet',
+	no_ring_display = true, 
 	loc_txt = {
 		name = 'Mangas',
 		text = {
@@ -1446,7 +1429,7 @@ SMODS.Consumable {
 	key = 'quac_n7',
 	pos = { x = 5, y = 2 },
 	atlas = 'planet',
-	config = { extra = { mul = 0.05 } },
+	config = { extra = { amount1 = 2, amount2 = 1 } },
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Former Planet', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
@@ -1455,27 +1438,32 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'QUAC-N7',
 		text = {
-			"{X:planet,C:white}X#1#{} level of {C:attention}most played{} {C:purple}Poker Hand{}", 
-			"Add {C:mult}lost{} {C:planet}levels{} to", 
-			"to all {C:attention}other{} {C:purple}Poker Hands{}",
-			"{C:inactive}#2#, #3# levels{}",
+			"{C:mult}Level down{} {C:attention}most played{}", 
+			"{C:purple}Poker Hand{} by {C:attention}#1#{}", 
+			may.pager(45),
+			"{C:planet}Level up{} all {C:attention}other{}", 
+			"{C:purple}Poker Hands{} by {C:attention}#2#{}", 
+			may.pager(45),
+			"{C:inactive}Will level down #3#{}"
 		}
 	},
 	can_use = function(self, card)
 		return may.canuse()
 	end,
 	loc_vars = function(self, info_queue, card)
-		return { vars = { 1 - card.ability.extra.mul, localize(may.favhand(), 'poker_hands'), G.GAME.hands[may.favhand()].level * card.ability.extra.mul } }
+		return { vars = { card.ability.extra.amount1, card.ability.extra.amount2, localize(may.favhand(), 'poker_hands') } }
 	end,
 	use = function(self, card)
-		local amount = G.GAME.hands[may.favhand()].level * card.ability.extra.mul
-		may.level_up_hand_hyper(card, may.favhand(), false, 0, (1 - card.ability.extra.mul))
-		may.level_up_all_hands(card, may.favhand(), false, amount)
+		may.th(may.favhand())
+		level_up_hand(card, may.favhand(), false, -card.ability.extra.amount1)
+		may.level_up_all_hands(card, false, card.ability.extra.amount2, may.favhand())
+		may.ch()
 	end,
 	bulk_use = function(self, card, number)
-		may.level_up_hand_hyper(card, may.favhand(), false, 0, (1 - card.ability.extra.mul) ^ number)
-		local amount = G.GAME.hands[may.favhand()].level * card.ability.extra.mul * number
-		may.level_up_all_hands(card, may.favhand(), false, G.GAME.hands[may.favhand()].level * card.ability.extra.mul * number)
+		may.th(may.favhand())
+		level_up_hand(card, may.favhand(), false, -card.ability.extra.amount1 * number)
+		may.level_up_all_hands(card, false, card.ability.extra.amount2 * number, may.favhand())
+		may.ch()
 	end,
 	in_pool = function(self, args)
 		return G.GAME.may_endless_mode, { allow_duplicates = false }
@@ -1573,6 +1561,7 @@ SMODS.Consumable {
 	config = { extra = { planets = 3 } },
 	atlas = 'planet',
 	ignore_allplanets = true,
+	no_ring_display = true, 
 	loc_txt = {
 		name = 'Moon',
 		text = {
@@ -1662,6 +1651,7 @@ SMODS.Consumable {
 	config = { extra = { planets = 3 } },
 	atlas = 'planet',
 	ignore_allplanets = true,
+	no_ring_display = true, 
 	loc_txt = {
 		name = 'Satellite',
 		text = {
@@ -1734,6 +1724,7 @@ SMODS.Consumable {
 	pos = { x = 3, y = 3 },
 	atlas = 'planet',
 	config = { extra = { lev_mult = 2, lev_chips = 15, } },
+	no_ring_display = true, 
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Ring System', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
@@ -1802,9 +1793,11 @@ SMODS.Consumable {
 	pos = { x = 3, y = 2 },
 	atlas = 'planet',
 	config = { extra = { score = 800, dollars = 0.1 } },
+	no_ring_display = true, 
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Ring System', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
+	no_ring_display = true, 
 	loc_txt = {
 		name = 'Rings of Saturn',
 		text = {
@@ -1874,6 +1867,7 @@ SMODS.Consumable {
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Ring System', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
+	no_ring_display = true, 
 	loc_txt = {
 		name = 'Rings of Uranus',
 		text = {
@@ -1939,6 +1933,7 @@ SMODS.Consumable {
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Ring System', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
+	no_ring_display = true, 
 	loc_txt = {
 		name = 'Rings of Neptune',
 		text = {
@@ -2028,6 +2023,7 @@ for k, v in pairs(may.jovian_moons) do
 			badges[1] = create_badge('Jovian Moon', get_type_colour(self or card.config, card), nil, 1.2)
 		end,
 		cost = 3,
+		no_ring_display = true, 
 		loc_txt = {
 			name = v[2],
 			text = {
@@ -2103,6 +2099,7 @@ for k, v in pairs(may.saturnian_moons) do
 			badges[1] = create_badge('Saturnian Moon', get_type_colour(self or card.config, card), nil, 1.2)
 		end,
 		cost = 3,
+		no_ring_display = true, 
 		loc_txt = {
 			name = v[2],
 			text = {

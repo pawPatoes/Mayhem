@@ -148,7 +148,6 @@ SMODS.Tag {
 			create_shop_card_ui(card, "Joker", context.area)
 			card.states.visible = false
 			tag:yep("+", G.C.RARITY[may.epic_key], function()
-				card:start_materialize()
 				card:set_cost()
 			return true end)
 			tag.triggered = true
@@ -245,85 +244,6 @@ SMODS.Tag {
         return G.GAME.may_endless_mode, { allow_duplicates = true }
     end
 }
-
-if may.mode == 2 then
-
-SMODS.Tag {
-	atlas = "tag",
-	pos = { x = 0, y = 2 },
-	min_ante = 2,
-	config = { type = "store_joker_create" },
-	key = "mythic",
-    endless = true,
-	loc_txt = {
-		name = 'Mythic Tag',
-		text = {
-			"Shop has a",
-			"{C:may_mythic}Mythic Joker{}"
-		}
-	},
-	apply = function(self, tag, context)
-		if context.type == "store_joker_create" then
-			local card = create_card("Joker", context.area, nil, 'may_mythic', nil, nil, nil)
-			create_shop_card_ui(card, "Joker", context.area)
-			card.states.visible = false
-			tag:yep("+", G.C.FILTER, function()
-				card:start_materialize()
-				card:set_cost()
-				play_sound('may_mythic_joker')
-			return true end)
-			tag.triggered = true
-			return card
-		end
-	end,
-    in_pool = function(self, args)
-        return G.GAME.may_endless_mode, { allow_duplicates = true }
-    end
-}
-
-SMODS.Tag {
-	atlas = "tag",
-	pos = { x = 1, y = 2 },
-	min_ante = 7,
-	config = { type = "immediate" },
-	key = "unstable",
-    endless = true, 
-	loc_txt = {
-		name = 'Unstable Tag',
-		text = {
-			"Creates an {C:attention}Universal Collapse{} Joker",
-			"{C:attention}+3{} Ante",
-			"{C:inactive}(requires room){}"
-		}
-	},
-	apply = function(self, tag, context)
-		if context.type == "immediate" then
-			if G.jokers and #G.jokers.cards < G.jokers.config.card_limit then
-				local lock = tag.ID
-				G.CONTROLLER.locks[lock] = true
-				tag:yep("+", G.C.PURPLE, function()
-					if G.jokers and #G.jokers.cards < G.jokers.config.card_limit then
-						local card2 = create_card('Joker', G.jokers, nil, nil, nil, nil, 'j_may_universal_collapse', 'may_genesis')
-						G.jokers:emplace(card2)
-						play_sound('may_thunder'..math.random(1,2)..'', 1, 0.75)
-						card2:add_to_deck()
-						ease_ante(3)
-						G.CONTROLLER.locks[lock] = nil
-					end
-				return true end)
-			else
-				tag:nope()
-			end
-			tag.triggered = true
-		return true
-		end
-	end,
-    in_pool = function(self, args)
-        return G.GAME.may_endless_mode, { allow_duplicates = true }
-    end
-}
-
-end
 
 --[[SMODS.Tag {
 	atlas = "tag",

@@ -81,11 +81,12 @@ SMODS.Seal {
 	sound = { sound = 'gold_seal', per = 1.2, vol = 0.4 },
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
-		return { vars = { G.GAME.probabilities.normal } }
+		local normal, odds = SMODS.get_probability_vars(card, 1, 3, "Inverted Seal")
+		return { vars = { normal } }
 	end, 
 	calculate = function(self, card, context)
 		if context.end_of_round and context.cardarea == G.hand and #G.consumeables.cards > 0 then
-			if pseudorandom('may_inverted_seal') < G.GAME.probabilities.normal / 3 then
+			if SMODS.pseudorandom_probability(card, "may_inverted_seal", 1, 3, "Inverted Seal") then
                if G.consumeables.cards[1] then
 				    local available
 				    for i = 1, #G.consumeables.cards do
@@ -164,8 +165,8 @@ SMODS.Seal {
 		name = 'Pink Seal',
 		label = 'Pink Seal',
 		text = {
-			"{X:planet,C:white}X1.25{} level of {C:attention}played{}", 
-			"{C:purple}Poker Hand{} but {X:money,C:white}X0.85${}", 
+			"Levels up {C:attention}played{}", 
+			"{C:purple}Poker Hand{} but {X:money,C:white}X0.9${}", 
 			"after {C:attention}scoring{} if played"
 		}
 	},
@@ -173,11 +174,13 @@ SMODS.Seal {
 	pos = { x = 6, y = 0 },
 	badge_colour = HEX('ff00ea'),
 	sound = { sound = 'gold_seal', per = 1.2, vol = 0.4 },
+	show_ring_display = true,
 	calculate = function(self, card, context)
 		if context.cardarea == G.play and context.after then
-			may.level_up_hand_hyper(card, context.scoring_name, nil, 1.25, 0)
+			level_up_hand(card, context.scoring_name, nil, 1)
+			may.ch()
 			return {
-				x_dollars = 0.85
+				x_dollars = 0.9
 			}
 		end
 	end

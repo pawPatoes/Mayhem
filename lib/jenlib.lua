@@ -1,7 +1,4 @@
--- jenlib, all of it basically
--- added into base mod for convenience and longevity
-
--- obvious credits to jenwalter666
+-- (Most of) Jenlib, mostly contains utility functions
 
 --Returns a table where each element is a single-character string derived from the given string
 function may.string_to_table(str)
@@ -743,7 +740,6 @@ function may.rawcard(key, sizemul, shiftx, shifty)
 		G.P_CENTERS[key],
 		{ bypass_discovery_center = true, bypass_discovery_ui = true }
 	)
-	ncard:start_materialize()
 	return ncard
 end
 
@@ -900,16 +896,14 @@ function Card:shrink(mod, force_save)
 end
 
 --Displays some announcement text (duration is affected by gamespeed, providing duration's number as a string will normalise it, or you can do duration*may.gspd())
-function may.a(txt, duration, size, col, snd, sndpitch, sndvol)
+function may.a(txt, duration, size, col, snd, sndpitch, sndvol, x, y)
 	if type(duration) == 'string' then
 		duration = (tonumber(duration) or 0)*G.SETTINGS.GAMESPEED
 	end
-	G.E_MANAGER:add_event(Event({
-		func = (function()
-			if snd then play_sound(snd, sndpitch, sndvol) end
-			attention_text({
-				scale = size or 1.4, text = txt, hold = duration or 2, colour = col or G.C.WHITE, align = 'cm', offset = {x = 0,y = -2.7},major = G.play
-			})
-		return true
-	end)}))
+	G.E_MANAGER:add_event(Event({func = (function()
+		if snd then play_sound(snd, sndpitch, sndvol) end
+		attention_text({
+			scale = size or 1.4, text = txt, hold = duration or 2, colour = col or G.C.WHITE, align = 'cm', offset = {x = x or 0, y = y or -2.7}, major = G.play
+		})
+	return true end)}))
 end

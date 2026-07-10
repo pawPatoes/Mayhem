@@ -23,6 +23,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	immutable = true,
+	endless = true,
 	pos = { x = 0, y = 4 },
 	soul_pos = { x = 1, y = 4 },
 	cost = 1111111,
@@ -184,6 +185,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	immutable = true,
+	endless = true,
 	custom_soul_anim = 'diskus_spin_fast',
 	pos = { x = 0, y = 5 },
 	soul_pos = { x = 1, y = 5 },
@@ -329,6 +331,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	immutable = true,
+	endless = true,
 	pos = { x = 0, y = 0 },
 	config = { extra = { arrow = 4, hyper_chips = 1, hyper_chips_gain = 1, hyper_chips_gain2 = 0.5, hyperop_decrease = -0.25, hyperop_increase = 1, tarots = 6, max = 5, increased = 0, used = 0 } },
 	attributes = {

@@ -405,7 +405,7 @@ function G.UIDEF.use_and_sell_buttons(card)
 		}}
 	end
 	-- Joker abilities
-	if card.area == G.jokers and card.config.center.key == 'j_may_ourania_kleidaria' then
+	if card.area == G.jokers and card.config.center.use_ability then
         return {n = G.UIT.ROOT, config = { padding = 0, colour = G.C.CLEAR }, nodes = {
             {n=G.UIT.R, config={align = 'cl'}, nodes={
 			    {n=G.UIT.C, config={align = "cl"}, nodes={
@@ -425,43 +425,11 @@ function G.UIDEF.use_and_sell_buttons(card)
             }}, 
             {n=G.UIT.R, config={align = 'cl'}, nodes={
                 {n=G.UIT.C, config={align = "cl"}, nodes={
-                    {n=G.UIT.C, config={ref_table = card, align = "cl", padding = 0.2, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'may_ourania_kleidaria_ability', func = 'may_can_use_ourania_kleidaria_ability', handy_insta_action = 'ability'}, nodes={
+                    {n=G.UIT.C, config={ref_table = card, align = "cl", padding = 0.2, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'may_joker_ability', func = 'may_can_use_joker_ability', handy_insta_action = 'ability'}, nodes={
                         {n=G.UIT.B, config = {w=0.1,h=0.6}},
                         {n=G.UIT.C, config={align = "cm"}, nodes={
                             {n=G.UIT.R, config={align = "cm", maxw = 1.25}, nodes={
-                                {n=G.UIT.T, config={text = 'ABILITY',colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true}}
-                            }}
-                        }},
-                    }}, 
-                }}, 
-            }}
-		}}
-	end
-	if card.area == G.jokers and card.config.center.key == 'j_may_guacamole' then
-        return {n = G.UIT.ROOT, config = { padding = 0, colour = G.C.CLEAR }, nodes = {
-            {n=G.UIT.R, config={align = 'cl'}, nodes={
-			    {n=G.UIT.C, config={align = "cl"}, nodes={
-				    {n=G.UIT.C, config={ref_table = card, align = "cr", padding = 0.1, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'sell_card', func = 'can_sell_card', handy_insta_action = 'sell'}, nodes={
-					    {n=G.UIT.B, config = {w=0.1,h=0.6}},
-						{n=G.UIT.C, config={align = "tm"}, nodes={
-							{n=G.UIT.R, config={align = "cm", maxw = 1.25}, nodes={
-								{n=G.UIT.T, config={text = localize('b_sell'),colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true}}
-							}},
-							{n=G.UIT.R, config={align = "cm"}, nodes={
-							    {n=G.UIT.T, config={text = localize('$'),colour = G.C.WHITE, scale = 0.4, shadow = true}},
-							    {n=G.UIT.T, config={ref_table = card, ref_value = 'sell_cost_label',colour = G.C.WHITE, scale = 0.55, shadow = true}}
-                            }},
-					    }}
-				    }},
-                }}, 
-            }}, 
-            {n=G.UIT.R, config={align = 'cl'}, nodes={
-                {n=G.UIT.C, config={align = "cl"}, nodes={
-                    {n=G.UIT.C, config={ref_table = card, align = "cl", padding = 0.2, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'may_guacamole_ability', func = 'may_can_use_guacamole_ability', handy_insta_action = 'ability'}, nodes={
-                        {n=G.UIT.B, config = {w=0.1,h=0.6}},
-                        {n=G.UIT.C, config={align = "cm"}, nodes={
-                            {n=G.UIT.R, config={align = "cm", maxw = 1.25}, nodes={
-                                {n=G.UIT.T, config={text = 'ABILITY',colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true}}
+                                {n=G.UIT.T, config={text = 'ABILITY', colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true}}
                             }}
                         }},
                     }}, 

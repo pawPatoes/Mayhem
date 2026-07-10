@@ -33,6 +33,7 @@ return {
 	["pagers"] = true, 
 	["show_version"] = true,
 	["short_fusion"] = true,
+	["tutorial_tooltips"] = true,
 	["CM"] = {
 		["Cryptid"] = true,
 		["BlindEditions"] = true,
@@ -53,7 +54,7 @@ return {
 	["threshold_punishment"] = true,
 	["round_punishment"] = true,
 	["fusion_punishment"] = true,
-	["reroll_cost"] = 2,
+	["reroll_cost"] = 1,
 	["scaling"] = 1,
     ["epileptic"] = false,
 	["intro"] = true,

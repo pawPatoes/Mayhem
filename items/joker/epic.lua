@@ -189,8 +189,8 @@ SMODS.Joker {
 	loc_txt = {
 		name = 'Cacophonous',
 		text = {
-			"{X:mult,C:white}X#1#{} Mult for {C:attention}every owned Joker{}",
-			"{C:attention}Increases by {X:mult,C:white}#2#{} when a {C:attention}Joker is bought{}",
+			"{X:mult,C:white}+X#1#{} Mult for {C:attention}every owned Joker{}",
+			"{C:attention}Increases by {X:mult,C:white}+X#2#{} when a {C:attention}Joker is bought{}",
 			"{C:inactive}{X:mult,C:white}X#3#{} {C:inactive}Mult in total{}"
 		}
 	},
@@ -210,29 +210,24 @@ SMODS.Joker {
 		return { vars = { card.ability.extra.Xmult, card.ability.extra.Xmult_gain, G.jokers and ((#(G.jokers.cards or {})*card.ability.extra.Xmult) + 1) or 0 } }
 	end,
 	calculate = function(self, card, context) 
-		if context.joker_main and (card.ability.extra.Xmult*#G.jokers.cards) + 1 > 1 then
+		if context.joker_main and (card.ability.extra.Xmult * #G.jokers.cards) + 1 > 1 then
 			return {
-				Xmult_mod = ((card.ability.extra.Xmult*#G.jokers.cards)+1),
-				message = "X"..((card.ability.extra.Xmult*#G.jokers.cards)+1).." Mult",
+				Xmult_mod = ((card.ability.extra.Xmult * #G.jokers.cards) + 1),
+				message = "X"..((card.ability.extra.Xmult * #G.jokers.cards) + 1).." Mult",
 				card = card,
 				colour = G.C.RED,		
 			}
 		end
-		if context.buying_card and context.card.ability.set == 'Joker' then
-			card.ability.extra.Xmult = card.ability.extra.Xmult + card.ability.extra.Xmult_gain
-			return {
-				message = "Upgraded!",
-				card = card,
-				colour = G.C.RED,		
-			}
-		end
-		if context.forcetrigger then
-			card.ability.extra.Xmult = card.ability.extra.Xmult + card.ability.extra.Xmult_gain
-			return {
-				message = "Upgraded!",
-				card = card,
-				colour = G.C.RED,		
-			}
+		if (context.buying_card and context.card.ability.set == 'Joker') or context.forcetrigger then
+			SMODS.scale_card(card, {
+                ref_table = card.ability.extra,
+                ref_value = "XMult",
+                scalar_value = "Xmult_gain",
+				scaling_message = {
+                    colour = G.C.MULT, 
+					message = localize('k_upgrade_ex')
+				}
+             })
 		end
 	end
 }
@@ -555,7 +550,14 @@ SMODS.Joker {
 	atlas = 'joker2',
 	blueprint_compat = true,
 	demicoloncompat = true,
-	misc_badge = may_sly25_kratos_verde,
+	misc_badge = {
+		colour = SMODS.Gradients.may_col_opalescent,
+		text_colour = G.C.WHITE,
+		text = {
+			'Sly25 Winner',
+			'roland_shelby'
+		}
+	},
 	pos = { x = 8, y = 6 },
 	cost = 12,
 	attributes = {
@@ -616,7 +618,7 @@ SMODS.Joker {
 	pos = { x = 3, y = 15 },
 	blueprint_compat = false,
 	demicoloncompat = false,
-	cost = 7,
+	cost = 9,
 	attributes = {
 		'passive', 
 	}, 

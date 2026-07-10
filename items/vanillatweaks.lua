@@ -14,6 +14,10 @@ SMODS.Consumable:take_ownership('c_soul', {
 	}
 })
 
+SMODS.Tag:take_ownership('tag_orbital', {
+	show_ring_display = true,
+}, true)
+
 -- Buff Spectral Packs
 	
 SMODS.Booster:take_ownership('p_spectral_normal_1', {
@@ -65,7 +69,6 @@ SMODS.Consumable:take_ownership('c_ankh', {
 		local target = pseudorandom_element(targets, pseudoseed('may_ankh'))
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 			local card2 = copy_card(target, nil, nil, nil, nil)
-			card2:start_materialize()
 			card2:add_to_deck()
 			G.jokers:emplace(card2)
 			play_sound('timpani')
@@ -138,13 +141,17 @@ SMODS.Consumable:take_ownership('c_black_hole', {
 	cost = 6,
 	soul_rate = may.spectral_planet_rate,
 	loc_txt = {
-		name = {"Black Hole", "{C:dark_edition,s:0.7}Spectral Planet{}"}, 
+		name = "Black Hole", 
 		text = {
 			"{C:planet}Level up{} {C:attention}all{} {C:purple}Poker Hands{}", 
 			"by {C:attention}#1#{}"
 		}, 
 	},
 	config = { extra = { level = 1 } }, 
+	show_ring_display = true,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Planet', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
 	loc_vars = function(self, info_queue, card)
 		return {vars = { card.ability.extra.level } }
 	end, 

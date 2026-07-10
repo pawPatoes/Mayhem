@@ -3,7 +3,7 @@ version = "1.0.0"
 dump_lua = true
 priority = 1000
 
-# Error message if dependencies are missing because people are incapable or reading 
+# Error message if dependencies are missing because people are incapable of reading 
 [[patches]] 
 [patches.pattern]
 target = "game.lua"
@@ -16,7 +16,7 @@ end'''
 match_indent = true
 overwrite = true
 
-# Playing card chip multiplier (brown deck, white seal)
+# Playing card chip multiplier (brown deck)
 [[patches]] 
 [patches.pattern]
 target = "card.lua"
@@ -54,19 +54,6 @@ payload = '''
 		self.children.floating_sprite2:draw_shader('dissolve',0, nil, nil, self.children.center,scale_mod, rotate_mod,nil, 0.1--[[ + 0.03*math.cos(1.8*G.TIMERS.REAL)--]],nil, 0.6)
 		self.children.floating_sprite2:draw_shader('dissolve', nil, nil, nil, self.children.center, scale_mod, rotate_mod)
 	end
-'''
-match_indent = true
-
-# Dynatext pulse screen shake 
-[[patches]]
-[patches.pattern]
-target = "engine/text.lua"
-pattern = "letter.r = letter.r + (G.SETTINGS.reduced_motion and 0 or 1)*(letter.scale - 1)*(0.02*(-#self.strings[self.focused_string].letters/2 - 0.5 + k))"
-position = "after"
-payload = '''
-if to_number(letter.scale) > 8 and not may.invalid_number(letter.scale) and to_big(letter.scale) ~= R.NaN and to_big(letter.scale) ~= R.POSITIVEINFINITY and to_big(letter.scale) ~= R.NEGATIVEINFINITY then
-	G.ROOM.jiggle = math.min(G.ROOM.jiggle + to_number(math.min(to_big(10), ((letter.scale/24) * may.conf.Shakiness.screen_shake))), 250)
-end
 '''
 match_indent = true
 
@@ -175,8 +162,8 @@ pattern = '''
 '''
 position = 'after'
 payload = '''
-    SMODS.calculate_context({ may_enter_shop = true, main_eval=true })
-    for i=1, (G.GAME.may_mega_boosters or 0) do 
+    SMODS.calculate_context({ may_enter_shop = true, main_eval = true })
+    for i = 1, (G.GAME.may_mega_boosters or 0) do 
         SMODS.add_booster_to_shop('p_buffoon_mega_1')
     end
 	may.handle_special_vouchers()
@@ -202,7 +189,6 @@ payload = '''self.F_SKIP_TUTORIAL = true'''
 match_indent = true
 overwrite = true
 
-# Disable displays if necessary to prevent crashing
 [[patches]]
 [patches.pattern]
 target = "game.lua"
@@ -242,7 +228,6 @@ payload = '''
         })
         G.transcendence_particles.fade_alpha = 1
 	end
-	
 '''
 match_indent = true
 
@@ -255,24 +240,6 @@ position = "before"
 payload = '''if not start_colour then return end'''
 match_indent = true
 overwrite = true
-
-# Allow UI to appear on any object in any card area
-[[patches]] 
-[patches.pattern]
-target = '''card.lua'''
-pattern = '''if self.ability.consumeable or self.ability.set == 'Joker' or (self.area and self.area == G.pack_cards) then'''
-position = "at"
-payload = '''if (self.area and self.area.config.type == 'joker') or (self.area == G.hand and self.ability.consumeable) or (self.area and self.area == G.pack_cards) or (self.area and self.area.config.type == 'voucher' and may.has_card('v_may_reconfigure')) then'''
-match_indent = true
-
-# Allow Vouchers to be selected in Run Info tab
-[[patches]] 
-[patches.pattern]
-target = '''cardarea.lua'''
-pattern = '''self.config.type == 'consumeable' or'''
-position = "after"
-payload = '''self.config.type == 'voucher' or'''
-match_indent = true
 
 # Prevent background weirdness when inside a pack during a blind
 [[patches]] 
@@ -379,15 +346,6 @@ pattern = "if self.ability.name == 'Invisible Joker' and (self.ability.invis_rou
 position = 'at'
 payload = '''if false then'''
 match_indent = true 
-
-# Make Chips jiggle like Mult
-[[patches]]
-[patches.pattern]
-target = '''=[SMODS _ "src/game_object.lua"]'''
-pattern = '''calculation_keys = {'chips', 'h_chips', 'chip_mod', 'x_chips', 'xchips', 'Xchip_mod',},'''
-position = "after"
-payload = '''juice_on_update = true,'''
-match_indent = true
 
 # help
 [[patches]]

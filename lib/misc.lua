@@ -10,18 +10,6 @@ function Card:is_playing_card()
     end
 end
 
-if #SMODS.find_mod('Cryptid') == 0 then
-
-local cuc = Card.can_use_consumeable
-function Card:can_use_consumeable(any_state, skip_check)
-	if not self.ability.consumeable then
-		return false
-	end
-	return cuc(self, any_state, skip_check)
-end
-
-end
-
 function may.generate_arrow_text(arrow, threshold)
 	arrow = type(arrow) ~= 'string' and to_number(to_big(arrow)) or arrow
 	if arrow == 'eq' then
@@ -68,7 +56,6 @@ may.score_operator_colors = {
 }
 
 -- Mass redeem Vouchers
--- based on jl.voucher from jenlib
 -- can take in table of keys, or number of random vouchers
 function may.massvoucher(keys, amount, nobundle)
 	if keys and type(keys) == 'table' then
@@ -98,7 +85,7 @@ function may.massvoucher(keys, amount, nobundle)
 			local key = get_next_voucher_key(true)
             if nobundle then 
                 local tries = 0
-      		  while G.P_CENTERS[key].pools and G.P_CENTERS[key].pools.VoucherBundle do
+      		  while G.P_CENTERS[key].attributes and table_hasvalue(G.P_CENTERS[key].attributes, 'voucher_bundle') do
                     key = get_next_voucher_key(true)
                     tries = tries + 1
                     if tries > 50 then 
@@ -674,14 +661,14 @@ end
 function may.recursive_table(table_return_table, index)
 	local ret = table_return_table[index]
 	if index <= #table_return_table then
-		local function getDeepest(tbl)
+		local function get_deepest(tbl)
 			tbl = tbl or {}
 			while tbl.extra do
 				tbl = tbl.extra
 			end
 			return tbl
 		end
-		local prev = getDeepest(ret)
+		local prev = get_deepest(ret)
 		prev.extra = may.recursive_table(table_return_table, index + 1)
 	end
 	return ret
@@ -975,4 +962,11 @@ function may.get_run_stage()
 	end
 	return G.GAME.may_endless_mode and 'endless' or 'pre-endless'
 end
-	
+
+CardArea.change_max_highlight = CardArea.change_max_highlight or function(self, mod, silent)
+	self.config.highlighted_limit = self.config.highlighted_limit + (mod or 0)
+	if self == G.hand then
+		SMODS.change_play_limit(mod)
+		SMODS.change_discard_limit(mod)
+	end
+end

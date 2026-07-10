@@ -86,13 +86,6 @@ may.fusions:add_fusion('j_may_universal_collapse', nil, nil, 'j_cry_circulus_pis
 -- Cryptid Atlases
 
 SMODS.Atlas {
-	key = "cry_editioncard",
-	path = "cm/cry/editioncard.png",
-	px = 71,
-	py = 95
-}
-
-SMODS.Atlas {
 	key = "cry_joker1",
 	path = "cm/cry/joker1.png",
 	px = 71,

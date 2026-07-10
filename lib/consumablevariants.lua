@@ -33,50 +33,34 @@ function create_card(_type, area, legendary, _rarity, skip_materialize, soulable
 			G.GAME.may_upsd_rate = 80
 		end
 		
-		if card.gc then	
-			-- Upside down
-			if (G.GAME.may_upside_down_deck or SMODS.pseudorandom_probability(card, "may_spawn_upsd", 1, G.GAME.may_upsd_rate, "Upside Down")) and may.has_upsd(card:gc().key) and not G.GAME.banned_keys[may.get_upsd(card:gc().key).key] then
-				G.E_MANAGER:add_event(Event({func = function()
+		if card.gc and may.has_upsd(card:gc().key) and not G.GAME.banned_keys[may.get_upsd(card:gc().key).key] then	
+			if (G.GAME.may_upside_down_deck or SMODS.pseudorandom_probability(card, "may_spawn_upsd", 1, G.GAME.may_upsd_rate, "Upside Down")) then
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.5, blockable = false, blocking = false, func = function() 
 					if (not card.no_upsd) and (not card.no_variants) then 
 						card:set_ability(G.P_CENTERS[may.get_upsd(card:gc().key).key])
 						card:set_cost()
+					end
+				return true end})) 
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, blockable = false, blocking = false, func = function()
+					if (not card.no_upsd) and (not card.no_variants) then 
+						play_sound('may_upside_down', 1, 0.75)
+						card:juice_up(1, 0.5)
 					end
 				return true end}))
 			end
 		end
 		-- Play special card sounds		
-		if card and card:gc().set == 'upside_down_tarots' or card:gc().set == 'upside_down_planets' or card:gc().set == 'upside_down_spectrals' then
-			G.E_MANAGER:add_event(Event({func = function()
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, blockable = false, blocking = false, func = function()
-					play_sound('may_upside_down', 1, 0.75)
-					card:juice_up(1, 0.5)
-				return true end}))
+		if card and card:gc().set == 'yottacards' then 
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.5, blockable = false, blocking = false, func = function()
+				play_sound('may_yotta', 1, 0.75)
+				card:juice_up(1, 0.5)
+				G.ROOM.jiggle = G.ROOM.jiggle + 3
 			return true end}))
-		end
-		if card and card:gc().set == 'yottacards' then
-			G.E_MANAGER:add_event(Event({func = function()
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.5, blockable = false, blocking = false, func = function()
-					play_sound('may_yotta', 1, 0.75)
-					card:juice_up(1, 0.5)
-					G.ROOM.jiggle = G.ROOM.jiggle + 3
-				return true end}))
-			return true end}))
-		end
-		if card and card:gc().set == 'ascendedyottas' then
-				G.E_MANAGER:add_event(Event({func = function()
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.5, blockable = false, blocking = false, func = function()
-					play_sound('may_ascended_yotta')
-					card:juice_up(2, 2)
-					G.ROOM.jiggle = G.ROOM.jiggle + 20
-				return true end}))
-			return true end}))
-		end
-		if card:gc().on_discover and type(card:gc().on_discover) == 'function' then 
+		elseif card:gc().on_discover and type(card:gc().on_discover) == 'function' then 
 			G.E_MANAGER:add_event(Event({func = function()
 				card:gc().on_discover(card, area, skip_materialize)
 			return true end}))
 		end
-		
 		-- Osmium deck
 		if G.GAME.may_osmium_deck and card.ability.consumeable and card:gc().set ~= 'may_display' then
 			card:set_edition('e_may_metallic')

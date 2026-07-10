@@ -13,6 +13,14 @@ function Card:set_cost()
 	end
 end
 
+local cuc = Card.can_use_consumeable
+function Card:can_use_consumeable(any_state, skip_check)
+	if not self.ability.consumeable then
+		return false
+	end
+	return cuc(self, any_state, skip_check)
+end
+
 -- Exponential reroll price increase
 
 local vanf_rs = G.FUNCS.reroll_shop
@@ -128,10 +136,10 @@ function SMODS.upgrade_poker_hands(args)
 	    if #SMODS.find_card('v_may_astronomy_1') ~= 0 and (args.level_up or 1) > 0 then
 		    args.level_up = (args.level_up or 1) * (2 ^ #SMODS.find_card('v_may_astronomy_1'))
 	    end
-	    if #SMODS.find_card('v_may_astronomy_3') ~= 0 and (hand ~= may.favhand() or may.has_card('v_may_astronomy_5')) then
+	    if #SMODS.find_card('v_may_astronomy_3') ~= 0 and (hand == may.favhand() or may.has_card('v_may_astronomy_5')) and (args.level_up or 1) > 0 then
 		    args.level_up = args.level_up * (4 ^ #SMODS.find_card('v_may_astronomy_3'))
 	    end
-		if #SMODS.find_card('v_may_astronomy_4') ~= 0 then
+		if #SMODS.find_card('v_may_astronomy_4') ~= 0 and (args.level_up or 1) > 0 then
 			local avg = 0
 			local num = 0
 			for k, v in pairs(G.GAME.hands) do 
@@ -158,7 +166,6 @@ function SMODS.upgrade_poker_hands(args)
 	end
 	vanf_suph(args)
 	if args.level_up then
-		may.toggle_ring_display(false)
 		if ast10_money then
 			may.hand_dollars(args.from, args.hands[1], args.instant, -1, ast10_money)
 		end
@@ -512,6 +519,10 @@ function SMODS.injectItems(...)
 			v.bordertextbg_shader = v.bordertextbg_shader or "may_alpha_effect"
 		elseif v.rarity == 'may_prismatic' then
 			v.hoverbg_shader = v.hoverbg_shader or "may_prismatic_bg"
+			v.hoverbg_colour = v.hoverbg_colour or HEX("666666")
+			v.bordertextbg_shader = v.bordertextbg_shader or "may_alpha_effect"
+		elseif v.rarity == 'may_demiurgic' then
+			v.hoverbg_shader = v.hoverbg_shader or "may_demiurgic_bg"
 			v.hoverbg_colour = v.hoverbg_colour or HEX("666666")
 			v.bordertextbg_shader = v.bordertextbg_shader or "may_alpha_effect"
 		elseif v.rarity == 'may_transcendent' then

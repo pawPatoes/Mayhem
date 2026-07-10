@@ -60,16 +60,16 @@ SMODS.Joker {
 	config = { extra = { rounds = 0 } },
 	add_to_deck = function(self, card, from_debuff)
 		if not from_debuff then
-			play_sound("may_universal_collapse", 1, 2)
+			play_sound("may_omniversal_catalyst", 1, 2)
 		end
 	end,
 	rarity = 'may_paradoxical',
-	atlas = '003_temp',
+	atlas = 'joker1',
 	blueprint_compat = false,
 	demicoloncompat = false,
 	immutable = true,
 	indestructible = true,
-	pos = { x = 5, y = 2 },
+	pos = { x = 5, y = 4 },
 	cost = 100,
 	attributes = {
 		'hyperblindsize', 
@@ -103,7 +103,8 @@ SMODS.Joker {
 		name = '{X:white,s:1.3,E:may_alex343xd_name,C:may_col_mayhem_gradient}alex343xd{} {X:white,C:may_prismatic,s:1.3,E:may_doomsday_name}(Ascended){}',
 		text = {
             {
-			    "{C:money}Selling{} {C:attention}Jokers{} gives {C:attention}all{} {C:purple}Poker Hands{} {X:purple,C:white}^^^#1#{} Mult & Chips", 
+			    "{C:money}Selling{} {C:attention}Jokers{} gives", 
+				"{C:attention}all{} {C:purple}Poker Hands{} {X:purple,C:white}^^^#1#{} Mult & Chips", 
 				may.pager(60),
                 "Held copies of {C:dark_edition}Omniversal Catalyst{} give", 
                 "{X:purple,C:white}^^^#2#{} Mult & Chips", 
@@ -111,7 +112,7 @@ SMODS.Joker {
                 "At {C:attention}the end of round{}, add {C:may_instability}Instability{}", 
 				"to {C:attention}above values{}", 
 				may.pager(60),
-				"{C:inactive}Currently #3#{}", 
+				"{C:inactive}Instability is currently #3#{}", 
 				may.pager(60), 
                 "{C:inactive,E:1,s:0.7}i am evil now{}"
             }, 
@@ -122,18 +123,26 @@ SMODS.Joker {
 	},
 	config = { extra = { EEEmultchips = 20, EEEmultchips2 = 250 } },
 	rarity = 'may_paradoxical',
-	atlas = 'temp_doomsdaydevice',
-	pos = { x = 2, y = 0 },
-    soul_pos = { x = 4, y = 0, extra = { x = 3, y = 0 } }, 
+	atlas = 'joker2',
+	pos = { x = 4, y = 1 },
+    soul_pos = { x = 0, y = 2, extra = { x = 5, y = 1 } }, 
     immutable = true, 
     blueprint_compat = true,
-	cost = 50000,
+	cost = 800,
 	attributes = {
 		'joker', 
 		'eeemult', 
 		'eeechip', 
 		'scaling'
 	}, 
+	misc_badge = {
+		colour = SMODS.Gradients.may_col_prismatic,
+		text_colour = G.C.WHITE,
+		text = {
+			'Secret',
+		}
+	},
+	endless = true, 
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = G.P_CENTERS.j_may_universal_collapse
 		return { vars = { card.ability.extra.EEEmultchips, card.ability.extra.EEEmultchips2, (G.GAME.may_instability or 0) } }

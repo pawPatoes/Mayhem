@@ -4,6 +4,8 @@ G.C.MAY_RED = HEX('8c0303')
 
 G.C.DARK_MAY_RED = HEX('a14343')
 
+G.C.MAY_TINT_PROGRESS = HEX('000000')
+
 SMODS.Gradient {
 	key = 'col_eternum_green',
 	colours = {G.C.GREEN, HEX('6aa35dff')},
@@ -39,7 +41,6 @@ SMODS.Gradient {
 	colours = {mix_colours(HEX('8c0303ff'), HEX('00000000'), 0.5), mix_colours(HEX('a14343ff'), HEX('00000000'), 0.5)},
 	interpolation = 'trig'
 }
-
 
 SMODS.Gradient {
 	key = 'col_transcendent',

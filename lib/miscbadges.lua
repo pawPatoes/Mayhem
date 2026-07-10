@@ -1,5 +1,5 @@
 -- Misc badges
--- taken from POLTERWORX (which took it from Cryptid (it's slightly different????))
+-- Taken from Cryptid
 
 local function calculate_scalefactor(text)
 	local size = 0.9
@@ -15,10 +15,10 @@ local function calculate_scalefactor(text)
 end
 
 may.misc_badges = {
-	immutable = {
+	--[[immutable = {
 		text = {'Immutable'},
 		col = G.C.BLUE,
-	}, 
+	},]] 
 	WIP = {
 		text = {'WIP'}, 
 		col = SMODS.Gradients.may_col_wip_badge,

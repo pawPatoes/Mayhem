@@ -20,11 +20,12 @@ SMODS.Joker {
 	config = { extra = { EEchip_gain = 0.5, EEchip = 1, temp_scale = 0 } },
 	pos = { x = 4, y = 15 },
 	soul_pos = { x = 5, y = 15 },
-	cost = 100000,
+	cost = 500,
 	rarity = 'may_prismatic',
 	unlocked = true,
 	discovered = true,
 	immutable = true,
+	endless = true,
 	atlas = 'joker1',
 	blueprint_compat = true,
 	demicoloncompat = true,
@@ -111,15 +112,17 @@ SMODS.Joker {
 	atlas = 'joker2',
 	blueprint_compat = false,
 	demicoloncompat = true,
+	endless = true,
 	pos = { x = 6, y = 3 },
 	soul_pos = { x = 6, y = 4 },
-	cost = 100000,
+	cost = 600,
 	attributes = {
 		'chance', 
 		'eeblindsize'
 	}, 
 	loc_vars = function(self, info_queue, card)
-		return { vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds, card.ability.extra.mod, card.ability.extra.blindmult, card.ability.extra.obtained } }
+		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Aurora Rave")
+		return { vars = { normal, odds, card.ability.extra.mod, card.ability.extra.blindmult, card.ability.extra.obtained } }
 	end,
 	add_to_deck = function(self, card, from_debuff)
 		if not from_debuff then
@@ -138,7 +141,7 @@ SMODS.Joker {
 	end,
 	calculate = function(self, card, context)
 		if context.before and context.cardarea == G.jokers and (not card.ability.extra.active) and (not context.blueprint) then
-			if pseudorandom('may_aurora_rave') < G.GAME.probabilities.normal / card.ability.extra.odds then
+			if SMODS.pseudorandom_probability(card, "may_aurora_rave", 1, card.ability.extra.odds, "Aurora Rave") then
 				change_operator(card.ability.extra.mod)
                 card.ability.extra.active = true 
 				return {
@@ -170,8 +173,8 @@ SMODS.Joker {
 		name = {'Acum Universum', "{C:inactive,s:0.5}Omniversal Catalyst + Acum{}"},
 		text = {
 			{
-				"{C:attention}All{} scoring {C:attention}cards{} are {C:attention}turned into{} {C:attention}Aces{}",
-				"before scoring", 
+				"{C:attention}After hand{} is played, create a {C:dark_edition}Negative{}",
+				"copy of {C:spectral}Grim{}",
 				may.pager(),
 				"Played {C:attention}Aces{} are retriggered {C:attention}#1# times{}",
 				"and give {X:mult,C:white}^^#2#{} Mult",
@@ -185,15 +188,18 @@ SMODS.Joker {
 	atlas = 'joker1',
 	blueprint_compat = true,
 	demicoloncompat = true,
+	endless = true,
 	pos = { x = 0, y = 5 },
 	soul_pos = { x = 1, y = 5 },
-	cost = 5000,
+	cost = 555,
 	attributes = {
 		'ace', 
 		'eemult', 
 		'retrigger'
 	}, 
 	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = G.P_CENTERS.c_grim
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		return { vars = { card.ability.extra.repetitions, card.ability.extra.ee_mult } }
 	end,
 	calculate = function(self, card, context)
@@ -214,21 +220,22 @@ SMODS.Joker {
 				}
 			end
 		end
-		if context.before and not context.blueprint then
-			for _, card in ipairs(context.scoring_hand) do
-				assert(SMODS.change_base(card, nil, "Ace"))
-			end
-			return {
-				message = "ACVM",
-				colour = G.C.DARK_EDITION,
-			}
+		if context.after or (context.blueprint and context.after) then
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+				card:juice_up(0.3, 0.5)
+				local grim = create_card('Spectral', G.consumeables, nil, nil, nil, nil, 'c_grim', nil)
+				grim:set_edition({negative = true}, true)
+				grim:set_cost()
+				grim:add_to_deck()
+				G.consumeables:emplace(grim)
+			return true end}))
 		end
 		if context.forcetrigger then
 			return {
 				EEmult_mod = card.ability.extra.ee_mult,
 				message = '^^'..card.ability.extra.ee_mult..' Mult',
 				colour = G.C.MULT,
-				card = context.other_card,
+				card = card,
 			}
 		end
 	end
@@ -250,13 +257,14 @@ SMODS.Joker {
 	config = { extra = { EEmult = 1 } },
 	pos = { x = 2, y = 1 },
 	soul_pos = { x = 3, y = 1 },
-	cost = 10000,
+	cost = 500,
 	rarity = 'may_prismatic',
 	unlocked = true,
 	discovered = true,
 	atlas = 'joker1',
 	blueprint_compat = true,
 	demicoloncompat = true,
+	endless = true,
 	attributes = {
 		'eemult'
 	}, 
@@ -310,7 +318,7 @@ SMODS.Joker {
 	custom_soul_anim = 'diskus_spin',
 	pos = { x = 4, y = 12 },
 	soul_pos = { x = 5, y = 12 },
-	cost = 100000,
+	cost = 500,
 	config = { extra = { blindcards = 40, cards_gain = 10, EEmult = 14, EEmult_alt = 80 } },
 	attributes = {
 		'generation', 
@@ -418,7 +426,7 @@ SMODS.Joker {
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_deimos
 		return { vars = { card.ability.extra.EEchip, card.ability.extra.EEchip_gain, card.ability.extra.EEchip_gain2 } }
 	end,
-	cost = 100000,
+	cost = 550,
 	attributes = {
 		'eechips', 
 		'generation', 

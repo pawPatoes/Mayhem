@@ -13,9 +13,13 @@ extern MY_HIGHP_OR_MEDIUMP number bloom_fac;
 extern MY_HIGHP_OR_MEDIUMP number crt_intensity;
 extern MY_HIGHP_OR_MEDIUMP number glitch_intensity;
 extern MY_HIGHP_OR_MEDIUMP number scanlines;
+extern MY_HIGHP_OR_MEDIUMP number bloom_intensity;
+extern MY_HIGHP_OR_MEDIUMP number bloom_distance;
+extern MY_HIGHP_OR_MEDIUMP int bloom_amount;
+extern MY_HIGHP_OR_MEDIUMP number ca_intensity;
+extern MY_HIGHP_OR_MEDIUMP number ca_distance;
 
 #define BUFF 0.01
-#define BLOOM_AMT 3
 
 vec4 effect(vec4 color, Image tex, vec2 tc, vec2 pc)
 {
@@ -72,34 +76,40 @@ vec4 effect(vec4 color, Image tex, vec2 tc, vec2 pc)
     MY_HIGHP_OR_MEDIUMP float bloom = 0.0;
 	vec3 final_bloom = vec3(0.0);
 
-    if (bloom_fac > 0.00001 && crt_intensity > 0.000001){
-        bloom = 0.03*(max(0., (min(crt_intensity, 1.))/(0.16*0.3)));
-        MY_HIGHP_OR_MEDIUMP float bloom_dist = 0.0015*float(BLOOM_AMT);
-        MY_HIGHP_OR_MEDIUMP vec4 samp;
-        MY_HIGHP_OR_MEDIUMP float cutoff = 0.6;
+	if (bloom_fac > 0.00001 && crt_intensity > 0.000001 && bloom_amount > 0){
+		bloom = 0.3*(max(0., (min(crt_intensity, 1.))/(0.16*0.3)));
+		MY_HIGHP_OR_MEDIUMP vec4 samp;
+		MY_HIGHP_OR_MEDIUMP float cutoff = 0.6;
+		MY_HIGHP_OR_MEDIUMP float total_weight = 0.0;
 
-        for (int i = -BLOOM_AMT; i <= BLOOM_AMT; ++i)
-            for (int j = -BLOOM_AMT; j <= BLOOM_AMT; ++j){
-                samp = Texel( tex, tc + (bloom_dist/float(BLOOM_AMT))*vec2(float(i), float(j)));
-				samp.r = max(1./(1.-cutoff)*samp.r - 1./(1.-cutoff) + 1., 0.);
-				samp.g = max(1./(1.-cutoff)*samp.g - 1./(1.-cutoff) + 1., 0.);
-				samp.b = max(1./(1.-cutoff)*samp.b - 1./(1.-cutoff) + 1., 0.);
-				col += min(min(samp.r,samp.g),samp.b) * (2. - float(abs(float(i+j)))/float(BLOOM_AMT+BLOOM_AMT));
-        }   
+		for (int i = -bloom_amount; i <= bloom_amount; ++i)
+			for (int j = -bloom_amount; j <= bloom_amount; ++j){
+				samp = Texel( tex, tc + (bloom_distance/float(bloom_amount))*vec2(float(i), float(j)));
+				vec3 thresholded = max((1./(1.-cutoff))*samp.rgb - (1./(1.-cutoff)) + 1., vec3(0.));
 
-        col.rgb /= float(BLOOM_AMT*BLOOM_AMT);
-        col.a = 1.0;
-		final_bloom += bloom*col.rgb;
-    }
+				float dist = length(vec2(float(i), float(j)));
+				float weight = exp(-(dist*dist) / (2.0 * float(bloom_amount) * float(bloom_amount) * 0.5));
+
+				col.rgb += thresholded * weight;
+				total_weight += weight;
+		}   
+		col.rgb /= max(total_weight, 0.0001);
+		col.a = 1.0;
+		
+		float bloom_value = max(col.r, max(col.g, col.b)) * 0.5;
+		float bloom_saturation = 1.0;
+		col.rgb = mix(vec3(bloom_value), col.rgb, bloom_saturation);
+		final_bloom += bloom*col.rgb*bloom_intensity;
+	}
 	
     //intensity multiplier for any visual artifacts
     MY_HIGHP_OR_MEDIUMP float artifact_amplifier = (abs(clamp(offset_l, clamp(offset_r, -1.0, 0.0), 1.0))*glitch_intensity > 0.9 ? 3. : 1.);
 
     //Horizontal Chromatic Aberration
-	MY_HIGHP_OR_MEDIUMP float crt_amout_adjusted = (max(0., (crt_intensity)/(0.16*0.3)))*artifact_amplifier;
+	MY_HIGHP_OR_MEDIUMP float crt_amout_adjusted = (max(0., (crt_intensity * ca_intensity)/(0.16*0.3)))*artifact_amplifier;
     if(crt_amout_adjusted > 0.0000001) {
-        crt_tex.r = crt_tex.r*(1.-crt_amout_adjusted) + crt_amout_adjusted*Texel( tex, tc + vec2(0.0005*(1. +10.*(artifact_amplifier - 1.))*1600./love_ScreenSize.x, 0.)).r;
-        crt_tex.g = crt_tex.g*(1.-crt_amout_adjusted) + crt_amout_adjusted*Texel( tex, tc + vec2(-0.0005*(1. +10.*(artifact_amplifier - 1.))*1600./love_ScreenSize.x, 0.)).g;
+        crt_tex.r = crt_tex.r*(1.-crt_amout_adjusted) + crt_amout_adjusted*Texel( tex, tc + vec2(ca_distance*(1. +10.*(artifact_amplifier - 1.))*1600./love_ScreenSize.x, 0.)).r;
+        crt_tex.g = crt_tex.g*(1.-crt_amout_adjusted) + crt_amout_adjusted*Texel( tex, tc + vec2(-ca_distance*(1. +10.*(artifact_amplifier - 1.))*1600./love_ScreenSize.x, 0.)).g;
     }
 	MY_HIGHP_OR_MEDIUMP vec3 rgb_result = crt_tex.rgb*(1.0 - (1.0*crt_intensity*artifact_amplifier));
 

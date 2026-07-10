@@ -140,8 +140,7 @@ function may.calc_transcendence()
 	if not G.ARGS.push.may_true_music_volume then
 		G.ARGS.push.may_true_music_volume = G.SETTINGS.SOUND.music_volume
 	end
-
-	if may.conf.TrEffects > 1 and (may.transcendence == 0 or not G.hand or not G.hand.highlighted or (#G.hand.highlighted == 0 and G.STATE == G.STATES.SELECTING_HAND)) then
+	if may.conf.TrEffects > 1 and (may.transcendence == 0 or not G.hand or (G.STATE == G.STATES.SELECTING_HAND and (not G.hand.highlighted or #G.hand.highlighted == 0))) then
 		if may._last_ease_tr ~= 0 then
 			may._last_ease_tr = 0
 			G.ROOM.may_permajiggle = 0
@@ -150,15 +149,15 @@ function may.calc_transcendence()
 			else
 				glitched_intensity = 0
 			end
-			if not G.ROOM.may_override_crt then
-				transcendence_noise = 0.001*(G.SETTINGS.GRAPHICS.crt*0.3)/100
-				transcendence_crt = 0.16*(G.SETTINGS.GRAPHICS.crt*0.3)/100
-				transcendence_bloom = G.SETTINGS.GRAPHICS.bloom - 1
-				transcendence_glitch = 0
-			end
+			transcendence_noise = 0.001*(G.SETTINGS.GRAPHICS.crt*0.3)/100
+			transcendence_crt = 0.16*(G.SETTINGS.GRAPHICS.crt*0.3)/100
+			transcendence_glitch = 0
+			transcendence_bloom = 0
+			transcendence_ca_distance = 0.0005
+			transcendence_ca_intensity = 1
 			if may.conf.TrEffects > 2 then
-				G.ARGS.spin.real = 0.3
-				G.ARGS.spin.eased = 0.3
+				G.ARGS.spin.real = (G.GAME.may_default_bg_spin or 0)
+				--G.ARGS.spin.eased = 0
 			end
 		end
 		return
@@ -167,171 +166,171 @@ function may.calc_transcendence()
 	if may.conf.TrEffects > 1 and is_number(SMODS.get_scoring_parameter('chips', true)) and is_number(SMODS.get_scoring_parameter('mult', true)) then
 		if (may.transcendence or 0) > 0 and G.hand then
 			if is_number(SMODS.get_scoring_parameter('chips', true)) and is_number(SMODS.get_scoring_parameter('mult', true)) and to_big(G.GAME.current_scoring_calculation:func(SMODS.get_scoring_parameter('chips', true), SMODS.get_scoring_parameter('mult', true), true)) > to_big(0) then
-				local tr_changed = may.transcendence ~= may._last_ease_tr
-				if tr_changed then
-					may._last_ease_tr = may.transcendence
 
-					if may.conf.TrParticles and G.transcendence_particles then
-						G.transcendence_particles.colours[2] = may.get_transcendence_color(may.transcendence)
+				if may.conf.TrParticles and G.transcendence_particles then
+					G.transcendence_particles.colours[2] = may.get_transcendence_color(may.transcendence)
+				end
+
+				if may.conf.TrEffects > 2 then
+					G.ARGS.spin.real = -math.log10(may.transcendence)
+				end
+				
+				transcendence_bloom = may.conf.TrBloom and (math.min(may.transcendence or 0, 10) * 0.2) or 0
+				transcendence_ca_distance = math.min(may.transcendence or 0, 10) * 0.0003
+				transcendence_ca_intensity = math.min(may.transcendence or 0, 10) * 0.8
+
+				if may.transcendence < 10 then
+					if may.conf.TrShakeScreen then
+						G.ROOM.may_permajiggle = may.transcendence / 4.5
 					end
-
+					if may.conf.TrEffects >= 4 then
+						if not #SMODS.find_mod('Cryptid') ~= 0 then
+							transcendence_glitch = may.transcendence
+						else
+							glitched_intensity = may.transcendence
+						end
+						transcendence_noise = may.conf.TrNoise and (may.transcendence / 30) or 0
+						transcendence_crt = may.transcendence / 60
+					end
+				elseif may.transcendence == 10 then
+					if may.conf.TrShakeScreen then
+						G.ROOM.may_permajiggle = 10
+					end
 					if may.conf.TrEffects > 2 then
-						G.ARGS.spin.real = -math.log10(may.transcendence)
+						G.ARGS.spin.real = -2
 					end
-
-					if may.transcendence < 10 then
-						if may.conf.TrShakeScreen then
-							G.ROOM.may_permajiggle = may.transcendence / 4.5
+					if may.conf.TrEffects >= 4 then
+						if not #SMODS.find_mod('Cryptid') ~= 0 then
+							transcendence_glitch = 15
+						else
+							glitched_intensity = 15
 						end
-						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
-							if not #SMODS.find_mod('Cryptid') ~= 0 then
-								transcendence_glitch = may.transcendence
-							else
-								glitched_intensity = may.transcendence
-							end
-							transcendence_noise = may.conf.TrNoise and (may.transcendence / 30) or 0
-							transcendence_crt = may.transcendence / 60
+						transcendence_noise = may.conf.TrNoise and 0.4 or 0
+						transcendence_crt = 0.2
+					end
+				elseif may.transcendence == 11 then
+					if may.conf.TrShakeScreen then
+						G.ROOM.may_permajiggle = 20
+					end
+					if may.conf.TrEffects > 2 then
+						G.ARGS.spin.real = -5
+					end
+					if may.conf.TrEffects >= 4 then
+						if not #SMODS.find_mod('Cryptid') ~= 0 then
+							transcendence_glitch = 70
+						else
+							glitched_intensity = 70
 						end
-					elseif may.transcendence == 10 then
-						if may.conf.TrShakeScreen then
-							G.ROOM.may_permajiggle = 10
+						transcendence_noise = may.conf.TrNoise and 0.5 or 0
+						transcendence_crt = 0.3
+					end
+				elseif may.transcendence == 12 then
+					if may.conf.TrShakeScreen then
+						G.ROOM.may_permajiggle = 0
+					end
+					if may.conf.TrEffects > 2 then
+						G.ARGS.spin.real = 0
+						G.ARGS.spin.amount = 0
+						G.ARGS.spin.eased = 0
+					end
+					if may.conf.TrEffects >= 4 then
+						if not #SMODS.find_mod('Cryptid') ~= 0 then
+							transcendence_glitch = 100
+						else
+							glitched_intensity = 100
 						end
-						if may.conf.TrEffects > 2 then
-							G.ARGS.spin.real = -2
+						transcendence_noise = may.conf.TrNoise and 0.6 or 0
+						transcendence_crt = 100
+					end
+				elseif may.transcendence == 13 then
+					if may.conf.TrEffects > 2 then
+						G.ARGS.spin.real = 0
+						G.ARGS.spin.amount = 0
+						G.ARGS.spin.eased = 0
+					end
+					if may.conf.TrShakeScreen then
+						G.ROOM.may_permajiggle = 5
+					end
+					if may.conf.TrEffects >= 4 then
+						if not #SMODS.find_mod('Cryptid') ~= 0 then
+							transcendence_glitch = 50
+						else
+							glitched_intensity = 50
 						end
-						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
-							if not #SMODS.find_mod('Cryptid') ~= 0 then
-								transcendence_glitch = 15
-							else
-								glitched_intensity = 15
-							end
-							transcendence_noise = may.conf.TrNoise and 0.4 or 0
-							transcendence_crt = 0.2
+						transcendence_noise = may.conf.TrNoise and 0.1 or 0
+						transcendence_crt = 0.2
+					end
+				elseif may.transcendence == 14 then
+					if may.conf.TrEffects > 2 then
+						G.ARGS.spin.real = 2
+						G.ARGS.spin.amount = 2
+						G.ARGS.spin.eased = 2
+					end
+					if may.conf.TrShakeScreen then
+						G.ROOM.may_permajiggle = 20
+					end
+					if may.conf.TrEffects >= 4 then
+						if not #SMODS.find_mod('Cryptid') ~= 0 then
+							transcendence_glitch = 90
+						else
+							glitched_intensity = 90
 						end
-					elseif may.transcendence == 11 then
-						if may.conf.TrShakeScreen then
-							G.ROOM.may_permajiggle = 20
+						transcendence_noise = may.conf.TrNoise and 0.5 or 0
+						transcendence_crt = 0.5
+					end
+				elseif may.transcendence == 15 then
+					if may.conf.TrShakeScreen then
+						G.ROOM.may_permajiggle = 0
+					end
+					if may.conf.TrEffects > 2 then
+						G.ARGS.spin.real = 1
+						G.ARGS.spin.amount = 1
+						G.ARGS.spin.eased = 1
+					end
+					if may.conf.TrEffects >= 4 then
+						if not #SMODS.find_mod('Cryptid') ~= 0 then
+							transcendence_glitch = 1
+						else
+							glitched_intensity = 1
 						end
-						if may.conf.TrEffects > 2 then
-							G.ARGS.spin.real = -5
+						transcendence_noise = may.conf.TrNoise and 0.65 or 0
+						transcendence_crt = 0.6
+					end
+				elseif may.transcendence == 16 then
+					if may.conf.TrShakeScreen then
+						G.ROOM.may_permajiggle = 3
+					end
+					if may.conf.TrEffects > 2 then
+						G.ARGS.spin.real = 3
+						G.ARGS.spin.amount = 3
+						G.ARGS.spin.eased = 3
+					end
+					if may.conf.TrEffects >= 4 then
+						if not #SMODS.find_mod('Cryptid') ~= 0 then
+							transcendence_glitch = 200
+						else
+							glitched_intensity = 200
 						end
-						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
-							if not #SMODS.find_mod('Cryptid') ~= 0 then
-								transcendence_glitch = 70
-							else
-								glitched_intensity = 70
-							end
-							transcendence_noise = may.conf.TrNoise and 0.5 or 0
-							transcendence_crt = 0.3
+						transcendence_noise = may.conf.TrNoise and 0.5 or 0
+						transcendence_crt = 0.7
+					end
+				elseif may.transcendence == 17 then
+					if may.conf.TrShakeScreen then
+						G.ROOM.may_permajiggle = 4
+					end
+					if may.conf.TrEffects > 2 then
+						G.ARGS.spin.real = 2
+						G.ARGS.spin.amount = 2
+						G.ARGS.spin.eased = 2
+					end
+					if may.conf.TrEffects >= 4 then
+						if not #SMODS.find_mod('Cryptid') ~= 0 then
+							transcendence_glitch = 500
+						else
+							glitched_intensity = 500
 						end
-					elseif may.transcendence == 12 then
-						if may.conf.TrShakeScreen then
-							G.ROOM.may_permajiggle = 0
-						end
-						if may.conf.TrEffects > 2 then
-							G.ARGS.spin.real = 0
-							G.ARGS.spin.amount = 0
-							G.ARGS.spin.eased = 0
-						end
-						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
-							if not #SMODS.find_mod('Cryptid') ~= 0 then
-								transcendence_glitch = 100
-							else
-								glitched_intensity = 100
-							end
-							transcendence_noise = may.conf.TrNoise and 0.6 or 0
-							transcendence_crt = 100
-						end
-					elseif may.transcendence == 13 then
-						if may.conf.TrEffects > 2 then
-							G.ARGS.spin.real = 0
-							G.ARGS.spin.amount = 0
-							G.ARGS.spin.eased = 0
-						end
-						if may.conf.TrShakeScreen then
-							G.ROOM.may_permajiggle = 5
-						end
-						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
-							if not #SMODS.find_mod('Cryptid') ~= 0 then
-								transcendence_glitch = 50
-							else
-								glitched_intensity = 50
-							end
-							transcendence_noise = may.conf.TrNoise and 0.1 or 0
-							transcendence_crt = 0.2
-						end
-					elseif may.transcendence == 14 then
-						if may.conf.TrEffects > 2 then
-							G.ARGS.spin.real = 2
-							G.ARGS.spin.amount = 2
-							G.ARGS.spin.eased = 2
-						end
-						if may.conf.TrShakeScreen then
-							G.ROOM.may_permajiggle = 20
-						end
-						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
-							if not #SMODS.find_mod('Cryptid') ~= 0 then
-								transcendence_glitch = 90
-							else
-								glitched_intensity = 90
-							end
-							transcendence_noise = may.conf.TrNoise and 0.5 or 0
-							transcendence_crt = 0.5
-						end
-					elseif may.transcendence == 15 then
-						if may.conf.TrShakeScreen then
-							G.ROOM.may_permajiggle = 0
-						end
-						if may.conf.TrEffects > 2 then
-							G.ARGS.spin.real = 1
-							G.ARGS.spin.amount = 1
-							G.ARGS.spin.eased = 1
-						end
-						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
-							if not #SMODS.find_mod('Cryptid') ~= 0 then
-								transcendence_glitch = 1
-							else
-								glitched_intensity = 1
-							end
-							transcendence_noise = may.conf.TrNoise and 0.65 or 0
-							transcendence_crt = 0.6
-						end
-					elseif may.transcendence == 16 then
-						if may.conf.TrShakeScreen then
-							G.ROOM.may_permajiggle = 3
-						end
-						if may.conf.TrEffects > 2 then
-							G.ARGS.spin.real = 3
-							G.ARGS.spin.amount = 3
-							G.ARGS.spin.eased = 3
-						end
-						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
-							if not #SMODS.find_mod('Cryptid') ~= 0 then
-								transcendence_glitch = 200
-							else
-								glitched_intensity = 200
-							end
-							transcendence_noise = may.conf.TrNoise and 0.5 or 0
-							transcendence_crt = 0.7
-						end
-					elseif may.transcendence == 17 then
-						if may.conf.TrShakeScreen then
-							G.ROOM.may_permajiggle = 4
-						end
-						if may.conf.TrEffects > 2 then
-							G.ARGS.spin.real = 2
-							G.ARGS.spin.amount = 2
-							G.ARGS.spin.eased = 2
-						end
-						if may.conf.TrEffects >= 4 and not G.ROOM.may_override_crt then
-							if not #SMODS.find_mod('Cryptid') ~= 0 then
-								transcendence_glitch = 500
-							else
-								glitched_intensity = 500
-							end
-							transcendence_noise = may.conf.TrNoise and 0.5 or 0
-							transcendence_crt = 0.9
-						end
+						transcendence_noise = may.conf.TrNoise and 0.5 or 0
+						transcendence_crt = 0.9
 					end
 				end
 			end
@@ -535,7 +534,7 @@ G.FUNCS.hand_type_UI_set = function(e)
     local prev_text = G.GAME.current_round.current_hand[e.config.text]
     original_hand_type_ui(e)
     if G.GAME.current_round.current_hand[e.config.text] ~= prev_text then
-        may.calc_transcendence()
+        do_calc_frames = 2
     end
 end
 
@@ -545,21 +544,21 @@ local upd = Game.update
 function Game:update(dt)
     upd(self, dt)
     if G and G.GAME and G.GAME.blind then
-        if G.hand and #G.hand.cards > 0 and (not may.booster()) and (not G.TAROT_INTERRUPT_PULSE) then
-            if do_calc_frames > 0 then
-                may.calc_transcendence()
-                do_calc_frames = do_calc_frames - 1
-            end
+        if G.hand and (#G.play.cards > 0 or #G.hand.cards > 0) and (not may.booster()) and (not G.TAROT_INTERRUPT_PULSE) then
+			if do_calc_frames > 0 then 
+				may.calc_transcendence()
+				do_calc_frames = do_calc_frames - 1
+			end
         end
 
         if G.hand and G.STATE == G.STATES.SELECTING_HAND then
             local count = #G.hand.highlighted
             if last_count ~= nil and count ~= last_count then
-                do_calc_frames = 3
+                do_calc_frames = 2
             end
             last_count = count
         end
-		-- “holy poop” - fokuto, 2026
+		-- holy poop
 		local tr_active = (may.transcendence or 0) > 0 and G.hand and not (G.hand and G.hand.highlighted and #G.hand.highlighted == 0 and G.STATE == G.STATES.SELECTING_HAND)
 		
 		if was_tr_active and not tr_active then
@@ -570,6 +569,8 @@ function Game:update(dt)
 		local instant = may.conf.TrEffects == 5
 		
 		if (may.transcendence or 0) == 0 or not G.hand or not tr_active then
+			G.ROOM.may_permajiggle = 0
+			
 			G.C.DARK_EDITION[1] = 0.6+0.2*math.sin(G.TIMERS.REAL*1.3)
 			G.C.DARK_EDITION[3] = 0.6+0.2*(1-math.sin(G.TIMERS.REAL*1.3))
 			G.C.DARK_EDITION[2] = math.min(G.C.DARK_EDITION[3], G.C.DARK_EDITION[1])
@@ -579,12 +580,7 @@ function Game:update(dt)
 				G.transcendence_particles.fade_alpha = 1
 			end
 
-			if may.conf.TrEffects > 2 and (may.transcendence or 0) < 13 then
-				if may.conf.TrParticles and G.transcendence_particles then
-					G.transcendence_particles.colours[2] = may.get_transcendence_color(may.transcendence or 0)
-					G.transcendence_particles.fade_alpha = 0.7 / (may.transcendence or 0)
-					G.transcendence_particles.speed = (may.transcendence or 0) * 5
-				end
+			if may.conf.TrEffects > 2 then
 				may.ease_colour(G.C.MONEY, may.tr_colors.money, instant)
 				may.ease_colour(G.C.RED, may.tr_colors.mult, instant)
 				may.ease_colour(G.C.BLUE, may.tr_colors.chips, instant)
@@ -592,14 +588,18 @@ function Game:update(dt)
 				may.ease_colour(G.C.GOLD, may.tr_colors.gold, instant)
 				may.ease_colour(G.C.ORANGE, may.tr_colors.orange, instant)
 				may.ease_colour(G.C.UI.BACKGROUND_DARK, may.tr_colors.bg_dark, instant)
-				may.ease_colour(G.C.UI_CHIPS, may.tr_colors.chips, instant)
-				may.ease_colour(G.C.UI_MULT, may.tr_colors.mult, instant)
+				if not G.GAME.may_override_monitor_colors then
+					may.ease_colour(G.C.UI_CHIPS, may.tr_colors.chips, instant)
+					may.ease_colour(G.C.UI_MULT, may.tr_colors.mult, instant)
+				end
+				may.ease_colour(G.C.MAY_TINT_PROGRESS, HEX("000000"), instant)
 				if #SMODS.find_mod('GRM') ~= 0 then
 					may.ease_colour(G.C.PURPLE, may.tr_colors.purple, instant)
 				end
 			end
+
 			if G.GAME.blind and (G.STATE == G.STATES.HAND_PLAYED or G.STATE == G.STATES.SELECTING_HAND or G.STATE == G.STATES.NEW_ROUND) then
-				may.ease_blind_colour(G.GAME.blind)
+				may.ease_blind_colour(G.GAME.blind, nil, instant)
 			end
 		end
 		if may.conf.TrEffects > 2 and (may.transcendence or 0) > 0 and tr_active then
@@ -613,19 +613,21 @@ function Game:update(dt)
 			may.ease_colour(G.C.UI.BACKGROUND_DARK, may.get_transcendence_color(may.transcendence), instant)
 			may.ease_colour(G.C.UI_CHIPS, may.get_transcendence_color(may.transcendence), instant)
 			may.ease_colour(G.C.UI_MULT, may.get_transcendence_color(may.transcendence), instant)
-			if may.conf.TrParticles and G.transcendence_particles then
-                G.transcendence_particles.colours[2] = may.get_transcendence_color(may.transcendence)
-                G.transcendence_particles.fade_alpha = 0.7 / may.transcendence
-                G.transcendence_particles.speed = may.transcendence * 5
-            end
+			may.ease_colour(G.C.MAY_TINT_PROGRESS, HEX("FFFFFF"), instant)
 			
 			if may.conf.TrEffects == 5 and G.GAME.blind then
-				may.ease_blind_colour(G.GAME.blind, may.get_transcendence_color(may.transcendence))
+				may.ease_blind_colour(G.GAME.blind, may.get_transcendence_color(may.transcendence), instant)
 			end
 	
 			if #SMODS.find_mod('GRM') ~= 0 then
 				may.ease_colour(G.C.PURPLE, may.get_transcendence_color(may.transcendence), instant)
 			end
+			
+			if may.conf.TrParticles and G.transcendence_particles then
+                G.transcendence_particles.colours[2] = may.get_transcendence_color(may.transcendence)
+                G.transcendence_particles.fade_alpha = 0.7 / may.transcendence
+                G.transcendence_particles.speed = may.transcendence * 5
+            end
 		end
     end
     if G and G.GAME and G.ROOM then
@@ -633,16 +635,27 @@ function Game:update(dt)
             G.ROOM.jiggle = G.ROOM.jiggle + G.ROOM.may_permajiggle
         end
     end
-	
-	if G and not G.GAME then
-        if not #SMODS.find_mod('Cryptid') ~= 0 then
+	if G and G.title_top then
+		if not #SMODS.find_mod('Cryptid') ~= 0 then
 			transcendence_glitch = 0
 		else
 			glitched_intensity = 0
 		end
 		transcendence_noise = 0.001*(G.SETTINGS.GRAPHICS.crt*0.3)/100
 		transcendence_crt = 0.16*(G.SETTINGS.GRAPHICS.crt*0.3)/100
-		transcendence_bloom = G.SETTINGS.GRAPHICS.bloom - 1
+		G.ARGS.score_intensity = nil
+		may.ease_colour(G.C.MONEY, may.tr_colors.money, false)
+		may.ease_colour(G.C.RED, may.tr_colors.mult, false)
+		may.ease_colour(G.C.BLUE, may.tr_colors.chips, false)
+		may.ease_colour(G.C.IMPORTANT, may.tr_colors.important, false)
+		may.ease_colour(G.C.GOLD, may.tr_colors.gold, false)
+		may.ease_colour(G.C.ORANGE, may.tr_colors.orange, false)
+		may.ease_colour(G.C.UI.BACKGROUND_DARK, may.tr_colors.bg_dark, false)
+		if not G.GAME.may_override_monitor_colors then 
+			may.ease_colour(G.C.UI_CHIPS, may.tr_colors.chips, false)
+			may.ease_colour(G.C.UI_MULT, may.tr_colors.mult, false)
+		end
+		may.ease_colour(G.C.MAY_TINT_PROGRESS, HEX("000000"), false)
 	end
     if G.hand and may.transcendence then
         if (may.transcendence or 0) < 10 and (may.transcendence or 0) > 0 and may.conf.TrEffects > 2 then
@@ -677,6 +690,7 @@ end
 local vanf_sb = G.FUNCS.select_blind
 function G.FUNCS.select_blind(e)
 	vanf_sb(e)
+	G.GAME.may_default_bg_spin = G.ARGS.spin.real
 	if may.conf.TrParticles then
 		if G.transcendence_particles then
 			G.transcendence_particles:remove()
@@ -703,6 +717,27 @@ function end_round()
 		G.transcendence_particles:remove()
 		G.transcendence_particles = nil
 	end
-	do_calc_frames = 3
+	do_calc_frames = 2
+	G.GAME.may_default_bg_spin = nil
 	vanf_er()
+end
+
+local blind_draw_ref = Blind.draw
+function Blind:draw()
+    if not self.states.visible then return end
+    self.tilt_var = self.tilt_var or {}
+    self.tilt_var.mx, self.tilt_var.my = G.CONTROLLER.cursor_position.x, G.CONTROLLER.cursor_position.y
+    self.children.animatedSprite.role.draw_major = self
+
+    local shader_key = may.conf.TrEffects > 4 and 'may_blind_colour' or 'dissolve'
+    self.children.animatedSprite:draw_shader(shader_key, 0.1)
+    self.children.animatedSprite:draw_shader(shader_key)
+
+    for k, v in pairs(self.children) do
+        if k ~= 'animatedSprite' then
+            v.VT.scale = self.VT.scale
+            v:draw()
+        end
+    end
+    add_to_drawhash(self)
 end

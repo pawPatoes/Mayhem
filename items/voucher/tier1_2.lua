@@ -133,8 +133,6 @@ SMODS.Voucher {
 } 
 
 
-if may.conf.Mode == 1 then
-
 SMODS.Voucher {
 	key = 'voucher_surplus',
 	loc_txt = {
@@ -144,8 +142,8 @@ SMODS.Voucher {
 			"{C:mult}-1{} {C:green}Booster Pack{} in shop"
 		}
 	},
-	pos = { x = 6, y = 0 },
-	atlas = '003_temp',
+	pos = { x = 0, y = 3 },
+	atlas = 'voucher',
 	cost = 10,
 	unlocked = true,
 	voucher_sellable = true,
@@ -159,32 +157,6 @@ SMODS.Voucher {
 	end,
 }
 
-else
-
-SMODS.Voucher {
-	key = 'voucher_surplus',
-	loc_txt = {
-		name = "Voucher Surplus",
-		text = {
-			"{C:attention}+1{} {C:green}Voucher{} in shop",
-		}
-	},
-	pos = { x = 6, y = 0 },
-	atlas = '003_temp',
-	cost = 10,
-	unlocked = true,
-	redeem = function(self, card)
-		SMODS.change_voucher_limit(1)
-	end,
-	unredeem = function(self, card)
-		SMODS.change_voucher_limit(-1)
-	end,
-}
-
-end
-
-if may.conf.Mode == 1 then
-
 SMODS.Voucher {
 	key = 'voucher_overabundance',
 	loc_txt = {
@@ -194,8 +166,8 @@ SMODS.Voucher {
 			"{C:mult}-1{} {C:green}Booster Pack{} in shop"
 		}
 	},
-	pos = { x = 5, y = 0 },
-	atlas = '003_temp',
+	pos = { x = 1, y = 3 },
+	atlas = 'voucher',
 	cost = 10,
 	unlocked = true,
 	voucher_sellable = true,
@@ -209,31 +181,6 @@ SMODS.Voucher {
 		SMODS.change_booster_limit(1)
 	end,
 }
-
-else
-
-SMODS.Voucher {
-	key = 'voucher_overabundance',
-	loc_txt = {
-		name = "Voucher Overabundance",
-		text = {
-			"{C:attention}+1{} {C:green}Voucher{} in shop",
-		}
-	},
-	pos = { x = 5, y = 0 },
-	atlas = '003_temp',
-	cost = 10,
-	unlocked = true,
-	requires = {'v_may_voucher_surplus'},
-	redeem = function(self, card)
-		SMODS.change_voucher_limit(1)
-	end,
-	unredeem = function(self, card)
-		SMODS.change_voucher_limit(-1)
-	end,
-}
-
-end
 
 
 SMODS.Voucher {
@@ -265,8 +212,8 @@ SMODS.Voucher {
 			"{C:retrocards}Retro Cards{} may appear in {C:attention}shop{}",
 		}
 	},
-	pos = { x = 0, y = 0 },
-	atlas = '003_temp',
+	pos = { x = 5, y = 0 },
+	atlas = 'voucher',
 	cost = 10,
 	unlocked = true,
 	voucher_sellable = true,
@@ -379,8 +326,8 @@ SMODS.Voucher {
 			"{C:attention}+2 Hand Size{}"
 		}
 	},
-	pos = { x = 3, y = 0 },
-	atlas = '003_temp',
+	pos = { x = 4, y = 2 },
+	atlas = 'voucher',
 	cost = 10,
 	unlocked = true,
 	voucher_sellable = true,
@@ -403,8 +350,8 @@ SMODS.Voucher {
 			"{C:attention}+1{} {C:green}Voucher{} in Shop"
 		}
 	},
-	pos = { x = 1, y = 0 },
-	atlas = '003_temp',
+	pos = { x = 5, y = 2 },
+	atlas = 'voucher',
 	requires = {'v_may_spicy'},
 	cost = 10,
 	unlocked = true,
@@ -489,8 +436,8 @@ SMODS.Voucher {
 			"{C:mult}+#1#{} Mult {C:attention}before scoring{}",
 		}
 	},
-	pos = { x = 4, y = 0 },
-	atlas = '003_temp',
+	pos = { x = 2, y = 2 },
+	atlas = 'voucher',
 	config = { extra = { mult = 1 } },
 	cost = 10,
 	unlocked = true,
@@ -517,8 +464,8 @@ SMODS.Voucher {
 			"{C:attention}Increases{} by {C:chips}#2#{} {C:attention}per card{} played",
 		}
 	},
-	pos = { x = 2, y = 0 },
-	atlas = '003_temp',
+	pos = { x = 3, y = 2 },
+	atlas = 'voucher',
 	config = { extra = { chips = 5, chips_gain = 0.1 } },
 	cost = 10,
 	unlocked = true,

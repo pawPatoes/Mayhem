@@ -121,10 +121,10 @@ SMODS.Edition {
 		text = {
 			"{X:mult,C:white}X0.5{} Mult per {C:attention}Steel Card{}",
 			"in full deck",
-			"{X:money,C:white}+1{} Interest Cap per {C:attention}Gold Card{}",
+			"{C:money}+1{} Interest Cap per {C:attention}Gold Card{}",
 			"in full deck",
-			"{C:inactive}Currently X#1# Mult and +#2# Interest Cap{}",
-			"{C:inactive}Shader by Supernova{}"
+			"{C:inactive}Currently X#1# Mult and +$#2#{}",
+			"{C:inactive}Shader by Superb Thing{}"
 		}
 	},
 	shader = 'alloy',
@@ -132,7 +132,7 @@ SMODS.Edition {
 	badge_colour = HEX('cccccc'),
 	sound = { sound = "may_e_alloy", per = 1, vol = 0.9 },
 	unlocked = true,
-	config = { x_mult = 0.15, interest_cap = 1 },
+	config = { x_mult = 0.15, p_dollars = 0.5 },
 	in_shop = true,
 	weight = 5,
 	extra_cost = 9,
@@ -163,11 +163,11 @@ SMODS.Edition {
 					gold = gold + 1
 				end
 			end
-			G.E_MANAGER:add_event(Event({func = function()
-				may.ease_interest_cap(-1, gold)
-			return true end}))
 			return {
-				x_mult = 1 + (self.config.x_mult * steel),
+				x_mult = 1 + (self.config.x_mult * steel), 
+				func = function()
+					may.ease_interest_cap(-1, gold) 
+				end
 			}
 		end
 	end, 
@@ -338,7 +338,7 @@ SMODS.Edition {
 		name = "Inverted",
 		label = "Inverted",
 		text = {
-			"{C:money}+0.03 Interest{}",
+			"{C:money}+0.03{} Interest",
 			"{C:inactive}Shader by Supernova{}"
 		}
 	},
@@ -362,10 +362,12 @@ SMODS.Edition {
     end,
 	calculate = function(self, card, context)
 		if context.pre_joker or (context.main_scoring and context.cardarea == G.play) then
-			may.ease_interest(-1, 0.03)
 			return {
 				message = '+0.03 Interest',
-				colour = G.C.EDITION
+				colour = G.C.EDITION, 
+				func = function()
+					may.ease_interest(-1, 0.03) 
+				end
 			}
 		end
 	end
@@ -437,8 +439,8 @@ SMODS.Edition {
 		name = "Vignette",
 		label = "Vignette",
 		text = {
-			"{X:purple,C:white}+5{} Mult & Chips",
-			"{X:purple,C:white}X1.2{} Mult & Chips",
+			"{C:purple}+5{} Chips & Mult",
+			"{X:purple,C:white}X1.2{} Chips & Mult",
 			" ", 
 			"{C:inactive,E:1}Shader by fokuto{}"
 		}
@@ -450,22 +452,19 @@ SMODS.Edition {
 	sound = { sound = "may_e_vignette", per = 1, vol = 0.9 },
 	unlocked = true,
 	in_shop = true,
-	weight = 7,
+	weight = 6,
 	extra_cost = 5,
 	apply_to_float = true,
 	calculate = function(self, card, context)
 		if context.pre_joker or (context.main_scoring and context.cardarea == G.play) then
 			return {
+				chips = 5, 
 				mult = 5,
-				chips = 5,
+				x_chips = 1.2, 
 				x_mult = 1.2,
-				x_chips = 1.2
 			}
 		end
 	end, 
-    in_pool = function(self, args)
-        return G.GAME.may_endless_mode, { allow_duplicates = true }
-    end
 }
 
 SMODS.Edition{

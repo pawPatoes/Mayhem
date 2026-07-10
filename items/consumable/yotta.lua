@@ -266,7 +266,6 @@ SMODS.Consumable {
 		for k, v in pairs(targets) do
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
 				local card2 = create_card(G.P_CENTERS[v].set, G.consumeables, nil, nil, nil, nil, v, 'may_speculum')
-				card2:start_materialize()
 				card2:setQty(2)
 				card2:set_edition({negative = true}, true)
 				card2:add_to_deck()

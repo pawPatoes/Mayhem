@@ -6,8 +6,8 @@ SMODS.Joker {
 		name = {'Acum Multiplexum', "{C:inactive,s:0.5}Omniversal Catalyst + Acum Universum{}"},
 		text = {
 			{
-				"When {C:attention}Blind{} is {C:attention}selected{},",
-				"turn {C:attention}all cards{} in deck into {C:attention}Aces{}",
+				"{C:attention}After hand{} is played, create a {C:dark_edition}Negative{}",
+				"copy of {C:spectral}Grim{}",
 				may.pager(),
 				"Played {C:attention}Aces{} are retriggered {C:attention}#1# times{}",
 				"and give {X:mult,C:white}^^^#2#{} Mult",
@@ -21,15 +21,18 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	immutable = true,
+	endless = true,
 	pos = { x = 4, y = 2 },
 	soul_pos = { x = 5, y = 2 },
-	cost = 111111,
+	cost = 888,
 	attributes = {
 		'ace', 
 		'eeemult', 
 		'retrigger'
 	}, 
 	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = G.P_CENTERS.c_grim
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		return { vars = { card.ability.extra.repetitions, card.ability.extra.eee_mult } }
 	end,
 	calculate = function(self, card, context)
@@ -50,16 +53,15 @@ SMODS.Joker {
 				}
 			end
 		end
-		if context.setting_blind and not context.blueprint then
-			G.E_MANAGER:add_event(Event({func = function()
-                for _, card in ipairs(G.playing_cards) do
-					assert(SMODS.change_base(card, nil, "Ace"))
-				end
+		if context.after or (context.blueprint and context.after) then
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+				card:juice_up(0.3, 0.5)
+				local grim = create_card('Spectral', G.consumeables, nil, nil, nil, nil, 'c_grim', nil)
+				grim:set_edition({negative = true}, true)
+				grim:set_cost()
+				grim:add_to_deck()
+				G.consumeables:emplace(grim)
 			return true end}))
-			return {
-				message = "ACVM",
-				colour = G.C.DARK_EDITION,
-			}
 		end
 		if context.forcetrigger then
 			return {
@@ -104,9 +106,10 @@ SMODS.Joker {
 	atlas = 'joker2',
 	blueprint_compat = false ,
 	demicoloncompat = true,
+	endless = true,
 	pos = { x = 4, y = 6 },
 	soul_pos = { x = 5, y = 6 },
-	cost = 1e7,
+	cost = 900,
 	attributes = {
 		'chance', 
 		'eeeblindsize', 
@@ -114,7 +117,8 @@ SMODS.Joker {
 		'editions', 
 	}, 
 	loc_vars = function(self, info_queue, card)
-		return { vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds, card.ability.extra.mod, card.ability.extra.blindmult, card.ability.extra.obtained, '{N}', card.ability.extra.h_chips, card.ability.extra.active} }
+		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Planet Ibiza")
+		return { vars = { normal, odds, card.ability.extra.mod, card.ability.extra.blindmult, card.ability.extra.obtained, '{N}', card.ability.extra.h_chips, card.ability.extra.active} }
 	end,
 	add_to_deck = function(self, card, from_debuff)
 		if not from_debuff then
@@ -166,7 +170,7 @@ SMODS.Joker {
 			}
 		end
 		if context.after and context.cardarea == G.jokers and not context.blueprint then
-			if pseudorandom('may_planet_ibiza') < G.GAME.probabilities.normal / card.ability.extra.odds then
+			if SMODS.pseudorandom_probability(card, "may_planet_ibiza", 1, card.ability.extra.odds, "Planet Ibiza") then
 				if card.ability.extra.active > 0 then
 					card.ability.extra.active = card.ability.extra.active - 1
 					change_operator(card.ability.extra.mod)
@@ -203,11 +207,12 @@ SMODS.Joker {
 	config = { extra = { EEEmult = 1 } },
 	pos = { x = 4, y = 1 },
 	soul_pos = { x = 5, y = 1 },
-	cost = 100000,
+	cost = 850,
 	rarity = 'may_demiurgic',
 	atlas = 'joker1',
 	blueprint_compat = true,
 	demicoloncompat = true,
+	endless = true,
 	attributes = {
 		'eeemult'
 	}, 
@@ -257,7 +262,7 @@ SMODS.Joker {
 	config = { extra = { blindcards = 140, scale = 14, EEEmult = 14, EEEmult_gain = 14 } },
 	pos = { x = 4, y = 11 },
 	soul_pos = { x = 5, y = 11 },
-	cost = 1414141,
+	cost = 848,
 	rarity = 'may_demiurgic',
 	immutable = true,
 	unlocked = true,
@@ -265,6 +270,7 @@ SMODS.Joker {
 	atlas = 'joker1',
 	blueprint_compat = true,
 	demicoloncompat = true,
+	endless = true,
 	custom_soul_anim = 'diskus_spin_fast',
 	attributes = {
 		'generation', 
@@ -300,11 +306,15 @@ SMODS.Joker {
 			return true end}))
 		end
 		if context.using_consumeable and context.consumeable:gc().key == 'c_wheel_of_fortune' and not context.blueprint then
-			card.ability.extra.blindcards = card.ability.extra.blindcards + card.ability.extra.scale
-			return {
-				message = 'Upgraded!',
-				card = card
-			}
+			SMODS.scale_card(card, {
+                ref_table = card.ability.extra,
+                ref_value = "blindcards",
+                scalar_value = "scale",
+				scaling_message = {
+                    colour = G.C.SECONDARY_SET.Tarot, 
+					message = localize('k_upgrade_ex')
+				}
+            })
 		end
 		if context.end_of_round and context.cardarea == G.jokers and not context.blueprint then
 			if card.edition then
@@ -365,6 +375,7 @@ SMODS.Joker {
 	unlocked = true,
 	discovered = true,
 	immutable = true,
+	endless = true,
 	atlas = 'joker2',
 	blueprint_compat = true,
 	demicoloncompat = true,
@@ -375,6 +386,7 @@ SMODS.Joker {
 		'scaling', 
 		'tarot'
 	}, 
+	show_ring_display = true,
     loc_vars = function(self, info_queue, card)
         local amount = 0
         if G.consumeables then
@@ -458,6 +470,7 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	immutable = true,
+	endless = true,
 	pos = { x = 0, y = 0 },
 	config = { extra = { EEEchip = 1, EEEchip_gain = 1, EEEchip_gain2 = 0.5, } },
 	attributes = {
