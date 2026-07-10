@@ -1009,10 +1009,10 @@ SMODS.Consumable {
 			may.pager(40),
 			"{C:attention}Each{} randomized {C:attention}card{} has",
 			"a {C:green}#1# in #2#{} chance to",
-			"give {X:money,C:white}X#3#${}",
+			"give {C:money}+#3#{} Interest Cap",
 		}
 	},
-	config = { extra = { odds = 3, x_dollars = 1.1 } },
+	config = { extra = { odds = 3, interest_cap = 1 } },
 	pos = { x = 2, y = 2 },
 	atlas = 'placeholder',
 	cost = 4,
@@ -1022,15 +1022,16 @@ SMODS.Consumable {
 	end,
 	discovered = true,
 	loc_vars = function(self, info_queue, card)
+		may.tut_tip(info_queue, 'interest')
 		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Vile")
-		return { vars = { normal, odds, card.ability.extra.x_dollars } }
+		return { vars = { normal, odds, card.ability.extra.interest_cap } }
 	end,
 	use = function(self, card, area, copier)
 		may.randomise(G.hand.cards, false)
 		for k, v in pairs(G.hand.cards) do
 			if SMODS.pseudorandom_probability(card, "may_vile", 1, card.ability.extra.odds, "Vile") then
-				may.hypermoney(0, card.ability.extra.x_dollars, false)
-				card_eval_status_text(v, 'extra', nil, nil, nil, { message = 'X'..card.ability.extra.x_dollars..'$', colour = G.C.MONEY, delay = 0.45})
+				may.ease_interest_cap(-1, card.ability.extra.interest_cap)
+				card_eval_status_text(v, 'extra', nil, nil, nil, { message = '+'..card.ability.extra.interest_cap..' Interest Cap', colour = G.C.MONEY, delay = 0.45})
 			end
 		end
 	end,
@@ -1097,7 +1098,7 @@ SMODS.Consumable {
 	use = function(self, card, area, copier)
 		if SMODS.pseudorandom_probability(card, "may_finalize", 1, card.ability.extra.odds, "Finalize") then 
 			for k, v in pairs(G.hand.highlighted) do
-				v:set_edition(SMODS.poll_edition({guaranteed = true, pool = {'e_may_vignette', 'e_may_laminated', 'e_may_shimmering'}}))
+				v:set_edition(SMODS.poll_edition({guaranteed = true, options = {'e_may_vignette', 'e_may_laminated', 'e_may_shimmering'}}))
 			end
 			G.E_MANAGER:add_event(Event({trigger = "after", delay = 0.2, func = function()
 				G.hand:unhighlight_all()
@@ -1669,11 +1670,11 @@ SMODS.Consumable {
 		for k, v in pairs(G.hand.cards) do
 			if not (v.seal and table_hasvalue(G.hand.highlighted, v)) then 
 				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.15, func = function() 
-					v:set_seal(choice)
 					card:juice_up(0.3, 0.5)
 					v:juice_up(0.3, 0.5)
 					play_sound('tarot1')
 				return true end})) 
+				v:set_seal(choice)
 			end
 		end 
 	end,

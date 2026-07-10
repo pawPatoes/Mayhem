@@ -226,7 +226,7 @@ pattern = "letter.r = letter.r + (G.SETTINGS.reduced_motion and 0 or 1)*(letter.
 position = "after"
 payload = '''
 if to_number(letter.scale) > 8 and not may.invalid_number(letter.scale) and to_big(letter.scale) ~= R.NaN and to_big(letter.scale) ~= R.POSITIVEINFINITY and to_big(letter.scale) ~= R.NEGATIVEINFINITY then
-	G.ROOM.jiggle = math.min(G.ROOM.jiggle + to_number(math.min(to_big(10), ((letter.scale/24) * may.conf.Shakiness.screen_shake))), 250)
+	G.ROOM.jiggle = math.min(G.ROOM.jiggle + to_number(math.min(to_big(10), ((letter.scale/24) * may.conf.score_shakiness.screen_shake))), 250)
 end
 '''
 match_indent = true

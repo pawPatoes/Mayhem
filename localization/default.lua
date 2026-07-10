@@ -5,10 +5,10 @@ return {
 			mayhem = {
 				name = 'Mayhem', 
 				text = {
-					"Ever thought {C:attention,E:1}Balatro{} runs are {C:mult}too short{}?", 
-					"{C:may_col_mayhem_gradient,E:1}Mayhem{} adds {C:green}elaborate{} {C:attention}Joker{} {C:may_col_instability}fusion chains{}, resulting in", 
-					"{C:may_opalescent,E:1}omnipotent{} {C:attention}Jokers{} capable of scoring {C:may_prismatic,E:1}incomprehensibly large numbers{}",
-					"That, however, {C:mult}doesn't{} mean you will not face any {C:mult,E:1}challenges{}",
+					"A {C:may_opalescent,E:1}crazy{} content mod for {C:attention,E:1}Balatro{} which is", 
+					"based on {C:chips}very long{}, {C:dark_edition}incremental{} progression in {C:attention}one run{}",
+					"{C:dark_edition}Fuse{} {C:attention}Jokers{} continuously and slowly become an {C:may_instability,E:may_transcendent_name}unstoppable god{}",
+					"There will be {C:mult,E:1}challenges{} along the way",
 					" ",
 					"{C:green,E:1,s:2}Thanks for playing!{}", 
 					" ",

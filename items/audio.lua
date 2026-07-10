@@ -91,7 +91,7 @@ may.sounds = {
 	{'transcendent_joker', 'rarity/transcendent_joker.ogg'},
 	
 	{'tran0', 'tran/tran0.ogg'},
-	{'tran1', may.conf.LegacyTr1 and 'tran/tran1_old.ogg' or 'tran/tran1.ogg'},
+	{'tran1', may.conf.legacy_tr1 and 'tran/tran1_old.ogg' or 'tran/tran1.ogg'},
 	{'tran2', 'tran/tran2.ogg'},
 	{'tran3', 'tran/tran3.ogg'},
 	{'tran4', 'tran/tran4.ogg'},
@@ -155,6 +155,17 @@ end
 
 -- Music
 
+may.music_priorities = {
+	transcendence = 900,
+	joker_theme = 300,
+	pack = 200,
+	tainted = 190,
+	ultra = 190,
+	opalescent = 160,
+	transcendent = 150,
+	fusion = 140,
+}
+
 SMODS.Sound({
 	key = "music_santa",
 	path = "music/music_santa.ogg",
@@ -162,7 +173,7 @@ SMODS.Sound({
 	volume = 0.55,
 	sync = true,
 	select_music_track = function()
-		return (#SMODS.find_card('j_may_santa') > 0  and may.conf.Santamusic and (may.transcendence or 0) < 9) and 100.2 or false
+		return (may.conf.music.santa and may.has_card('j_may_santa')) and may.music_priorities.joker_theme
 	end,
 })
 
@@ -173,7 +184,7 @@ SMODS.Sound({
     volume = 0.3,
 	sync = false,
 	select_music_track = function()
-		return (#SMODS.find_card('j_may_poker') > 0  and may.conf.Pokermusic and (may.transcendence or 0) < 9) and 100.2 or false
+		return (may.conf.music.santa and may.has_card('j_may_poker')) and may.music_priorities.joker_theme
 	end,
 })
 
@@ -185,19 +196,18 @@ SMODS.Sound({
 	sync = true,
 	select_music_track = function()
 		if G.GAME and not G.GAME.blind then
-			return ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 8) and 0 or false
-		end 
+			return may.conf.menu_music == 8 and 0
+		end
 		if may.conf.party_music_everywhere then
 			for k, v in pairs((G.jokers or {cards = {}}).cards) do 
-				if v:may_is_fusion() and v:gc().rarity ~= 'may_hyperascendant' and v:gc().rarity ~= 'may_surreal' then 
-					return (may.conf.Partymusic and (may.transcendence or 0) < 9 ) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 8) and 0 or false
+				if v:may_is_fusion() and v:gc().rarity ~= 'may_transcendent' and v:gc().rarity ~= 'may_opalescent' then 
+					return may.music_priorities.fusion
 				end 
 			end 
 		else 
-		    return ((#SMODS.find_card('j_may_party_time') > 0 or #SMODS.find_card('j_may_aurora_rave') > 0 or #SMODS.find_card('j_may_planet_ibiza') > 0 ) and not ((#SMODS.find_card('j_may_rondo_discoteca') > 0) and may.conf.Ibizamusic) and may.conf.Partymusic and (may.transcendence or 0) < 9 ) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 8) and 100.6 or false
+		    return may.conf.music.party_time and (may.has_card('j_may_party_time') or may.has_card('j_may_aurora_rave') or may.has_card('j_may_planet_ibiza')) and may.music_priorities.joker_theme + 1
 		end
 	end,
-	volume = 0.7
 })
 
 SMODS.Sound({
@@ -207,7 +217,10 @@ SMODS.Sound({
     volume = 1.1,
 	sync = true,
 	select_music_track = function()
-		return ((#SMODS.find_card('j_may_rondo_discoteca') > 0) and may.conf.Ibizamusic and (may.transcendence or 0) < 9) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 9) and 100.7
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 9 and 0 or nil
+		end
+		return may.has_card('j_may_rondo_discoteca') and may.conf.music.ibiza and may.music_priorities.joker_theme + 2
 	end,
 })
 
@@ -217,7 +230,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return (not may.conf.menu_music == 9 or may.conf.menu_music == 2 or may.conf.menu_music == 1) and (G.GAME and not G.GAME.blind) and 0
+		return (may.conf.menu_music == 2 or may.conf.menu_music == 1) and (G.GAME and not G.GAME.blind) and 0
 	end,
 })
 
@@ -238,15 +251,17 @@ SMODS.Sound({
 	sync = true,
 	pitch = 1,
 	select_music_track = function()
-		local found_surreal
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 10 and 0
+		end
 		if G.jokers then
 			for k, v in pairs(G.jokers.cards) do
-				if v:gc().rarity == 'may_surreal' then
-					found_surreal = true
+				if v:gc().rarity == 'may_opalescent' then
+					return may.conf.music.opalescent and not may.booster() and may.music_priorities.opalescent
 				end
 			end
 		end
-		return (found_surreal and (may.conf.Surrealmusic and (may.transcendence or 0) < 9)) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 10) and 100.5
+		return nil
 	end
 })
 
@@ -256,15 +271,17 @@ SMODS.Sound({
 	sync = true,
 	pitch = 1,
 	select_music_track = function()
-		local found_surreal
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 17 and 0
+		end
 		if G.jokers then
 			for k, v in pairs(G.jokers.cards) do
 				if v:gc().rarity == 'may_opalescent' then
-					found_surreal = true
+					return may.conf.music.opalescent_shop and G.shop and not may.booster() and may.music_priorities.opalescent + 1
 				end
 			end
 		end
-		return (found_surreal and (may.conf.Surrealmusic and (may.transcendence or 0) < 9)) and G.shop and not may.booster() or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 17) and 100.5
+		return nil
 	end
 })
 
@@ -274,15 +291,17 @@ SMODS.Sound({
 	sync = true,
 	pitch = 1,
 	select_music_track = function()
-		local found_hyperascendant
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 6 and 0
+		end
 		if G.jokers then
 			for k, v in pairs(G.jokers.cards) do
 				if v:gc().rarity == 'may_transcendent' then
-					found_hyperascendant = true
+					return may.conf.music.transcendent and not may.booster() and may.music_priorities.transcendent
 				end
 			end
 		end
-		return (found_hyperascendant and (may.conf.Hyperascendantmusic and (may.transcendence or 0) < 9) and G.STATE ~= G.STATES.SHOP and not may.booster() and not G.shop) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 6) and 100.6
+		return nil
 	end
 })
 
@@ -292,15 +311,17 @@ SMODS.Sound({
 	sync = true,
 	pitch = 1,
 	select_music_track = function()
-		local found_hyperascendant
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 16 and 0
+		end
 		if G.jokers then
 			for k, v in pairs(G.jokers.cards) do
 				if v:gc().rarity == 'may_transcendent' then
-					found_hyperascendant = true
+					return may.conf.music.transcendent_shop and G.shop and not may.booster() and may.music_priorities.transcendent + 1
 				end
 			end
 		end
-		return (found_hyperascendant and (may.conf.Hyperascendantshopmusic and (may.transcendence or 0) < 9)) and G.shop and not may.booster() or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 16) and 100.6
+		return nil
 	end
 })
 
@@ -311,33 +332,11 @@ SMODS.Sound({
 	sync = true,
 	select_music_track = function()
 		if G.GAME and not G.GAME.blind then
-			return ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 13) and 0 or false
-		end
-		if G.GAME and G.GAME.blind and G.GAME.blind.config.blind.tainted and may.conf.Taintedmusic then
-			return false
-		end
-		local found_surreal
-		if G.jokers then
-			for k, v in pairs(G.jokers.cards) do
-				if v:gc().rarity == 'may_surreal' then
-					found_surreal = true
-				end
-			end
-		end
-		local found_hyperascendant
-		if G.jokers then
-			for k, v in pairs(G.jokers.cards) do
-				if v:gc().rarity == 'may_hyperascendant' then
-					found_hyperascendant = true
-				end
-			end
-		end
-		if found_surreal or found_hyperascendant or ((#SMODS.find_card('j_may_party_time') > 0 or #SMODS.find_card('j_may_aurora_rave') > 0 or #SMODS.find_card('j_may_planet_ibiza') > 0 ) and may.conf.Partymusic) then
-			return false
+			return may.conf.menu_music == 13 and 0
 		end
 		for k, v in pairs((G.jokers or {cards = {}}).cards) do 
-			if v:may_is_fusion() and v:gc().rarity ~= 'may_hyperascendant' and v:gc().rarity ~= 'may_surreal' then 
-				return (may.conf.Fusionmusic and (may.transcendence or 0) < 9 ) and (not may.conf.party_music_everywhere) and G.STATE ~= G.STATES.SHOP and not may.booster() and not G.shop and 100.4
+			if v:may_is_fusion() and v:gc().rarity ~= 'may_transcendent' and v:gc().rarity ~= 'may_opalescent' then 
+				return may.conf.music.fusion and not may.conf.party_music_everywhere and not may.booster() and may.music_priorities.fusion
 			end 
 		end 
 	end,
@@ -350,36 +349,14 @@ SMODS.Sound({
 	volume = 0.45,
 	sync = true,
 	select_music_track = function()
-		if G.GAME and not G.GAME.blind then
-			return ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 15) and 0 or false
-		end
-		if G.GAME and G.GAME.blind and G.GAME.blind.config.blind.tainted and may.conf.Taintedmusic then
-			return false
-		end
-		local found_surreal
-		if G.jokers then
-			for k, v in pairs(G.jokers.cards) do
-				if v:gc().rarity == 'may_surreal' then
-					found_surreal = true
-				end
-			end
-		end
-		local found_hyperascendant
-		if G.jokers then
-			for k, v in pairs(G.jokers.cards) do
-				if v:gc().rarity == 'may_hyperascendant' then
-					found_hyperascendant = true
-				end
-			end
-		end
-		if found_surreal or found_hyperascendant or ((#SMODS.find_card('j_may_party_time') > 0 or #SMODS.find_card('j_may_aurora_rave') > 0 or #SMODS.find_card('j_may_planet_ibiza') > 0 ) and may.conf.Partymusic) then
-			return false
+		 if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 15 and 0
 		end
 		for k, v in pairs((G.jokers or {cards = {}}).cards) do 
-			if v:may_is_fusion() and v:gc().rarity ~= 'may_hyperascendant' and v:gc().rarity ~= 'may_surreal' then 
-				return (may.conf.Fusionshopmusic and (may.transcendence or 0) < 9 ) and (not may.conf.party_music_everywhere) and G.shop and not may.booster() and 100.4 or false
+			if v:may_is_fusion() and v:gc().rarity ~= 'may_transcendent' and v:gc().rarity ~= 'may_opalescent' then 
+				return may.conf.music.fusion and not may.conf.party_music_everywhere and G.shop and not may.booster() and may.music_priorities.fusion + 1
 			end 
-		end 
+		end
 	end,
 })
 
@@ -391,7 +368,10 @@ SMODS.Sound({
 	volume = 1.1,
 	sync = true,
 	select_music_track = function()
-		return (G.booster_pack and not G.booster_pack.REMOVED and SMODS.OPENED_BOOSTER and SMODS.OPENED_BOOSTER.config.center.kind == "may_modifiercard" and may.conf.Editionmusic) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 7) and 0
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 7 and 0
+		end
+		return (G.booster_pack and not G.booster_pack.REMOVED and SMODS.OPENED_BOOSTER and SMODS.OPENED_BOOSTER.config.center.kind == "may_modifiercard" and may.conf.music.modifier) and may.music_priorities.pack
 	end
 })
 
@@ -402,7 +382,10 @@ SMODS.Sound({
 	volume = 0.9,
 	sync = true,
 	select_music_track = function()
-		return (G.booster_pack and not G.booster_pack.REMOVED and SMODS.OPENED_BOOSTER and SMODS.OPENED_BOOSTER.config.center.kind == "retrocards" and may.conf.Editionmusic) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 11) and 0
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 11 and 0
+		end
+		return (G.booster_pack and not G.booster_pack.REMOVED and SMODS.OPENED_BOOSTER and SMODS.OPENED_BOOSTER.config.center.kind == "retrocards" and may.conf.music.retro) and may.music_priorities.pack
 	end
 })
 
@@ -413,7 +396,10 @@ SMODS.Sound({
 	volume = 0.9,
 	sync = true,
 	select_music_track = function()
-		return (G.booster_pack and not G.booster_pack.REMOVED and SMODS.OPENED_BOOSTER and SMODS.OPENED_BOOSTER.config.center.kind == "fusion" and may.conf.Fusionpackmusic) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 14) and 0
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 14 and 0
+		end
+		return (G.booster_pack and not G.booster_pack.REMOVED and SMODS.OPENED_BOOSTER and SMODS.OPENED_BOOSTER.config.center.kind == "fusion" and may.conf.music.fusion_pack) and may.music_priorities.pack
 	end
 })
 
@@ -423,15 +409,17 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		local found_yotta = false
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 4 and 0
+		end
 		if G.pack_cards and G.pack_cards.cards then
 			for k, v in pairs(G.pack_cards.cards) do
 				if v:gc().set == 'yottacards' then
-					found_yotta = true
+					return may.conf.music.yotta and may.music_priorities.pack + 1
 				end
 			end
 		end
-		return (found_yotta and may.conf.Yottamusic) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 4) and 0
+		return
 	end
 })
 
@@ -442,7 +430,10 @@ SMODS.Sound({
 	volume = 1.1,
 	sync = true,
 	select_music_track = function()
-		return (G.GAME and G.GAME.blind and G.GAME.blind.config.blind.ultra and may.conf.Ultrablindmusic) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 5) and (may.transcendence or 0) < 9 and 100.1
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 5 and 0
+		end
+		return (G.GAME and G.GAME.blind and G.GAME.blind.config.blind.ultra and may.conf.music.ultrablind) and may.music_priorities.ultra
 	end
 })
 
@@ -452,7 +443,10 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return (G.GAME and G.GAME.blind and G.GAME.blind.config.blind.tainted and may.conf.Taintedmusic and (may.transcendence or 0) < 9) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 12) and 100.1
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 12 and 0
+		end
+		return (G.GAME and G.GAME.blind and G.GAME.blind.config.blind.tainted and may.conf.music.ultrablind) and may.music_priorities.tainted
 	end
 })
 
@@ -462,7 +456,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 9 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 9 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence
 	end,
 	volume = 2
 })
@@ -473,7 +467,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 10 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 10 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence 
 	end,
 	volume = 4
 })
@@ -484,7 +478,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 11 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 11 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence
 	end,
 	volume = 2
 })
@@ -495,7 +489,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 12 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 12 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence
 	end,
 	volume = 3
 })
@@ -506,7 +500,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 13 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 13 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence
 	end,
 	volume = 3
 })
@@ -517,7 +511,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 14 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 14 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence
 	end,
 	volume = 4
 })
@@ -528,7 +522,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 15 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 15 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence
 	end,
 	volume = 4
 })
@@ -539,7 +533,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 16 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 16 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence
 	end,
 	volume = 4
 })
@@ -550,7 +544,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 17 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 17 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence
 	end,
 	volume = 4
 })

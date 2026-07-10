@@ -314,7 +314,7 @@ function may.get_operation_sound(operation, chipsmult)
 			'may_doechip',
 			'may_trechip',
 		}
-		return operation == 'eq' and 'may_eqchip' or tab[math.min(operation + 2, may.conf.CustomHyperoperations and #tab or 5)]
+		return operation == 'eq' and 'may_eqchip' or tab[math.min(operation + 2, may.conf.custom_hyperoperations and #tab or 5)]
 	elseif chipsmult == 'mult' then
 		local tab = {
 			'multhit1', 
@@ -331,7 +331,7 @@ function may.get_operation_sound(operation, chipsmult)
 			'may_doemult',
 			'may_tremult',
 		}
-		return operation == 'eq' and 'may_eqchip' or tab[math.min(operation + 2, may.conf.CustomHyperoperations and #tab or 5)]
+		return operation == 'eq' and 'may_eqchip' or tab[math.min(operation + 2, may.conf.custom_hyperoperations and #tab or 5)]
 	elseif chipsmult == 'dollars' then
 		local tab = {
 			'coin3', 
@@ -347,7 +347,7 @@ function may.get_operation_sound(operation, chipsmult)
 			'may_eeescore',
 			'may_hexscore',
 		}
-		return operation == 'eq' and 'may_eqscore' or tab[math.min(operation + 2, may.conf.CustomHyperoperations and #tab or 5)]
+		return operation == 'eq' and 'may_eqscore' or tab[math.min(operation + 2, may.conf.custom_hyperoperations and #tab or 5)]
 	end
 end
 
@@ -969,4 +969,9 @@ CardArea.change_max_highlight = CardArea.change_max_highlight or function(self, 
 		SMODS.change_play_limit(mod)
 		SMODS.change_discard_limit(mod)
 	end
+end
+
+-- Adds a tutorial tooltip to info_queue
+function may.tut_tip(queue, key)
+	queue[#queue + 1] = { key = "may_"..key.."_tutorial", set = "Other" }
 end

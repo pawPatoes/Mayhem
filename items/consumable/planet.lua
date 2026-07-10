@@ -1732,7 +1732,7 @@ SMODS.Consumable {
 		name = 'Rings of Jupiter',
 		text = {
 			"{C:attention}Next{} {C:planet}leveled up{} {C:purple}Poker Hand{} gains", 
-			"{C:mult}+#1#{} {C:may_ethereal}Level{} Mult and {C:chips}+#2#{} {C:may_ethereal}Level{} Chips"
+			"{C:mult}+#1#{} {C:may_demiurgic}Level{} Mult and {C:chips}+#2#{} {C:may_demiurgic}Level{} Chips"
 		}
 	},
 	attributes = {
@@ -2032,8 +2032,8 @@ for k, v in pairs(may.jovian_moons) do
 					"{X:chips,C:white,E:1}#4#{} {C:inactive,E:2}&{} {X:mult,C:white,E:1}#5#{}"
 				},
 				{
-					"Give {C:attention}#1#{} {C:mult}+#2#{} {C:may_ethereal}Level{} Mult", 
-					"and {C:chips}+#3#{} {C:may_ethereal}Level{} Chips"
+					"Give {C:attention}#1#{} {C:mult}+#2#{} {C:may_demiurgic}Level{} Mult", 
+					"and {C:chips}+#3#{} {C:may_demiurgic}Level{} Chips"
 				},
 			}
 		},
@@ -2050,6 +2050,7 @@ for k, v in pairs(may.jovian_moons) do
 		use = function(self, card)
 			may.hand_lvl_multchips(card, card.ability.extra.hand, false, {-1, card.ability.extra.lev_chips}, {-1, card.ability.extra.lev_mult})
 			if Engulf and card.edition then 
+				may.refresh_score_operator()
 				Engulf.EditionHand(card, card.ability.extra.hand, card.edition, 1)
 			end
 			may.ch()
@@ -2058,6 +2059,7 @@ for k, v in pairs(may.jovian_moons) do
 		bulk_use = function(self, card, area, copier, number)
 			may.hand_lvl_multchips(card, card.ability.extra.hand, false, {-1, card.ability.extra.lev_chips * number}, {-1, card.ability.extra.lev_mult * number})
 			if Engulf and card.edition then 
+				may.refresh_score_operator()
 				Engulf.EditionHand(card, card.ability.extra.hand, card.edition, 1)
 			end
 			may.ch()
@@ -2127,6 +2129,7 @@ for k, v in pairs(may.saturnian_moons) do
 		use = function(self, card)
 			may.hand_mod_score_dollars_composite(card, card.ability.extra.hand, false, {-1, card.ability.extra.score}, {-1, card.ability.extra.dollars})
 			if Engulf and card.edition then 
+				may.refresh_score_operator()
 				Engulf.EditionHand(card, card.ability.extra.hand, card.edition, 1)
 			end
 			may.ch()
@@ -2135,6 +2138,7 @@ for k, v in pairs(may.saturnian_moons) do
 		bulk_use = function(self, card, area, copier, number)
 			may.hand_mod_score_dollars_composite(card, card.ability.extra.hand, false, {-1, card.ability.extra.score * number}, {-1, card.ability.extra.dollars * number})
 			if Engulf and card.edition then 
+				may.refresh_score_operator()
 				Engulf.EditionHand(card, card.ability.extra.hand, card.edition, 1)
 			end
 			may.ch()
@@ -2205,7 +2209,7 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'Triton',
 		text = {
-			"{X:purple,C:white}X#1#{} {C:may_ethereal}Level{} Mult & Chips of {C:attention}most played{}",
+			"{X:purple,C:white}X#1#{} {C:may_demiurgic}Level{} Mult & Chips of {C:attention}most played{}",
 			"{C:purple}Poker Hand{}",
 			"{C:inactive}Will upgrade #2#{}"
 		}
@@ -2452,7 +2456,7 @@ SMODS.Consumable {
 		text = {
 			"Add the {C:attention}Nominal Chips{}", 
 			"of {C:attention}all cards{} in full deck", 
-			"to the {C:chips}Chips{} and {C:may_ethereal}Level{} {C:chips}Chips{}", 
+			"to the {C:chips}Chips{} and {C:may_demiurgic}Level{} {C:chips}Chips{}", 
 			"of {C:attention}all{} {C:purple}Poker Hands{}", 
 			"{C:inactive}#1# Nominal Chips{}"
 		}
@@ -2643,7 +2647,7 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'EN-7B',
 		text = {
-			"{C:attention}Balance{} the {C:planet}level{}, {C:may_ethereal}Level{} {C:mult}Mult{}, {C:may_ethereal}Level{} {C:chips}Chips{},",
+			"{C:attention}Balance{} the {C:planet}level{}, {C:may_demiurgic}Level{} {C:mult}Mult{}, {C:may_demiurgic}Level{} {C:chips}Chips{},",
 			"{C:mult}Mult{} and {C:chips}Chips{} of {C:attention}most played{} {C:purple}Poker Hand{}",
 			"{C:inactive}Will set values of #1# to #2#{}"
 		}
@@ -2749,7 +2753,7 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'Eryndra',
 		text = {
-			"{X:purple,C:white}^5{} {C:may_ethereal}Level{} Mult & Chips of",
+			"{X:purple,C:white}^5{} {C:may_demiurgic}Level{} Mult & Chips of",
 			"{C:attention}most played{} {C:purple}Poker Hand{}",
 			"{C:inactive}Will upgrade #1#{}"
 		}

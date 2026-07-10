@@ -33,8 +33,8 @@ SMODS.ConsumableType {
 SMODS.ConsumableType {
 	key = 'yottacards',
 	collection_rows = {6, 6},
-	primary_colour = G.C.DARK_EDITION,
-	secondary_colour = G.C.YELLOW,
+	primary_colour = G.C.FILTER,
+	secondary_colour = G.C.MONEY,
 	loc_txt = {
 		collection = 'Yotta Cards',
 		name = 'Yotta',

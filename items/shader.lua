@@ -67,7 +67,7 @@ SMODS.ScreenShader({
     key = 'transcendence_crt',
     path = 'screen/transcendence_crt.fs',
     should_apply = function()
-        return G.GAME and G.GAME.blind and (may.transcendence or 0) > 0 and may.conf.TrEffects >= 3
+        return G.GAME and G.GAME.blind and (may.transcendence or 0) > 0 and may.conf.TrEffects >= 3 and may.should_do_transcendence()
     end,
     send_vars = function(self)
         return {

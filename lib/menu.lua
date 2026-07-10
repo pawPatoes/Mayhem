@@ -117,9 +117,11 @@ Game.main_menu = function(change_context)
             })
 		end
 	end
+	local first_time 
 	-- Welcome message 
 	if not may.conf.notices.welcome then
 		may.display_welcome_notification()
+		first_time = true
 		may.conf.notices.welcome = true 
 		G:save_settings()
     end 
@@ -151,12 +153,12 @@ Game.main_menu = function(change_context)
 	if table_hasvalue(may.unstable_smods, SMODS.version) then
 		may.display_notification('smods', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
     end 
-	--[[ Config notice 
-	if not may.conf.notices.config then
+	-- Config notice 
+	if not may.conf.notices.config and not first_time then
 		may.display_notification('config', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
 		may.conf.notices.config = true 
 		G:save_settings()
-    end]] 
+    end
 	return ret
 end
 

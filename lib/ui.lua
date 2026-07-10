@@ -296,7 +296,7 @@ function DynaText:pulse(amt, shake)
 		speed = 40,
 		width = 2.5,
 		start = G.TIMERS.REAL, 
-		amount = (amt or 0.2) * may.conf.Shakiness.pulsemult,
+		amount = (amt or 0.2) * may.conf.score_shakiness.pulsemult,
 		silent = false,
 		shake_screen = shake
 	}
@@ -305,22 +305,22 @@ end
 function DynaText:set_quiver(amt)
     self.config.quiver = {
         speed = 0.5,
-        amount = (amt or 0.7) * may.conf.Shakiness.quivermult,
+        amount = (amt or 0.7) * may.conf.score_shakiness.quivermult,
         silent = false
     }
 end
 
 function G.FUNCS.tsj_specific(e, quiver, pulse, juice, shake_screen)
 	if e and e.config and e.config.object and next(e.config.object) then
-		if may.conf.Shakiness.unlimitquiver then
+		if may.conf.score_shakiness.unlimitquiver then
 			e.config.object:set_quiver(quiver)
 		else
-			e.config.object:set_quiver(math.min(may.conf.Shakiness.quiverlimit, quiver))
+			e.config.object:set_quiver(math.min(may.conf.score_shakiness.quiverlimit, quiver))
 		end
-		if may.conf.Shakiness.unlimitpulse then
+		if may.conf.score_shakiness.unlimitpulse then
 			e.config.object:pulse(pulse, shake_screen)
 		else
-			e.config.object:pulse(math.min(may.conf.Shakiness.pulselimit, pulse), shake_screen)
+			e.config.object:pulse(math.min(may.conf.score_shakiness.pulselimit, pulse), shake_screen)
 		end
 		e.config.object:update_text()
 		e.config.object:align_letters()

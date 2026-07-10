@@ -720,7 +720,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"{X:money,C:white}X#1#${}",
-				"{C:money}+#2# Interest{}",
+				"{C:money}+#2#{} Interest",
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -758,7 +758,7 @@ SMODS.Consumable {
 			{
 				"{C:mult}Remove{} the {C:dark_edition}Edition{} of a",
 				"{C:attention}random Joker{}",
-				"{C:money}+#1# Interest Cap{}"
+				"{C:money}+#1#{} Interest Cap"
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -1654,7 +1654,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"{C:mult}Destroys{} all {C:attention}face cards{} held in {C:attention}hand{}",
-				"{C:attention}+1 Hand Size{}",
+				"{C:attention}+1{} Hand Size",
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -1697,7 +1697,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"{C:mult}Destroys{} all {C:attention}Aces{} in {C:attention}full deck{}",
-				"{C:attention}-1 Ante{}",
+				"{C:attention}-1{} Ante",
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -1740,7 +1740,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"{C:mult}Destroys{} all {C:attention}numbered cards{} held in {C:attention}hand{}",
-				"{C:attention}+2 Consumable Slots{}",
+				"{C:attention}+2{} Consumable Slots",
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -1918,7 +1918,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"{C:mult}Destroy{} {C:attention}all{} {X:rare,C:white}Rare{} {C:attention}Jokers{}",
-				"{C:chips}+2 Hands{} and {C:mult}Discards{}",
+				"{C:green}+2{} {C:chips}Hands{} and {C:mult}Discards{}",
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -2177,7 +2177,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"{C:mult}Destroys{} all {C:attention}duplicate Jokers{}",
-				"{C:attention}Creates{} a {C:attention}random{} {X:legendary,C:white}Legendary{} {C:attention}Joker{}",
+				"{C:attention}Creates{} a {C:attention}random{} {X:"..may.epic_key..",C:white}Epic{} {C:attention}Joker{}",
 				"{C:inactive}Does not require room{}"
 			},
 			{
@@ -2223,7 +2223,7 @@ SMODS.Consumable {
 		end
 		delay(0.5)
         G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-		    local card2 = create_card("Joker", G.consumables, true, 4, nil, nil, nil, "may_ankh_upsd")
+		    local card2 = create_card("Joker", G.consumables, nil, may.epic_key, nil, nil, nil, "may_ankh_upsd")
 		    card2:add_to_deck()
 		    G.jokers:emplace(card2)
             play_sound('timpani')
@@ -2307,7 +2307,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"{C:mult}Removes{} {C:dark_edition}Polychrome{} from all Jokers",
-				"{C:money}+1 Interest{}",
+				"{C:money}+1{} Interest",
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -2582,7 +2582,7 @@ SMODS.Consumable {
 	key = 'black_hole_upsd',
 	set = 'upside_down_spectrals',
 	name = 'BlalB HooH',
-	config = { extra = { tags = 10 } },
+	config = { extra = { tags = 8 } },
 	loc_txt = {
 		name = "BlalB HooH",
 		text = {

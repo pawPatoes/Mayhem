@@ -794,15 +794,15 @@ target = "functions/misc_functions.lua"
 pattern = "ambientOrgan1 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.music_volume + 100)/200*(G.ARGS.score_intensity.organ) end},"
 position = "after"
 payload = '''
-    may_tran0 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran0 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
-	may_tran1 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran1 or 0) * 4) * (may.conf.TrAudio * 0.01) end},
-	may_tran2 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran2 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
-	may_tran3 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran3 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
-	may_tran4 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran4 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
-	may_tran5 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran5 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
-	may_tran6 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran6 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
-	may_tran7 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran7 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
-	may_tran8 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran8 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
+    may_tran0 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran0 or 0) * 3) * (may.conf.transcendence.volume * 0.01) end},
+	may_tran1 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran1 or 0) * 4) * (may.conf.transcendence.volume * 0.01) end},
+	may_tran2 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran2 or 0) * 3) * (may.conf.transcendence.volume * 0.01) end},
+	may_tran3 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran3 or 0) * 3) * (may.conf.transcendence.volume * 0.01) end},
+	may_tran4 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran4 or 0) * 3) * (may.conf.transcendence.volume * 0.01) end},
+	may_tran5 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran5 or 0) * 3) * (may.conf.transcendence.volume * 0.01) end},
+	may_tran6 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran6 or 0) * 3) * (may.conf.transcendence.volume * 0.01) end},
+	may_tran7 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran7 or 0) * 3) * (may.conf.transcendence.volume * 0.01) end},
+	may_tran8 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran8 or 0) * 3) * (may.conf.transcendence.volume * 0.01) end},
 	--may_mass_use_ambiance = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((math.min((G.ROOM.MassUseIndex or 0) * 0.05, 100) * 1.3)) end},
 	-- the rest of the transcendences are handled as a music tracks so they can replace the main theme
 '''
@@ -815,7 +815,7 @@ target = "game.lua"
 pattern = "G.GAME.blind:load(saveTable.BLIND)"
 position = "after"
 payload = '''
-    if may.conf.TrParticles and not G.transcendence_particles then 
+    if may.conf.transcendence.particles and not G.transcendence_particles then 
         G.transcendence_particles = Particles(1, 1, 0, 0, {
             timer = 0.015,
             scale = 0.3,
@@ -847,10 +847,10 @@ payload = '''
 for i=1, 3 do
 	local col = parameter.colour
 	if parameter.key == 'mult' then
-		col = (may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.get_transcendence_color(may.transcendence) or G.C.RED
+		col = (may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.should_do_transcendence() and may.get_transcendence_color(may.transcendence) or G.C.RED
 	end
 	if parameter.key == 'chips' then
-		col = (may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.get_transcendence_color(may.transcendence) or G.C.BLUE
+		col = (may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.should_do_transcendence() and may.get_transcendence_color(may.transcendence) or G.C.BLUE
 	end
 	parameter.lick[i] = math.min(math.max(((col[i]*0.5+G.C.YELLOW[i]*0.5) + 0.1)^2, 0.1), 1)
 end

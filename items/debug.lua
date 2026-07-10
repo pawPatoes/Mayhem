@@ -1,5 +1,5 @@
 -- Debug tools
-if may.conf.Debug then
+if may.conf.debug then
 
 	local goog = to_big(1e100)
 	

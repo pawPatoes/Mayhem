@@ -170,7 +170,8 @@ SMODS.Joker {
 			    "{X:chips,C:white}+#3#{} Chips per card {C:attention}held in hand{} with an {C:dark_edition}Edition{}, where {C:attention}N{} is {C:dark_edition}Score Operator{}", 
 			    "level and {C:attention}X{} is the number of held copies of {C:tarot}The Wheel of Fortune{}", 
 				may.pager(98),
-			    "Increase {C:dark_edition}Score Operator{} level by {C:attention}#6#{} after scoring", 
+			    "Increase {C:dark_edition}Score Operator{} level by {C:attention}#6#{} every {C:attention}#10#{} {C:inactive}(#11#){}", 
+				"copies of {C:tarot}The Wheel of Fortune{} used", 
 			    may.pager(98),
 				"{C:inactive}#3# is currently #8#, will give #9# Chips{}",
 			},
@@ -179,7 +180,7 @@ SMODS.Joker {
 			}
 		}
 	},
-	config = { extra = { obtained = 2, wheels = 1120, mod = 3, decrease = -0.25 } },
+	config = { extra = { obtained = 2, wheels = 1120, mod = 2, req_wheels = 14, used_wheels = 0 } },
 	rarity = "may_transcendent",
 	atlas = 'joker2',
 	blueprint_compat = true,
@@ -225,7 +226,19 @@ SMODS.Joker {
 			end
 		end
         local normal, odds = SMODS.get_probability_vars(card, 1, 3, "Rondo Discoteca")
-        return { vars = { card.ability.extra.obtained, card.ability.extra.wheels, "{N + 1}X", normal, odds, card.ability.extra.mod, math.abs(card.ability.extra.decrease), "{"..(op + 1).."}"..amount, "{"..(op + 1).."}"..num } }
+        return { vars = { 
+			card.ability.extra.obtained,
+			card.ability.extra.wheels,
+			"{N + 1}X",
+			normal,
+			odds,
+			card.ability.extra.mod,
+			'EL PLACEHOLDER',
+			"{"..(op + 1).."}"..amount,
+			"{"..(op + 1).."}"..num,
+			card.ability.extra.req_wheels,
+			card.ability.extra.req_wheels - card.ability.extra.used_wheels
+		} }
     end,
     add_to_deck = function(self, card, from_debuff)
 		if not from_debuff then
@@ -258,6 +271,21 @@ SMODS.Joker {
                     end
                 end
             end
+			card.ability.extra.used_wheels = card.ability.extra.used_wheels + 1
+			if card.ability.extra.used_wheels >= card.ability.extra.req_wheels then
+				G.E_MANAGER:add_event(Event({func = function()
+                	change_operator(card.ability.extra.mod)
+            	return true end}))
+				return {
+					message = 'Upgraded!', 
+					colour = G.C.DARK_EDITION 
+				}
+			else
+				return {
+					message = 'Increased!', 
+					colour = G.C.SECONDARY_SET.Tarot
+				}
+			end
         end 
         if context.joker_main or context.forcetrigger then
 			local op = SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or "multiply"].order
@@ -282,11 +310,6 @@ SMODS.Joker {
 				    card = card 
 			    }
 			end
-		end
-        if context.after and not context.blueprint then
-            G.E_MANAGER:add_event(Event({func = function()
-                change_operator(card.ability.extra.mod)
-            return true end}))
 		end
 	end, 
 	global_op = function(self, card)

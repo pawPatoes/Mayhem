@@ -317,23 +317,6 @@ function G.UIDEF.card_h_popup(card)
 	return retval
 end
 
-local updateref = Card.update
-function Card:update(dt)
-	updateref(self, dt)
-	if G.STAGE == G.STAGES.RUN then
-		if self:may_get_card_fusion() then
-			if (self:may_get_card_fusion().condition or function() return true end)() then 
-				if not self.fusion_juice then
-					juice_card_until(self, function(card) return (card and card:may_can_fuse_card()) end, true)
-					self.fusion_juice = true
-				end
-			else 
-				self.fusion_juice = nil
-			end
-		end
-	end
-end
-
 function Card:may_is_fusion()
 	if self:gc() then
 		if self:gc().rarity then
@@ -365,6 +348,14 @@ function may.update_fusion_conditions()
 	G.GAME.may_fusion_conditions = G.GAME.may_fusion_conditions or {}
 	for k, v in pairs(may.fusions.recipes) do 
 		G.GAME.may_fusion_conditions[v.result_joker] = (v.condition or function() return true end)()
+	end
+	for k, v in pairs(G.jokers.cards) do
+		if v:may_can_fuse_card() and not v.fusion_juice then
+			juice_card_until(self, function(card) return card and card:may_can_fuse_card() and not G.RESET_JIGGLES end, true)
+			v.fusion_juice = true
+		else 
+			v.fusion_juice = nil
+		end
 	end
 end
 

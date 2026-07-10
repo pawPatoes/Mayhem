@@ -9,7 +9,7 @@ SMODS.Back {
 	loc_txt = {
 		name = "Orange Deck",
 		text = {
-			"{C:attention}+1{} Hand size"
+			"{C:attention}+1{} Hand Size"
 		},
 	},
 }
@@ -94,7 +94,6 @@ SMODS.Back {
 		text = {
 			"All {C:attention}cards{} in deck start with",
 			"a {C:attention}random{} {C:dark_edition}Seal{}",
-			may.pager(), 
 			"{C:inactive,E:1,s:0.7}actually its grey !!!{}"
 		},
 	},
@@ -117,7 +116,7 @@ SMODS.Back {
 		name = "Turqoise Deck",
 		text = {
 			"All {C:attention}cards{} in {C:attention}shop{} are",
-			"{C:attention}25%{} {C:money}cheaper{}"
+			"{X:green,C:white}25%{} {C:money}cheaper{}"
 		},
 	},
 	apply = function(self)
@@ -511,7 +510,6 @@ SMODS.Back {
 		G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
 			level_up_hand(nil, 'High Card', true, to_big(to_big(1e100):arrow(1, 10)):arrow(5005, to_big(to_big(1e100):arrow(1, 10))))
 			SMODS.change_voucher_limit(10)
-			SMODS.add_card({ key = 'j_may_thatch'})
 			ease_ante(7)
 			ease_dollars(9999)
 			add_skill_xp(99999)

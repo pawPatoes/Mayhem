@@ -244,6 +244,7 @@ SMODS.Consumable {
 	soul_rate = 0.01,
 	soul_set = 'may_modifiercard',
 	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		local amount = 0
 		if G.consumeables then
 			for k, v in pairs(G.consumeables.cards) do
