@@ -357,6 +357,29 @@ function may.update_fusion_conditions()
 			v.fusion_juice = nil
 		end
 	end
+end 
+
+may.no_update_conditions = {
+	'check_enhancement', 
+	'cry_press', 
+	'modify_draw'
+}
+
+local vanf_scs = SMODS.calculate_context
+function SMODS.calculate_context(tab, ret)
+	if G.GAME and G.GAME.blind then
+		local to_update = true 
+		for k, v in pairs(may.no_update_conditions) do 
+			if tab[v] then 
+				to_update = false
+				break
+			end
+		end
+		if to_update then
+			may.update_fusion_conditions()
+		end
+	end
+	return vanf_scs(tab, ret)
 end
 
 function may.get_condition(key)
@@ -381,20 +404,20 @@ may.fusions.conditions.bismuth_joker = '{C:mult}Destroyed{} at least {C:attentio
 -- may.fusions.conditions.schematicum =  'Used at least {C:attention}20{} {C:spectral}Potents{} & {C:dark_edition}Transcendent Scaling{} or above active'
 
 may.fusions.conditions.acum_universum = 'At least {C:attention}33 Aces{} in full deck' 
-may.fusions.conditions.kepler = 'Have a {C:purple}Poker Hand{} with at least {C:planet}level{} {C:attention}100{}'
+may.fusions.conditions.kepler = 'Have a {C:purple}Poker Hand{} with at least {C:planet}level{} {C:attention}80{}'
 may.fusions.conditions.diskus_dominus = 'Holding at least {C:attention}140{} copies of {C:tarot}The Wheel of Fortune{}'
 may.fusions.conditions.world_destroyer = 'Used at least {C:attention}50{} {C:planet}Planet Cards{}'
 may.fusions.conditions.aurora_rave = '{C:dark_edition}Demiurgic Scaling{} or above active'
 may.fusions.conditions.eternity_stone = '{C:mult}Destroyed{} at least {C:attention}40{} {C:dark_edition}Stone Cards{}'
 
 may.fusions.conditions.acum_multiplexum = 'At least {C:attention}55 Aces{} in full deck' 
-may.fusions.conditions.keplers_dream = 'Have a {C:purple}Poker Hand{} with at least {C:planet}level{} {C:attention}250{}' 
+may.fusions.conditions.keplers_dream = 'Have a {C:purple}Poker Hand{} with at least {C:planet}level{} {C:attention}135{}' 
 may.fusions.conditions.planet_ibiza = 'At least {C:attention}70{} {C:dark_edition}Enhanced{} playing cards'
 may.fusions.conditions.diskus_distruktum = 'Holding at least {C:attention}1400{} copies of {C:tarot}The Wheel of Fortune{}'
 may.fusions.conditions.astral_expunger = 'Used at least {C:attention}50{} {C:tarot}Tarot Cards{}'
 may.fusions.conditions.rock_of_paramountcy = '{C:mult}Destroyed{} at least {C:attention}80{} {C:dark_edition}Stone Cards{}'
 
-may.fusions.conditions.as_ultimatum = 'Have a {C:purple}Poker Hand{} with at least {C:planet}level{} {C:attention}350{}'
+may.fusions.conditions.as_ultimatum = 'Have a {C:purple}Poker Hand{} with at least {C:planet}level{} {C:attention}250{}'
 may.fusions.conditions.rondo_discoteca = 'Used at least {C:attention}100{} {C:planet}Planet Cards{} & {C:dark_edition}Score Operator{} level is {C:attention}3{} or above'
 may.fusions.conditions.zodium_calamitas = 'Used {C:attention}100{} {C:tarot}Tarot Cards{} & {C:mult}destroyed{} {C:attention}100{} {C:dark_edition}Stone Cards{}'
 
@@ -464,7 +487,7 @@ may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_aaaa', nil,
 	return false
 end)
 
-may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_destroyer', nil, nil, 'j_may_paragon', 450, 'may_ethereal_joker', nil, 0, function()
+may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_destroyer', nil, nil, 'j_may_intergalactic_tempest', 450, 'may_ethereal_joker', nil, 0, function()
 	return may.ctu('Planet') > 20
 end)
 
@@ -511,7 +534,7 @@ end)
 
 may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_cosmos', nil, nil, 'j_may_kepler', 800, 'may_prismatic_joker', nil, 0.8, function()
 	for k, v in pairs(G.GAME.hands) do
-		if to_big(v.level) >= to_big(100) then
+		if to_big(v.level) >= to_big(80) then
 			return true
 		end
 	end
@@ -561,7 +584,7 @@ end)
 
 may.fusions:add_fusion('j_may_omniversal_catalyst', nil, nil, 'j_may_kepler', nil, nil, 'j_may_keplers_dream', 2000, 'may_demiurgic_joker', nil, 1, function()
 	for k, v in pairs(G.GAME.hands) do
-		if to_big(v.level) >= to_big(250) then
+		if to_big(v.level) >= to_big(135) then
 			return true
 		end
 	end
@@ -607,7 +630,7 @@ end)
 
 may.fusions:add_fusion('j_may_acum_multiplexum', nil, nil, 'j_may_keplers_dream', nil, nil, 'j_may_as_ultimatum', 5555, 'may_transcendent_joker', nil, 1.5, function()
 	for k, v in pairs(G.GAME.hands) do
-		if to_big(v.level) >= to_big(350) then
+		if to_big(v.level) >= to_big(250) then
 			return true
 		end
 	end

@@ -57,6 +57,7 @@ return {
 	["legacy_formatting"] = false,
 	["joker_shaders"] = true,
 	["intense_hyperoperations"] = false,
+	["alt_joker_page"] = true, 
 	["notices"] = {
 		["stj"] = false, 
 		["cry"] = false, 

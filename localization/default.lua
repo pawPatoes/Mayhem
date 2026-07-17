@@ -452,6 +452,56 @@ return {
 				}
 			}, 
 			
+			may_acum_fusion_tip = {
+				name = "Current Fusion Condition Values", 
+				text = {
+					"{C:attention}#1#{} Aces in full deck"
+				}
+			}, 
+			may_kepler_fusion_tip = {
+				name = "Current Fusion Condition Values", 
+				text = {
+					"Highest {C:purple}Poker Hand{} level: {C:planet}#1#{}"
+				}
+			}, 
+			may_bedrock_fusion_tip = {
+				name = "Current Fusion Condition Values", 
+				text = {
+					"{C:attention}#1#{} {C:dark_edition}Stone Cards{} in full deck"
+				}
+			}, 
+			may_stones_fusion_tip = {
+				name = "Current Fusion Condition Values", 
+				text = {
+					"{C:attention}#1#{} {C:dark_edition}Stone Cards{} {C:mult}destroyed{} this run"
+				}
+			}, 
+			may_zodium_calamitas_fusion_tip = {
+				name = "Current Fusion Condition Values", 
+				text = {
+					"{C:attention}#1#{} {C:dark_edition}Stone Cards{} {C:mult}destroyed{} this run", 
+					"{C:attention}#2#{} {C:tarot}Tarot Cards{} used this run"
+				}
+			}, 
+			may_wizard_university_fusion_tip = {
+				name = "Current Fusion Condition Values", 
+				text = {
+					"{C:attention}#1#{} {C:dark_edition}Enhanced{} cards in full deck"
+				}
+			}, 
+			may_world_destroyer_fusion_tip = {
+				name = "Current Fusion Condition Values", 
+				text = {
+					"{C:attention}#1#{} {C:planet}Planet Cards{} used this run"
+				}
+			},
+			may_astral_expunger_fusion_tip = {
+				name = "Current Fusion Condition Values", 
+				text = {
+					"{C:attention}#1#{} {C:tarot}Tarot Cards{} used this run"
+				}
+			}, 
+			
 			may_enf_cosmic = {
 				name = "Consumable Cosmic Ability",
 				text = {

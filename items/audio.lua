@@ -224,6 +224,18 @@ SMODS.Sound({
 	end,
 })
 
+-- THE DAWN OF A NEW ERA
+SMODS.Sound({
+	key = "music_alptraum",
+	path = "music/music_alptraum.ogg",
+	pitch = 1,
+	sync = true,
+	volume = 1.2,
+	select_music_track = function()
+		return may.conf.menu_music == 18 and (G.GAME and not G.GAME.blind) and 0
+	end,
+})
+
 SMODS.Sound({
 	key = "music_mayhem",
 	path = "music/music_mayhem.ogg",

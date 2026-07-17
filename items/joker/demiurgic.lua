@@ -10,7 +10,7 @@ SMODS.Joker {
 				"copy of {C:spectral}Grim{}",
 				may.pager(),
 				"Played {C:attention}Aces{} are retriggered {C:attention}#1# times{}",
-				"and give {X:mult,C:white}^^^#2#{} Mult",
+				"and give "..may.hyp(3, 'mult', '^^^#2#').." Mult",
 			},
 			may.add_fusion_text('Kepler\'s Dream', 'As Ultimatum', may.get_condition('as_ultimatum')),
 		}
@@ -31,6 +31,11 @@ SMODS.Joker {
 		'retrigger'
 	}, 
 	loc_vars = function(self, info_queue, card)
+		local count = 1
+		for k, v in pairs(G.GAME.hands) do 
+			count = math.max(count, v.level)
+		end
+		may.fuse_tip(info_queue, 'kepler', { count })
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_grim
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		return { vars = { card.ability.extra.repetitions, card.ability.extra.eee_mult } }
@@ -85,7 +90,7 @@ SMODS.Joker {
 				may.pager(85),
 				"Apply {C:attention}random{} {C:dark_edition}Editions{} to all {C:attention}played cards before scoring{}",
 				may.pager(85),
-				"{C:attention}Held in hand cards{} with {C:dark_edition}Editions{} give {X:chips,C:white}#6##7#{} Chips",
+				"{C:attention}Held in hand cards{} with {C:dark_edition}Editions{} give "..may.hyp(4, 'chips', '#6##7#').." Chips",
 				"where {C:attention}N{} is current {C:dark_edition}Score Operator{} level", 
 				may.pager(85),
 				"{C:green}#1# in #2#{} chance to {C:attention}increase{} {C:dark_edition}Score Operator{} level",
@@ -117,6 +122,7 @@ SMODS.Joker {
 		'editions', 
 	}, 
 	loc_vars = function(self, info_queue, card)
+		may.fuse_tip(info_queue, 'world_destroyer', { may.ctu('Planet') })
 		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Planet Ibiza")
 		return { vars = { normal, odds, card.ability.extra.mod, card.ability.extra.blindmult, card.ability.extra.obtained, '{N}', card.ability.extra.h_chips, card.ability.extra.active} }
 	end,
@@ -195,7 +201,7 @@ SMODS.Joker {
 		text = {
 			{
 				"{C:attention}Gives{} the {C:planet}level{} of played Poker Hand",
-				"as {X:mult,C:white}^^^Mult{}",
+				"as "..may.hyp(3, 'mult', '^^^Mult'), 
 				"{C:inactive}Max of ^^^1e300{}",
 			},
 			may.add_fusion_text('Acum Multiplexum', 'As Ultimatum', may.get_condition('as_ultimatum')),
@@ -217,6 +223,11 @@ SMODS.Joker {
 		'eeemult'
 	}, 
     loc_vars = function(self, info_queue, card)
+		local count = 1
+		for k, v in pairs(G.GAME.hands) do 
+			count = math.max(count, v.level)
+		end
+		may.fuse_tip(info_queue, 'kepler', { count })
         return {vars = {card.ability.extra.EEEmult}}
     end,
     calculate = function(self, card, context)
@@ -250,8 +261,8 @@ SMODS.Joker {
 				may.pager(90),
 			    "{C:attention}Increases{} by {C:attention}#2#{} when {C:purple}The Wheel of Fortune{} is used",
 				may.pager(90),
-			    "{X:mult,C:white}+^^^#3#{} Mult per {C:attention}Joker{} with an {C:dark_edition}Edition{}",
-			    "{C:attention}Increases{} by {C:attention}#4#{} at the {C:attention}end of round{} if", 
+				may.hyp(3, 'mult', '+^^^#3#').." Mult per {C:attention}Joker{} with an {C:dark_edition}Edition{}",
+			    "{C:attention}Increases{} by "..may.hyp(3, 'mult', '+^^^#4#').." at the {C:attention}end of round{} if", 
 				"{C:attention}this Joker{} has an {C:dark_edition}Edition{}",
 				may.pager(90), 
 				"{C:inactive}Currently ^^^#5# Mult{}"
@@ -281,6 +292,7 @@ SMODS.Joker {
 		'eeemult',
 	}, 
     loc_vars = function(self, info_queue, card)
+		may.fuse_tip(info_queue, 'world_destroyer', { may.ctu('Planet') })
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_wheel_of_fortune
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		local num = 1
@@ -349,17 +361,16 @@ SMODS.Joker {
 		name = {'Astral Expunger', "{C:inactive,s:0.5}World Destroyer + Zodiac{}"},
 		text = {
             {
-			    "{X:chips,C:white}+^^^#1#{} Chips per {C:attention}held{} {C:planet}Planet Card{}", 
+			    may.hyp(3, 'chips', '+^^^#1#').." Chips per {C:attention}held{} {C:planet}Planet Card{}", 
 				may.pager(90),
                 "At the {C:attention}end of round{}, {C:mult}destroys{} all", 
-                "held {C:planet}Planet Cards{} and gains {X:chips,C:white}+^^^#2#{} Chips", 
+                "held {C:planet}Planet Cards{} and gains "..may.hyp(3, 'chips', '+^^^#2#').." Chips", 
                 "per {C:mult}destroyed{} {C:planet}Planet Card{}", 
 				may.pager(90),
                 "When a {C:tarot}Tarot Card{} is {C:attention}used{}", 
-                "apply {C:attention}1 + current pentation{} amount", 
-                "to {C:planet}level{} of {C:attention}most played{} {C:purple}Poker Hand{}", 
+                "{C:attention}most played{} {C:purple}Poker Hand{} gains {X:may_eee_chips_bg,C:white}^^^#6#{} levels", 
 				may.pager(90),
-			    "{C:inactive}#3#, currently {X:chips,C:white}^^^#4#{} {C:inactive}Chips, will gain +^^^#5#{}",
+			    "{C:inactive}#3#, currently ^^^#4# Chips, will gain +^^^#5#{}",
             }, 
 			may.add_fusion_text('Rock of Paramountcy', 'Zodium Calamitas', may.get_condition('zodium_calamitas')),
 			{
@@ -388,6 +399,7 @@ SMODS.Joker {
 	}, 
 	show_ring_display = true,
     loc_vars = function(self, info_queue, card)
+		may.fuse_tip(info_queue, 'zodium_calamitas', { may.ctu('Tarot'), (G.GAME.may_stones_destroyed or 0) })
         local amount = 0
         if G.consumeables then
             for k, v in pairs(G.consumeables.cards) do 
@@ -396,7 +408,7 @@ SMODS.Joker {
                 end
             end
         end
-        return {vars = { card.ability.extra.EEEchip, card.ability.extra.EEEchip_gain, may.favhand(), 1 + (card.ability.extra.EEEchip * amount), card.ability.extra.EEEchip_gain * amount }}
+        return {vars = { card.ability.extra.EEEchip, card.ability.extra.EEEchip_gain, may.favhand(), 1 + (card.ability.extra.EEEchip * amount), card.ability.extra.EEEchip_gain * amount, '(1 + Base ^^^Chips)'}}
     end,
     calculate = function(self, card, context)
 		if context.joker_main or context.forcetrigger then 
@@ -447,20 +459,20 @@ SMODS.Joker {
 		name = {'Rock of Paramountcy', "{C:inactive,s:0.5}Eternity Stone + Omniversal Catalyst{}"},
 		text = {
 			{
-				"{X:chips,C:white}^^^#1#{} Chips",
+				may.hyp(3, 'chips', '^^^#1#').." Chips",
 				may.pager(90),
                 "When {C:attention}Blind{} is {C:attention}selected{},", 
 				"create a {C:dark_edition}Negative{} copy of {C:spectral}Medusa{} and {C:planet}Deimos{}",
 				may.pager(90),
                 "After scoring, {C:mult}destroy{} all", 
 				"{C:dark_edition}Stone Cards{} {C:attention}held in hand{} and gain", 
-				"{X:chips,C:white}+^^^#2#{} Chips per destroyed card",
+				may.hyp(3, 'chips', '+^^^#2#').." Chips per destroyed card",
 				may.pager(90), 
 				"Played {C:dark_edition}Stone Cards{} increase", 
-				"{X:chips,C:white}^^^Chips{} gain by {X:chips,C:white}+^^^#3#{} before scoring",
+				may.hyp(3, 'chips', '^^^Chips').." gain by "..may.hyp(3, 'chips', '+^^^#3#').." before scoring",
 				may.pager(90),
 				"{C:planet}Deimos{} {C:green}no longer{} {C:mult}destroys{} cards", 
-				"and gives this Joker's {X:chips,C:white}^^^Chips{}"
+				"and gives this Joker's "..may.hyp(3, 'chips', '^^^Chips')
 			},
             may.add_fusion_text('Astral Expunger', 'Zodium Calamitas', may.get_condition('zodium_calamitas'))
 		}
@@ -481,6 +493,7 @@ SMODS.Joker {
 		'scaling'
 	}, 
 	loc_vars = function(self, info_queue, card)
+		may.fuse_tip(info_queue, 'zodium_calamitas', { may.ctu('Tarot'), (G.GAME.may_stones_destroyed or 0) })
         info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_medusa
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_deimos

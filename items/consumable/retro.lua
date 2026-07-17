@@ -118,7 +118,7 @@ SMODS.Consumable {
 	use = function(self, card, area, copier)
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
 			for i = 1, card.ability.extra.cards do
-				local choice = may.random_consumable('may_inverted_seal_card')
+				local choice = may.random_consumable('may_lootbox')
 				local card2 = create_card(choice.set, G.consumables, nil, nil, nil, nil, choice.key, "may_inverted_seal_card")
 				card2:add_to_deck()
 				G.consumeables:emplace(card2)

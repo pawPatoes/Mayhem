@@ -901,7 +901,7 @@ SMODS.Blind {
 	calculate = function(self, blind, context)
 		 if not blind.disabled then
             if context.before then
-				may.hypermoney(0, 1 / (#G.play.cards + 1))
+				may.hypermoney(0, 1 / (context.full_hand + 1))
 				blind.triggered = true
                 G.E_MANAGER:add_event(Event({trigger = 'immediate', func = function()
                     SMODS.juice_up_blind()
@@ -1035,14 +1035,14 @@ SMODS.Blind {
 	endless = true, 
 	tainted = true,
     debuff_hand = function(self, cards, hand, handname, check)
-		if handname ~= lphand() then
+		if handname ~= may.lphand() then
 			G.GAME.blind.triggered = true
 			return true
 		end
 		return false
 	end,
 	get_loc_debuff_text = function(self)
-		return "Can only play "..localize(lphand(), 'poker_hands')
+		return "Can only play "..localize(may.lphand(), 'poker_hands')
 	end,
 	in_pool = function(self, args)
 		return G.GAME.may_endless_mode and G.GAME.bosses_used['bl_eye'] >= 1, { allow_duplicates = true }

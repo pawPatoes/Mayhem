@@ -232,57 +232,57 @@ function may.pager(length)
 end
 
 -- Returns appropriate hyperoperational Mult/Chips formatting for anything above X
-function may.hyp(arrow, multchips)
-	if may.conf.simple_hyper then
+function may.hyp(arrow, multchips, text)
+	if may.conf.legacy_formatting then
 		if multchips == 'mult' then
-			return '{X:mult,C:white}'
+			return '{X:mult,C:white}'..text..(text and '{}' or '') 
 		elseif multchips == 'chips' then
-			return '{X:chips,C:white}'
+			return '{X:chips,C:white}'..text..(text and '{}' or '') 
 		elseif multchips == 'multchips' then
-			return '{X:purple,C:white}'
+			return '{X:purple,C:white}'..text..(text and '{}' or '') 
 		elseif multchips == 'score' then
-			return '{X:may_score,C:white}'
+			return '{X:may_score,C:white}'..text..(text and '{}' or '') 
 		end
 	else
 		if multchips == 'mult' then
 			if arrow == 1 then
-				return '{X:mult,C:black}'
+				return '{X:may_e_mult,C:white}'..text..(text and '{}' or '') 
 			elseif arrow == 2 then
-				return '{X:black,C:mult}'
+				return '{X:may_ee_mult_bg,C:may_ee_mult}'..text..(text and '{}' or '') 
 			elseif arrow == 3 then
-				return '{X:may_interdimensional,C:mult}'
+				return '{X:may_eee_mult_bg,C:may_eee_mult}'..text..(text and '{}' or '') 
 			else
-				return '{X:may_surreal,C:mult}'
+				return '{X:may_col_huge_operator_alt,C:may_hyper_mult}'..text..(text and '{}' or '') 
 			end
 		elseif multchips == 'chips' then
 			if arrow == 1 then
-				return '{X:chips,C:black}'
+				return '{X:may_e_chips,C:white}'..text..(text and '{}' or '') 
 			elseif arrow == 2 then
-				return '{X:black,C:chips}'
+				return '{X:may_ee_chips_bg,C:may_ee_chips}'..text..(text and '{}' or '') 
 			elseif arrow == 3 then
-				return '{X:may_interdimensional,C:chips}'
+				return '{X:may_eee_chips_bg,C:may_eee_chips}'..text..(text and '{}' or '') 
 			else
-				return '{X:may_surreal,C:chips}'
+				return '{X:may_col_huge_operator_alt,C:may_hyper_chips}'..text..(text and '{}' or '') 
 			end
 		elseif multchips == 'multchips' then
 			if arrow == 1 then
-				return '{X:purple,C:black}'
+				return '{X:may_e_chipsmult,C:white}'..text..(text and '{}' or '') 
 			elseif arrow == 2 then
-				return '{X:black,C:purple}'
+				return '{X:may_ee_chipsmult_bg,C:may_ee_chipsmult}'..text..(text and '{}' or '') 
 			elseif arrow == 3 then
-				return '{X:may_interdimensional,C:purple}'
+				return '{X:may_eee_chipsmult_bg,C:may_eee_chipsmult}'..text..(text and '{}' or '') 
 			else
-				return '{X:may_surreal,C:purple}'
+				return '{X:may_col_huge_operator_alt,C:may_hyper_chipsmult}'..text..(text and '{}' or '') 
 			end
 		elseif multchips == 'score' then
 			if arrow == 1 then
-				return '{X:may_score,C:black}'
+				return '{X:may_e_score,C:white}'..text..(text and '{}' or '') 
 			elseif arrow == 2 then
-				return '{X:black,C:may_score}'
+				return '{X:may_ee_score_bg,C:may_ee_score}'..text..(text and '{}' or '') 
 			elseif arrow == 3 then
-				return '{X:may_interdimensional,C:may_score}'
+				return '{X:may_eee_score_bg,C:may_eee_score}'..text..(text and '{}' or '') 
 			else
-				return '{X:may_surreal,C:may_score}'
+				return '{X:may_col_huge_operator_alt,C:may_hyper_score}'..text..(text and '{}' or '') 
 			end
 		end
 	end
@@ -768,14 +768,14 @@ function may.add_fusion_text(joker1, joker2, condition)
 	condition = condition or 'ERROR'
 	if may.conf.short_fusion then
 		return {
-			"{C:dark_edition}FUSION:{} {C:attention}"..joker1.."{} {C:chips}>>{} {C:attention}"..joker2.."{}",
+			"{C:dark_edition}FUSION:{} {C:attention}"..joker1.."{} {C:chips}>>{} {C:dark_edition}"..joker2.."{}",
 			"{C:may_opalescent,s:1.1,u:may_opalescent}CONDITION{}",
 			condition
 		}
 	else
 	    return {
 		    "This Joker can {C:dark_edition}fuse{} with", 
-			"{C:attention}"..joker1.."{} to create {C:attention}"..joker2.."{}", 
+			"{C:attention}"..joker1.."{} to create {C:dark_edition}"..joker2.."{}", 
 		    may.pager(math.max(string.len(condition), string.len("This Joker can {C:dark_edition}fuse{} with")) * 0.6), 
 		    '{C:may_opalescent,s:1.2,u:may_opalescent}Fusion Condition{}', 
 		    condition
@@ -802,4 +802,16 @@ end
 G.FUNCS.may_open_discord = function(e)
 	play_sound('cardFan2', 1, 0.75)
 	love.system.openURL("https://discord.gg/esrGbYWHEQ")
+end
+
+-- Adds a tutorial tooltip to info_queue
+function may.tut_tip(queue, key, extras)
+	queue[#queue + 1] = { key = "may_"..key.."_tutorial", set = "Other", vars = extras }
+end
+
+-- Adds a fusion tooltip to info_queue
+function may.fuse_tip(queue, key, extras)
+	if G.GAME and not G.title_top then 
+		queue[#queue + 1] = { key = "may_"..key.."_fusion_tip", set = "Other", vars = extras }
+	end
 end

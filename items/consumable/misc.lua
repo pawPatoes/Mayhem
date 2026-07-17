@@ -3,7 +3,7 @@
 SMODS.Consumable {
 	key = 'present',
 	set = 'may_misc',
-	name = 'Medusa',
+	name = 'Present',
 	loc_txt = {
 		name = "Present",
 		text = {

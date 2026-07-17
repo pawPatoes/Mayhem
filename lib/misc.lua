@@ -971,7 +971,12 @@ CardArea.change_max_highlight = CardArea.change_max_highlight or function(self, 
 	end
 end
 
--- Adds a tutorial tooltip to info_queue
-function may.tut_tip(queue, key)
-	queue[#queue + 1] = { key = "may_"..key.."_tutorial", set = "Other" }
+-- I LOVE TALISMAN
+function may.change_operator(amount)
+	if G.GAME.current_scoring_calculation_key ~= 'talisman_hyper' and SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or "multiply"].order + amount > 2 then 
+		G.GAME.current_scoring_calculation_key = 'talisman_hyper'
+		change_operator(amount - 2)
+	else 
+		change_operator(amount)
+	end
 end

@@ -11,7 +11,7 @@ pattern = "G.ARGS.score_intensity.organ = G.video_organ or G.ARGS.score_intensit
 position = "at"
 payload = '''
 	if Big.arrow and G.GAME.blind and to_big(G.GAME.blind.chips or 0) > to_big(0) then
-		if is_number(SMODS.get_scoring_parameter('chips', true)) and is_number(SMODS.get_scoring_parameter('mult', true)) then
+		if is_number(SMODS.get_scoring_parameter('chips', true)) and is_number(SMODS.get_scoring_parameter('mult', true)) and not G.shop and G.GAME and G.GAME.blind then
 			G.ARGS.score_intensity.true_score = to_big(G.GAME.current_scoring_calculation:func(SMODS.get_scoring_parameter('chips', true), SMODS.get_scoring_parameter('mult', true), true))
 		else
 			G.ARGS.score_intensity.true_score = to_big(0)
@@ -403,7 +403,7 @@ pattern = "G.ARGS.score_intensity.organ = G.video_organ or to_big(G.ARGS.score_i
 position = "at"
 payload = '''
 	if Big.arrow and G.GAME.blind and to_big(G.GAME.blind.chips or 0) > to_big(0) then
-		if is_number(SMODS.get_scoring_parameter('chips', true)) and is_number(SMODS.get_scoring_parameter('mult', true)) then
+		if is_number(SMODS.get_scoring_parameter('chips', true)) and is_number(SMODS.get_scoring_parameter('mult', true)) and not G.shop and G.GAME and G.GAME.blind then
 			G.ARGS.score_intensity.true_score = to_big(G.GAME.current_scoring_calculation:func(SMODS.get_scoring_parameter('chips', true), SMODS.get_scoring_parameter('mult', true), true))
 		else
 			G.ARGS.score_intensity.true_score = to_big(0)

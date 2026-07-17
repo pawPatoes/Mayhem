@@ -148,6 +148,7 @@ SMODS.Tag {
 			create_shop_card_ui(card, "Joker", context.area)
 			card.states.visible = false
 			tag:yep("+", G.C.RARITY[may.epic_key], function()
+				card:start_materialize()
 				card:set_cost()
 			return true end)
 			tag.triggered = true

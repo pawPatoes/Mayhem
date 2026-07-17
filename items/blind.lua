@@ -609,6 +609,9 @@ SMODS.Blind {
 		end
 		return false
 	end,
+	get_loc_debuff_text = function(self)
+		return "Only "..localize(may.favhand(), 'poker_hands').." scores"
+	end,
 	boss = {
 		min = 1,
 		max = 10

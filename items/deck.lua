@@ -509,11 +509,13 @@ SMODS.Back {
 	apply = function(self)
 		G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
 			level_up_hand(nil, 'High Card', true, to_big(to_big(1e100):arrow(1, 10)):arrow(5005, to_big(to_big(1e100):arrow(1, 10))))
-			SMODS.change_voucher_limit(10)
-			ease_ante(7)
 			ease_dollars(9999)
 			add_skill_xp(99999)
-			SMODS.add_card({key='j_may_rondo_discoteca'})
+			for i = 1, 25 do 
+				local new = SMODS.add_card({ set = 'Planet' })
+				new:set_edition(SMODS.poll_edition({ guaranteed = true })) 
+			end
+			SMODS.add_card({ key = 'j_may_acum' })
 		return true end})) 
 	end, 
 }]] 

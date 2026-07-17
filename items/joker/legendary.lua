@@ -20,11 +20,11 @@ SMODS.Joker {
 		name = 'Blue Album',
 		text = {
 			{
-				"This Joker {C:attention}gains{} {X:mult,C:white}+^#1#{} Mult", 
+				"This Joker {C:attention}gains{} "..may.hyp(1, 'mult', '+^#1#').." Mult", 
 				"if hand is played while {C:attention}Joker Slots{}",
 				"are {C:mult}not{} {C:attention}fully occupied{}",
 				may.pager(40),
-				"{C:inactive}Currently {X:mult,C:white}^#2#{} {C:inactive}Mult{}",
+				"{C:inactive}Currently ^#2# Mult{}",
 				may.pager(40),
 				"{C:inactive,E:1,s:0.7}#3#{}",
 			},
@@ -311,7 +311,7 @@ SMODS.Joker {
                 "When {C:money}money{} {C:attention}requirement{} is reached, adds", 
 				"{C:attention}#3#{} {C:dark_edition}Negative{} regular {C:green}Voucher{}", 
 				"and {C:attention}#4#{} {C:dark_edition}Negative{} {C:attention}Booster Packs{} to {C:attention}Consumable Slots{},", 
-				"{C:mult}resets{} and {C:mult}increases{} {C:money}money{} {C:attention}requirement{} by {X:money,C:white}^1.15{}", 
+				"{C:mult}resets{} and {C:mult}increases{} {C:money}money{} {C:attention}requirement{} by {X:dark_edition,C:white}^1.15{}", 
 				may.pager(),
 				"{C:inactive}Max 100 triggers per money change{}",
 				"{C:inactive}Will not activate if current money{}", 

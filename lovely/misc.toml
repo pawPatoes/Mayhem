@@ -3,19 +3,6 @@ version = "1.0.0"
 dump_lua = true
 priority = 1000
 
-# Error message if dependencies are missing because people are incapable of reading 
-[[patches]] 
-[patches.pattern]
-target = "game.lua"
-pattern = "function Game:splash_screen()"
-position = "after"
-payload = '''
-if (not Noituus) and (not Overflow) then
-    error("MAYHEM: Missing dependency: Noituus | Make sure it is installed properly.") 
-end'''
-match_indent = true
-overwrite = true
-
 # Playing card chip multiplier (brown deck)
 [[patches]] 
 [patches.pattern]

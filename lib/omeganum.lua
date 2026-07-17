@@ -278,3 +278,18 @@ if Talisman.effects and Talisman.effects.registerHyper then
 		return fxlist[key]
 	end
 end
+
+function may.get_hyper_formatting(eval, amt)
+	local tab = {
+		e_chips = {SMODS.Gradients.may_e_chips, G.C.WHITE, 0.75},
+		ee_chips = {SMODS.Gradients.may_ee_chips_bg, SMODS.Gradients.may_ee_chips, 0.8},
+		eee_chips = {SMODS.Gradients.may_eee_chips_bg, SMODS.Gradients.may_eee_chips, 0.85},
+		hyper_chips = {SMODS.Gradients.may_col_huge_operator_alt, SMODS.Gradients.may_hyper_chips, 0.85 + math.min(2, (amt - 3) * 0.05)},
+		
+		e_mult = {SMODS.Gradients.may_e_mult, G.C.WHITE, 0.75},
+		ee_mult = {SMODS.Gradients.may_ee_mult_bg, SMODS.Gradients.may_ee_mult, 0.8},
+		eee_mult = {SMODS.Gradients.may_eee_mult_bg, SMODS.Gradients.may_eee_mult, 0.85},
+		hyper_mult = {SMODS.Gradients.may_col_huge_operator_alt, SMODS.Gradients.may_hyper_mult, 0.85 + math.min(2, (amt - 3) * 0.05)},
+	}
+	return tab[eval] 
+end

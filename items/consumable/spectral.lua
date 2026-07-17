@@ -499,25 +499,22 @@ SMODS.Consumable {
 }
 
 SMODS.Consumable {
-	key = 'terminal_lucidity',
+	key = 'malfunction',
 	set = 'Spectral',
-	name = 'Terminal Lucidity',
+	name = 'Malfunction',
 	loc_txt = {
-		name = "Terminal Lucidity",
+		name = "Malfunction",
 		text = {
-			"Add an {C:may_ethereal,E:1}ERROR Seal{}",
+			"Add an {C:attention}ERROR Seal{}",
 			"to {C:attention}#1#{} selected",
 			"card in your hand"
 		}
 	},
 	config = { max_highlighted = 1, extra = "may_error_seal" },
-	pos = { x = 2, y = 3 },
-	soul_pos = { x = 4, y = 3 },
-	atlas = 'may_spectral',
+	pos = { x = 2, y = 2 },
+	atlas = 'placeholder',
 	misc_badge = may_rare_badge,
-	cost = 8,
-	hidden = true,
-	soul_rate = 0.005,
+	cost = 4,
 	unlocked = true,
 	can_use = function(self, card)
 		return may.canuse() and #G.hand.highlighted <= (card.ability.max_highlighted + (card.area == G.hand and 1 or 0)) and #G.hand.highlighted > (card.area == G.hand and 1 or 0)
@@ -1664,7 +1661,7 @@ SMODS.Consumable {
 	discovered = true,
 	no_grc = true, 
 	hidden = true,
-	soul_rate = 0.05,
+	soul_rate = 0.005,
 	use = function(self, card, area, copier)
 		local choice = SMODS.poll_seal({ guaranteed = true })
 		for k, v in pairs(G.hand.cards) do

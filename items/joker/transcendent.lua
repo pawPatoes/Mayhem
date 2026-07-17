@@ -5,10 +5,10 @@ SMODS.Joker {
 	loc_txt = {
 		name = {'{C:dark_edition,s:1.2,E:may_transcendent_name}As Ultimatum{}', "{C:inactive,s:0.5}Acum Multiplexum + Kepler's Dream{}"},
 		text = {
-			"Played {C:attention}Aces{} give {X:purple,C:white}#1##2##3#X{} Mult & Chips",
+			"Played {C:attention}Aces{} give "..may.hyp(4, 'multchips', '#1##2##3#X').." Mult & Chips",
 			"and are retriggered {C:attention}#4# times{}",
 			may.pager(),
-			"{C:attention}Hyperoperand{} is {C:attention}equal{} to played {C:purple}Poker Hand{} {C:planet}level{}",
+			"{C:planet}X{} is {C:attention}equal{} to played {C:purple}Poker Hand{} {C:planet}level{}",
 			may.pager(),
 			"{C:attention}After scoring{}, {C:green}increase{} {C:dark_edition}hyperoperator{} by the",
 			"{C:attention}number{} of {C:attention}Aces{} in played hand", 
@@ -20,8 +20,8 @@ SMODS.Joker {
 	config = { extra = { arrow = 4, repetitions = 11 } },
 	rarity = "may_transcendent",
 	atlas = 'joker1',
-	blueprint_compat = true,
-	demicoloncompat = true,
+	blueprint_compat = false,
+	demicoloncompat = false,
 	immutable = true,
 	endless = true,
 	pos = { x = 0, y = 4 },
@@ -35,10 +35,6 @@ SMODS.Joker {
 		'retrigger', 
 		'scaling'
 	}, 
-	hoverbg_shader = "may_transcendent_bg",
-	hoverbg_colour = HEX("666666"),
-	bordertextbg_shader = "may_alpha_effect",
-	bordertextbg_colour = HEX("FFFFFF"),
 	loc_vars = function(self, info_queue, card)
         return { vars = { '{', card.ability.extra.arrow, '}', card.ability.extra.repetitions } }
     end,
@@ -167,7 +163,7 @@ SMODS.Joker {
 			    may.pager(98),
 			    "Using {C:tarot}The Wheel of Fortune{} applies random {C:dark_edition}Editions{} to all cards {C:attention}held in hand{}", 
 			    may.pager(98),
-			    "{X:chips,C:white}+#3#{} Chips per card {C:attention}held in hand{} with an {C:dark_edition}Edition{}, where {C:attention}N{} is {C:dark_edition}Score Operator{}", 
+			    may.hyp(4, 'chips', '+#3#').." Chips per card {C:attention}held in hand{} with an {C:dark_edition}Edition{}, where {C:attention}N{} is {C:dark_edition}Score Operator{}", 
 			    "level and {C:attention}X{} is the number of held copies of {C:tarot}The Wheel of Fortune{}", 
 				may.pager(98),
 			    "Increase {C:dark_edition}Score Operator{} level by {C:attention}#6#{} every {C:attention}#10#{} {C:inactive}(#11#){}", 
@@ -183,8 +179,8 @@ SMODS.Joker {
 	config = { extra = { obtained = 2, wheels = 1120, mod = 2, req_wheels = 14, used_wheels = 0 } },
 	rarity = "may_transcendent",
 	atlas = 'joker2',
-	blueprint_compat = true,
-	demicoloncompat = true,
+	blueprint_compat = false,
+	demicoloncompat = false,
 	immutable = true,
 	endless = true,
 	custom_soul_anim = 'diskus_spin_fast',
@@ -198,10 +194,6 @@ SMODS.Joker {
 		'editions', 
 		'hyperchips',
 	}, 
-	hoverbg_shader = "may_transcendent_bg",
-	hoverbg_colour = HEX("666666"),
-	bordertextbg_shader = "may_alpha_effect",
-	bordertextbg_colour = HEX("FFFFFF"),
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = G.P_CENTERS.c_wheel_of_fortune
         info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
@@ -283,7 +275,7 @@ SMODS.Joker {
 			else
 				return {
 					message = 'Increased!', 
-					colour = G.C.SECONDARY_SET.Tarot
+					colour = G.C.PURPLE
 				}
 			end
         end 
@@ -327,20 +319,20 @@ SMODS.Joker {
 		name = {'{C:dark_edition,s:1.2,E:may_transcendent_name}Zodium Calamitas{}', "{C:inactive,s:0.5}Rock of Paramountcy + Astral Expunger{}"},
 		text = {
 			{
-				"{X:chips,C:white}#1##2#{} Chips, additional {X:chips,C:white}+#1##2#{} per held {C:planet}Planet Card{}",
+				may.hyp(4, 'chips', '#1##2#').." Chips, additional "..may.hyp(4, 'chips', '+#1##2#').." per held {C:planet}Planet Card{}",
 				may.pager(),
                 "When {C:attention}Blind{} is {C:attention}selected{},", 
 				"create a {C:dark_edition}Negative{} copy of {C:spectral}Medusa{} and {C:planet}Deimos{}",
 				may.pager(),
                 "After scoring, {C:mult}destroy{} all", 
 				"{C:dark_edition}Stone Cards{} {C:attention}held in hand{} and gain", 
-				"{X:chips,C:white}+H#3#{} Chips per destroyed card",
+				may.hyp(4, 'chips', '+H#3#').." Chips per destroyed card",
 				may.pager(), 
 				"Played {C:dark_edition}Stone Cards{} increase", 
-				"{X:chips,C:white}HChips{} gain by {X:chips,C:white}+H#4#{} before scoring",
+				may.hyp(4, 'chips', 'HChips').." gain by "..may.hyp(4, 'chips', '+H#4#').." before scoring",
 				may.pager(),
 				"{C:planet}Deimos{} {C:green}no longer{} {C:mult}destroys{} cards", 
-				"and gives this Joker's {X:chips,C:white}HChips{}",
+				"and gives this Joker's "..may.hyp(4, 'chips', 'HChips'), 
 				may.pager(),
 				"{C:attention}+#6#{} {C:dark_edition}hyperoperator{} every {C:attention}#7#{}", 
 				"{C:tarot}Tarot Cards{} used", 
@@ -351,8 +343,8 @@ SMODS.Joker {
 	},
 	rarity = "may_transcendent",
 	atlas = 'placeholder',
-	blueprint_compat = true,
-	demicoloncompat = true,
+	blueprint_compat = false,
+	demicoloncompat = false,
 	immutable = true,
 	endless = true,
 	pos = { x = 0, y = 0 },
@@ -366,10 +358,6 @@ SMODS.Joker {
 		'planet',
 		'tarot'
 	}, 
-	hoverbg_shader = "may_transcendent_bg",
-	hoverbg_colour = HEX("666666"),
-	bordertextbg_shader = "may_alpha_effect",
-	bordertextbg_colour = HEX("FFFFFF"),
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_medusa

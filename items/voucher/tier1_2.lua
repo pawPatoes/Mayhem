@@ -552,7 +552,7 @@ SMODS.Voucher {
 SMODS.Voucher {
 	key = 'error',
 	loc_txt = {
-		name = "{C:mult,s:0.2}E{}{C:may_interdimensional,s:1.1}r{} {C:dark_edition,s:0.5}R{}{C:chips,X:edition,s:1.5}o{}{C:inactive,s:0.7}r{}",
+		name = "{C:mult,s:0.2}E{}{C:may_prismatic,s:1.1}r{} {C:dark_edition,s:0.5}R{}{C:chips,X:edition,s:1.5}o{}{C:inactive,s:0.7}r{}",
 		text = {
 		}
 	},
@@ -650,9 +650,9 @@ SMODS.Voucher {
 
 
 SMODS.Voucher {
-	key = 'astronomy',
+	key = 'outerpsacial',
 	loc_txt = {
-		name = "Astronomy",
+		name = "Outerspacial",
 		text = {
 			"Future {C:planet}Celestial Packs{}", 
             "have {C:attention}+1{} {C:green}card{} and {C:green}choice{}"

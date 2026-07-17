@@ -50,6 +50,13 @@ may.setting_tips = {
 		"If enabled, {C:attention}tooltips{} will appear on certain {C:attention}cards{} {C:green}explaining{}", 
 		"certain {C:may_col_mayhem_gradient,E:1}Mayhem{} {C:dark_edition}mechanics{}"
 	}, 
+	legacy_formatting = {
+		"{C:attention,E:1}REQUIRES RESTART{}", 
+		" ",
+		"If enabled, mentions of {C:dark_edition}post-multiplication{} operators in", 
+		"{C:attention}descriptions{} will use {C:spectral}old{}, {C:purple}simpler{} formatting", 
+		"{C:inactive}E.g.{} {X:may_ee_chips_bg,C:may_ee_chips}^^2{} {C:inactive}Chips >>{} {X:chips,C:white}^^2{} {C:inactive}Chips{}", 
+	}, 
 	
 	tr_effects = {
 		"Changes how {C:mult}intense{} and {C:attention}diverse{} the {C:tarot}visual effects{}", 
@@ -262,6 +269,14 @@ SMODS.current_mod.extra_tabs = function()
 									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "tutorial_tooltips" },
 								}},
 							}},
+							{n = G.UIT.R, config = { align = "cm", padding = 0 }, nodes = {
+								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
+									{ n = G.UIT.T, config = { text = 'Legacy hyperoperator formatting', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.legacy_formatting } }},
+								}},
+								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
+									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "legacy_formatting" },
+								}},
+							}}, 
 						}}
 					}}
 				end,
@@ -511,6 +526,7 @@ SMODS.current_mod.extra_tabs = function()
 									"Fusion Joker (Shop)",
 									"Transcendent Joker (Shop)",
 									"Opalescent Joker (Shop)",
+									"Alptraum", 
 									"Default"
 								},
 								opt_callback = 'may_upd_music',
@@ -523,8 +539,8 @@ SMODS.current_mod.extra_tabs = function()
 								label = "Transcendence Volume",
 								label_scale = 0.4,
 								text_scale = 0.3,
-								ref_table = may.conf,
-								ref_value = "TrAudio",
+								ref_table = may.conf.transcendence,
+								ref_value = "volume",
 								min = 0,
 								max = 300,
 								on_demand_tooltip = { text = may.setting_tips.tr_volume }

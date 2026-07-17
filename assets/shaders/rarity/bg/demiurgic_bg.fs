@@ -84,8 +84,7 @@ vec4 effect(vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords)
     float vign = 1.0 - smoothstep(0.5, 1.5, length(uv * 0.5));
     col *= vign;
 
-    float brightness = dot(colour.rgb, vec3(0.299, 0.587, 0.114));
-    col *= brightness;
+	col *= colour.rgb;
 
     return vec4(col, colour.a);
 }

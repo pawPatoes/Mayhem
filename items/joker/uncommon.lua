@@ -154,6 +154,11 @@ SMODS.Joker {
 		'space'
 	}, 
     loc_vars = function(self, info_queue, card)
+		local count = 1
+		for k, v in pairs(G.GAME.hands) do 
+			count = math.max(count, v.level)
+		end
+		may.fuse_tip(info_queue, 'kepler', { count })
         return {vars = { card.ability.extra.mul } }
     end,
     calculate = function(self, card, context)
@@ -188,6 +193,13 @@ SMODS.Joker {
 	pos = { x = 3, y = 2 },
 	config = { extra = { odds = 3 } },
 	loc_vars = function(self, info_queue, card)
+		local count = 0
+		for k, v in pairs(G.playing_cards or {}) do
+			if not SMODS.has_enhancement(v, 'c_base') then
+				count = count + 1
+			end
+		end
+		may.fuse_tip(info_queue, 'wizard_university', { count })
 		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Mana Orb")
 		return { vars = { normal, odds } }
 	end,
@@ -200,7 +212,7 @@ SMODS.Joker {
 	calculate = function(self, card, context)
 		if context.before and context.cardarea == G.jokers and SMODS.pseudorandom_probability(card, "may_mana_orb", 1, card.ability.extra.odds, "Mana Orb") then
 			for k, v in ipairs(context.scoring_hand) do
-				if v.ability.name == 'c_base' then
+				if SMODS.has_enhancement(v, 'c_base') then
 					G.E_MANAGER:add_event(Event({func = function()
 						v:juice_up(0.3, 0.5)
 						v:set_ability(SMODS.poll_enhancement({ guaranteed = true, no_replace = true }), nil, true)
@@ -217,7 +229,7 @@ SMODS.Joker {
 		end
 		if context.forcetrigger then
 			for k, v in ipairs(context.scoring_hand) do
-				if v.ability.name == 'c_base' then
+				if SMODS.has_enhancement(v, 'c_base') then
 					G.E_MANAGER:add_event(Event({func = function()
 						v:juice_up(0.3, 0.5)
 						v:set_ability(SMODS.poll_enhancement({ guaranteed = true, no_replace = true }), nil, true)
@@ -472,6 +484,7 @@ SMODS.Joker {
 	},
 	config = { extra = { odds = 3, level = 1 } },
 	loc_vars = function(self, info_queue, card)
+		may.fuse_tip(info_queue, 'astral_expunger', { may.ctu('Tarot') })
         local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Zodiac")
 		return { vars = { normal, odds, card.ability.extra.level, may.favhand() } }
 	end,
@@ -529,6 +542,7 @@ SMODS.Joker {
 		'generation'
 	}, 
 	loc_vars = function(self, info_queue, card)
+		may.fuse_tip(info_queue, 'stones', { (G.GAME.may_stones_destroyed or 0) })
         info_queue[#info_queue + 1] = G.P_CENTERS.c_may_deimos
         local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Cement Joker")
 		return { vars = { normal, odds } }
@@ -583,6 +597,15 @@ SMODS.Joker {
 		'xchips'
 	}, 
 	loc_vars = function(self, info_queue, card)
+		if G.GAME and G.GAME.blind then 
+			local count = 0
+			for k, v in pairs(G.playing_cards) do
+				if SMODS.has_enhancement(v, 'm_stone') then
+					count = count + 1
+				end
+			end
+			may.fuse_tip(info_queue, 'bedrock', { count })
+		end
         info_queue[#info_queue + 1] = G.P_CENTERS.m_stone
 		return { vars = { card.ability.extra.x_chips } }
 	end,

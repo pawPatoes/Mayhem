@@ -11,7 +11,6 @@ may.libs = {
 	'init.lua',
 	'fusion.lua',
 	'jenlib.lua',
-	'modtabs.lua',
 	'hooks.lua',
 	'consumablevariants.lua',
     'hands.lua',
@@ -29,6 +28,7 @@ may.libs = {
 	'noituus.lua',
 	'ui.lua',
 	'miscbadges.lua', 
+	'modtabs.lua',
 }
 
 for k, v in ipairs(may.libs) do

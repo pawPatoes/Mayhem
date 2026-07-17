@@ -40,7 +40,7 @@ SMODS.Joker {
 				may.pager(), 
 				"Must {C:attention}own{} this Joker for {C:attention}5{} {C:inactive}(#7#){} Rounds to {C:attention}fuse{} it", 
 				may.pager(), 
-				"{X:attention,C:white}+#3#0.1{} Blind Size per {C:may_instability}Instability{}", 
+				"{X:may_col_huge_operator_alt,C:white}+#3#0.1{} Blind Size per {C:may_instability}Instability{}", 
 				may.pager(), 
 				"{C:inactive}G = #6#{}",
 				may.pager(), 
@@ -104,10 +104,10 @@ SMODS.Joker {
 		text = {
             {
 			    "{C:money}Selling{} {C:attention}Jokers{} gives", 
-				"{C:attention}all{} {C:purple}Poker Hands{} {X:purple,C:white}^^^#1#{} Mult & Chips", 
+				"{C:attention}all{} {C:purple}Poker Hands{} "..may.hyp(3, 'multchips', '^^^#1#').." Chips & Mult", 
 				may.pager(60),
                 "Held copies of {C:dark_edition}Omniversal Catalyst{} give", 
-                "{X:purple,C:white}^^^#2#{} Mult & Chips", 
+                may.hyp(3, 'multchips', '^^^#2#').." Chips & Mult", 
 				may.pager(60),
                 "At {C:attention}the end of round{}, add {C:may_instability}Instability{}", 
 				"to {C:attention}above values{}", 

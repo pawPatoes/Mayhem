@@ -40,46 +40,47 @@ SMODS.Booster:take_ownership('p_spectral_mega_1', {
 	config = {extra = 5, choose = 2}
 })
 
--- Unable to duplicate Fusion Jokers
+-- Spectral Reworks
 
 SMODS.Consumable:take_ownership('c_ankh', {
 	loc_txt = {
 		name = "Ankh", 
 		text = {
-			"{C:attention}Duplicate{} a {C:attention}random{}", 
-			"{C:mult}non-{}{C:dark_edition}Fusion{} {C:attention}Joker{}", 
-			"{C:mult}Destroy{} all {C:attention}other{} {C:mult}non-{}{C:dark_edition}Fusion{} {C:attention}Jokers{}", 
+			"Create {C:attention}#1#{} duplicates of", 
+			"a selected {C:mult}non-{}{C:dark_edition}hidden{} {C:attention}Consumable{}", 
+			"{C:inactive}Ankh excluded, requires room{}", 
 		}
 	}, 
+	config = { extra = { copies = 2 } }, 
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.copies } }
+	end,
 	can_use = function(self, card)
-		for k, v in pairs(G.jokers.cards) do
-			if not v:may_is_fusion() and not (v:gc().rarity == 'may_surreal') then 
-				return may.canuse()
+		for k, v in pairs(G.consumeables.highlighted) do
+			if v ~= card and not v:gc().hidden and not v:gc().no_doe then
+				return #G.consumeables.highlighted <= 2 and (G.consumeables and #G.consumeables.cards < G.consumeables.config.card_limit + ( card.area == G.consumeables and 1 or 0 ))
 			end
 		end 
 		return false 
 	end,
 	use = function(self, card)
-		local targets = {}
-		for k, v in pairs(G.jokers.cards) do
-			if not v:may_is_fusion() and not (v:gc().rarity == 'may_surreal') then 
-				table.insert(targets, v)
+		local other 
+		for k, v in pairs(G.consumeables.highlighted) do
+			if v ~= card then 
+				other = v
 			end
 		end
-		local target = pseudorandom_element(targets, pseudoseed('may_ankh'))
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			local card2 = copy_card(target, nil, nil, nil, nil)
-			card2:add_to_deck()
-			G.jokers:emplace(card2)
-			play_sound('timpani')
-		return true end})) 
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			for k, v in pairs(targets) do
-				if v ~= target then 
-					v:start_dissolve()
+		for i = 1, card.ability.extra.copies do
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+				if #G.consumeables.cards < G.consumeables.config.card_limit then
+					local card2 = copy_card(other, nil, nil, nil, nil)
+					card:juice_up(0.3, 0.5)
+					card2:add_to_deck()
+					G.consumeables:emplace(card2)
+					play_sound('timpani')
 				end
-			end
-		return true end}))
+			return true end})) 
+		end
 	end
 })
 
@@ -176,6 +177,15 @@ SMODS.Joker:take_ownership('j_marble', {
 		}, 
 	},
 	loc_vars = function(self, info_queue, card)
+		if G.GAME and G.GAME.blind then 
+			local count = 0
+			for k, v in pairs(G.playing_cards) do
+				if SMODS.has_enhancement(v, 'm_stone') then
+					count = count + 1
+				end
+			end
+			may.fuse_tip(info_queue, 'bedrock', { count }) 
+		end
 		info_queue[#info_queue + 1] = G.P_CENTERS.m_stone
 	end
 })
@@ -194,14 +204,15 @@ SMODS.Joker:take_ownership('j_stone', {
 		}, 
 	},
 	loc_vars = function(self, info_queue, card)
+		may.fuse_tip(info_queue, 'stones', { (G.GAME.may_stones_destroyed or 0) })
 		info_queue[#info_queue + 1] = G.P_CENTERS.m_stone
 		local amount = 0
-		for k, v in pairs(G.playing_cards or {}) do 
-			if SMODS.has_enhancement(v, 'm_stone') then 
+		for k, v in pairs(G.playing_cards or {}) do
+			if SMODS.has_enhancement(v, 'm_stone') then
 				amount = amount + 1
 			end
-		end 
-		return { card.ability.extra and (type(card.ability.extra) == 'table' and card.ability.extra.chips or false) or self.config.chips or 25, (card.ability.extra and (type(card.ability.extra) == 'table' and card.ability.extra.chips or false) or self.config.chips or 25) * amount }
+		end
+		return { card.ability.extra or self.config.chips or 25, (card.ability.extra or self.config.chips or 25) * amount }
 	end
 })
 

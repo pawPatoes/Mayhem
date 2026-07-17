@@ -8,12 +8,11 @@ SMODS.Voucher {
 		name = "{C:tarot}Endless Mode{}",
 		text = {
 		    {
-			    "Begin {C:purple,E:1}Endless Mode{}", 
+			    "{C:may_instability}Irreversibly{} begin {C:purple,E:1}Endless Mode{}", 
 				may.pager(), 
 				"{X:purple,C:white}Endless{} content may now {C:green}appear{}", 
 				"{C:green}New{} {C:dark_edition}systems{} are introduced", 
 				"Game {C:mult}difficulty{} is {C:mult}increased{}", 
-				"You are {C:mult}not{} able to {C:mult}exit{} {C:purple,E:1}Endless Mode{}",
 		    }, 
 		    {
 			    "Appears in {C:green}every shop{}",
@@ -29,7 +28,7 @@ SMODS.Voucher {
 	may_unsellable_voucher = true,
 	special_tier = {'endless', 1},
     set_card_type_badge = function(self, card, badges)
-		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_transcendent , nil, 1.2)
+		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_huge_operator_alt , nil, 1.2)
 	end,
 	redeem = function(self, card)
 		G.GAME.may_endless_mode = true
@@ -73,7 +72,7 @@ SMODS.Voucher {
 	endless = true,
 	special_tier = {'reconfigure', 1},
     set_card_type_badge = function(self, card, badges)
-		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_transcendent , nil, 1.2)
+		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_huge_operator_alt , nil, 1.2)
 	end,
 	special_voucher_behavior = function(self)
 		return G.GAME.may_endless_mode and G.GAME.round % 15 == 0
@@ -107,7 +106,7 @@ SMODS.Voucher {
 	endless = true,
 	special_tier = {'astronomy', 1},
     set_card_type_badge = function(self, card, badges)
-		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_transcendent , nil, 1.2)
+		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_huge_operator_alt , nil, 1.2)
 	end,
 	special_voucher_behavior = function(self)
 		return G.GAME.may_endless_mode and G.GAME.round % 9 == 0 and may.get_highest_special_voucher_tier('astronomy') == 0
@@ -124,7 +123,7 @@ SMODS.Voucher {
 		text = {
 		    {
 			    "When a {C:purple}Poker Hand{} is {C:planet}leveled up{},", 
-				"it gains {X:attention,C:white}#1#{} of the {C:purple}Mult & Chips{}", 
+				"it gains {X:attention,C:white}#1#{} of the {C:purple}Chips & Mult{}", 
 				"of {C:attention}most played{} {C:purple}Poker Hand{}", 
 				"{C:inactive}Ignores most played Poker Hand{}"
 		    }, 
@@ -137,12 +136,12 @@ SMODS.Voucher {
 	pos = { x = 2, y = 1 },
 	soul_pos = { x = 3, y = 1 }, 
 	atlas = 'misc_voucher',
-	cost = 100,
+	cost = 75,
 	unlocked = true,
 	endless = true,
 	special_tier = {'astronomy', 2},
     set_card_type_badge = function(self, card, badges)
-		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_transcendent , nil, 1.2)
+		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_huge_operator_alt , nil, 1.2)
 	end,
 	loc_vars = function(self, info_queue, card)
 		return { vars = { '(level increase)%' } }
@@ -166,7 +165,7 @@ SMODS.Voucher {
 		name = "Astronomy {C:mult}III{}",
 		text = {
 		    {
-			    "{C:purple}Poker Hands{} gain {X:purple,C:white}#1#(1.1XL){} Chips & Mult ", 
+			    "{C:purple}Poker Hands{} gain "..may.hyp(4, 'multchips', "#1#(1.1XL)").." Chips & Mult ", 
 			    "when {C:planet}leveled up{} by {C:chips}hand-specific{} {C:planet}Planet Cards{}", 
 				"{C:planet}L{} is the {C:planet}level increase{}; the {C:purple}Chips & Mult{} modification", 
 				"does {C:mult}not{} {C:attention}stack{} regularly per {Cplanet}level{}", 
@@ -185,12 +184,12 @@ SMODS.Voucher {
 	pos = { x = 4, y = 1 },
 	soul_pos = { x = 5, y = 1 }, 
 	atlas = 'misc_voucher',
-	cost = 200,
+	cost = 150,
 	unlocked = true,
 	endless = true,
 	special_tier = {'astronomy', 3},
     set_card_type_badge = function(self, card, badges)
-		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_transcendent , nil, 1.2)
+		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_huge_operator_alt , nil, 1.2)
 	end, 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "may_global_op_tutorial", set = "Other" }
@@ -223,7 +222,7 @@ SMODS.Voucher {
 				may.pager(), 
 				"If the {C:purple}Poker Hand's{} {C:planet}level{}", 
 				"is {C:green}above{} or {C:attention}equal{} to the {C:chips}average{},", 
-				"it will gain {X:purple,C:white}#1#(2XL){} Chips & Mult", 
+				"it will gain "..may.hyp(4, 'multchips', "#1#(2XL)").." Chips & Mult", 
 				"{C:planet}L{} is the {C:planet}level increase{}; the {C:purple}Chips & Mult{} modification", 
 				"does {C:mult}not{} {C:attention}stack{} regularly per {Cplanet}level{}", 
 				may.pager(), 
@@ -241,12 +240,12 @@ SMODS.Voucher {
 	pos = { x = 2, y = 2 },
 	soul_pos = { x = 3, y = 2 }, 
 	atlas = 'misc_voucher',
-	cost = 400,
+	cost = 250,
 	unlocked = true,
 	endless = true,
 	special_tier = {'astronomy', 4},
     set_card_type_badge = function(self, card, badges)
-		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_transcendent , nil, 1.2)
+		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_huge_operator_alt , nil, 1.2)
 	end, 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "may_global_op_tutorial", set = "Other" }
@@ -307,12 +306,12 @@ SMODS.Voucher {
 	pos = { x = 2, y = 2 },
 	soul_pos = { x = 3, y = 2 }, 
 	atlas = 'misc_voucher',
-	cost = 750,
+	cost = 400,
 	unlocked = true,
 	endless = true,
 	special_tier = {'astronomy', 5},
     set_card_type_badge = function(self, card, badges)
-		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_transcendent , nil, 1.2)
+		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_huge_operator_alt , nil, 1.2)
 	end, 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
@@ -357,7 +356,7 @@ SMODS.Voucher {
 	endless = true,
 	special_tier = {'astronomy', 6},
     set_card_type_badge = function(self, card, badges)
-		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_transcendent , nil, 1.2)
+		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_huge_operator_alt , nil, 1.2)
 	end, 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_black_hole
@@ -393,12 +392,12 @@ SMODS.Voucher {
 	pos = { x = 2, y = 2 },
 	soul_pos = { x = 3, y = 2 }, 
 	atlas = 'misc_voucher',
-	cost = 1200,
+	cost = 600,
 	unlocked = true,
 	post_transcendent = true,
 	special_tier = {'astronomy', 7},
     set_card_type_badge = function(self, card, badges)
-		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_transcendent , nil, 1.2)
+		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_huge_operator_alt , nil, 1.2)
 	end, 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "may_global_op_tutorial", set = "Other" }
@@ -439,7 +438,7 @@ SMODS.Voucher {
 	post_transcendent = true,
 	special_tier = {'astronomy', 8},
     set_card_type_badge = function(self, card, badges)
-		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_transcendent , nil, 1.2)
+		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_huge_operator_alt , nil, 1.2)
 	end, 
 	calculate = function(self, card, context)
 		if context.level_up_hand and to_big(context.amount) < to_big(0) then
@@ -479,12 +478,12 @@ SMODS.Voucher {
 	pos = { x = 2, y = 2 },
 	soul_pos = { x = 3, y = 2 }, 
 	atlas = 'misc_voucher',
-	cost = 1000,
+	cost = 900,
 	unlocked = true,
 	post_transcendent = true,
 	special_tier = {'astronomy', 9},
     set_card_type_badge = function(self, card, badges)
-		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_transcendent , nil, 1.2)
+		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_huge_operator_alt , nil, 1.2)
 	end, 
 	loc_vars = function(self, info_queue, card)
 		return { vars = {  may.global_op() } }
@@ -531,12 +530,12 @@ SMODS.Voucher {
 	pos = { x = 2, y = 2 },
 	soul_pos = { x = 3, y = 2 }, 
 	atlas = 'misc_voucher',
-	cost = 1650,
+	cost = 1250,
 	unlocked = true,
 	post_transcendent = true,
 	special_tier = {'astronomy', 10},
     set_card_type_badge = function(self, card, badges)
-		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_transcendent , nil, 1.2)
+		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_huge_operator_alt , nil, 1.2)
 	end, 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "may_global_op_tutorial", set = "Other" }
@@ -567,26 +566,29 @@ SMODS.Voucher {
             {
 			    "{C:purple}Poker hands{} gain {X:mult,C:white}X1.2{} Mult and {C:chips}+200{} Chips when",
 			    "{C:planet}leveled up{}",
-			    "{C:money}+1 Interest{}",
-			    "{C:attention}+2 Joker Slots{}",
+			    "{C:money}+1{} Interest",
+			    "{C:attention}+2{} Joker Slots",
 			    "{C:attention}+1{} {C:green}Voucher{} slot in {C:attention}shop{}"
             }, 
             {
                 "Can appear regularly after all {C:green}Vanilla{}", 
                 "{C:attention}Tier 1{} {C:green}Vouchers{} have been", 
-                "{C:money}redeemed{} as well as {C:attention}previous{}", 
-                "{C:may_interdimensional}Transcend Vouchers{}"
+                "{C:money}redeemed{}"
             } 
 		}
 	},
 	pos = { x = 0, y = 0 },
     soul_pos = { x = 2, y = 0, extra = { x = 1, y = 0} }, 
 	atlas = 'misc_voucher',
-	cost = 30,
+	cost = 90,
 	unlocked = true,
     endless = true,
+	loc_vars = function(self, info_queue, card)
+		may.tut_tip(info_queue, 'interest')
+		return 
+	end, 
     set_card_type_badge = function(self, card, badges)
-		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_transcendent , nil, 1.2)
+		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_huge_operator_alt , nil, 1.2)
 	end,
 	requires = {
 		'v_overstock_norm',
@@ -618,7 +620,7 @@ SMODS.Voucher {
 	end,
 	calculate = function(self, card, context)
 		if context.level_up_hand and to_big(context.amount) > to_big(0) then
-			may.hand_multchips(card, context.hand, context.instant, {-1, 200 * context.amount}, {1.2 ^ context.amount})
+			may.hand_multchips(card, context.hand, context.instant, {-1, 200 * context.amount}, {0, 1.2 ^ context.amount})
 		end
 	end, 
     in_pool = function(self, args)
@@ -633,9 +635,9 @@ SMODS.Voucher {
 		text = {
             {
 			    "{C:attention}+1 card{}, {C:green}Voucher{} and {C:attention}Booster{} slot in {C:attention}shop{}",
-			    "{C:money}-1 Reroll Price{}",
-			    "{C:attention}+1{} {C:chips}Hand{}, {C:mult}Discard{}, {C:attention}Hand Size{} and {C:attention}Card Selection Limit{}",
-			    "{C:attention}+3 Consumable Slots{}", 
+			    "{C:money}-1{} Reroll Price",
+			    "{C:attention}+1{} {C:chips}Hand{}, {C:mult}Discard{}, {C:attention}Hand Size{} and {C:purple}Card Selection Limit{}",
+			    "{C:attention}+3{} Consumable Slots", 
             }, 
             {
                 "Can appear regularly after all {C:green}Vanilla{}", 
@@ -648,11 +650,11 @@ SMODS.Voucher {
 	pos = { x = 3, y = 0 },
     soul_pos = { x = 5, y = 0, extra = { x = 4, y = 0} },  
 	atlas = 'misc_voucher',
-	cost = 60,
+	cost = 180,
 	unlocked = true,
     endless = true, 
     set_card_type_badge = function(self, card, badges)
-		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_transcendent , nil, 1.2)
+		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_huge_operator_alt , nil, 1.2)
 	end,
 	requires = {
 		'v_overstock_plus',

@@ -355,7 +355,7 @@ SMODS.Consumable {
 	key = 'hydra',
 	pos = { x = 3, y = 1 },
 	atlas = 'planet',
-	config = { extra = { planets = 4 } },
+	config = { extra = { planets = 3 } },
 	no_ring_display = true, 
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Plutonian Moon', get_type_colour(self or card.config, card), nil, 1.2)
@@ -883,7 +883,7 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'Deimos',
 		text = {
-			"{C:mult}Destroy{} all {C:attention}Stone Cards{} in {C:attention}full deck{}",
+			"{C:mult}Destroy{} all {C:attention}Suitless{} or {C:attention}Rankless{} cards in {C:attention}full deck{}",
 			"{X:chips,C:white}+X#1#{} Chips {C:attention}per{} destroyed {C:attention}card{} to",
 			"{C:attention}most played{} {C:purple}Poker Hand{}",
 			"{C:inactive}Will give #2#{} {X:chips,C:white}X#3#{} {C:inactive}Chips{}",
@@ -891,7 +891,7 @@ SMODS.Consumable {
 	},
 	can_use = function(self, card)
 		for k, v in pairs(G.playing_cards or {}) do
-			if SMODS.has_enhancement(v, "m_stone") then
+			if SMODS.has_no_rank(v) or SMODS.has_no_suit(v) then
 				return may.canuse()
 			end
 		end
@@ -899,7 +899,13 @@ SMODS.Consumable {
 	end,
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS.m_stone
-		return { vars = { card.ability.extra.Xchips, may.favhand(), 1 + (card.ability.extra.Xchips * card.ability.extra.cards), } }
+		local amount = 0
+		for k, v in pairs(G.playing_cards or {}) do	
+			if SMODS.has_no_rank(v) or SMODS.has_no_suit(v) then
+				amount = amount + 1
+			end
+		end
+		return { vars = { card.ability.extra.Xchips, may.favhand(), 1 + (card.ability.extra.Xchips * amount), } }
 	end,
 	use = function(self, card)
 		local found = 0
@@ -942,8 +948,8 @@ SMODS.Consumable {
 			return true end}))
 		end]]
 		for k, v in pairs(G.playing_cards) do	
-			if SMODS.has_enhancement(v, "m_stone") then
-				if (not next(SMODS.find_card('j_may_cement_joker'))) and (not next(SMODS.find_card('j_may_rocco_pfilosofia'))) and (not next(SMODS.find_card('j_may_infinity_stone'))) and (not next(SMODS.find_card('j_may_zodium_calamitas'))) then 
+			if SMODS.has_no_rank(v) or SMODS.has_no_suit(v) then
+				if (not next(SMODS.find_card('j_may_cement_joker'))) and (not next(SMODS.find_card('j_may_eternity_stone'))) and (not next(SMODS.find_card('j_may_rock_of_paramountcy'))) and (not next(SMODS.find_card('j_may_zodium_calamitas'))) then 
 					SMODS.destroy_cards({v})
 				end
 				found = found + 1
@@ -975,15 +981,6 @@ SMODS.Consumable {
 			may.ch()
 		end
 	end,]]
-	update = function(self, card, dt)
-		local count = 0
-		for k, v in pairs(G.playing_cards or {}) do
-			if SMODS.has_enhancement(v, "m_stone") then
-				count = count + 1
-			end
-		end
-		card.ability.extra.cards = count
-	end,
 	in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards or {}) do
 			if SMODS.has_enhancement(v, "m_stone") then

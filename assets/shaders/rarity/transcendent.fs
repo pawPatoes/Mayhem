@@ -90,8 +90,7 @@ vec4 effect(vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords)
     col += hueCol * glow;
     col  = clamp(col, 0.0, 1.0);
 
-    float brightness = dot(colour.rgb, vec3(0.299, 0.587, 0.114));
-    col *= brightness;
+    col *= colour.rgb;
 
     return vec4(col, colour.a);
 }

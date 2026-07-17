@@ -65,6 +65,14 @@ position = "at"
 payload = '''{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.HAND_LEVELS[math.floor(to_number(math.min(G.C.MAX_HAND_LEVEL_COLOR, G.GAME.hands[handname].level)))], minw = 1.5, outline = 0.8, outline_colour = G.C.WHITE}, nodes={'''
 match_indent = true
 
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.HAND_LEVELS[math.min(7, G.GAME.hands[handname].level)], minw = 1.5, outline = 0.8, outline_colour = G.C.WHITE}, nodes={'''
+position = "at"
+payload = '''{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.HAND_LEVELS[math.floor(to_number(math.min(G.C.MAX_HAND_LEVEL_COLOR, G.GAME.hands[handname].level)))], minw = 1.5, outline = 0.8, outline_colour = G.C.WHITE}, nodes={'''
+match_indent = true
+
 # Misc Poker Hand values
 [[patches]]
 [patches.pattern]
@@ -86,9 +94,9 @@ position = "before"
 payload = '''
 	if text then
 		if to_big(G.GAME.hands[text].score or 0) > to_big(0) then
+		card_eval_status_text(G.HUD:get_UIE_by_ID('chip_UI_count'), 'extra', nil, nil, nil, { message = (to_big(G.GAME.hands[text].score) >= to_big(0) and '+' or '-')..number_format(math.abs(G.GAME.hands[text].score)), colour = may.C.score, delay = 0.45, sound = 'may_addscore'}) 
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function() 
 				G.GAME.chips = to_big(G.GAME.chips):add(G.GAME.hands[text].score)
-				card_eval_status_text(G.HUD:get_UIE_by_ID('chip_UI_count'), 'extra', nil, nil, nil, { message = (to_big(G.GAME.hands[text].score) >= to_big(0) and '+' or '-')..number_format(math.abs(G.GAME.hands[text].score)), colour = may.C.score, delay = 0.45, sound = 'may_addscore'})
 			return true end}))
 		end
 	end

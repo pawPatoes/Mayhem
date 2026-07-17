@@ -47,7 +47,7 @@ SMODS.Joker {
 		name = "Lil' Prince",
 		text = {
             {
-			    "{X:mult,C:white}^#1#{} Mult if played",
+			    may.hyp(1, 'mult', '^#1#').." Mult if played",
 			    "hand is {C:attention}Royal Flush{}",
 			    "{C:attention}otherwise{} hand will {C:mult}not score{}",
             }, 
@@ -671,7 +671,7 @@ SMODS.Joker {
 		name = 'Collector\'s Edition',
 		text = {
 			{
-				"{X:mult,C:white}^#1#{} Mult if",
+				may.hyp(1, 'mult', '^#1#').." Mult if",
 				"{C:attention}this Joker{} has an {C:dark_edition}Edition{}",
 			},
 			may.add_fusion_text('Diskus Kollectum', 'Diskus Dominus', may.get_condition('diskus_dominus'))
@@ -836,6 +836,7 @@ SMODS.Joker {
 		'planet'
 	}, 
 	loc_vars = function(self, info_queue, card)
+		may.fuse_tip(info_queue, 'world_destroyer', { may.ctu('Planet') })
         local amount = 0
         if G.consumeables then
             for k, v in pairs(G.consumeables.cards) do 
@@ -984,7 +985,7 @@ SMODS.Joker {
 			{
 				"If played hand has {C:attention}3 or less{} cards,",
 				"played {C:hearts}Hearts{} have a {C:green}#1# in #2#{} chance",
-				"to give {X:mult,C:white}^#3#{} Mult when scored",
+				"to give "..may.hyp(1, 'mult', '^#3#').." Mult when scored",
 			},
 			{
 				"{C:inactive,E:1}Art & idea by _TeKKen_{}"
@@ -1444,6 +1445,15 @@ SMODS.Joker {
 	},
 	config = { extra = { repetitions = 3 } },
 	loc_vars = function(self, info_queue, card)
+		if G.GAME and G.GAME.blind then
+			local count = 0
+			for k, v in pairs(G.playing_cards) do
+				if v:get_id() == 14 then
+					count = count + 1
+				end
+			end
+			may.fuse_tip(info_queue, 'acum', { count })
+		end
 		return { vars = { card.ability.extra.repetitions } }
 	end,
 	rarity = 3,
@@ -1464,6 +1474,97 @@ SMODS.Joker {
 					repetitions = card.ability.extra.repetitions,
 					card = card,
 				}
+			end
+		end
+	end
+}
+
+SMODS.Joker {
+	key = 'anniversary_cake',
+	loc_txt = {
+		name = 'Anniversary Cake',
+		text = {
+			{
+                "At the {C:attention}end of round{}, if a {B:1,C:white}#1#{} {C:attention}Joker{} is owned,", 
+				"this Joker {C:green}creates{} another random {B:1,C:white}#1#{} {C:attention}Joker{}", 
+				"and {C:green}upgrades{} the listed {C:attention}rarities{},", 
+				"{C:mult}otherwise{} it will {C:mult}self destruct{}", 
+				may.pager(), 
+                "When this Joker {C:green}creates{} a {X:legendary,C:white}Legendary{} {C:attention}Joker{},", 
+				"it {C:mult}self destructs{} and creates", 
+				"{C:attention}#2#{} random {C:dark_edition}Negative{} {C:attention}consumables{}", 
+				may.pager(), 
+                "{C:inactive}Does not require room, excludes self{}", 
+                "{C:inactive}Common -> Uncommon -> Rare -> Epic -> Legendary{}", 
+			},
+			{
+				"{C:inactive,E:1}Art by 2Much{}"
+			}
+		}
+	},
+	config = { extra = { consumables = 10, rarity = 1 } },
+	pos = { x = 1, y = 7 },
+	cost = 12,
+	rarity = 3,
+	atlas = 'joker2',
+	blueprint_compat = false,
+	demicoloncompat = false,
+	attributes = {
+		'food', 
+		'generation', 
+	}, 
+    loc_vars = function(self, info_queue, card)
+		local rarities = {'Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'}
+		local colors = {'Common', 'Uncommon', 'Rare', may.epic_key, 'Legendary'}
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
+		return { vars = { rarities[card.ability.extra.rarity], card.ability.extra.consumables, colours = { G.C.RARITY[colors[card.ability.extra.rarity]] } } }
+    end,
+	add_to_deck = function(self, card, from_debuff)
+		if not from_debuff then
+			G.E_MANAGER:add_event(Event({func = function()
+				play_sound('may_cake_spawn')
+			return true end})) 
+		end
+	end, 
+    calculate = function(self, card, context)
+		if context.end_of_round and context.game_over == false and context.main_eval then
+			local rarities = {1, 2, 3, may.epic_key, 4}
+			local found
+			for k, v in pairs(G.jokers.cards) do 
+				if v ~= card and v:gc().rarity == rarities[card.ability.extra.rarity] then
+					found = true 
+					break
+				end
+			end
+			if found then
+				local rarity_amounts = { 0.01, 0.8, 1, may.epic_key, nope }
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+					local card2 = create_card('Joker', G.jokers, card.ability.extra.rarity == 5, rarity_amounts[card.ability.extra.rarity], nil, true, nil, 'anniversary_cake')
+					G.jokers:emplace(card2)
+					card2:add_to_deck()
+					card2:juice_up(0.5, 0.3)
+					if card.ability.extra.rarity == 5 then 
+						play_sound('may_bundle')
+						for i = 1, card.ability.extra.consumables do
+							local card3 = create_card('Consumable', G.consumeables, nil, nil, nil, true, may.random_consumable('may_anniversary_cake', nil, nil, G.P_CENTER_POOLS.Consumeable, true).key, 'anniversary_cake')
+							card3:set_edition({negative = true}, false, false)
+							G.consumeables:emplace(card3)
+							card3:add_to_deck()
+						end
+						card:start_dissolve()
+					end
+					card.ability.extra.rarity = card.ability.extra.rarity + 1
+					G.ROOM.jiggle = G.ROOM.jiggle + 1
+				return true end}))
+				if context.rarity ~= 5 then
+					card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Happy Birthday!", colour = may.C.score, delay = 0.45, sound = 'may_cake_activate'})
+				end
+			else
+                G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+					play_sound('may_cake_destroy')
+					card:start_dissolve()
+					G.ROOM.jiggle = G.ROOM.jiggle + 1
+				return true end}))			
 			end
 		end
 	end

@@ -154,7 +154,7 @@ Game.main_menu = function(change_context)
 		may.display_notification('smods', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
     end 
 	-- Config notice 
-	if not may.conf.notices.config and not first_time then
+	if not may.conf.notices.config and string.sub(may.version, 1, 5) == '1.4.0' then
 		may.display_notification('config', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
 		may.conf.notices.config = true 
 		G:save_settings()

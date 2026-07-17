@@ -10,7 +10,7 @@ SMODS.Joker {
 				"{C:attention}random{} {C:dark_edition}Editions{} to all {C:attention}cards held in hand{}",
 				"{C:attention}with{} an {C:dark_edition}Enhancement{} {C:attention}or{} {C:dark_edition}Seal{}",
 				may.pager(),
-				"Played {C:attention}cards{} with {C:dark_edition}Editions{} give {X:chips,C:white}^#1#{} Chips",
+				"Played {C:attention}cards{} with {C:dark_edition}Editions{} give "..may.hyp(1, 'chips', '^#1#').." Chips"
 			},
             may.add_fusion_text('Aurora Rave', 'Planet Ibiza', may.get_condition('planet_ibiza')), 
 			{
@@ -27,6 +27,13 @@ SMODS.Joker {
 	soul_pos = { x = 8, y = 3 },
 	config = { extra = { Echip = 1.5 } },
 	loc_vars = function(self, info_queue, card)
+		local count = 0
+		for k, v in pairs(G.playing_cards or {}) do
+			if not SMODS.has_enhancement(v, 'c_base') then
+				count = count + 1
+			end
+		end 
+		may.fuse_tip(info_queue, 'wizard_university', { count })
 		return { vars = { card.ability.extra.Echip } }
 	end,
 	cost = 100,
@@ -83,7 +90,7 @@ SMODS.Joker {
 				"When {C:attention}Blind{} is {C:attention}selected{},",
 				"create {C:attention}#1#{} {C:dark_edition}Negative{} copies of {C:purple}The Wheel of Fortune{}",
 				may.pager(),
-				"{X:mult,C:white}+^#2#{} Mult per {C:attention}Joker{} with an {C:dark_edition}Edition{}",
+				may.hyp(1, 'mult', '+^#2#').." Mult per {C:attention}Joker{} with an {C:dark_edition}Edition{}",
 				may.pager(), 
 				"{C:inactive}Currently ^#3# Mult{}"
 			},
@@ -155,14 +162,14 @@ SMODS.Joker {
 		name = {'Bedrock Joker', "{C:inactive,s:0.5}Marble Joker + Granite Joker{}"},
 		text = {
 			{
-				"{X:chips,C:white}^#1#{} Chips",
+				may.hyp(1, 'chips', '^#1#').." Chips",
 				may.pager(),
                 "When {C:attention}Blind{} is {C:attention}selected{},", 
 				"create a {C:dark_edition}Negative{} copy of {C:spectral}Medusa{}",
 				may.pager(),
                 "After scoring, {C:mult}destroy{} all", 
 				"{C:dark_edition}Stone Cards{} {C:attention}held in hand{} and gain", 
-				"{X:chips,C:white}+^#2#{} Chips per destroyed card",
+				may.hyp(1, 'chips', '+^#2#').." Chips per destroyed card",
 			},
             may.add_fusion_text('Stone Joker', 'Bismuth Joker', may.get_condition('bismuth_joker')), 
 			{
@@ -186,6 +193,7 @@ SMODS.Joker {
 		'scaling'
 	}, 
 	loc_vars = function(self, info_queue, card)
+		may.fuse_tip(info_queue, 'stones', { (G.GAME.may_stones_destroyed or 0) })
         info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_medusa
 		return { vars = { card.ability.extra.Echip, tostring(card.ability.extra.Echip_gain) } }

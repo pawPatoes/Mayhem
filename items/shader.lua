@@ -41,6 +41,7 @@ may.shaders = {
 	alpha_effect = 'rarity/misc/alpha_effect.fs', 
 	
 	semihologram = 'semihologram.fs', 
+	mayhem = 'mayhem.fs'
 }
 
 for k, v in pairs(may.shaders) do
@@ -67,7 +68,7 @@ SMODS.ScreenShader({
     key = 'transcendence_crt',
     path = 'screen/transcendence_crt.fs',
     should_apply = function()
-        return G.GAME and G.GAME.blind and (may.transcendence or 0) > 0 and may.conf.TrEffects >= 3 and may.should_do_transcendence()
+        return G.GAME and G.GAME.blind and (may.transcendence or 0) > 0 and may.conf.transcendence.effects > 3 and may.should_do_transcendence()
     end,
     send_vars = function(self)
         return {

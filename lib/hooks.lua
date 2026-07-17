@@ -112,14 +112,6 @@ function Game:update(dt)
 	end
 end
 
-local vanf_scs = SMODS.calculate_context
-function SMODS.calculate_context(...)
-	if G.GAME and G.GAME.blind then 
-		may.update_fusion_conditions()
-	end
-	return vanf_scs(...)
-end
-
 local vanf_suph = SMODS.upgrade_poker_hands
 function SMODS.upgrade_poker_hands(args)
 	if type(args.hands) ~= 'table' then 
@@ -317,6 +309,10 @@ end
 
 local vanf_csc2 = Card.sell_card
 function Card:sell_card()
+	if self.gc and self:gc().indestructible then 
+		card_eval_status_text(self, 'extra', nil, nil, nil, { message = {'Nope!'}, colour = G.C.DARK_EDITION, delay = 0.45, sound = 'cancel' })
+		return
+	end
 	vanf_csc2(self)
 	if self.ability.consumeable and not (self:gc().hidden or self:gc().no_grc or self:gc().no_doe) then
 		G.GAME.may_last_consumable_sold = self:gc().key
@@ -538,6 +534,11 @@ function SMODS.injectItems(...)
 			v.bordertextbg_colour = v.bordertextbg_colour or HEX("FFFFFF")
 			v.set_card_type_badge = v.set_card_type_badge or may.paradoxical_badge
 		end
+		if v.indestructible then
+			v.can_sell = function(self, card, context)
+				return false
+			end
+		end
 	end
 end
 
@@ -550,4 +551,28 @@ function create_card(_type, area, legendary, _rarity, skip_materialize, soulable
 		end
 	end
 	return card
+end
+
+-- man
+local vanf_srus = SMODS.resolve_ui_shaders
+function SMODS.resolve_ui_shaders(node, shader, send)
+	if not node then return end
+	return vanf_srus(node, shader, send)
+end
+
+-- Thanks to fokuto
+local vamf_cmb = SMODS.create_mod_badges
+SMODS.create_mod_badges = function(obj, badges)
+    local before = #badges
+    vamf_cmb(obj, badges)
+
+    if obj and obj.mod and obj.mod.id == "mayhem" then
+        for i = before + 1, #badges do
+            local badge = badges[i]
+            local box = badge.nodes and badge.nodes[1]
+            if box and box.config then
+                box.config.shader = "may_mayhem"
+            end
+        end
+    end
 end
