@@ -871,33 +871,7 @@ end
 
 -- Spawns in applicable Special Vouchers
 function may.handle_special_vouchers()
-	--[[round = round or G.GAME.round
-	if G.GAME.may_endless_mode then
-		if round % 1 == 0 then
-			if not may.has_card('v_may_astronomy_'..(may.get_highest_special_voucher_tier('astronomy') + 1)) then
-				SMODS.add_voucher_to_shop('v_may_astronomy_'..(may.get_highest_special_voucher_tier('astronomy') + 1))
-				G.E_MANAGER:add_event(Event({func = function()
-				    play_sound('may_positive')
-				return true end}))
-			end
-		end
-		if round % 15 == 0 then
-			if not may.has_card('v_may_reconfigure') then
-			    SMODS.add_voucher_to_shop('v_may_reconfigure')
-			    G.E_MANAGER:add_event(Event({func = function()
-					play_sound('may_positive')
-			    return true end}))
-			end
-		end
-	elseif to_big(G.GAME.round_resets.ante) >= to_big(9) then
-		if not may.has_card('v_may_endless_mode') then
-			SMODS.add_voucher_to_shop('v_may_endless_mode')
-		    G.E_MANAGER:add_event(Event({func = function()
-				play_sound('may_positive')
-            return true end}))
-		end
-	end]] 
-	for k, v in pairs(G.P_CENTER_POOLS.Voucher) do 
+	for k, v in pairs(G.P_CENTERS) do 
 		if v.special_voucher_behavior then 
 			local spawn, sound, func, duplicates = v.special_voucher_behavior(v) 
 			if spawn and (duplicates or not may.has_card(v.key)) then
@@ -947,7 +921,7 @@ function may.rep_arrow(num1, arrow, num2, amt)
 		for i = 1, math.min(to_number(amt), 1000) do
 			num1 = to_big(num1):arrow(arrow, num2)
 		end
-		return num1
+		return to_big(num1):normalize()
 	end
 end
 

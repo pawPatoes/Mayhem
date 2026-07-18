@@ -126,10 +126,10 @@ function SMODS.upgrade_poker_hands(args)
 	    end
 		local pre_astronomy = (args.level_up or 1)
 	    if #SMODS.find_card('v_may_astronomy_1') ~= 0 and (args.level_up or 1) > 0 then
-		    args.level_up = (args.level_up or 1) * (2 ^ #SMODS.find_card('v_may_astronomy_1'))
+		    args.level_up = to_big(args.level_up or 1):mul(to_big(2):pow(#SMODS.find_card('v_may_astronomy_1'))):normalize()
 	    end
 	    if #SMODS.find_card('v_may_astronomy_3') ~= 0 and (hand == may.favhand() or may.has_card('v_may_astronomy_5')) and (args.level_up or 1) > 0 then
-		    args.level_up = args.level_up * (4 ^ #SMODS.find_card('v_may_astronomy_3'))
+		    args.level_up = to_big(args.level_up or 1):mul(to_big(4):pow(#SMODS.find_card('v_may_astronomy_3'))):normalize()
 	    end
 		if #SMODS.find_card('v_may_astronomy_4') ~= 0 and (args.level_up or 1) > 0 then
 			local avg = 0
@@ -142,17 +142,18 @@ function SMODS.upgrade_poker_hands(args)
 			end
 			avg = avg / num
 			if G.GAME.hands[args.hands[1]].level < avg then
-				args.level_up = (args.level_up or 1) * (5 ^ #SMODS.find_card('v_may_astronomy_4'))
+				args.level_up = to_big(args.level_up or 1):mul(to_big(5):pow(#SMODS.find_card('v_may_astronomy_4'))):normalize()
 			end
 		end
 	    if #SMODS.find_card('v_may_astronomy_6') ~= 0 and (args.level_up or 1) > 0 then
-		    args.level_up = (args.level_up or 1) * (50 ^ #SMODS.find_card('v_may_astronomy_6'))
+		    args.level_up = to_big(args.level_up or 1):mul(to_big(50):pow(#SMODS.find_card('v_may_astronomy_6'))):normalize()
 	    end 
 		if #SMODS.find_card('v_may_astronomy_9') ~= 0 and (args.level_up or 1) > 0 then
-		    args.level_up = (args.level_up or 1) ^ ((1 + (G.GAME.hands[args.hands[1]].played * 0.025)) ^ #SMODS.find_card('v_may_astronomy_9'))
+			-- puta meu vida de Amulet
+		    args.level_up = to_big(args.level_up or 1):pow(to_big(1 + (G.GAME.hands[args.hands[1]].played * 0.025)):pow(#SMODS.find_card('v_may_astronomy_9'))):normalize()
 	    end
 		if #SMODS.find_card('v_may_astronomy_10') ~= 0 and (args.level_up or 1) > 0 then
-		    args.level_up = (args.level_up or 1) * (may.global_op() ^ ((pre_astronomy ^ G.GAME.hands[args.hands[1]].played) * 5))
+		    args.level_up = to_big(args.level_up or 1):mul(to_big(may.global_op()):pow((to_big(pre_astronomy):pow(G.GAME.hands[args.hands[1]].played):mul(5)))):normalize()
 			ast10_money = pre_astronomy * G.GAME.hands[args.hands[1]].played
     	end
 	end
@@ -349,7 +350,7 @@ end
 local vanf_ed = ease_dollars
 function ease_dollars(mod, instant)
 	if to_big(mod) == to_big(0) then instant = true end
-	mod = mod * (G.GAME.may_money_multiplier or 1)
+	mod = (mod or 0) * (G.GAME.may_money_multiplier or 1)
     vanf_ed(mod, instant)
 end
 

@@ -150,7 +150,7 @@ may.setting_tips = {
 		"If enabled, obtaining a {C:dark_edition}Fusion{} {C:attention}Joker{} will start a round {C:attention}countdown{}", 
 		"depending on its {C:attention}rarity{}. When the {C:attention}countdown{} {C:mult}finishes{},", 
 		"all {C:attention}Blind Sizes{} will be {C:mult}increased{} {C:dark_edition,E:1}drastically{} based on", 
-		"the {C:attention}Jokers rarity{}. This {C:chips}stacks{} with multiple {C:attention}Jokers{}."
+		"the {C:attention}Joker's rarity{}. This {C:chips}stacks{} with multiple {C:attention}Jokers{}"
 	}, 
 	reroll_price_punishment = {
 		"If enabled, {C:may_prismatic,E:1}Prismatic{} {C:dark_edition}Fusion Scaling{} will be immediately", 
@@ -169,7 +169,6 @@ may.setting_tips = {
 	
 	menu_music = {
 		"Changes the {C:tarot}theme{} that plays on the {C:chips}main menu{}", 
-		"{C:dark_edition}AUTO{}: {C:mult}Currently non-functional.{} Chooses the {C:attention}default{} {C:may_col_mayhem_gradient,E:1}Mayhem{} theme", 
 		"{C:attention}DEFAULT{}: Uses the default {C:attention,E:1}Balatro{} {C:tarot}theme{} or the {C:tarot}theme{} of another {C:purple}mod{}", 
 		"with {C:mult}lesser{} {C:chips}priority{}"
 	}, 
@@ -207,19 +206,6 @@ SMODS.current_mod.extra_tabs = function()
 				label = 'General', 
 				tab_definition_function = function()
 					return {n = G.UIT.ROOT, config = {align = 'cm',minw = 8,minh = 4,r = .1,padding = .1,colour = G.C.BLACK}, nodes = {
-						--[[{n=G.UIT.R, config={align = "cm"}, nodes={
-							{n = G.UIT.R, config = { align = "c", padding = 0 }, nodes = {
-								create_option_cycle({
-									label = "Mode",
-									scale = 1.2,
-									w = 8,
-									options = {"Mayhem", "Eternum"},
-									opt_callback = 'may_upd_mode',
-									current_option = may.conf.Mode,
-									on_demand_tooltip = { text = may.setting_tips.mode } 
-								})
-							}},
-						}},]]
 						{n=G.UIT.R, config={align = "cm"}, nodes={
 							{n = G.UIT.R, config = { align = "cm", padding = 0 }, nodes = {
 								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
@@ -295,7 +281,7 @@ SMODS.current_mod.extra_tabs = function()
 								create_option_cycle({
 									label = "Transcendence Effects",
 									scale = 0.7,
-									w = 10,
+									w = 6,
 									options = {"Disabled", "Low", "Medium", "High", "Extreme"},
 									opt_callback = 'may_upd_treffects',
 									current_option = may.conf.transcendence.effects,
@@ -308,6 +294,7 @@ SMODS.current_mod.extra_tabs = function()
 										label = "Score Shakiness: Pulse Limit",
 										label_scale = 0.4,
 										text_scale = 0.3,
+										w = 4,
 										ref_table = may.conf.score_shakiness,
 										ref_value = "pulselimit",
 										min = 0,
@@ -320,6 +307,7 @@ SMODS.current_mod.extra_tabs = function()
 										label = "Score Shakiness: Quiver Limit",
 										label_scale = 0.4,
 										text_scale = 0.3,
+										w = 4,
 										ref_table = may.conf.score_shakiness,
 										ref_value = "quiverlimit",
 										min = 0,
@@ -334,6 +322,7 @@ SMODS.current_mod.extra_tabs = function()
 										label = "Score Shakiness: Pulse Multiplier",
 										label_scale = 0.4,
 										text_scale = 0.3,
+										w = 4,
 										ref_table = may.conf.score_shakiness,
 										ref_value = "pulsemult",
 										min = 0,
@@ -346,6 +335,7 @@ SMODS.current_mod.extra_tabs = function()
 										label = "Score Shakiness: Quiver Multiplier",
 										label_scale = 0.4,
 										text_scale = 0.3,
+										w = 4,
 										ref_table = may.conf.score_shakiness,
 										ref_value = "quivermult",
 										min = 0,
@@ -359,6 +349,7 @@ SMODS.current_mod.extra_tabs = function()
 									label = "Score Shakiness: Screen Shake Multiplier",
 									label_scale = 0.4,
 									text_scale = 0.3,
+									w = 4,
 									ref_table = may.conf.score_shakiness,
 									ref_value = "screen_shake",
 									min = 0,
@@ -509,7 +500,7 @@ SMODS.current_mod.extra_tabs = function()
 								scale = 1,
 								w = 6,
 								options = {
-									"Auto",
+									"Alptraum",
 									"Mayhem Theme",
 									"Eternum Theme",
 									"Yotta Card",
@@ -526,7 +517,6 @@ SMODS.current_mod.extra_tabs = function()
 									"Fusion Joker (Shop)",
 									"Transcendent Joker (Shop)",
 									"Opalescent Joker (Shop)",
-									"Alptraum", 
 									"Default"
 								},
 								opt_callback = 'may_upd_music',
@@ -539,6 +529,7 @@ SMODS.current_mod.extra_tabs = function()
 								label = "Transcendence Volume",
 								label_scale = 0.4,
 								text_scale = 0.3,
+								w = 5,
 								ref_table = may.conf.transcendence,
 								ref_value = "volume",
 								min = 0,

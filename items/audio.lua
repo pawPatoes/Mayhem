@@ -232,7 +232,7 @@ SMODS.Sound({
 	sync = true,
 	volume = 1.2,
 	select_music_track = function()
-		return may.conf.menu_music == 18 and (G.GAME and not G.GAME.blind) and 0
+		return may.conf.menu_music == 1 and (G.GAME and not G.GAME.blind) and 0
 	end,
 })
 
@@ -242,7 +242,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return (may.conf.menu_music == 2 or may.conf.menu_music == 1) and (G.GAME and not G.GAME.blind) and 0
+		return may.conf.menu_music == 2 and (G.GAME and not G.GAME.blind) and 0
 	end,
 })
 

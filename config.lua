@@ -1,6 +1,6 @@
 return {
 	["custom_menu"] = true,
-	["menu_music"] = 1,
+	["menu_music"] = 2,
 	["debug"] = false,
 	["music"] = {
 		["party_time"] = true,
@@ -66,5 +66,6 @@ return {
 		["smods"] = false,
 		["overflow"] = false,
 		["config"] = false,
+		["epileptic"] = false,
 	},
 }

@@ -46,7 +46,7 @@ payload = '''
 		"Mayhem is compatible-ish with Hot Potato and Multiplayer. Give them a try if you want some chaos!", 
 		"Unexpected error: attempt to compare number with table", 
 		"There's a fun fact here that has a 1 in 1000 chance of appearing. Keep your eyes peeled!", 
-		"Fun facts are stored in Mayhem/lovely/loadingscreen.toml. Look there if you're boring and want to see all of them at once.", 
+		"Fun facts are stored in Mayhem/lovely/loading_screen.toml. Look there if you're boring and want to see all of them at once.", 
 		"Mayhem is bigger than Balatro in terms of disk space.",
 		"Most of Mayhem's Planet Cards are actual astronomical objects. Those without position indicators at the top are fictional.",
 		"Transcendence effects were a last-minute addition to Mayhem, 1 or 2 months before launch.",
@@ -99,7 +99,7 @@ payload = '''
 	end 
 	
 	centered_text(0, -65, realw, realh, "MAYHEM", 1)
-	centered_text(0, 120, realw, realh, "FUN FACT: "..(MAY_fun_fact or "ERROR (something actually broke, please report this)") , 1)
+	centered_text(0, 120, realw, realh, (MAY_fun_fact or "ERROR (something actually broke, please report this)") , 1)
 '''
 match_indent = true
 overwrite = true
@@ -121,7 +121,7 @@ if not may then
 	error([[
 		MAYHEM: Unidentified installation error. Please make sure that Mayhem and its dependencies are installed correctly.
 		Here are some other possible causes:
-		- Unsupported Steamodded version. Make sure your Steamodded is on a stable and supported version. It is recommended you use the version packaged in the Dependencies ZIP on Mayhem's release page.
+		- Unsupported Steamodded version. Make sure Steamodded is on a stable and supported version. It is recommended you use the version packaged in the Dependencies ZIP on Mayhem's release page.
 		- Nested folders. Your Mods folder should contain folders which then contain the files for each mod. Do not install mods in the following way: Mods/Mayhem 1.4.0/Mayhem/...; this is wrong and will result in a crash. 
 		- Unsupported Lovely version. Make sure Lovely Injector is up to date. 
 		- Leftover ZIP files. Steamodded can load mods from ZIP files, so make sure you haven't left any ZIP files in your mods folder. 

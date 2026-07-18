@@ -123,7 +123,7 @@ SMODS.Joker {
 	}, 
 	loc_vars = function(self, info_queue, card)
 		local count = 0
-		for k, v in pairs(G.playing_cards) do
+		for k, v in pairs(G.playing_cards or {}) do
 			if not SMODS.has_enhancement(v, 'c_base') then
 				count = count + 1
 			end

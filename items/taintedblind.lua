@@ -901,7 +901,7 @@ SMODS.Blind {
 	calculate = function(self, blind, context)
 		 if not blind.disabled then
             if context.before then
-				may.hypermoney(0, 1 / (context.full_hand + 1))
+				may.hypermoney(0, 1 / (#context.full_hand + 1))
 				blind.triggered = true
                 G.E_MANAGER:add_event(Event({trigger = 'immediate', func = function()
                     SMODS.juice_up_blind()

@@ -1292,7 +1292,9 @@ SMODS.Joker {
 	cost = 6, 
 	calculate = function(self, card, context)
 		if context.joker_main or context.force_trigger then
-			may.random_tag(true)
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.1, func = function()
+				may.random_tag()
+			return true end}))
 		end
 	end
 }

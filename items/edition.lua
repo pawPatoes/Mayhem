@@ -119,9 +119,9 @@ SMODS.Edition {
 		name = "Alloy",
 		label = "Alloy",
 		text = {
-			"{X:mult,C:white}X0.5{} Mult per {C:attention}Steel Card{}",
+			"{X:mult,C:white}X0.15{} Mult per {C:attention}Steel Card{}",
 			"in full deck",
-			"{C:money}+1{} Interest Cap per {C:attention}Gold Card{}",
+			"{C:money}+$0.5{} per {C:attention}Gold Card{}",
 			"in full deck",
 			"{C:inactive}Currently X#1# Mult and +$#2#{}",
 			"{C:inactive}Shader by Superb Thing{}"
@@ -135,10 +135,9 @@ SMODS.Edition {
 	config = { x_mult = 0.15, p_dollars = 0.5 },
 	in_shop = true,
 	weight = 5,
-	extra_cost = 9,
+	extra_cost = 10,
 	apply_to_float = true,
 	loc_vars = function(self, info_queue, card)
-		info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
 		local steel = 0
 		local gold = 0
 		if G.GAME.blind then
@@ -150,7 +149,7 @@ SMODS.Edition {
 				end
 			end
 		end
-		return { vars = { 1 + (self.config.x_mult * steel), gold }, }
+		return { vars = { 1 + (self.config.x_mult * steel), gold * self.config.p_dollars }, }
 	end,
 	calculate = function(self, card, context)
 		if context.pre_joker or (context.main_scoring and context.cardarea == G.play) then
@@ -165,9 +164,7 @@ SMODS.Edition {
 			end
 			return {
 				x_mult = 1 + (self.config.x_mult * steel), 
-				func = function()
-					may.ease_interest_cap(-1, gold) 
-				end
+				p_dollars = gold * self.config.p_dollars
 			}
 		end
 	end, 
@@ -410,7 +407,7 @@ SMODS.Edition {
 		name = "Hypnotic",
 		label = "Hypnotic",
 		text = {
-			"{C:mult}=Chips^1.5{} Mult",
+			"{C:mult}=Chips^1.3{} Mult",
 			" ",
 			"{C:inactive,E:1}Shader by Oiiman{}"
 		}
@@ -421,15 +418,18 @@ SMODS.Edition {
 	sound = { sound = "may_e_hypnotic", per = 1, vol = 0.9 },
 	unlocked = true,
 	in_shop = true,
-	weight = 2,
-	extra_cost = 5,
+	weight = 1,
+	extra_cost = 10,
 	apply_to_float = true,
 	calculate = function(self, card, context)
 		if context.pre_joker or (context.main_scoring and context.cardarea == G.play) then
 			return {
-				eq_mult = to_big(hand_chips):arrow(1, 1.5)
+				eq_mult = to_big(hand_chips):arrow(1, 1.3)
 			}
 		end
+	end, 
+	in_pool = function(self, args)
+		return G.GAME.may_endless_mode, { allow_duplicates = true }
 	end
 }
 

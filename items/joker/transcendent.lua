@@ -176,7 +176,7 @@ SMODS.Joker {
 			}
 		}
 	},
-	config = { extra = { obtained = 2, wheels = 1120, mod = 2, req_wheels = 14, used_wheels = 0 } },
+	config = { extra = { obtained = 2, wheels = 1120, mod = 4, req_wheels = 14, used_wheels = 0 } },
 	rarity = "may_transcendent",
 	atlas = 'joker2',
 	blueprint_compat = false,
@@ -348,7 +348,7 @@ SMODS.Joker {
 	immutable = true,
 	endless = true,
 	pos = { x = 0, y = 0 },
-	config = { extra = { arrow = 4, hyper_chips = 1, hyper_chips_gain = 1, hyper_chips_gain2 = 0.5, hyperop_decrease = -0.25, hyperop_increase = 1, tarots = 6, max = 5, increased = 0, used = 0 } },
+	config = { extra = { arrow = 4, hyper_chips = 1, hyper_chips_gain = 1, hyper_chips_gain2 = 0.5, hyperop_decrease = -0.25, hyperop_increase = 2, tarots = 7, max = 15, increased = 0, used = 0 } },
 	attributes = {
 		'hyperchips', 
 		'generation', 

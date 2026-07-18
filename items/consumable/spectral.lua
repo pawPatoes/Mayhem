@@ -621,7 +621,7 @@ SMODS.Consumable {
 		}
 	},
 	pos = { x = 3, y = 3 },
-	config = { extra = { ante = 1, mul = 0.3 } },
+	config = { extra = { ante = 1, mul = 0.5 } },
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.ante, card.ability.extra.mul, ((G.GAME.round_resets.ante or 1) + card.ability.extra.ante) * card.ability.extra.mul } }
 	end,

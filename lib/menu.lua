@@ -125,6 +125,12 @@ Game.main_menu = function(change_context)
 		may.conf.notices.welcome = true 
 		G:save_settings()
     end 
+	-- Photosensitivity notice
+	if not may.conf.notices.epileptic then
+		may.display_notification('epileptic', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
+		may.conf.notices.epileptic = true 
+		G:save_settings()
+    end 
 	-- Slay the Jokers notice
 	if (not may.conf.notices.stj) and #SMODS.find_mod('SlayTheJokers') ~= 0 then
 		may.display_notification('slaythejokers', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)

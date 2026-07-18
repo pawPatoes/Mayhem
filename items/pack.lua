@@ -401,7 +401,7 @@ SMODS.Booster {
 	atlas = "booster",
 	pos = { x = i-1, y = 3 },
 	config = { extra = 3, choose = 1 },
-	cost = 6,
+	cost = 5,
 	weight = 1,
 	draw_hand = false,
 	create_card = function(self, card)
@@ -457,7 +457,7 @@ SMODS.Booster {
 	atlas = "booster",
 	pos = { x = 2, y = 3 },
 	config = { extra = 5, choose = 1 },
-	cost = 6,
+	cost = 8,
 	weight = 1,
 	draw_hand = false,
 	create_card = function(self, card)
@@ -511,7 +511,7 @@ SMODS.Booster {
 	atlas = "booster",
 	pos = { x = 3, y = 3 },
 	config = { extra = 5, choose = 2 },
-	cost = 6,
+	cost = 12,
 	weight = 1,
 	draw_hand = false,
 	create_card = function(self, card)
@@ -573,7 +573,7 @@ SMODS.Booster {
 	atlas = "booster",
 	pos = pos,
 	config = { extra = 2, choose = 1 },
-	cost = 11,
+	cost = 15,
 	weight = 0.6,
 	draw_hand = false,
 	endless = true,

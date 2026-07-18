@@ -57,7 +57,7 @@ SMODS.Consumable:take_ownership('c_ankh', {
 	end,
 	can_use = function(self, card)
 		for k, v in pairs(G.consumeables.highlighted) do
-			if v ~= card and not v:gc().hidden and not v:gc().no_doe then
+			if v ~= card and v:gc().key ~= 'c_ankh' and v.ability.consumeable and not v:gc().hidden and not v:gc().no_doe then
 				return #G.consumeables.highlighted <= 2 and (G.consumeables and #G.consumeables.cards < G.consumeables.config.card_limit + ( card.area == G.consumeables and 1 or 0 ))
 			end
 		end 
@@ -70,17 +70,16 @@ SMODS.Consumable:take_ownership('c_ankh', {
 				other = v
 			end
 		end
-		for i = 1, card.ability.extra.copies do
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-				if #G.consumeables.cards < G.consumeables.config.card_limit then
-					local card2 = copy_card(other, nil, nil, nil, nil)
-					card:juice_up(0.3, 0.5)
-					card2:add_to_deck()
-					G.consumeables:emplace(card2)
-					play_sound('timpani')
-				end
-			return true end})) 
-		end
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+			if #G.consumeables.cards < G.consumeables.config.card_limit then
+				local card2 = copy_card(other, nil, nil, nil, nil)
+				card:juice_up(0.3, 0.5)
+				card2:add_to_deck()
+				card2:setQty(card.ability.extra.copies)
+				G.consumeables:emplace(card2)
+				play_sound('timpani')
+			end 
+		return true end})) 
 	end
 })
 

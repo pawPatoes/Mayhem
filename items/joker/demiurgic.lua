@@ -399,7 +399,7 @@ SMODS.Joker {
 	}, 
 	show_ring_display = true,
     loc_vars = function(self, info_queue, card)
-		may.fuse_tip(info_queue, 'zodium_calamitas', { may.ctu('Tarot'), (G.GAME.may_stones_destroyed or 0) })
+		may.fuse_tip(info_queue, 'zodium_calamitas', { (G.GAME.may_stones_destroyed or 0), may.ctu('Tarot') })
         local amount = 0
         if G.consumeables then
             for k, v in pairs(G.consumeables.cards) do 
@@ -447,7 +447,7 @@ SMODS.Joker {
 		end
         if context.using_consumeable and context.consumeable and context.consumeable:gc().set == 'Tarot' then 
 			may.th(may.favhand())
-            may.level_up_hand_hyper(card, may.favhand(), false, 1 +card.ability.extra.EEEchip, 3)
+            may.level_up_hand_hyper(card, may.favhand(), false, 1 + card.ability.extra.EEEchip, 3)
 			may.ch()
         end
 	end
@@ -493,7 +493,7 @@ SMODS.Joker {
 		'scaling'
 	}, 
 	loc_vars = function(self, info_queue, card)
-		may.fuse_tip(info_queue, 'zodium_calamitas', { may.ctu('Tarot'), (G.GAME.may_stones_destroyed or 0) })
+		may.fuse_tip(info_queue, 'zodium_calamitas', { (G.GAME.may_stones_destroyed or 0), may.ctu('Tarot') })
         info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_medusa
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_deimos

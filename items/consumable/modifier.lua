@@ -3990,7 +3990,7 @@ SMODS.Consumable {
 
 SMODS.Consumable {
 	key = 'gold_seal_card',
-	config = { extra = { interest_cap = 5, target = 'Gold' } },
+	config = { extra = { interest_cap = 2, target = 'Gold' } },
 	loc_txt = {
 		name = 'Gold Seal Card',
 		text = {
@@ -4095,15 +4095,16 @@ SMODS.Consumable {
 
 SMODS.Consumable {
 	key = 'copper_seal_card',
-	config = { extra = { odds = 3, target = 'may_copper_seal' } },
+	config = { extra = { cards = 2, target = 'may_copper_seal' } },
 	loc_txt = {
 		name = 'Copper Seal Card',
 		text = {
 			{
 				"Each card with {C:dark_edition}Copper Seal{}", 
-				"{C:attention}held in hand{}", 
-				"has a {C:green}#1# in #2#{} chance", 
-				"to redeem a random regular {C:green}Voucher{}",
+				"{C:attention}held in hand{} creates", 
+				"{C:attention}#1#{} random {C:attention}Consumables{}", 
+				"{C:inactive}Currently #2# Consumables{}",
+				"{C:inactive}Does not require room{}",
 			}, 
 			{
 				"{C:inactive,E:1}Art by Superb Thing{}"
@@ -4128,9 +4129,16 @@ SMODS.Consumable {
 		return false
 	end,
 	loc_vars = function(self, info_queue, card) 
-		info_queue[#info_queue + 1] = SMODS.Seals[card.ability.extra.target]
-		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Copper Seal Card")
-		return { vars = { normal, odds } }
+		info_queue[#info_queue + 1] = SMODS.Seals[card.ability.extra.target] 
+		local amount = 0
+		if G.hand then
+			for k, v in pairs(G.hand.cards) do 
+				if v.seal and v.seal == card.ability.extra.target then
+					amount = amount + 1
+				end
+			end
+		end 
+		return { vars = { card.ability.extra.cards, card.ability.extra.cards * amount } }
 	end,
 	use = function(self, card, area, copier)
 		local targets = {}
@@ -4147,29 +4155,15 @@ SMODS.Consumable {
 			return true end})) 
 		end
 		for k, v in pairs(targets) do 
-			if SMODS.pseudorandom_probability(card, "may_copper_seal", 1, card.ability.extra.odds, "Copper Seal") then
-			    card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+1 Voucher'}, colour = G.C.GREEN, delay = 0.45})
-				G.E_MANAGER:add_event(Event({trigger = 'after', func = function()
-				    may.voucher(may.get_next_voucher_key())
-			    return true end}))
-			else
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-                    attention_text({
-                        text = localize('k_nope_ex'),
-                        scale = 1.3,
-                        hold = 1.4,
-                        major = card,
-                        backdrop_colour = G.C.RED,
-                        align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and 'tm' or 'cm',
-                        offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
-                        silent = true
-                    })
-                    G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.06 * G.SETTINGS.GAMESPEED, blockable = false, blocking = false, func = function()
-                        play_sound('tarot2', 0.76, 0.4)
-                    return true end}))
-                    play_sound('tarot2', 1, 0.4)
-                    card:juice_up(0.3, 0.5)
-                return true end}))
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..card.ability.extra.cards..' Consumables'}, colour = G.C.FILTER, delay = 0.45})
+			for i = 1, card.ability.extra.cards do
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+					local choice = may.get_random_consumable(nil, nil, 'c_may_copper_seal_card')
+					local card2 = create_card(choice.set, G.consumables, nil, nil, nil, nil, choice.key, "may_copper_seal_card")
+					card2:add_to_deck()
+					G.consumeables:emplace(card2)
+					play_sound('timpani')
+				return true end}))
 			end
 		end
 		for k, v in pairs(targets) do 
@@ -4195,31 +4189,15 @@ SMODS.Consumable {
 			return true end})) 
 		end
 		for k, v in pairs(targets) do 
-			for i = 1, number do
-			    if SMODS.pseudorandom_probability(card, "may_copper_seal", 1, card.ability.extra.odds, "Copper Seal") then
-					card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+1 Voucher'}, colour = G.C.GREEN, delay = 0.45})
-				    G.E_MANAGER:add_event(Event({trigger = 'after', func = function()
-						may.voucher(may.get_next_voucher_key())
-					return true end}))
-			    else
-				    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-                        attention_text({
-                            text = localize('k_nope_ex'),
-                            scale = 1.3,
-                            hold = 1.4,
-                            major = card,
-                            backdrop_colour = G.C.RED,
-                            align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and 'tm' or 'cm',
-                            offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
-                            silent = true
-                        })
-                        G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.06 * G.SETTINGS.GAMESPEED, blockable = false, blocking = false, func = function()
-                            play_sound('tarot2', 0.76, 0.4)
-                        return true end}))
-                        play_sound('tarot2', 1, 0.4)
-                        card:juice_up(0.3, 0.5)
-                    return true end}))
-			    end
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..card.ability.extra.cards..' Consumables'}, colour = G.C.FILTER, delay = 0.45})
+			for i = 1, card.ability.extra.cards * number do
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+					local choice = may.get_random_consumable(nil, nil, 'c_may_copper_seal_card')
+					local card2 = create_card(choice.set, G.consumables, nil, nil, nil, nil, choice.key, "may_copper_seal_card")
+					card2:add_to_deck()
+					G.consumeables:emplace(card2)
+					play_sound('timpani')
+				return true end}))
 			end
 		end
 		for k, v in pairs(targets) do 
@@ -5228,7 +5206,7 @@ SMODS.Consumable {
 					card:juice_up(0.3, 0.5)
 				return true end}))
 			else
-				may.level_up_all_hands(card, nil, false, 0.5)
+				may.level_up_all_hands(card, false, 0.5, nil)
 			end
 		end
 		for k, v in pairs(targets) do 
@@ -5280,7 +5258,7 @@ SMODS.Consumable {
 						card:juice_up(0.3, 0.5)
 					return true end}))
 				else
-					may.level_up_all_hands(card, nil, false, 0.5)
+					may.level_up_all_hands(card, false, 0.5, nil)
 				end
 			end
 		end

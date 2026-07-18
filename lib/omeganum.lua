@@ -23,6 +23,14 @@ function Big:arrow(arrows, other)
 	end
 end
 
+local vanf_bm = Big.mul
+function Big:mul(amt)
+	if Big.create(self, 'ee308'):lte(self) and to_big(amt) <= to_big(1) then 
+		return self 
+	end 
+	return vanf_bm(self, amt)
+end
+
 function f_gamma(n)
 	n = to_big(n)
 	if not n:isFinite() then return n end

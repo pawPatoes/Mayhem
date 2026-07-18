@@ -356,7 +356,7 @@ SMODS.Joker {
 			for i = 1, triggers do
 				for v = 1, card.ability.extra.voucher do
 				    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-					    local card2 = create_card('Voucher', G.consumeables, nil, nil, nil, nil, nil, 'may_thatch')
+					    local card2 = create_card('Voucher', G.consumeables, nil, nil, nil, nil, may.get_next_voucher_key(), 'may_thatch')
 					    card2:set_edition({negative = true}, false, false)
 						card2:add_to_deck() 
 					    G.consumeables:emplace(card2)
@@ -400,7 +400,7 @@ SMODS.Joker {
 			}
 		}
 	},
-	config = { extra = { x_chips = 0.25 } },
+	config = { extra = { x_chips = 0.4 } },
 	rarity = 4,
 	atlas = 'joker2',
 	blueprint_compat = true,
@@ -449,14 +449,14 @@ SMODS.Joker {
 				"When a card is {C:mult}discarded{}, gain", 
 				"{X:attention,C:white}X#2#{} its {C:mult}+Mult{} as {X:mult,C:white}XMult{} and {C:mult}set it to 0{}", 
 				may.pager(), 
-				"{C:inactive,E:1,s:0.7}Embrace the void and it'll embrace whats left of you.{}"
+				"{C:inactive,E:1,s:0.7}Embrace the void and it'll embrace what's left of you.{}"
 			},
 			{
 				"{C:inactive,E:1}Art by Violet{}"
 			}
 		}
 	},
-	config = { extra = { x_mult = 1, mult = 0.01, temp_scale = 0 } },
+	config = { extra = { x_mult = 1, mult = 0.03, temp_scale = 0 } },
 	rarity = 4,
 	atlas = 'joker2',
 	blueprint_compat = false,
@@ -605,7 +605,7 @@ SMODS.Joker {
                     card:juice_up(2, 2)
                     card:set_ability(G.P_CENTERS['j_may_alex343xd_ascended'])
                     card:set_cost() 
-                    if may.conf.Mode == 1 and may.conf.fusion_punishment then 
+                    if may.conf.fusion_punishment then 
                         may.add_round_timer(6, 'demiurgic_fuse')
                         may.a('Demiurgic scaling will activate in 6 rounds!', '5', 0.5, G.C.RED) 
                     end

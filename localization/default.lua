@@ -656,6 +656,11 @@ return {
 		    may_notif_config_d2 = 'This unfortunately causes most of your settings', 
 		    may_notif_config_d3 = 'to be reset. You will have to set them back again.',
 			
+			may_notif_epileptic_1 = 'Photosensitivity warning', 
+		    may_notif_epileptic_d1 = 'Mayhem has *very* intense effects when you get large scores', 
+		    may_notif_epileptic_d2 = 'If you are prone to flashing lights and shaking things,', 
+		    may_notif_epileptic_d3 = 'please turn some settings down in Mayhem\'s Visual tab', 
+			
 			may_notif_welcome_1 = 'Welcome to Mayhem!', 
 		    may_notif_welcome_d1 = 'This is your first time playing Mayhem! Thanks!', 
 			may_notif_welcome_d2 = 'Until a proper tutorial is added, you should consult the wiki', 

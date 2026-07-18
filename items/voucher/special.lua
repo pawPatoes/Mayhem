@@ -165,7 +165,7 @@ SMODS.Voucher {
 		name = "Astronomy {C:mult}III{}",
 		text = {
 		    {
-			    "{C:purple}Poker Hands{} gain "..may.hyp(4, 'multchips', "#1#(1.1XL)").." Chips & Mult ", 
+			    "{C:purple}Poker Hands{} gain "..may.hyp(4, 'multchips', "#1#L").." Chips & Mult ", 
 			    "when {C:planet}leveled up{} by {C:chips}hand-specific{} {C:planet}Planet Cards{}", 
 				"{C:planet}L{} is the {C:planet}level increase{}; the {C:purple}Chips & Mult{} modification", 
 				"does {C:mult}not{} {C:attention}stack{} regularly per {Cplanet}level{}", 
@@ -198,7 +198,7 @@ SMODS.Voucher {
 	calculate = function(self, card, context)
 		if context.level_up_hand and to_big(context.amount) > to_big(0) then
 			if context.other_card and ((context.other_card.has_attribute and context.other_card:has_attribute('hand_specific')) or may.has_card('v_may_astronomy_5')) then
-				may.hand_multchips(context.other_card, context.hand, context.instant, {may.global_op(), 1.1 * context.amount}, {may.global_op(), 1.1 * context.amount})
+				may.hand_multchips(context.other_card, context.hand, context.instant, {may.global_op(), context.amount}, {may.global_op(), context.amount})
 			end
 		end
 	end, 
@@ -222,7 +222,7 @@ SMODS.Voucher {
 				may.pager(), 
 				"If the {C:purple}Poker Hand's{} {C:planet}level{}", 
 				"is {C:green}above{} or {C:attention}equal{} to the {C:chips}average{},", 
-				"it will gain "..may.hyp(4, 'multchips', "#1#(2XL)").." Chips & Mult", 
+				"it will gain "..may.hyp(4, 'multchips', "#1#L").." Chips & Mult", 
 				"{C:planet}L{} is the {C:planet}level increase{}; the {C:purple}Chips & Mult{} modification", 
 				"does {C:mult}not{} {C:attention}stack{} regularly per {Cplanet}level{}", 
 				may.pager(), 
@@ -272,7 +272,7 @@ SMODS.Voucher {
 			end
 			avg = avg / num
 			if G.GAME.hands[context.hand].level >= avg then
-				may.hand_multchips(context.other_card, context.hand, context.instant, {may.global_op(), 2 * context.amount}, {may.global_op(), 2 * context.amount})
+				may.hand_multchips(context.other_card, context.hand, context.instant, {may.global_op(), context.amount}, {may.global_op(), context.amount})
 			end
 		end
 	end, 

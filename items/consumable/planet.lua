@@ -321,7 +321,7 @@ SMODS.Consumable {
 		may.hand_multchips_all(card, nil, false, {-1, amount})
 		if Engulf and card.edition then 
 			for k, v in pairs(G.GAME.hands) do
-				Engulf.EditionHand(card, k, card.edition, 1, true)
+				Engulf.EditionHand(card, k, card.edition, 1, false)
 			end
 		end
 		delay(0.2)
@@ -1187,27 +1187,13 @@ SMODS.Consumable {
 				table.insert(targets, v)
 			end 
 		end
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-			play_sound('tarot1')
-			card:juice_up(0.3, 0.5)
-		return true end}))
-		for i=1, #targets do
-		local percent = 1.15 - (i-0.999)/(#targets-0.998)*0.3
-			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-				targets[i]:flip()
-				play_sound('card1', percent)
-				targets[i]:juice_up(0.3, 0.3)
-			return true end}))
-		end
-		delay(0.2)
 		for i=1, #targets do
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function()
 				if Engulf and card.edition then
 					targets[i]:set_edition(card.edition.key)
 				end
-				targets[i]:flip()
 				targets[i]:set_seal(SMODS.poll_seal({guaranteed = true}), true, nil)
-				play_sound('tarot2', percent)
+				play_sound('tarot1', percent)
 				targets[i]:juice_up(0.3, 0.3)
 			return true end}))
 		end
