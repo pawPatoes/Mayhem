@@ -37,7 +37,7 @@ G.FUNCS.may_ourania_kleidaria_ability = function(e)
 end]] 
 
 G.FUNCS.may_can_use_joker_ability = function(e)
-	if e.config.ref_table:gc().use_ability(e.config.ref_table:gc(), e.config.ref_table) then
+	if e.config.ref_table:gc().can_use_ability(e.config.ref_table:gc(), e.config.ref_table) then
 		e.config.colour = e.config.ref_table:gc().ability_color or G.C.DARK_EDITION
 		e.config.button = "may_joker_ability"
 	else
@@ -48,6 +48,6 @@ end
 
 G.FUNCS.may_joker_ability = function(e)
 	if e and e.config.ref_table then
-		e.config.ref_table:gc().use_ability(e.config.ref_table:gc(), e.config.ref_table)
+		e.config.ref_table:gc().ability(e.config.ref_table:gc(), e.config.ref_table)
 	end
 end

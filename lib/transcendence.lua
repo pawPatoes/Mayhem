@@ -506,8 +506,8 @@ local do_calc_frames = 0
 local original_hand_type_ui = G.FUNCS.hand_type_UI_set
 G.FUNCS.hand_type_UI_set = function(e)
     local prev_text = G.GAME.current_round.current_hand[e.config.text]
-    original_hand_type_ui(e) 
 	if type(G.GAME.current_round.current_hand[e.config.type]) == 'string' then return end
+	original_hand_type_ui(e) 
     if G.GAME.current_round.current_hand[e.config.text] ~= prev_text then
         do_calc_frames = 2
     end

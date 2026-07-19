@@ -120,6 +120,7 @@ SMODS.Consumable {
 			end 
 		end 
 		may.hand_multchips_all(card, nil, false, {may.global_op(), 1 + ((amount * 2) * 0.05)}, {may.global_op(), 1 + ((amount * 2) * 0.05)})
+		may.ch()
 	end,
 	in_pool = function(self, args)
 		return G.GAME.may_endless_mode, { allow_duplicates = false }

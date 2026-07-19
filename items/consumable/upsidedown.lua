@@ -1669,7 +1669,14 @@ SMODS.Consumable {
     no_grc = true,
 	upsd_base = 'c_familiar', 
 	can_use = function(self, card)
-		return may.canuse()
+		if G.hand then 
+			for k, v in ipairs(G.hand.cards) do
+			    if v:is_face() then
+					return may.canuse()
+				end
+			end
+		end 
+		return false
 	end,
 	use = function(self, card, area, copier)
 		local targets = {}
@@ -1712,7 +1719,14 @@ SMODS.Consumable {
     no_grc = true,
 	upsd_base = 'c_grim', 
 	can_use = function(self, card)
-		return may.canuse()
+		if G.hand then 
+			for k, v in ipairs(G.hand.cards) do
+			    if v:get_id() == 14 then
+					return may.canuse()
+				end
+			end
+		end 
+		return false
 	end,
 	use = function(self, card, area, copier)
 		local targets = {}
@@ -1755,7 +1769,14 @@ SMODS.Consumable {
     no_grc = true,
 	upsd_base = 'c_incantation', 
 	can_use = function(self, card)
-		return may.canuse()
+		if G.hand then 
+			for k, v in ipairs(G.hand.cards) do
+			    if not v:is_face() then
+					return may.canuse()
+				end
+			end
+		end 
+		return false
 	end,
 	use = function(self, card, area, copier)
 		local targets = {}

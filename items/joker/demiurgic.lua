@@ -62,6 +62,7 @@ SMODS.Joker {
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
 				card:juice_up(0.3, 0.5)
 				local grim = create_card('Spectral', G.consumeables, nil, nil, nil, nil, 'c_grim', nil)
+				grim.no_variants = true
 				grim:set_edition({negative = true}, true)
 				grim:set_cost()
 				grim:add_to_deck()

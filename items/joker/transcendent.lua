@@ -265,6 +265,7 @@ SMODS.Joker {
             end
 			card.ability.extra.used_wheels = card.ability.extra.used_wheels + 1
 			if card.ability.extra.used_wheels >= card.ability.extra.req_wheels then
+				card.ability.extra.used_wheels = card.ability.extra.used_wheels - card.ability.extra.req_wheels
 				G.E_MANAGER:add_event(Event({func = function()
                 	change_operator(card.ability.extra.mod)
             	return true end}))
@@ -445,10 +446,10 @@ SMODS.Joker {
         end
 		if context.using_consumeable then 
 			if context.consumeable:gc().key == 'c_may_deimos' then
-                may.hand_mod_multchips(may.favhand(), 'chips', card.ability.extra.hyperoperator, card.ability.extra.hyper_chips, false, context.consumeable)
+                may.hand_multchips(context.consumeable, may.favhand(), false, {card.ability.extra.hyperoperator, card.ability.extra.hyper_chips})
 			end
 			if context.consumeable:gc().set == 'Tarot' then
-				card.ability.extra.used = card.ability.extra.used + context.consumeable:getEvalQty()
+				card.ability.extra.used = card.ability.extra.used + 1
 				if card.ability.extra.used >= card.ability.extra.tarots then 
 					card.ability.extra.used = card.ability.extra.used - card.ability.extra.tarots
 					card.ability.extra.increased = card.ability.extra.increased + 1

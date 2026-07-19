@@ -405,7 +405,7 @@ function G.UIDEF.use_and_sell_buttons(card)
 		}}
 	end
 	-- Joker abilities
-	if card.area == G.jokers and card.config.center.use_ability then
+	if card.area == G.jokers and card:gc().ability then
         return {n = G.UIT.ROOT, config = { padding = 0, colour = G.C.CLEAR }, nodes = {
             {n=G.UIT.R, config={align = 'cl'}, nodes={
 			    {n=G.UIT.C, config={align = "cl"}, nodes={

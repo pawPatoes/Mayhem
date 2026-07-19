@@ -793,7 +793,8 @@ SMODS.Joker {
 			G.E_MANAGER:add_event(Event({ func = function()
 				card:juice_up(0.5, 0.5)
 				local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-                wheel:setQty(math.ceil(card.ability.extra.cards))
+                wheel.no_variants = true 
+				wheel:setQty(math.ceil(card.ability.extra.cards))
 				wheel:add_to_deck()
                 wheel:set_edition('e_negative')
 				G.consumeables:emplace(wheel)
@@ -1408,7 +1409,7 @@ SMODS.Joker {
 			play_sound('tarot1')
 			play_sound('holo1')
 			card2:set_edition('e_negative')
-			card2:setQty(e.config.ref_table.ability.extra.copies)
+			card2:setQty(card.ability.extra.copies)
 			card:juice_up(0.3, 0.5)
 			card:start_dissolve()
 			card = nil 

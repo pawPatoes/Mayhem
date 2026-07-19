@@ -165,10 +165,9 @@ SMODS.Voucher {
 		name = "Astronomy {C:mult}III{}",
 		text = {
 		    {
-			    "{C:purple}Poker Hands{} gain "..may.hyp(4, 'multchips', "#1#L").." Chips & Mult ", 
+			    "{C:purple}Poker Hands{} gain exactly "..may.hyp(4, 'multchips', "#1#1.1").." Chips & Mult ", 
 			    "when {C:planet}leveled up{} by {C:chips}hand-specific{} {C:planet}Planet Cards{}", 
-				"{C:planet}L{} is the {C:planet}level increase{}; the {C:purple}Chips & Mult{} modification", 
-				"does {C:mult}not{} {C:attention}stack{} regularly per {Cplanet}level{}", 
+				"{C:mult}regardless{} of the {C:planet}level{} increase",
 				may.pager(), 
 			    "{C:planet}Level ups{} applied to", 
 				"{C:attention}most played{} {C:purple}Poker Hand{} are {C:green}quadrupled{}",
@@ -198,7 +197,7 @@ SMODS.Voucher {
 	calculate = function(self, card, context)
 		if context.level_up_hand and to_big(context.amount) > to_big(0) then
 			if context.other_card and ((context.other_card.has_attribute and context.other_card:has_attribute('hand_specific')) or may.has_card('v_may_astronomy_5')) then
-				may.hand_multchips(context.other_card, context.hand, context.instant, {may.global_op(), context.amount}, {may.global_op(), context.amount})
+				may.hand_multchips(context.other_card, context.hand, context.instant, {may.global_op(), 1.1}, {may.global_op(), 1.1})
 			end
 		end
 	end, 
@@ -222,9 +221,8 @@ SMODS.Voucher {
 				may.pager(), 
 				"If the {C:purple}Poker Hand's{} {C:planet}level{}", 
 				"is {C:green}above{} or {C:attention}equal{} to the {C:chips}average{},", 
-				"it will gain "..may.hyp(4, 'multchips', "#1#L").." Chips & Mult", 
-				"{C:planet}L{} is the {C:planet}level increase{}; the {C:purple}Chips & Mult{} modification", 
-				"does {C:mult}not{} {C:attention}stack{} regularly per {Cplanet}level{}", 
+				"it will gain exactly "..may.hyp(4, 'multchips', "#1#2").." Chips & Mult", 
+				"{C:mult}regardless{} of the {C:planet}level{} increase", 
 				may.pager(), 
 				"If it is {C:mult}below{} the {C:chips}average{}, it will gain", 
 				"{X:green,C:white}X5{} more {C:planet}levels{}", 
@@ -272,7 +270,7 @@ SMODS.Voucher {
 			end
 			avg = avg / num
 			if G.GAME.hands[context.hand].level >= avg then
-				may.hand_multchips(context.other_card, context.hand, context.instant, {may.global_op(), context.amount}, {may.global_op(), context.amount})
+				may.hand_multchips(context.other_card, context.hand, context.instant, {may.global_op(), 2}, {may.global_op(), 2})
 			end
 		end
 	end, 
@@ -620,7 +618,7 @@ SMODS.Voucher {
 	end,
 	calculate = function(self, card, context)
 		if context.level_up_hand and to_big(context.amount) > to_big(0) then
-			may.hand_multchips(card, context.hand, context.instant, {-1, 200 * context.amount}, {0, 1.2 ^ context.amount})
+			may.hand_multchips(card, context.hand, context.instant, {-1, 200 * context.amount}, {0, to_big(1.2):pow(context.amount)})
 		end
 	end, 
     in_pool = function(self, args)

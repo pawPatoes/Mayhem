@@ -107,13 +107,13 @@ SMODS.Back {
 }
 
 SMODS.Back {
-	name = "Turqoise deck",
-	key = "turqoise_deck",
+	name = "Turquoise deck",
+	key = "turquoise_deck",
 	atlas = 'deck',
 	pos = { x = 3, y = 2 },
 	config = {discount = 25},
 	loc_txt = {
-		name = "Turqoise Deck",
+		name = "Turquoise Deck",
 		text = {
 			"All {C:attention}cards{} in {C:attention}shop{} are",
 			"{X:green,C:white}25%{} {C:money}cheaper{}"

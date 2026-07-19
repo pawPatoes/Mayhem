@@ -1,4 +1,4 @@
--- OmegaNum operations
+-- OmegaNum/Amulet things
 
 Big.is = Big.is or function()
     return type(self) == 'table' and self.sign
@@ -25,7 +25,7 @@ end
 
 local vanf_bm = Big.mul
 function Big:mul(amt)
-	if Big.create(self, 'ee308'):lte(self) and to_big(amt) <= to_big(1) then 
+	if Big.create(self, 'ee308'):lte(self) and to_big(amt):lte(to_big(1)) and to_big(amt):gte(to_big(0)) then 
 		return self 
 	end 
 	return vanf_bm(self, amt)

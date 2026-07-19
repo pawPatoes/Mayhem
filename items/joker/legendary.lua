@@ -50,7 +50,7 @@ SMODS.Joker {
 		return { vars = { card.ability.extra.Emult_gain, card.ability.extra.Emult, may.blue_album_messages[math.random(#may.blue_album_messages)] } }
     end,
     add_to_deck = function(self, card, from_debuff)
-		if (not from_debuff) and may.conf.JokerEffects then
+		if not from_debuff then
 			play_sound("may_weezer")
 		end
 	end,
@@ -263,7 +263,7 @@ SMODS.Joker {
 	config = { extra = { x_hands = 0.5, mul = 0.2, lost = 0 } },
 	rarity = 4,
 	atlas = 'placeholder',
-	blueprint_compat = true,
+	blueprint_compat = false ,
 	demicoloncompat = true,
 	pos = { x = 1, y = 0 },
 	soul_pos = { x = 2, y = 0 },
@@ -276,7 +276,7 @@ SMODS.Joker {
 		return { vars = { card.ability.extra.x_hands, card.ability.extra.mul, (#(G.hand or { cards = {} }).cards == 0 and not G.booster_pack) and 'INACTIVE' or 'X'..(1 + (G.GAME.round_resets.hands * 0.5 * card.ability.extra.mul)) } }
 	end,
 	calculate = function(self, card, context)
-		if (context.setting_blind and card.area == G.jokers) or context.blueprint then 
+		if (context.setting_blind and card.area == G.jokers) and not context.blueprint then 
 			card.ability.extra.lost = G.GAME.round_resets.hands * card.ability.extra.x_hands
 			ease_hands_played(math.floor(G.GAME.round_resets.hands * -card.ability.extra.x_hands))
 			G.GAME.may_money_multiplier = (G.GAME.may_money_multiplier or 1) + (card.ability.extra.lost * card.ability.extra.mul) 
