@@ -125,13 +125,13 @@ function SMODS.upgrade_poker_hands(args)
 		    G.GAME.may_ring_bonuses.levels = 0
 	    end
 		local pre_astronomy = (args.level_up or 1)
-	    if #SMODS.find_card('v_may_astronomy_1') ~= 0 and (args.level_up or 1) > 0 then
+	    if may.has_card('v_may_astronomy_1') and ((args.level_up or 1) > 0) then
 		    args.level_up = to_big(args.level_up or 1):mul(to_big(2):pow(#SMODS.find_card('v_may_astronomy_1'))):normalize()
 	    end
-	    if #SMODS.find_card('v_may_astronomy_3') ~= 0 and (hand == may.favhand() or may.has_card('v_may_astronomy_5')) and (args.level_up or 1) > 0 then
+	    if may.has_card('v_may_astronomy_3') and (hand == may.favhand() or may.has_card('v_may_astronomy_5')) and ((args.level_up or 1) > 0) then
 		    args.level_up = to_big(args.level_up or 1):mul(to_big(4):pow(#SMODS.find_card('v_may_astronomy_3'))):normalize()
 	    end
-		if #SMODS.find_card('v_may_astronomy_4') ~= 0 and (args.level_up or 1) > 0 then
+		if may.has_card('v_may_astronomy_4') and ((args.level_up or 1) > 0) then
 			local avg = 0
 			local num = 0
 			for k, v in pairs(G.GAME.hands) do 
@@ -145,14 +145,14 @@ function SMODS.upgrade_poker_hands(args)
 				args.level_up = to_big(args.level_up or 1):mul(to_big(5):pow(#SMODS.find_card('v_may_astronomy_4'))):normalize()
 			end
 		end
-	    if #SMODS.find_card('v_may_astronomy_6') ~= 0 and (args.level_up or 1) > 0 then
+	    if may.has_card('v_may_astronomy_6') and ((args.level_up or 1) > 0) then
 		    args.level_up = to_big(args.level_up or 1):mul(to_big(50):pow(#SMODS.find_card('v_may_astronomy_6'))):normalize()
 	    end 
-		if #SMODS.find_card('v_may_astronomy_9') ~= 0 and (args.level_up or 1) > 0 then
-			-- puta meu vida de Amulet
+		if may.has_card('v_may_astronomy_9') and ((args.level_up or 1) > 0) then
 		    args.level_up = to_big(args.level_up or 1):pow(to_big(1 + (G.GAME.hands[args.hands[1]].played * 0.025)):pow(#SMODS.find_card('v_may_astronomy_9'))):normalize()
 	    end
-		if #SMODS.find_card('v_may_astronomy_10') ~= 0 and (args.level_up or 1) > 0 then
+		if may.has_card('v_may_astronomy_10') and ((args.level_up or 1) > 0) then
+			-- puta meu vida de Amulet
 		    args.level_up = to_big(args.level_up or 1):mul(to_big(may.global_op()):pow((to_big(pre_astronomy):pow(G.GAME.hands[args.hands[1]].played):mul(5)))):normalize()
 			ast10_money = pre_astronomy * G.GAME.hands[args.hands[1]].played
     	end
@@ -160,7 +160,9 @@ function SMODS.upgrade_poker_hands(args)
 	vanf_suph(args)
 	if args.level_up then
 		if ast10_money then
-			may.hand_dollars(args.from, args.hands[1], args.instant, -1, ast10_money)
+			may.th(args.hands[1])
+			may.hand_mod_dollars(args.from, args.hands[1], args.instant, -1, ast10_money)
+			may.refresh_score_operator()
 		end
 	end
 end 
@@ -253,15 +255,15 @@ function get_blind_amount(ante)
 		--local surreal = to_big(G.GAME.may_surreal_scaling or 0)
 		local transcendent = to_big(G.GAME.may_transcendent_scaling or 0)
 		if mythic > to_big(0) then
-			amount = to_big(amount):arrow(1, to_big(((mythic * ((big20 + (to_big(ante) * big0_1)) + big1)))))
+			amount = to_big(amount):arrow(1, to_big(((mythic * ((big10 + (to_big(ante) * big0_1)) + big1)))))
 		    amount = FALLBACK(amount, ante)
 	    end
-		if transcendent > to_big(0) then
-			amount = to_big(amount):arrow(1, to_big((transcendent * (big30 + (to_big(ante) * big0_3)) + big1)))
+		if ethereal > to_big(0) then
+			amount = to_big(amount):arrow(1, to_big((ethereal * (big30 + (to_big(ante) * big0_3)) + big1)))
 		    amount = FALLBACK(amount, ante)
 	    end
-		if interdimensional > to_big(0) then
-			amount = to_big(amount):arrow(2, to_big((interdimensional * ((big20 + (to_big(ante) * big0_3)) + big1))))
+		if prismatic > to_big(0) then
+			amount = to_big(amount):arrow(2, to_big((prismatic * ((big20 + (to_big(ante) * big0_3)) + big1))))
 		    amount = FALLBACK(amount, ante)
 	    end
 		if demiurgic > to_big(0) then 
@@ -412,7 +414,7 @@ function Card:start_dissolve(dissolve_colours, silent, dissolve_time_fac, no_jui
 			if self.ability.consumeable then
 				local success = 0
 				for i=1, self:getQty() do
-					if SMODS.pseudorandom_probability(s, "may_metallic", (G.GAME.probabilities.normal or 1), 2, "Metallic") then
+					if SMODS.pseudorandom_probability(s, "may_metallic", (G.GAME.probabilities.normal or 1), 2, "Metallic", true) then
 						success = success + 1
 					end
 				end

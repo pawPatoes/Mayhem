@@ -330,7 +330,7 @@ SMODS.Voucher {
 	atlas = 'voucher',
 	cost = 10,
 	unlocked = true,
-	voucher_sellable = true,
+	endless = true, 
 	redeem = function(self, card)
 		ease_ante(1)
 		G.hand:change_size(2)
@@ -339,6 +339,9 @@ SMODS.Voucher {
 		ease_ante(-1)
 		G.hand:change_size(-2)
 	end,
+	in_pool = function(self, args)
+        return G.GAME.may_endless_mode, { allow_duplicates = false }
+    end
 }
 
 SMODS.Voucher {
@@ -355,7 +358,7 @@ SMODS.Voucher {
 	requires = {'v_may_spicy'},
 	cost = 10,
 	unlocked = true,
-	voucher_sellable = true,
+	endless = true, 
 	redeem = function(self, card)
 		ease_ante(1)
 		SMODS.change_voucher_limit(1)
@@ -364,6 +367,9 @@ SMODS.Voucher {
 		ease_ante(-1)
 		SMODS.change_voucher_limit(-1)
 	end,
+	in_pool = function(self, args)
+        return G.GAME.may_endless_mode, { allow_duplicates = false }
+    end
 }
 
 

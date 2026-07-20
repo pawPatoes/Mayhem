@@ -4,7 +4,11 @@ function may.no_context_lvl_up(card, hand, instant, amount)
     SMODS.upgrade_poker_hands({
         hands = hand,
         func = function(base, hand, parameter)
-            return base + G.GAME.hands[hand]['l_' .. parameter] * amount
+            if may.has_card('v_may_astronomy_7') and level_up > 0 then 
+				return to_big(base):arrow(may.global_op(), 1 + (G.GAME.hands[hand]['l_' .. parameter] * level_up)) 
+			else
+				return math.max(0, base + G.GAME.hands[hand]['l_' .. parameter] * level_up) 
+			end
         end,
         level_up = amount,
         from = card,

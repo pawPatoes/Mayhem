@@ -776,7 +776,7 @@ function may.add_fusion_text(joker1, joker2, condition)
 	    return {
 		    "This Joker can {C:dark_edition}fuse{} with", 
 			"{C:attention}"..joker1.."{} to create {C:dark_edition}"..joker2.."{}", 
-		    may.pager(math.max(string.len(condition), string.len("This Joker can {C:dark_edition}fuse{} with")) * 0.6), 
+		    --may.pager(math.max(string.len(condition), string.len("This Joker can {C:dark_edition}fuse{} with")) * 0.6), 
 		    '{C:may_opalescent,s:1.2,u:may_opalescent}Fusion Condition{}', 
 		    condition
 	    }

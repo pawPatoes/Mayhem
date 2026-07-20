@@ -106,7 +106,7 @@ SMODS.Joker {
 	pos = { x = 0, y = 0 },
 	soul_pos = { x = 1, y = 0 },
 	cost = 141,
-	config = { extra = { blindcards = 14, Emult = 0.56 } },
+	config = { extra = { blindcards = 14, Emult = 1.4 } },
 	attributes = {
 		'wheel',
 		'generation', 
@@ -184,7 +184,7 @@ SMODS.Joker {
 	immutable = true,
 	pos = { x = 7, y = 4 },
 	soul_pos = { x = 8, y = 4 },
-	config = { extra = { Echip = 1, Echip_gain = 0.2, } },
+	config = { extra = { Echip = 1, Echip_gain = 0.4, } },
 	attributes = {
 		'echips', 
 		'generation', 

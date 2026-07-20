@@ -4,7 +4,7 @@ SMODS.Scoring_Calculation:take_ownership('add', {colour = G.C.CHIPS})
 
 SMODS.Scoring_Calculation:take_ownership('multiply', {colour = G.C.MULT})
 
-SMODS.Scoring_Calculation:take_ownership('exponent', {colour = SMODS.Gradients.may_col_eternum_green})
+SMODS.Scoring_Calculation:take_ownership('exponent', {colour = G.C.GREEN})
 
 SMODS.Scoring_Calculation:take_ownership('talisman_hyper', {
 	colour = function()

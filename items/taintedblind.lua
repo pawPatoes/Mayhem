@@ -674,7 +674,7 @@ SMODS.Blind {
 		if not blind.disabled then
 			if context.before then 
 				for k, v in ipairs(G.hand.cards) do
-					if SMODS.pseudorandom_probability(blind, "may_tainted_wheel", 1, 3, "The Disk") then
+					if SMODS.pseudorandom_probability(blind, "may_tainted_wheel", 1, 3, "The Disk", true) then
 						G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
 							v:flip()
 							v:juice_up(0.3, 0.5)

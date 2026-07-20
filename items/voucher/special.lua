@@ -288,12 +288,12 @@ SMODS.Voucher {
 		name = "Astronomy {C:green}V{}",
 		text = {
 		    {
-			    "{C:attention}Both{} effects of {C:may_planet}Astronomy{} {C:mult}III{}", 
+			    "{C:attention}Both{} effects of {C:planet}Astronomy{} {C:mult}III{}", 
 				"will be {C:green}applied{} for any {C:planet}level up{}", 
 				may.pager(), 
 				"When a {C:purple}Poker Hand{} is {C:planet}leveled up{},", 
-				"earn {C:money}Interest{} equal to {X:attention,C:white}X0.001{} the {C:planet}level{} {C:green}increase{}", 
-				"{C:inactive}Max of +(Current Interest X 5){}"
+				"earn {C:money}Interest Cap{} equal to {X:attention,C:white}X0.0001{} the {C:planet}level{} {C:green}increase{}", 
+				"{C:inactive}Max of +(Current Interest Cap X 3){}"
 		    }, 
 		    {
 			    "Appears every {C:attention}9 rounds{}", 
@@ -317,7 +317,7 @@ SMODS.Voucher {
 	end,
 	calculate = function(self, card, context)
 		if context.level_up_hand and to_big(context.amount) > to_big(0) then
-			may.ease_interest(-1, math.min(G.GAME.interest_amount, to_number(context.amount) * 0.001), context.instant)
+			may.ease_interest_cap(-1, math.min(G.GAME.interest_cap * 3, to_number(context.amount) * 0.0001), context.instant)
 		end
 	end,
 	special_voucher_behavior = function(self)
@@ -374,12 +374,14 @@ SMODS.Voucher {
 		text = {
 		    {
 				"{C:may_demiurgic}Level{} {C:purple}Chips & Mult{} will modify the {C:purple}Chips & Mult{}", 
-				"of {C:purple}Poker Hands{} using {C:may_prismatic}G{} instead of {C:attention}adding{}", 
-				"when {C:planet}leveling up{}", 
-				may.pager(), 
+				"of {C:purple}Poker Hands{} in the following way", 
+				"when any {C:planet}level{} {C:green}increase{} is triggered:", 
+				may.pager(80),
+				"{C:attention}Parameter{} = {C:attention}Parameter{}{C:may_prismatic}#5#{}({C:tarot}1{} {C:chips}+{} {C:may_demiurgic}Level{} {C:attention}Parameter{} {C:mult}X{} {C:planet}level increase{})", 
+				may.pager(80),
 				"{C:inactive}G = #1#{}", 
-				"{C:inactive}Only for positive amounts{}", 
-				"{C:inactive,s:0.7}Eg. Level up High Card >> #2##3# Chips instead of +#3# Chips{}"
+				"{C:inactive}Only for positive amounts, overrides regular additive behavior{}", 
+				"{C:inactive,s:0.7}Eg. Level up High Card by 2 >> #2##3# Chips instead of +#4# Chips{}"
 		    }, 
 		    {
 			    "Appears every {C:attention}9 rounds{}", 
@@ -399,7 +401,8 @@ SMODS.Voucher {
 	end, 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "may_global_op_tutorial", set = "Other" }
-		return { vars = { may.global_op(), '{'..may.global_op()..'}', G.GAME.hands['High Card'].l_chips } }
+		may.tut_tip(info_queue, 'level_multchips')
+		return { vars = { may.global_op(), '{'..may.global_op()..'}', 1 + G.GAME.hands['High Card'].l_chips * 2, G.GAME.hands['High Card'].l_chips * 2, '{G}' } }
 	end,
 	special_voucher_behavior = function(self)
 		return may.get_run_stage() == 'post-transcendent' and G.GAME.round % 9 == 0 and may.get_highest_special_voucher_tier('astronomy') == 6
@@ -503,7 +506,7 @@ SMODS.Voucher {
 				"{C:green}Increases{} any {C:purple}Poker Hand{} {C:planet}level up{}", 
 				"using the following {C:attention}formula{}", 
 				may.pager(), 
-				"{C:planet}Levels{} = {C:planet}Levels{} {C:mult}X{} {C:attention}({}{C:may_prismatic}G{} {C:dark_edition}^{} {C:attention}(({}{C:planet}N{} {C:dark_edition}^{} {C:green}O{}{C:attention}){} {C:mult}X{} {C:attention}5)){}", 
+				"{C:planet}Levels{} = {C:planet}Levels{} {C:mult}X{} ({C:may_prismatic}G{} {C:dark_edition}^{} (({C:planet}N{} {C:dark_edition}^{} {C:green}O{}) {C:mult}X{} {C:attention}5{}))", 
 				may.pager(), 
 				"{C:planet}N{} is the {C:planet}level{} increase", 
 				"{C:mult}before{} other {C:planet}Astronomy{} Vouchers have been {C:green}applied{}", 
@@ -512,10 +515,7 @@ SMODS.Voucher {
 				"{C:attention}played{} the {C:purple}Poker Hand{} this run", 
 				may.pager(), 
 				"{C:money}Dollars{} will be {C:green}increased{} by", 
-				"{C:attention}({}{C:planet}N{} {C:mult}X{} {C:green}O{}{C:attention}){} when leveling up", 
-				may.pager(), 
-				"Before scoring, earn {X:attention,C:white}X0.1{} the played {C:purple}hand's{} {C:money}Dollars{}", 
-				"as {C:money}Interest{}",
+				"({}{C:planet}N{} {C:mult}X{} {C:green}O{}) when leveling up", 
 				may.pager(), 
 				"{C:inactive}G = #1#{}"
 		    }, 
@@ -540,11 +540,6 @@ SMODS.Voucher {
 		info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
 		info_queue[#info_queue + 1] = { key = "may_hand_dollars_tutorial", set = "Other" }
 		return { vars = { may.global_op() } }
-	end,
-	calculate = function(self, card, context)
-		if context.before and context.scoring_name then
-			may.ease_interest(-1, (G.GAME.hands[context.scoring_name].dollars or 0) * 0.1)
-		end
 	end, 
 	special_voucher_behavior = function(self)
 		return may.get_run_stage() == 'post-transcendent' and G.GAME.round % 9 == 0 and may.get_highest_special_voucher_tier('astronomy') == 9

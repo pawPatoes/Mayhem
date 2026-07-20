@@ -286,7 +286,7 @@ SMODS.Joker {
 			may.add_fusion_text('Omniversal Catalyst', 'World Destroyer', may.get_condition('world_destroyer')),
 		}
 	},
-	config = { extra = { Echip_gain = 0.5, Echip = 1, temp_scale = 0} },
+	config = { extra = { Echip_gain = 3, Echip = 1, temp_scale = 0} },
 	pos = { x = 2, y = 4 },
 	soul_pos = { x = 3, y = 4 },
 	cost = 300,
@@ -434,7 +434,7 @@ SMODS.Joker {
 	pos = { x = 3, y = 12 },
 	soul_pos = { x = 0, y = 13 },
 	cost = 314,
-	config = { extra = { blindcards = 20, cards_gain = 5, Emult = 14, } },
+	config = { extra = { blindcards = 20, cards_gain = 5, Emult = 42, } },
 	attributes = {
 		'generation', 
 		'wheel', 
@@ -519,7 +519,7 @@ SMODS.Joker {
 	demicoloncompat = true,
 	immutable = true,
 	pos = { x = 0, y = 0 },
-	config = { extra = { Echip = 1, Echip_gain = 0.5, Echip_gain2 = 0.1, } },
+	config = { extra = { Echip = 1, Echip_gain = 2, Echip_gain2 = 0.5, } },
 	loc_vars = function(self, info_queue, card)
 		may.fuse_tip(info_queue, 'stones', { (G.GAME.may_stones_destroyed or 0) })
         info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }

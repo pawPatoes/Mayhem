@@ -35,7 +35,7 @@ may.setting_tips = {
 		" ",
 		"If enabled, {C:dark_edition}fusion{} details on {C:attention}Jokers{} will be", 
 		"more {C:chips}schematic{} and {C:money}direct{}", 
-		"ex. {C:attention}Wheel of Eternity{} {C:chips}>>{} {C:attention}Diskus{}", 
+		"ex. {C:attention}Wheel of Eternity{} {C:chips}>>{} {C:dark_edition}Diskus{}", 
 		"The {C:attention}Joker{} on the {C:attention}left{} is the 2nd {C:money}ingredient{}", 
 		"and the {C:attention}Joker{} to the {C:attention}right{} is the {C:dark_edition}result{}"
 	}, 

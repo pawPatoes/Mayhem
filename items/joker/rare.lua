@@ -799,6 +799,7 @@ SMODS.Joker {
                 wheel:set_edition('e_negative')
 				G.consumeables:emplace(wheel)
 				wheel.sell_cost = 0
+				wheel:set_cost()
                 play_sound('timpani')
 			return true end}))
 		end

@@ -35,7 +35,7 @@ function create_card(_type, area, legendary, _rarity, skip_materialize, soulable
 		local from_shop = card.area == G.shop_jokers
 		
 		if card.gc and may.has_upsd(card:gc().key) and not G.GAME.banned_keys[may.get_upsd(card:gc().key).key] then	
-			if (G.GAME.may_upside_down_deck or SMODS.pseudorandom_probability(card, "may_spawn_upsd", 1, G.GAME.may_upsd_rate, "Upside Down")) then
+			if (G.GAME.may_upside_down_deck or SMODS.pseudorandom_probability(card, "may_spawn_upsd", 1, G.GAME.may_upsd_rate, "Upside Down", true)) then
 				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.5, blockable = false, blocking = false, func = function() 
 					if (not card.no_upsd) and (not card.no_variants) then 
 						card:set_ability(G.P_CENTERS[may.get_upsd(card:gc().key).key])

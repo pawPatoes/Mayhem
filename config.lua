@@ -35,7 +35,7 @@ return {
 	["party_music_everywhere"] = false, 
 	["pagers"] = true, 
 	["show_version"] = true,
-	["short_fusion"] = true,
+	["short_fusion"] = false,
 	["tutorial_tooltips"] = true,
 	["score_shakiness"] = {
 		["quiverlimit"] = 25,

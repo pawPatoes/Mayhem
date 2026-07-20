@@ -147,7 +147,7 @@ SMODS.Consumable {
 				"{C:inactive}G = #1#{}"
 			},
 			{
-				"Rarely appears in place of {C:attention}Jokers{}", 
+				"Rarely appears in place of {C:retrocards}Retro Cards{}", 
 				"inside {C:attention}Booster Packs{}"
 			}, 
 			{
@@ -173,7 +173,7 @@ SMODS.Consumable {
 	no_grc = true,
 	hidden = true,
 	soul_rate = 0.01,
-	soul_set = 'Joker',
+	soul_set = 'retrocards',
 	loc_vars = function(self, info_queue, card)
 		may.tut_tip(info_queue, 'global_op')
 		return { vars = { may.global_op() } }

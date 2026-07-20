@@ -174,7 +174,7 @@ SMODS.Seal {
 		label = 'Pink Seal',
 		text = {
 			"Levels up {C:attention}played{}", 
-			"{C:purple}Poker Hand{} but {X:money,C:white}X0.9${}", 
+			"{C:purple}Poker Hand{} but {C:mult}-$4{}", 
 			"after {C:attention}scoring{} if played"
 		}
 	},
@@ -188,7 +188,7 @@ SMODS.Seal {
 			level_up_hand(card, context.scoring_name, nil, 1)
 			may.ch()
 			return {
-				x_dollars = 0.9
+				p_dollars = -4
 			}
 		end
 	end

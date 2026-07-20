@@ -235,7 +235,7 @@ pattern = "return base + G.GAME.hands[hand]['l_' .. parameter] * level_up"
 position = "at"
 payload = '''
 if may.has_card('v_may_astronomy_7') and level_up > 0 then 
-	return may.rep_arrow(base, may.global_op(), G.GAME.hands[hand]['l_' .. parameter], level_up)
+	return to_big(base):arrow(may.global_op(), 1 + (G.GAME.hands[hand]['l_' .. parameter] * level_up)) 
 else
 	return math.max(0, base + G.GAME.hands[hand]['l_' .. parameter] * level_up) 
 end

@@ -4,24 +4,20 @@
 may.epic_key = 'may_epic'
 if #SMODS.find_mod('Cryptid') ~= 0 then
 	may.epic_key = 'cry_epic'
-end
-
-if #SMODS.find_mod('Cryptid') == 0 then
-
-SMODS.Rarity{
-	key = 'epic',
-	name = "Epic",
-	loc_txt = {
-		name = "Epic"
-	},
-	badge_colour = HEX("ef0098"),
-	default_rate = 0.009,
-	pools = {["Joker"] = true}, 
-    get_weight = function(self, weight, object_type)
-		return 0.003
-	end, 
-}
-
+else
+	SMODS.Rarity{
+		key = 'epic',
+		name = "Epic",
+		loc_txt = {
+			name = "Epic"
+		},
+		badge_colour = HEX("ef0098"),
+		default_rate = 0.009,
+		pools = {["Joker"] = true}, 
+    	get_weight = function(self, weight, object_type)
+			return 0.003
+		end, 
+	}
 end
 
 SMODS.Rarity{

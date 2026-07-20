@@ -316,7 +316,6 @@ SMODS.Joker {
 				"{C:inactive}Max 100 triggers per money change{}",
 				"{C:inactive}Will not activate if current money{}", 
 				"{C:inactive}or money change is bigger than ee308{}", 
-			    "{C:inactive}Duplicate Vouchers may appear{}",
 				may.pager(), 
                 "{C:inactive,E:1,s:0.7}Ye call this grog? I can still feel me face.{}",
             }, 

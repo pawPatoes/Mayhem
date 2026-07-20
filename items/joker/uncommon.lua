@@ -215,7 +215,7 @@ SMODS.Joker {
 				if SMODS.has_enhancement(v, 'c_base') then
 					G.E_MANAGER:add_event(Event({func = function()
 						v:juice_up(0.3, 0.5)
-						v:set_ability(SMODS.poll_enhancement({ guaranteed = true, no_replace = true }), nil, true)
+						v:set_ability(G.P_CENTERS[SMODS.poll_enhancement({ guaranteed = true, no_replace = true })], nil, true)
 						play_sound('tarot1', 1, 0.7)
 					return true end})) 
 				end
@@ -232,14 +232,14 @@ SMODS.Joker {
 				if SMODS.has_enhancement(v, 'c_base') then
 					G.E_MANAGER:add_event(Event({func = function()
 						v:juice_up(0.3, 0.5)
-						v:set_ability(SMODS.poll_enhancement({ guaranteed = true, no_replace = true }), nil, true)
+						v:set_ability(G.P_CENTERS[SMODS.poll_enhancement({ guaranteed = true, no_replace = true })], nil, true)
 						play_sound('tarot1', 1, 0.7)
 					return true end})) 
 				end
 			end
 			return {
 				card = card,
-				message = "Enhancements!",
+				message = "Enhancements...",
 				sound = 'holo1',
 				colour = G.C.DARK_EDITION
 			}
