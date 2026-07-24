@@ -874,7 +874,7 @@ SMODS.Consumable {
 	key = 'deimos',
 	pos = { x = 2, y = 1 },
 	atlas = 'planet',
-	config = { extra = { Xchips = 0.2, cards = 0 } },
+	config = { extra = { Xchips = 0.2 } },
 	ignore_allplanets = true,
 	no_ring_display = true, 
 	set_card_type_badge = function(self, card, badges)
@@ -983,7 +983,7 @@ SMODS.Consumable {
 	end,]]
 	in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards or {}) do
-			if SMODS.has_enhancement(v, "m_stone") then
+			if SMODS.has_no_rank(v) or SMODS.has_no_suit(v) then
 				return true, {allow_duplicates = false}
 			end
 		end

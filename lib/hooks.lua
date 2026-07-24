@@ -160,9 +160,14 @@ function SMODS.upgrade_poker_hands(args)
 	vanf_suph(args)
 	if args.level_up then
 		if ast10_money then
-			may.th(args.hands[1])
+			if not args.instant then 
+				may.th(args.hands[1]) 
+			end 
 			may.hand_mod_dollars(args.from, args.hands[1], args.instant, -1, ast10_money)
-			may.refresh_score_operator()
+			if not args.instant then 
+				may.refresh_score_operator()
+				may.ch()
+			end
 		end
 	end
 end 
@@ -568,7 +573,6 @@ local vamf_cmb = SMODS.create_mod_badges
 SMODS.create_mod_badges = function(obj, badges)
     local before = #badges
     vamf_cmb(obj, badges)
-
     if obj and obj.mod and obj.mod.id == "mayhem" then
         for i = before + 1, #badges do
             local badge = badges[i]

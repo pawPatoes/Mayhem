@@ -103,7 +103,7 @@ Engulf.EditionFuncs.e_may_alloy = function(card, hand, instant, amount, edition)
 		end
 	end
 	may.hand_multchips(card, hand, instant, nil, {0, (1 + (edition.x_mult * steel)) ^ amount})
-	may.hand_mod_dollars(hand, 0, (1 + (edition.x_dollars * gold)) ^ amount, instant)
+	may.hand_mod_dollars(hand, 0, edition.p_dollars * gold * amount, instant)
 end
 
 Engulf.EditionFuncs.e_may_inverted = function(card, hand, instant, amount, edition)

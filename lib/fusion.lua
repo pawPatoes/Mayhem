@@ -618,7 +618,7 @@ may.fusions:add_fusion('j_may_wizard_university', nil, nil, 'j_may_aurora_rave',
 	return false
 end)
 
-may.fusions:add_fusion('j_may_zodiac', nil, nil, 'j_may_world_destroyer', nil, nil, 'j_may_astral_expunger', 200, 'may_demiurgic_joker', nil, 1, function()
+may.fusions:add_fusion('j_may_zodiac', nil, nil, 'j_may_world_destroyer', nil, nil, 'j_may_astral_expunger', 2500, 'may_demiurgic_joker', nil, 1, function()
 	return may.ctu('Tarot') > 50
 end)
 

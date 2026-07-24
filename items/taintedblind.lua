@@ -1012,7 +1012,7 @@ SMODS.Blind {
 	end
 }]]
 
-SMODS.Blind {
+--[[SMODS.Blind {
 	key = 'tainted_eye',
 	loc_txt = {
 		name = 'The Gaze',
@@ -1047,7 +1047,7 @@ SMODS.Blind {
 	in_pool = function(self, args)
 		return G.GAME.may_endless_mode and G.GAME.bosses_used['bl_eye'] >= 1, { allow_duplicates = true }
 	end
-}
+}]] 
 
 SMODS.Blind {
 	key = 'tainted_mouth',

@@ -190,7 +190,7 @@ SMODS.Joker {
 			may.add_fusion_text('Omniversal Catalyst', 'Acum Multiplexum', may.get_condition('acum_multiplexum')),
 		}
 	},
-	config = { extra = { repetitions = 4, ee_mult = 11 } },
+	config = { extra = { repetitions = 4, ee_mult = 2 } },
 	immutable = true,
 	rarity = "may_prismatic",
 	atlas = 'joker1',

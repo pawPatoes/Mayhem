@@ -48,7 +48,7 @@ SMODS.Consumable:take_ownership('c_ankh', {
 		text = {
 			"Create {C:attention}#1#{} duplicates of", 
 			"a selected {C:mult}non-{}{C:dark_edition}hidden{} {C:attention}Consumable{}", 
-			"{C:inactive}Ankh excluded, requires room{}", 
+			"{C:inactive}Ankh and Aeon excluded, requires room{}", 
 		}
 	}, 
 	config = { extra = { copies = 2 } }, 
@@ -57,7 +57,7 @@ SMODS.Consumable:take_ownership('c_ankh', {
 	end,
 	can_use = function(self, card)
 		for k, v in pairs(G.consumeables.highlighted) do
-			if v ~= card and v:gc().key ~= 'c_ankh' and v.ability.consumeable and not v:gc().hidden and not v:gc().no_doe then
+			if v ~= card and v:gc().key ~= 'c_ankh' and v:gc().key ~= 'c_aeon' and v.ability.consumeable and not v:gc().hidden and not v:gc().no_doe then
 				return #G.consumeables.highlighted <= 2 and (G.consumeables and #G.consumeables.cards < G.consumeables.config.card_limit + ( card.area == G.consumeables and 1 or 0 ))
 			end
 		end 

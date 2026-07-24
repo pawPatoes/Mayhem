@@ -56,7 +56,7 @@ SMODS.Scoring_Calculation {
 	key = "max",
 	func = function(self, chips, mult, flames) return math.max(chips, mult) end,
 	text = 'max',
-	colour = SMODS.Gradients.may_col_hidden_enhancement
+	colour = SMODS.Gradients.may_col_instability
 }
 
 SMODS.Scoring_Calculation {
@@ -64,7 +64,7 @@ SMODS.Scoring_Calculation {
 	key = "min",
 	func = function(self, chips, mult, flames) return math.min(chips, mult) end,
 	text = 'min',
-	colour = SMODS.Gradients.may_col_surreal
+	colour = SMODS.Gradients.may_col_opalescent
 }
 
 SMODS.Scoring_Calculation {

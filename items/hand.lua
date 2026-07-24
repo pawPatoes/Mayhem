@@ -60,14 +60,15 @@ SMODS.PokerHand {
     loc_txt = {
         name = 'Bulwark',
         description = {
-            '5 Stone Cards in the same hand',
+            '5 Suitless and Rankless cards', 
+			'in the same hand',
             '{C:inactive}Taken from Cryptid{}'
         }
     },
 	evaluate = function(parts, hand)
 		local stones = {}
 		for k, v in ipairs(hand) do
-			if v.config.center_key == "m_stone" then
+			if SMODS.has_no_rank(v) and SMODS.has_no_suit(v) then
 				stones[#stones + 1] = v
 			end
 		end

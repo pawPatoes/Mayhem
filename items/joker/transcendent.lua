@@ -176,7 +176,7 @@ SMODS.Joker {
 			}
 		}
 	},
-	config = { extra = { obtained = 2, wheels = 1120, mod = 4, req_wheels = 14, used_wheels = 0 } },
+	config = { extra = { obtained = 5, wheels = 1120, mod = 4, req_wheels = 14, used_wheels = 0 } },
 	rarity = "may_transcendent",
 	atlas = 'joker2',
 	blueprint_compat = false,
@@ -446,7 +446,7 @@ SMODS.Joker {
         end
 		if context.using_consumeable then 
 			if context.consumeable:gc().key == 'c_may_deimos' then
-                may.hand_multchips(context.consumeable, may.favhand(), false, {card.ability.extra.hyperoperator, card.ability.extra.hyper_chips})
+                may.hand_multchips(context.consumeable, may.favhand(), false, {card.ability.extra.arrow, card.ability.extra.hyper_chips})
 			end
 			if context.consumeable:gc().set == 'Tarot' then
 				card.ability.extra.used = card.ability.extra.used + 1

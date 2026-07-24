@@ -15,7 +15,7 @@ SMODS.Joker {
 			may.add_fusion_text('Kepler\'s Dream', 'As Ultimatum', may.get_condition('as_ultimatum')),
 		}
 	},
-	config = { extra = { repetitions = 8, eee_mult = 11 } },
+	config = { extra = { repetitions = 4, eee_mult = 2 } },
 	rarity = "may_demiurgic",
 	atlas = 'joker1',
 	blueprint_compat = true,

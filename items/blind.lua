@@ -78,13 +78,9 @@ SMODS.Blind {
 		min = 1,
 		max = 10
 	}, 
-	calculate = function(self, blind, context)
-		if context.before and context.scoring_hand then
-			return {
-				x_chips = 0.85 ^ #context.scoring_hand
-			}
-		end
-	end, 
+	modify_hand = function(self, cards, poker_hands, text, mult, hand_chips)
+		return mult, hand_chips * (0.85 ^ #cards), true
+	end,
 	boss_colour = HEX('D3FC7E'),
 	dollars = 5,
 	mult = 1.5,
@@ -138,21 +134,13 @@ SMODS.Blind {
 			"are debuffed"
 		}
     },
-	calculate = function(self, blind, context)
-		if context.setting_blind then
-			if not blind.disabled then 
-				G.hand:change_size(-1)
-				G.GAME.round_resets.temp_handsize = (G.GAME.round_resets.temp_handsize or 0) - 1
-			end
-		end
-		if context.debuff_card and context.debuff_card.area ~= G.jokers and not context.debuff_card:is_face() then
-			if not blind.disabled then 
-            	return {
-                	debuff = true
-				}
-			end
-		end
+	set_blind = function(self)
+		G.hand:change_size(1)
+		G.GAME.round_resets.temp_handsize = (G.GAME.round_resets.temp_handsize or 0) + 1
 	end, 
+	recalc_debuff = function(self, card, from_blind)
+		return card.area ~= G.jokers and SMODS.is_playing_card(card) and not card:is_face()
+	end,
 	boss = {
 		min = 1,
 		max = 10
@@ -186,23 +174,20 @@ SMODS.Blind {
 	mult = 2,
 	atlas = "blind",
 	pos = {x = 0, y = 5},
-	calculate = function(self, blind, context)
-    	if context.setting_blind and not blind.disabled and #G.jokers.cards ~= 0 then
-        	local joker
-        	for i = #G.jokers.cards, 1, -1 do
-            	if not SMODS.is_eternal(G.jokers.cards[i]) then
-                	joker = G.jokers.cards[i]
-                	break
-            	end
+	set_blind = function(self)
+    	for i = #G.jokers.cards, 1, -1 do
+            if not SMODS.is_eternal(G.jokers.cards[i]) then
+            	joker = G.jokers.cards[i]
+            	break
         	end
-        	if joker then
-				G.E_MANAGER:add_event(Event({trigger = "after", delay = 0.15, func = function()
-					joker:juice_up(0.3, 0.5)
-					play_sound("tarot1")
-					joker:set_eternal(true)
-					SMODS.juice_up_blind()
-            	return true end}))
-			end
+        end
+    	if joker then
+			G.E_MANAGER:add_event(Event({trigger = "after", delay = 0.15, func = function()
+				joker:juice_up(0.3, 0.5)
+				play_sound("tarot1")
+				joker:set_eternal(true)
+				SMODS.juice_up_blind()
+            return true end}))
 		end
 	end,
 }
@@ -226,16 +211,8 @@ SMODS.Blind {
 	mult = 2,
 	atlas = "blind",
 	pos = {x = 0, y = 6},
-	calculate = function(self, blind, context)
-        if not blind.disabled then
-            if context.debuff_card and context.debuff_card.area ~= G.jokers then
-				if SMODS.has_enhancement(context.debuff_card, 'c_base') and not context.debuff_card.edition and not context.debuff_card.seal then
-                	return {
-                    	debuff = true
-                	}
-				end
-            end
-		end
+	recalc_debuff = function(self, card, from_blind)
+		return SMODS.has_enhancement(v, 'c_base') and not v.edition and not v.debuff_card.seal
 	end, 
 	in_pool = function(self)
 		return G.GAME.round_resets.ante > 6
@@ -300,6 +277,8 @@ SMODS.Blind {
 	atlas = "blind",
 	pos = {x = 0, y = 8},
 	calculate = function(self, blind, context)
+		if blind.disabled then return end 
+		
 		if context.pre_discard then
 			ease_hands_played(-1)
 			SMODS.juice_up_blind()
@@ -395,6 +374,8 @@ SMODS.Blind {
 		}
     },
 	calculate = function(self, blind, context)
+		if blind.disabled then return end 
+		
 		if context.after then 
 			if not blind.disabled then
 				G.hand:change_size(-1)
@@ -453,26 +434,22 @@ SMODS.Blind {
 			"full deck by -1"
 		}
     },
-	calculate = function(self, blind, context)
-		if context.setting_blind then
-			if not blind.disabled then
-				for k, v in pairs(G.playing_cards) do 
-					assert(SMODS.modify_rank(v, -1))
-					G.E_MANAGER:add_event(Event({func = function()
-						play_sound('tarot1', 0.5)
-						v:juice_up(0.3, 0.5)
-					return true end})) 
-				end
-			end
+	set_blind = function(self)
+		for k, v in pairs(G.playing_cards) do 
+			assert(SMODS.modify_rank(v, -1))
+			G.E_MANAGER:add_event(Event({func = function()
+				play_sound('tarot1', 0.5)
+				v:juice_up(0.3, 0.5)
+			return true end})) 
 		end
-		if context.end_of_round and context.game_over == false and context.main_eval and not blind.disabled then 
-			for k, v in pairs(G.playing_cards) do 
-				assert(SMODS.modify_rank(v, 1))
-				G.E_MANAGER:add_event(Event({func = function()
-					play_sound('tarot1', 0.75)
-					v:juice_up(0.3, 0.5)
-				return true end})) 
-			end
+	end, 
+	defeat = function(self)
+		for k, v in pairs(G.playing_cards) do 
+			assert(SMODS.modify_rank(v, 1))
+			G.E_MANAGER:add_event(Event({func = function()
+				play_sound('tarot1', 0.75)
+				v:juice_up(0.3, 0.5)
+			return true end})) 
 		end
 	end,
 	boss = {
@@ -535,14 +512,10 @@ SMODS.Blind {
 	disable = function(self)
 		self.config.can_debuff = false
 	end,
-	calculate = function(self, blind, context)
-		if context.setting_blind then
-			if not blind.disabled then
-				for i = 1, math.floor(#G.playing_cards * 0.25) do 
-					local card = pseudorandom_element(G.deck.cards, pseudoseed('may_coffin'))
-					draw_card(card.area, G.discard, 100, 'up', false, v)
-				end
-			end
+	set_blind = function(self)
+		for i = 1, math.floor(#G.playing_cards * 0.25) do 
+			local card = pseudorandom_element(G.deck.cards, pseudoseed('may_coffin'))
+			draw_card(card.area, G.discard, 100, 'up', false, v)
 		end
 	end,
 	boss = {
@@ -571,14 +544,10 @@ SMODS.Blind {
 	disable = function(self)
 		self.config.can_debuff = false
 	end,
-	calculate = function(self, blind, context)
-		if context.setting_blind then 
-			if not blind.disabled then
-				for k, v in pairs(G.playing_cards) do
-					if v.edition or v.seal or not SMODS.has_enhancement(v, 'c_base') then 
-						draw_card(v.area, G.discard, 100, 'up', false, v)
-					end
-				end
+	set_blind = function(self)
+		for k, v in pairs(G.playing_cards) do
+			if v.edition or v.seal or not SMODS.has_enhancement(v, 'c_base') then 
+				draw_card(v.area, G.discard, 100, 'up', false, v)
 			end
 		end
 	end,
@@ -629,8 +598,8 @@ SMODS.Blind {
 		name = 'The Loanshark',
 		text = { 
 			"Multiply blind size",
-			"by 1 + X0.2 the sell value",
-			"of a random Joker"
+			"by X(1 + 20% the sell value",
+			"of a random Joker)"
 		}
     },
 	set_blind = function(self)
@@ -666,11 +635,9 @@ SMODS.Blind {
 			"when selected"
 		}
     },
-	calculate = function(self, blind, context)
-		if context.setting_blind and not blind.disabled then
-			G.jokers:change_size(-(G.jokers.config.card_limit - #G.jokers.cards))
-			G.consumeables:change_size(-(G.consumeables.config.card_limit - #G.consumeables.cards))
-		end
+	set_blind = function(self)
+		G.jokers:change_size(-(G.jokers.config.card_limit - #G.jokers.cards))
+		G.consumeables:change_size(-(G.consumeables.config.card_limit - #G.consumeables.cards))
 	end,
 	boss = {
 		min = 1,
@@ -703,8 +670,8 @@ SMODS.Blind {
 	loc_vars = function(self, info_queue, card)
 		return { vars = { '{G}4' } }
 	end,
-	calculate = function(self, blind, context)
-		if context.setting_blind and not blind.disabled and not G.GAME.may_runaway then
+	set_blind = function(self)
+		if not G.GAME.may_runaway then
 			G.E_MANAGER:add_event(Event({func = function()
 				G.GAME.blind.chips = to_big(G.GAME.blind.chips):arrow(may.global_op(), 4)
 				G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)

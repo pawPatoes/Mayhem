@@ -1772,7 +1772,7 @@ SMODS.Consumable {
 	end
 }
 
-SMODS.Consumable {
+--[[SMODS.Consumable {
 	key = 'platinum_card',
 	config = { extra = { bonus = 1.1, target = 'm_may_platinum' } },
 	loc_txt = {
@@ -1890,7 +1890,7 @@ SMODS.Consumable {
 		end
 		return false, {allow_duplicates = false}
 	end
-}
+}]]
 
 SMODS.Consumable {
 	key = 'fortune_card',

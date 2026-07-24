@@ -50,7 +50,7 @@ may.score_operator_colors = {
 	'may_col_opalescent', 
 	'may_col_instability', 
 	'may_col_e_otherworldly', 
-	'may_col_ethereal', 
+	'may_col_e_omega', 
 	'may_col_big_operator',
 	'may_col_huge_operator', 
 }

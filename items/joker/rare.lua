@@ -1291,14 +1291,18 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	pos = { x = 1, y = 4 },
-	cost = 6, 
+	cost = 8,
+	endless = true, 
 	calculate = function(self, card, context)
 		if context.joker_main or context.force_trigger then
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.1, func = function()
 				may.random_tag()
 			return true end}))
 		end
-	end
+	end, 
+	in_pool = function(self, args)
+        return G.GAME.may_endless_mode, { allow_duplicates = false }
+    end
 }
 
 SMODS.Joker {

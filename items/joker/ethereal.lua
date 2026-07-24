@@ -197,7 +197,7 @@ SMODS.Joker {
 			may.add_fusion_text('Omniversal Catalyst', 'Acum Universum', may.get_condition('acum_universum')),
 		}
 	},
-	config = { extra = { repetitions = 4, e_mult = 11 } },
+	config = { extra = { repetitions = 4, e_mult = 2 } },
 	rarity = "may_ethereal",
 	blueprint_compat = true,
 	demicoloncompat = true,
@@ -510,15 +510,19 @@ SMODS.Joker {
 				"Played {C:dark_edition}Stone Cards{} increase", 
 				may.hyp(1, 'chips', '^Chips').." gain by "..may.hyp(1, 'chips', '+^#3#').." before scoring",
 			},
-            may.add_fusion_text('Cement Joker', 'Eternity Stone', may.get_condition('eternity_stone')) 
+            may.add_fusion_text('Cement Joker', 'Eternity Stone', may.get_condition('eternity_stone')), 
+			{
+				"{C:inactive}Art by zikir8{}"
+			}, 
 		}
 	},
 	rarity = "may_ethereal",
-	atlas = 'placeholder',
+	atlas = 'joker2',
 	blueprint_compat = true,
 	demicoloncompat = true,
 	immutable = true,
-	pos = { x = 0, y = 0 },
+	pos = { x = 9, y = 3 },
+	soul_pos = { x = 10, y = 3 }, 
 	config = { extra = { Echip = 1, Echip_gain = 2, Echip_gain2 = 0.5, } },
 	loc_vars = function(self, info_queue, card)
 		may.fuse_tip(info_queue, 'stones', { (G.GAME.may_stones_destroyed or 0) })
