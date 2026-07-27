@@ -5,21 +5,20 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Power Trip",
 		text = {
-			"Future {X:mult,C:white}Rare{} and {X:uncommon,C:white}Uncommon{}", 
-            "Jokers are {C:money}free{}",
+			"{X:"..may.epic_key..",C:white}Epic{} Jokers will", 
+			"appear {X:green,C:white}X4{} more frequently",
 		}
 	},
 	pos = { x = 2, y = 0 },
 	atlas = 'placeholder_voucher',
 	cost = 10,
-	pools = { Tier3 = true },
 	unlocked = true,
 	requires = {'v_may_natural_selection'},
 	redeem = function(self, card)
-		G.GAME.power_trip = true
+		G.GAME[may.epic_key..'_mod'] = G.GAME[may.epic_key..'_mod'] * 4
 	end,
 	unredeem = function(self, card)
-		G.GAME.power_trip = false
+		G.GAME[may.epic_key..'_mod'] = G.GAME[may.epic_key..'_mod'] / 4
 	end,
 }
 
@@ -34,7 +33,6 @@ SMODS.Voucher {
 	pos = { x = 2, y = 0 },
 	atlas = 'placeholder_voucher',
 	cost = 10,
-	pools = { Tier3 = true },
 	unlocked = true,
 	requires = {'v_may_booster_overabundance'},
 	redeem = function(self, card)
@@ -56,7 +54,6 @@ SMODS.Voucher {
 	pos = { x = 2, y = 0 },
 	atlas = 'placeholder_voucher',
 	cost = 10,
-	pools = { Tier3 = true },
 	unlocked = true,
 	voucher_sellable = true,
 	requires = {'v_may_extended_selection'},
@@ -80,7 +77,6 @@ SMODS.Voucher {
 	pos = { x = 2, y = 0 },
 	atlas = 'placeholder_voucher',
 	requires = {'v_may_meteor'},
-	pools = { Tier3 = true },
 	cost = 10,
 	unlocked = true,
 	loc_vars = function(self, info_queue, card)

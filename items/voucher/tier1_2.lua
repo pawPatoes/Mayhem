@@ -5,7 +5,8 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Food Chain",
 		text = {
-			"{X:mult,C:white}Rare{} Jokers are {X:attention,C:white}X2{} more common",
+			"{X:mult,C:white}Rare{} Jokers will", 
+			"appear {X:green,C:white}X2{} more frequently",
 		}
 	},
 	pos = { x = 2, y = 0 },
@@ -26,8 +27,11 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Natural Selection",
 		text = {
-			"{X:mult,C:white}Rare{} Jokers are {X:attention,C:white}X3{} more common",
-			"{X:green,C:white}Uncommon{} Jokers are {X:attention,C:white}X2{} more common",
+			"{X:mult,C:white}Rare{} Jokers will", 
+			"appear {X:green,C:white}X3{} more frequently",
+			may.pager(45),
+			"{X:green,C:white}Uncommon{} Jokers will", 
+			"appear {X:green,C:white}X2{} more frequently",
 		}
 	},
 	pos = { x = 3, y = 0 },
@@ -692,27 +696,28 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Orbit",
 		text = {
-			"When {C:attention}Boss Blind{} is", 
-            "defeated, gain {C:attention}2{} {C:planet}Meteor Tags{}"
-		}
+			"When a {C:planet}Celestial Pack{} is opened,",
+			"{C:planet}level up{} all {C:purple}Poker Hands{} by {C:attention}+0.15{} for", 
+			"every {C:attention}card{} it contains by default", 
+			"{C:inactive}Level-ups are silent{}"
+		},
 	},
 	pos = { x = 5, y = 3 },
 	atlas = 'voucher',
 	cost = 10,
 	unlocked = true,
 	voucher_sellable = true,
-    requires = {'v_may_astronomy'}, 
+    requires = {'v_may_outerspacial'}, 
 	loc_vars = function(self, info_queue, card)
-		info_queue[#info_queue + 1] = G.P_TAGS.tag_meteor
-	end,
+		info_queue[#info_queue + 1] = G.P_CENTERS.p_celestial_normal_1
+		info_queue[#info_queue + 1] = G.P_CENTERS.p_celestial_jumbo_1
+		info_queue[#info_queue + 1] = G.P_CENTERS.p_celestial_mega_1
+	end, 
 	calculate = function(self, card, context)
-        if context.end_of_round and context.game_over == false and context.main_eval and context.beat_boss then 
-            for i=1, 2 do 
-                G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-                    add_tag(Tag('tag_meteor'))
-                    play_sound('tarot1')
-                return true end}))
-            end 
+        if context.open_booster and context.card:gc().kind == 'Celestial' then 
+			may.h('All hands', '+', '+', 0.15 * context.card.ability.cards)
+			may.level_up_all_hands(card, nil, true, 0.15 * context.card.ability.cards)
+			may.ch()
         end
     end
 }
@@ -831,4 +836,56 @@ SMODS.Voucher {
 	redeem = function(self)
 		G.GAME.may_upsd_rate = (G.GAME.may_upsd_rate or 80) - ((G.GAME.may_upsd_rate or 80) * 0.5)
 	end 
+}
+
+SMODS.Voucher {
+	key = 'fidelity_program',
+	loc_txt = {
+		name = "Fidelity Program",
+		text = {
+			"When a {C:green}Voucher{} is redeemed,", 
+			"create {C:attention}2{} random {C:attention}Consumables{}", 
+			"{C:inactive}Does not require room{}"
+		}
+	},
+	pos = { x = 4, y = 4 },
+	atlas = 'voucher',
+	cost = 10,
+	unlocked = true,
+	calculate = function(self, card, context)
+		if context.buying_card and context.card:gc().set == 'Voucher' then 
+			for i = 1, 2 do 
+				G.E_MANAGER:add_event(Event({func = function() 
+					if context.card ~= card then 
+						local card2 = SMODS.add_card({ set = 'Consumeables', key = may.random_consumable('may_fidelity_program', nil, nil, nil, true).key })
+						card2:juice_up(0.3, 0.5)
+						play_sound('timpani')
+					end
+				return true end})) 
+			end
+		end
+	end
+}
+
+SMODS.Voucher {
+	key = 'membership_prize',
+	loc_txt = {
+		name = "Membership Prize",
+		text = {
+			"When a {C:green}Voucher{} is redeemed inside the shop,", 
+			"add a random {C:attention}Booster Pack{} to the shop",
+		}
+	},
+	pos = { x = 5, y = 4 },
+	atlas = 'voucher',
+	cost = 10,
+	unlocked = true,
+	requires = {'v_may_fidelity_program'}, 
+	calculate = function(self, card, context)
+		if context.buying_card and context.card ~= card and context.card:gc().set == 'Voucher' and G.shop then 
+			G.E_MANAGER:add_event(Event({func = function() 
+				SMODS.add_booster_to_shop()
+			return true end})) 
+		end
+	end
 }

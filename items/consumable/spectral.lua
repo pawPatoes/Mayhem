@@ -3,15 +3,20 @@
 SMODS.Consumable {
 	set = 'Spectral',
 	key = 'phantom',
-	pos = { x = 2, y = 2 },
+	pos = { x = 0, y = 5 },
 	config = { extra = { cards = 2 } }, 
-	atlas = 'placeholder',
+	atlas = 'spectral',
 	loc_txt = {
 		name = 'Phantom',
 		text = {
-			"Create {C:attention}#1#{} random", 
-			"{C:spectral}Spectral Cards{}", 
-			"{C:inactive}(Requires room){}"
+			{
+				"Create {C:attention}#1#{} random", 
+				"{C:spectral}Spectral Cards{}", 
+				"{C:inactive}(Requires room){}"
+			}, 
+			{
+				"{C:inactive,E:1}Art by zikir8{}"
+			}
 		}
 	},
 	can_use = function(self, card)
@@ -53,16 +58,21 @@ SMODS.Consumable {
 SMODS.Consumable {
 	set = 'Spectral',
 	key = 'aeon',
-	pos = { x = 2, y = 2 },
+	pos = { x = 1, y = 5 },
 	config = { extra = { cards = 1 } }, 
-	atlas = 'placeholder',
+	atlas = 'spectral',
 	loc_txt = {
 		name = 'Aeon', 
 		text = {
-			"Create #1# {C:attention}copy{} of", 
-			"the {C:attention}last{} {C:spectral}Spectral Card{}", 
-			"{C:attention}used{} this run", 
-			"{C:inactive}(Aeon and hidden Spectrals excluded, requires room){}"
+			{
+				"Create #1# {C:attention}copy{} of", 
+				"the {C:attention}last{} {C:spectral}Spectral Card{}", 
+				"{C:attention}used{} this run", 
+				"{C:inactive}(Aeon and hidden Spectrals excluded, requires room){}"
+			}, 
+			{
+				"{C:inactive,E:1}Art by zikir8{}"
+			}
 		}
 	}, 
 	loc_vars = function(self, info_queue, card)
@@ -505,15 +515,19 @@ SMODS.Consumable {
 	loc_txt = {
 		name = "Malfunction",
 		text = {
-			"Add an {C:attention}ERROR Seal{}",
-			"to {C:attention}#1#{} selected",
-			"card in your hand"
+			{
+				"Add an {C:attention}ERROR Seal{}",
+				"to {C:attention}#1#{} selected",
+				"card in your hand"
+			}, 
+			{
+				"{C:inactive,E:1}Art by zikir8{}"
+			}
 		}
 	},
 	config = { max_highlighted = 1, extra = "may_error_seal" },
-	pos = { x = 2, y = 2 },
-	atlas = 'placeholder',
-	misc_badge = may_rare_badge,
+	pos = { x = 2, y = 5 },
+	atlas = 'spectral', 
 	cost = 4,
 	unlocked = true,
 	can_use = function(self, card)
@@ -950,13 +964,18 @@ SMODS.Consumable {
 	loc_txt = {
 		name = "Medusa",
 		text = {
-			"Convert all {C:attention}cards{}", 
-			"{C:attention}held in hand{} into", 
-			"{C:dark_edition}Stone Cards{}",
+			{
+				"Convert all {C:attention}cards{}", 
+				"{C:attention}held in hand{} into", 
+				"{C:dark_edition}Stone Cards{}",
+			}, 
+			{
+				"{C:inactive,E:1}Art by zikir8{}"
+			}
 		}
 	},
-	pos = { x = 2, y = 2 },
-	atlas = 'placeholder',
+	pos = { x = 3, y = 5 },
+	atlas = 'spectral',
 	cost = 4,
 	unlocked = true,
 	can_use = function(self, card)
@@ -1002,16 +1021,21 @@ SMODS.Consumable {
 	loc_txt = {
 		name = "Vile",
 		text = {
-			"{C:attention}Randomize{} all cards {C:attention}held in hand{}",
-			may.pager(40),
-			"{C:attention}Each{} randomized {C:attention}card{} has",
-			"a {C:green}#1# in #2#{} chance to",
-			"give {C:money}+#3#{} Interest Cap",
+			{
+				"{C:attention}Randomize{} all cards {C:attention}held in hand{}",
+				may.pager(40),
+				"{C:attention}Each{} randomized {C:attention}card{} has",
+				"a {C:green}#1# in #2#{} chance to",
+				"give {C:money}+#3#{} Interest Cap",
+			}, 
+			{
+				"{C:inactive,E:1}Art by zikir8{}"
+			}
 		}
 	},
 	config = { extra = { odds = 3, interest_cap = 1 } },
-	pos = { x = 2, y = 2 },
-	atlas = 'placeholder',
+	pos = { x = 4, y = 5 },
+	atlas = 'spectral',
 	cost = 4,
 	unlocked = true,
 	can_use = function(self, card)
@@ -1066,13 +1090,18 @@ SMODS.Consumable {
 	loc_txt = {
 		name = "Finalize",
 		text = {
-			"{C:green}#1# in #2#{} chance to apply {C:dark_edition}Shimmering{},",
-			"{C:dark_edition}Laminated{} or {C:dark_edition}Vignette{} to {C:attention}#3#{} selected",
-			"{C:attention}playing card{}"
+			{
+				"{C:green}#1# in #2#{} chance to apply {C:dark_edition}Shimmering{},",
+				"{C:dark_edition}Laminated{} or {C:dark_edition}Vignette{} to {C:attention}#3#{} selected",
+				"{C:attention}playing card{}"
+			}, 
+			{
+				"{C:inactive,E:1}Art by zikir8{}"
+			}
 		}
 	},
-	pos = { x = 2, y = 2 },
-	atlas = 'placeholder',
+	pos = { x = 5, y = 5 },
+	atlas = 'spectral',
 	cost = 4,
 	unlocked = true,
 	config = { extra = { cards = 1, odds = 2 } },
@@ -1201,57 +1230,95 @@ SMODS.Consumable {
 	end, 
 }
 	
---[[SMODS.Consumable {
+SMODS.Consumable {
 	key = 'astronomy',
 	set = 'Spectral',
 	loc_txt = {
 		name = "Astronomy",
 		text = {
-			"Creates {C:attention}#1# random{} {X:mult,C:white}Rare{} {C:planet}Planet{} Card",
-			"{C:inactive}(requires room){}"
+			"{C:green}#1# in #2#{} chance", 
+			"to gain a {C:planet}Meteor Tag{}"
 		}
 	},
 	pos = { x = 2, y = 0 },
 	atlas = 'may_spectral',
 	cost = 4,
-	config = { planets = 1 },
 	unlocked = true,
+	config = { extra = { odds = 2 } }, 
 	can_use = function(self, card)
 		return may.canuse()
 	end,
 	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.planets or self.config.planets } }
+		info_queue[#info_queue + 1] = G.P_TAGS.tag_meteor
+		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Astronomy")
+		return { vars = { normal, odds } }
 	end,
 	discovered = true,
 	use = function(self, card, area, copier)
-		for i = 1, math.min(card.ability.planets, G.consumeables.config.card_limit - #G.consumeables.cards) do
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-				if G.consumeables.config.card_limit > #G.consumeables.cards then
-					play_sound('timpani')
-					local card2 = create_card('Planet', G.consumeables, nil, nil, nil, nil, pseudorandom_element(may.rare_planets, pseudoseed('may_astronomy')), 'may_astronomy')
-					card2:add_to_deck()
-					G.consumeables:emplace(card2)
-					card:juice_up(0.3, 0.5)
-				end
+		if SMODS.pseudorandom_probability(card, "may_astronomy", 1, card.ability.extra.odds, "Astronomy") then
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+				add_tag(Tag('tag_meteor'))
+				play_sound('tarot1')
+				card:juice_up(0.3, 0.5)
 			return true end}))
-		end
+		else 
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+                attention_text({
+                    text = localize('k_nope_ex'),
+                    scale = 1.3,
+                    hold = 1.4,
+                    major = card,
+                    backdrop_colour = G.C.SECONDARY_SET.Spectral,
+                    align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and 'tm' or 'cm',
+                    offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
+                    silent = true
+                })
+                G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.06 * G.SETTINGS.GAMESPEED, blockable = false, blocking = false, func = function()
+                    play_sound('tarot2', 0.76, 0.4)
+                return true end}))
+                play_sound('tarot2', 1, 0.4)
+                card:juice_up(0.3, 0.5)
+            return true end}))
+		end 
 	end,
 	bulk_use = function(self, card, area, copier, number)
-		for i = 1, math.min(card.ability.planets*number, G.consumeables.config.card_limit - #G.consumeables.cards) do
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-				if G.consumeables.config.card_limit > #G.consumeables.cards then
-					play_sound('timpani')
-					local card2 = create_card('Planet', G.consumeables, nil, nil, nil, nil, pseudorandom_element(may.rare_planets, pseudoseed('may_astronomy')), 'may_astronomy')
-					card2:add_to_deck()
-					G.consumeables:emplace(card2)
-					card:juice_up(0.3, 0.5)
+		local amount = 0
+		for i = 1, number do 
+			if SMODS.pseudorandom_probability(card, "may_astronomy", 1, card.ability.extra.odds, "Astronomy") then
+				amount = amount + 1
+			end 
+		end 
+		if amount > 0 then 
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+				for i = 1, amount do 
+					add_tag(Tag('tag_meteor'))
 				end
+				play_sound('tarot1')
+				card:juice_up(0.3, 0.5)
 			return true end}))
+		else 
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+                attention_text({
+                    text = localize('k_nope_ex'),
+                    scale = 1.3,
+                    hold = 1.4,
+                    major = card,
+                    backdrop_colour = G.C.SECONDARY_SET.Spectral,
+                    align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and 'tm' or 'cm',
+                    offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
+                    silent = true
+                })
+                G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.06 * G.SETTINGS.GAMESPEED, blockable = false, blocking = false, func = function()
+                    play_sound('tarot2', 0.76, 0.4)
+                return true end}))
+                play_sound('tarot2', 1, 0.4)
+                card:juice_up(0.3, 0.5)
+            return true end}))
 		end
 	end
 }
 
-SMODS.Consumable {
+--[[SMODS.Consumable {
 	key = 'celestra',
 	set = 'Spectral',
 	loc_txt = {
@@ -1477,7 +1544,7 @@ SMODS.Consumable {
 		name = "Galileo",
 		text = {
 			"Create {C:dark_edition}Negative{} copies of", 
-			"the {C:attention}last{} {C:attention}5{} {X:common,C:white}Common{} {C:planet}Planet Cards{}", 
+			"the {C:attention}last{} {C:attention}5{} {C:planet}Planet Cards{}", 
 			"used this run", 
 		}
 	},

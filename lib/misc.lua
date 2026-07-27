@@ -435,7 +435,7 @@ end
 
 -- Gets a random consumable, taken from Cryptid
 function may.random_consumable(seed, excluded_flags, banned_card, pool, no_undiscovered)
-	-- set up excluded flags - these are the kinds of consumables we DON'T want to have generating
+	--[[ set up excluded flags - these are the kinds of consumables we DON'T want to have generating
 	excluded_flags = excluded_flags or { "hidden", "no_doe", "no_grc" }
 	local selection = "n/a"
 	local passes = 0
@@ -461,6 +461,23 @@ function may.random_consumable(seed, excluded_flags, banned_card, pool, no_undis
 				return selection
 			end
 		end
+	end]]
+	local final_pool = pool or {}
+	if #final_pool == 0 and not pool then 
+		for k, v in pairs(G.P_CENTER_POOLS.Consumeables) do 
+			if v.key ~= (banned_card or '') then 
+				if not v.hidden and not v.no_doe and not v.no_grc then 
+					if (v.discovered or not no_undiscovered) then 
+						table.insert(final_pool, v)
+					end
+				end
+			end
+		end
+	end
+	if #final_pool > 0 then 
+		return SMODS.poll_object({ pool = final_pool, guaranteed = true, seed = seed })
+	else 
+		return G.P_CENTERS['c_strength']
 	end
 end
 

@@ -184,7 +184,7 @@ SMODS.Sound({
     volume = 0.3,
 	sync = false,
 	select_music_track = function()
-		return (may.conf.music.santa and may.has_card('j_may_poker')) and may.music_priorities.joker_theme
+		return (may.conf.music.poker and may.has_card('j_may_poker')) and may.music_priorities.joker_theme
 	end,
 })
 

@@ -3,30 +3,6 @@ version = "1.0.0"
 dump_lua = true
 priority = 1000
 
-# Playing card chip multiplier (brown deck)
-[[patches]] 
-[patches.pattern]
-target = "card.lua"
-pattern = "return self.base.nominal + self.ability.bonus + (self.ability.perma_bonus or 0)"
-position = "at"
-payload = '''
-if not G.GAME then
-	return (self.base.nominal + self.ability.bonus + (self.ability.perma_bonus or 0)) * (self.ability.nominal_multiplier or 1)
-else
-	return (self.base.nominal + self.ability.bonus + (self.ability.perma_bonus or 0)) * (G.GAME.playing_card_multiplier or 1) * (self.ability.nominal_multiplier or 1)
-end'''
-match_indent = true
-overwrite = true
-
-[[patches]] 
-[patches.pattern]
-target = "card.lua"
-pattern = "nominal_chips = self.base.nominal > 0 and self.base.nominal or nil,"
-position = "at"
-payload = "nominal_chips = (self.base.nominal > 0 and self.base.nominal or 0) * (G.GAME and G.GAME.playing_card_multiplier or 1) * (self.ability.nominal_multiplier or 1),"
-match_indent = true
-overwrite = true
-
 # Midground sprites
 # taken from Cryptid
 [[patches]]

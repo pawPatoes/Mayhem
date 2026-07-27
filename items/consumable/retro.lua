@@ -23,7 +23,7 @@ SMODS.Consumable {
 	endless = true,
 	atlas = 'retro',
 	can_use = function(self, card)
-		return may.canuse() and may.ctu('yottacards') >= ((G.GAME.may_retro_stats or {}).easter_egg or 2)
+		return may.canuse() and #G.jokers.cards < G.jokers.config.card_limit and may.ctu('yottacards') >= ((G.GAME.may_retro_stats or {}).easter_egg or 2)
 	end,
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.jokers, ((G.GAME.may_retro_stats or {}).easter_egg or 2), card.ability.extra.mul, may.ctu('yottacards') } }
@@ -119,7 +119,7 @@ SMODS.Consumable {
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
 			for i = 1, card.ability.extra.cards do
 				local choice = may.random_consumable('may_lootbox')
-				local card2 = create_card(choice.set, G.consumables, nil, nil, nil, nil, choice.key, "may_inverted_seal_card")
+				local card2 = create_card('Consumeables', G.consumables, nil, nil, nil, nil, choice.key, "may_inverted_seal_card")
 				card2:add_to_deck()
 				G.consumeables:emplace(card2)
 			end

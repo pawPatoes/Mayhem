@@ -177,6 +177,14 @@ SMODS.Gradient {
 }
 
 SMODS.Gradient {
+	key = 'e_score',
+	colours = {may.C.score, mix_colours(may.C.score, HEX('ffffffff'), 0.6)},
+	interpolation = 'trig', 
+	cycle = 4
+}
+
+
+SMODS.Gradient {
 	key = 'ee_chips',
 	colours = {G.C.CHIPS, mix_colours(G.C.CHIPS, HEX('000000ff'), 0.65)},
 	interpolation = 'trig', 
@@ -196,6 +204,14 @@ SMODS.Gradient {
 	interpolation = 'trig', 
 	cycle = 3.5
 }
+
+SMODS.Gradient {
+	key = 'ee_score',
+	colours = {may.C.score, mix_colours(may.C.score, HEX('000000ff'), 0.65)},
+	interpolation = 'trig', 
+	cycle = 3.5
+}
+
 
 SMODS.Gradient {
 	key = 'ee_chips_bg',
@@ -219,6 +235,14 @@ SMODS.Gradient {
 }
 
 SMODS.Gradient {
+	key = 'ee_score_bg',
+	colours = {HEX('000000'), mix_colours(may.C.score, HEX('000000ff'), 0.3)},
+	interpolation = 'trig', 
+	cycle = 8
+}
+
+
+SMODS.Gradient {
 	key = 'eee_chips',
 	colours = {mix_colours(G.C.CHIPS, HEX('ffffffff'), 0.7), mix_colours(G.C.CHIPS, SMODS.Gradients.may_col_instability, 0.3)},
 	interpolation = 'trig', 
@@ -238,6 +262,14 @@ SMODS.Gradient {
 	interpolation = 'trig', 
 	cycle = 3
 }
+
+SMODS.Gradient {
+	key = 'eee_score',
+	colours = {mix_colours(may.C.score, HEX('ffffffff'), 0.7), mix_colours(may.C.score, SMODS.Gradients.may_col_instability, 0.3)},
+	interpolation = 'trig', 
+	cycle = 3
+}
+
 
 SMODS.Gradient {
 	key = 'eee_chips_bg',
@@ -261,6 +293,14 @@ SMODS.Gradient {
 }
 
 SMODS.Gradient {
+	key = 'eee_score_bg',
+	colours = {mix_colours(may.C.score, HEX('000000ff'), 0.5), HEX('000000')},
+	interpolation = 'trig', 
+	cycle = 5
+}
+
+
+SMODS.Gradient {
 	key = 'hyper_chips',
 	colours = {mix_colours(G.C.CHIPS, HEX('000000ff'), 0.9), HEX('000000')},
 	interpolation = 'trig', 
@@ -280,6 +320,13 @@ SMODS.Gradient {
 	interpolation = 'trig', 
 	cycle = 4
 }
+
+SMODS.Gradient {
+	key = 'hyper_score',
+	colours = {mix_colours(may.C.score, HEX('000000ff'), 0.9), HEX('000000')},
+	interpolation = 'trig', 
+	cycle = 4
+} 
 
 local vanf_lc = loc_colour
 function loc_colour(_c, _default)

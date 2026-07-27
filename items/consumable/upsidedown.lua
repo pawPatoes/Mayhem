@@ -138,10 +138,15 @@ SMODS.Consumable {
 		name = 'ThT HiiH PrieseirP',
 		text = {
 			{
-				"{C:mult}Destroy{} all held {C:tarot}Tarot{}, {C:planet}Planet{} and {C:spectral}Spectral{} Cards", 
+				"{C:mult}Destroy{} all held {C:mult}non-{}{C:dark_edition}Negative{}", 
+				"{C:tarot}Tarot{}, {C:planet}Planet{} and {C:spectral}Spectral{} Cards", 
+				may.pager(),
 				"{C:money}+$#1#{} per {C:tarot}Tarot Card{}", 
+				may.pager(),
 				"{C:planet}Level up{} all {C:purple}Poker Hands{} by {C:attention}#2#{} per {C:planet}Planet Card{}", 
+				may.pager(),
 				"Create {C:attention}#3# Tag{} per {C:spectral}Spectral Card{}", 
+				may.pager(),
 				"{C:inactive}Currently +$#4#, +#5# levels, #6# Tags{}"
 			},
 			{
@@ -159,15 +164,18 @@ SMODS.Consumable {
 	upsd_base = 'c_high_priestess', 
 	show_ring_display = true,
 	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		local tarot, planet, spectral = 0, 0, 0
 		if G.consumeables and G.consumeables.cards then
 			for k, v in pairs(G.consumeables.cards) do
-				if v:gc().set == 'Tarot' then 
-					tarot = tarot + v:getQty()
-				elseif v:gc().set == 'Planet' then 
-					planet = planet + v:getQty() 
-				elseif v:gc().set == 'Spectral' then 
-					spectral = spectral + v:getQty()
+				if not v.edition or v.edition.key ~= 'e_negative' then 
+					if v:gc().set == 'Tarot' then 
+						tarot = tarot + v:getQty()
+					elseif v:gc().set == 'Planet' then 
+						planet = planet + v:getQty() 
+					elseif v:gc().set == 'Spectral' then 
+						spectral = spectral + v:getQty()
+					end
 				end
 			end
 		end
@@ -193,30 +201,32 @@ SMODS.Consumable {
 	use = function(self, card, area, copier)
 		local tarot, planet, spectral = 0, 0, 0
 		for k, v in pairs(G.consumeables.cards) do
-			if v:gc().set == 'Tarot' then 
-				tarot = tarot + v:getQty()
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-					card:juice_up(0.3, 0.5)
-					v:juice_up(0.3, 0.5)
-					SMODS.destroy_cards({v})
-					play_sound('card3')
-				return true end})) 
-			elseif v:gc().set == 'Planet' then 
-				planet = planet + v:getQty() 
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-					card:juice_up(0.3, 0.5)
-					v:juice_up(0.3, 0.5)
-					SMODS.destroy_cards({v})
-					play_sound('card3')
-				return true end}))
-			elseif v:gc().set == 'Spectral' then 
-				spectral = spectral + v:getQty()
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-					card:juice_up(0.3, 0.5)
-					v:juice_up(0.3, 0.5)
-					SMODS.destroy_cards({v})
-					play_sound('card3')
-				return true end}))
+			if not v.edition or v.edition.key ~= 'e_negative' then 
+				if v:gc().set == 'Tarot' then 
+					tarot = tarot + v:getQty()
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+						card:juice_up(0.3, 0.5)
+						v:juice_up(0.3, 0.5)
+						SMODS.destroy_cards({v})
+						play_sound('card3')
+					return true end})) 
+				elseif v:gc().set == 'Planet' then 
+					planet = planet + v:getQty() 
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+						card:juice_up(0.3, 0.5)
+						v:juice_up(0.3, 0.5)
+						SMODS.destroy_cards({v})
+						play_sound('card3')
+					return true end}))
+				elseif v:gc().set == 'Spectral' then 
+					spectral = spectral + v:getQty()
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+						card:juice_up(0.3, 0.5)
+						v:juice_up(0.3, 0.5)
+						SMODS.destroy_cards({v})
+						play_sound('card3')
+					return true end}))
+				end
 			end
 		end
 		if tarot > 0 then

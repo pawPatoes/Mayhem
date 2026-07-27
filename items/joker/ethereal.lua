@@ -415,6 +415,7 @@ SMODS.Joker {
 			{
 				"When {C:attention}Blind{} is {C:attention}selected{},",
 				"create {C:attention}#1#{} {C:dark_edition}Negative{} copies of {C:purple}The Wheel of Fortune{}",
+				"with {C:mult}0{} {C:money}sell value{}", 
 				may.pager(60),
 				"{C:attention}Increases{} by {C:attention}#2#{} when {C:attention}hand{} is {C:attention}played{}",
 				may.pager(60),
@@ -473,6 +474,7 @@ SMODS.Joker {
 				wheel:add_to_deck()
 			    wheel:set_edition({negative = true}, false, false)
 				G.consumeables:emplace(wheel)
+				wheel.sell_cost = 0
 			return true end}))
 		end
         if context.joker_main or context.forcetrigger then
@@ -512,7 +514,7 @@ SMODS.Joker {
 			},
             may.add_fusion_text('Cement Joker', 'Eternity Stone', may.get_condition('eternity_stone')), 
 			{
-				"{C:inactive}Art by zikir8{}"
+				"{C:inactive,E:1}Art by zikir8{}"
 			}, 
 		}
 	},

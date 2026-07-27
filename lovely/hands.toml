@@ -240,4 +240,43 @@ else
 	return math.max(0, base + G.GAME.hands[hand]['l_' .. parameter] * level_up) 
 end
 '''
-match_indent = true 
+match_indent = true
+
+# Fast level ups
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/utils.lua"]'''
+pattern = '''if not instant then
+                    local StatusText = true''' 
+position = "at"
+payload = '''
+if not instant and not args.fast_level then
+    local StatusText = true
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/utils.lua"]'''
+pattern = "update_hand_text({sound = 'button', volume = 0.7, pitch = 0.9, delay = 0}, {level=G.GAME.hands[hand].level})"
+position = "before"
+payload = '''
+if args.fast_level then
+	may.hm((args.amount or 1) > 0 and '+' or '-', true)
+	may.hc((args.amount or 1) > 0 and '+' or '-', true)
+	delay(0.4)
+end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/utils.lua"]'''
+pattern = "update_hand_text({sound = 'button', volume = 0.7, pitch = 0.9, delay = 0}, {level=G.GAME.hands[hand].level})"
+position = "after"
+payload = '''
+if args.fast_level then
+	may.th(hand) 
+end
+'''
+match_indent = true

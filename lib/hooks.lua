@@ -3,13 +3,8 @@
 vanf_csc = Card.set_cost
 function Card:set_cost()
 	vanf_csc(self)
-	if (self.edition or {}).may_print then self.cost = self.cost * 0.2 end
-	if self:gc().set == 'Joker' then
-		if G.GAME.power_trip then
-			if self:gc().rarity == 2 or self:gc().rarity == 3 then
-				self.cost = 0
-			end
-		end
+	if (self.edition or {}).may_print then 
+		self.cost = self.cost * 0.2 
 	end
 end
 
@@ -352,6 +347,11 @@ function Card:set_ability(center, initial, delay_sprites)
             self:set_ability(G.P_CENTERS.p_may_b_mega_premium1) 
         end 
     end 
+	if G.STAGE ~= G.STAGES.MAIN_MENU and self.gc and self:gc() then
+		if self:has_attribute('hand_specific') and may.has_card('v_may_astronomy_6') then
+			self:set_ability(G.P_CENTERS.c_black_hole)
+		end
+	end
 end
 
 local vanf_ed = ease_dollars
@@ -501,6 +501,9 @@ local vanf_ii = SMODS.injectItems
 function SMODS.injectItems(...)
     vanf_ii(...)
 	for k, v in pairs(G.P_CENTERS) do
+		if v.config and v.hand_type and (v.set or '') == 'Planet' then 
+			SMODS.add_attribute('hand_specific', {v.key})
+		end
 		if may.is_fusable(v) then
 			if not may.is_fusion(v) then
 				SMODS.add_attribute('base_fusable', {v.key})
@@ -548,17 +551,6 @@ function SMODS.injectItems(...)
 			end
 		end
 	end
-end
-
-local vanf_cc = create_card
-function create_card(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
-	local card = vanf_cc(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
-	if G.STAGE ~= G.STAGES.MAIN_MENU and card.gc and card:gc() then
-		if card:has_attribute('hand_specific') and may.has_card('v_may_astronomy_6') then
-			card:set_ability(G.P_CENTERS.c_black_hole)
-		end
-	end
-	return card
 end
 
 -- man

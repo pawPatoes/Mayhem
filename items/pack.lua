@@ -627,7 +627,8 @@ SMODS.Booster {
 		G.booster_pack_sparkles:fade(1, 0)
 	end,
 	in_pool = function(self, args)
-		return G.GAME.may_endless_mode, { allow_duplicates = true }
+		local pool, key = get_current_pool('Voucher')
+		return G.GAME.may_endless_mode and #pool >= 1, { allow_duplicates = true }
 	end
 }
 

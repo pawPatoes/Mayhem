@@ -89,6 +89,7 @@ SMODS.Joker {
 			{
 				"When {C:attention}Blind{} is {C:attention}selected{},",
 				"create {C:attention}#1#{} {C:dark_edition}Negative{} copies of {C:purple}The Wheel of Fortune{}",
+				"with {C:mult}0{} {C:money}sell value{}", 
 				may.pager(),
 				may.hyp(1, 'mult', '+^#2#').." Mult per {C:attention}Joker{} with an {C:dark_edition}Edition{}",
 				may.pager(), 
@@ -106,7 +107,7 @@ SMODS.Joker {
 	pos = { x = 0, y = 0 },
 	soul_pos = { x = 1, y = 0 },
 	cost = 141,
-	config = { extra = { blindcards = 14, Emult = 1.4 } },
+	config = { extra = { blindcards = 14, Emult = 0.36 } },
 	attributes = {
 		'wheel',
 		'generation', 
@@ -137,6 +138,7 @@ SMODS.Joker {
 				wheel:add_to_deck()
 			    wheel:set_edition({negative = true}, false, false)
 				G.consumeables:emplace(wheel)
+				wheel.sell_cost = 0
 			return true end}))
 		end
 		if context.joker_main or context.forcetrigger then

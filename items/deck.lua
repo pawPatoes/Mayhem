@@ -75,13 +75,22 @@ SMODS.Back {
 	loc_txt = {
 		name = "Brown Deck",
 		text = {
-			"All cards start",
-			"with {X:attention,C:white}X5{} Nominal Chips"
+			"Playing cards give {C:mult}+Mult{}", 
+			"equal to {X:attention,C:white}20%{} of their", 
+			"{C:attention}Nominal Chips{} when scored"
 		},
 	},
-	apply = function(self)
-		G.GAME.playing_card_multiplier = self.config.mult
-	end
+	calculate = function(self, back, context)
+		if context.individual and context.cardarea == G.play then 
+			if not SMODS.has_no_rank(context.other_card) and context.other_card.base.nominal ~= 0 then 
+				return {
+					mult = context.other_card.base.nominal * 0.2, 
+					message_card = context.other_card, 
+					cars = context.other_card
+				}
+			end
+		end
+	end, 
 }
 
 SMODS.Back {
@@ -325,18 +334,16 @@ SMODS.Back {
 	name = "DeeD",
 	key = "deed",
 	atlas = 'deck',
-	pos = { x = 0, y = 3 },
+	pos = { x = 0, y = 3 }, 
+	config = { vouchers = { 'v_may_upside_down_merchant', 'v_may_upside_down_tycoon' } }, 
 	loc_txt = {
 		name = "DeeD",
 		text = {
-			"{C:attention}All consumables{} are replaced with",
-			"their {C:dark_edition}Upside Down{} version",
-			"{C:inactive}If possible{}"
+			"Start run with", 
+			"{C:attention,T:v_may_upside_down_merchant}Upside Down Merchant{} and", 
+			"{C:attention,T:v_may_upside_down_tycoon}Upside Down Tycoon{}"
 		},
 	},
-	apply = function(self)
-		G.GAME.may_upside_down_deck = true
-	end
 }
 
 SMODS.Back {
@@ -492,7 +499,7 @@ SMODS.Back {
 	end
 }]] 
 
---[[SMODS.Back {
+SMODS.Back {
 	name = "Test Deck",
 	key = "test_deck",
 	atlas = 'deck',
@@ -510,12 +517,14 @@ SMODS.Back {
 		G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
 			level_up_hand(nil, 'High Card', true, to_big(to_big(1e100):arrow(1, 10)):arrow(5005, to_big(to_big(1e100):arrow(1, 10))))
 			ease_dollars(9999)
-			add_skill_xp(99999)
+			--add_skill_xp(99999)
 			for i = 1, 25 do 
-				local new = SMODS.add_card({ set = 'Planet' })
-				new:set_edition(SMODS.poll_edition({ guaranteed = true })) 
+				--[[local new = SMODS.add_card({ set = 'Planet' })
+				new:set_edition(SMODS.poll_edition({ guaranteed = true }))]] 
+				SMODS.add_card({ key = 'c_lovers' })
+				SMODS.add_card({ key = 'c_cryptid' })
 			end
 			SMODS.add_card({ key = 'j_may_acum' })
 		return true end})) 
 	end, 
-}]] 
+}

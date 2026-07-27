@@ -212,7 +212,7 @@ SMODS.Blind {
 	atlas = "blind",
 	pos = {x = 0, y = 6},
 	recalc_debuff = function(self, card, from_blind)
-		return SMODS.has_enhancement(v, 'c_base') and not v.edition and not v.debuff_card.seal
+		return SMODS.has_enhancement(card, 'c_base') and not card.edition and not card.seal
 	end, 
 	in_pool = function(self)
 		return G.GAME.round_resets.ante > 6

@@ -259,6 +259,7 @@ SMODS.Joker {
             {
 			    "When {C:attention}Blind{} is {C:attention}selected{}, create", 
 				"{C:attention}#1#{} {C:dark_edition}Negative{} copies of {C:purple}The Wheel of Fortune{}",
+				"with {C:mult}0{} {C:money}sell value{}", 
 				may.pager(90),
 			    "{C:attention}Increases{} by {C:attention}#2#{} when {C:purple}The Wheel of Fortune{} is used",
 				may.pager(90),
@@ -316,6 +317,7 @@ SMODS.Joker {
 				wheel:add_to_deck()
 			    wheel:set_edition({negative = true}, false, false)
 				G.consumeables:emplace(wheel)
+				wheel.sell_cost = 0
 			return true end}))
 		end
 		if context.using_consumeable and context.consumeable:gc().key == 'c_wheel_of_fortune' and not context.blueprint then

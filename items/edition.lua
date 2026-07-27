@@ -35,7 +35,7 @@ SMODS.Edition {
 		name = "Magenta",
 		label = "Magenta",
 		text = {
-			"{X:may_score,C:white}^1.05{} Score",
+			may.hyp(1, 'score', '^1.05').." Score",
 			"{C:inactive}Shader by Supernova{}"
 		}
 	},
@@ -119,7 +119,7 @@ SMODS.Edition {
 		name = "Alloy",
 		label = "Alloy",
 		text = {
-			"{X:mult,C:white}X0.15{} Mult per {C:attention}Steel Card{}",
+			"{X:mult,C:white}+X0.15{} Mult per {C:attention}Steel Card{}",
 			"in full deck",
 			"{C:money}+$0.5{} per {C:attention}Gold Card{}",
 			"in full deck",
@@ -209,7 +209,6 @@ SMODS.Edition {
 		label = "Goldfoil",
 		text = {
 			"{C:money}+$5{}", 
-            "{C:inactive}Applies during scoring{}"
 		}
 	},
 	shader = 'goldfoil',
@@ -304,7 +303,7 @@ SMODS.Edition {
 		name = "Dichromatic",
 		label = "Dichromatic",
 		text = {
-			"{X:mult,C:white}^1.4{} Mult",
+			may.hyp(1, 'mult', '^1.4').." Mult",
 			"{X:chips,C:white}X0.2{} Chips",
 			"{C:inactive}Shader by Supernova{}"
 		}
@@ -407,7 +406,7 @@ SMODS.Edition {
 		name = "Hypnotic",
 		label = "Hypnotic",
 		text = {
-			"{C:mult}=Chips^1.3{} Mult",
+			"{C:mult,X:grey}=(Chips^1.3){} Mult",
 			" ",
 			"{C:inactive,E:1}Shader by Oiiman{}"
 		}
@@ -598,6 +597,8 @@ SMODS.Edition {
 		text = {
 			"{C:planet}Level up{} played {C:purple}Poker Hand{}",
 			"before scoring",
+			"On {C:attention}playing cards{}, effect is", 
+			"{C:green}triggered{} if the card is {C:attention}played{}"
 		}
 	},
 	shader = 'cosmic',
@@ -622,6 +623,9 @@ SMODS.Edition {
 	weight = 5,
 	extra_cost = 7,
 	apply_to_float = true,
+	in_pool = function(self, args)
+        return G.GAME.may_endless_mode, { allow_duplicates = true }
+    end
 }
 
 SMODS.Edition {
@@ -632,7 +636,7 @@ SMODS.Edition {
 		text = {
 			"{C:purple}+150{} Mult & Chips",
 			"{X:purple,C:white}X15{} Mult & Chips",
-			"{X:purple,C:white}^1.5{} Mult & Chips",
+			may.hyp(1, 'multchips', '^1.5').." Mult & Chips",
 			"{C:attention}Retrigger{} this card",
 			" ",
 			"{C:inactive,E:1}Shader by Oiiman{}"
