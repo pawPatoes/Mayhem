@@ -83,6 +83,65 @@ SMODS.Consumable:take_ownership('c_ankh', {
 	end
 })
 
+SMODS.Consumable:take_ownership('c_hex', {
+	loc_txt = {
+		name = "Hex", 
+		text = {
+			"Select a {C:mult}non-{}{C:dark_edition}Fusion{} {C:attention}Joker{} and", 
+			"up to {C:attention}#1#{} playing cards",
+			may.pager(50),
+			"If the {C:attention}Joker{} has an {C:dark_edition}Edition{}, {C:mult}remove{} it,", 
+			"{C:green}apply{} it to selected {C:attention}playing cards{} and", 
+			"apply {C:enhanced}Perishable{} to the {C:attention}Joker{}", 
+			may.pager(50),
+			"{C:inactive}Negative excluded{}"
+		}
+	}, 
+	config = { extra = { cards = 4 } }, 
+	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
+		return { vars = { card.ability.extra.cards } }
+	end,
+	can_use = function(self, card)
+		local selected = 0 
+		for k, v in pairs(G.hand.highlighted) do
+			if v ~= card then 
+				selected = selected + 1
+				if selected > card.ability.extra.cards then 
+					return false
+				end
+			end
+		end
+		return selected <= card.ability.extra.cards and #G.jokers.highlighted == 1 and G.jokers.highlighted[1].edition and G.jokers.highlighted[1].edition.key ~= 'e_negative'
+	end,
+	use = function(self, card)
+		local edition = G.jokers.highlighted[1].edition.key
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+			G.jokers.highlighted[1]:set_edition()
+			G.jokers.highlighted[1]:juice_up(0.3, 0.5)
+			card:juice_up(0.3, 0.5)
+			play_sound('tarot1')
+		return true end})) 
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+			G.jokers.highlighted[1]:set_sticker('perishable', true)
+			G.jokers.highlighted[1]:juice_up(0.3, 0.5)
+			card:juice_up(0.3, 0.5)
+			play_sound('tarot1')
+		return true end})) 
+		for k, v in pairs(G.hand.highlighted) do 
+			local percent = 0.85 + (k-0.999)/(#G.hand.highlighted-0.998)*0.3
+			if v ~= card then
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+					v:set_edition(edition)
+					v:juice_up(0.3, 0.5)
+					card:juice_up(0.3, 0.5)
+					play_sound('tarot1', percent)
+				return true end})) 
+			end
+		end
+	end
+})
+
 SMODS.Joker:take_ownership('j_invisible', {
 	loc_txt = {
 		name = "Invisible Joker", 

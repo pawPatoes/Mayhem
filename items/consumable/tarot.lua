@@ -13,12 +13,13 @@ SMODS.Consumable {
 				"{C:inactive}(requires room){}"
 			},
 			{
-				"{C:inactive,E:1}Original idea by _TeKKen_{}"
+				"{C:inactive,E:1}Original idea by _TeKKen_{}", 
+				" {C:inactive,E:1}Art by zikir8{}"
 			}
 		}
 	},
 	pos = { x = 1, y = 2 },
-	atlas = 'placeholder',
+	atlas = 'tarot',
 	cost = 3, 
 	unlocked = true,
     config = { extra = { cards = 2 } }, 
@@ -75,7 +76,6 @@ SMODS.Consumable {
 		}
 	},
 	pos = { x = 5, y = 1 },
-	display_size = { w = 65, h = 95 },
 	atlas = 'tarot',
 	cost = 3,
 	unlocked = true,
@@ -138,13 +138,12 @@ SMODS.Consumable {
 				"into a {C:attention}Jagged{} card"
 			},
 			{
-				"{C:inactive,E:1}Improved art by T3rragon{}"
+				"{C:inactive,E:1}Art by T3rragon{}"
 			}
 		}
 	},
 	pos = { x = 3, y = 0 },
-	display_size = { w = 65, h = 95 },
-	atlas = 'may_tarot',
+	atlas = 'tarot',
 	cost = 3,
 	config = { max_highlighted = 1, mod_conv = "m_may_jagged" },
 	unlocked = true,
@@ -168,10 +167,13 @@ SMODS.Consumable {
 				"Enhances up to {C:attention}#1#{} selected card in {C:attention}hand{}",
 				"into a {C:attention}Fortune{} card"
 			},
+			{
+				"{C:inactive,E:1}Art by zikir8"
+			}
 		}
 	},
-	pos = { x = 1, y = 2 },
-	atlas = 'placeholder',
+	pos = { x = 2, y = 2 },
+	atlas = 'tarot',
 	cost = 3,
 	config = { max_highlighted = 1, mod_conv = "m_may_fortune" },
 	unlocked = true,
@@ -200,13 +202,12 @@ SMODS.Consumable {
 				"into a {C:attention}Magma{} card"
 			},
 			{
-				"{C:inactive,E:1}Improved art by T3rragon{}"
+				"{C:inactive,E:1}Art by T3rragon{}"
 			}
 		}
 	},
 	pos = { x = 2, y = 0 },
-	display_size = { w = 65, h = 95 },
-	atlas = 'may_tarot',
+	atlas = 'tarot',
 	cost = 3,
 	config = { max_highlighted = 1, mod_conv = "m_may_magma" },
 	unlocked = true,
@@ -231,13 +232,12 @@ SMODS.Consumable {
 				"into {C:attention}Grid{} cards"
 			},
 			{
-				"{C:inactive,E:1}Improved art by Violet{}"
+				"{C:inactive,E:1}Art by Violet{}"
 			}
 		}
 	},
 	pos = { x = 2, y = 1 },
-	display_size = { w = 65, h = 95 },
-	atlas = 'may_tarot',
+	atlas = 'tarot',
 	cost = 3,
 	config = { max_highlighted = 2, mod_conv = "m_may_grid" },
 	unlocked = true,
@@ -263,13 +263,12 @@ SMODS.Consumable {
 				"into a {C:attention}Super Mult{} card"
 			},
 			{
-				"{C:inactive,E:1}Improved art by T3rragon{}"
+				"{C:inactive,E:1}Art by T3rragon{}"
 			}
 		}
 	},
 	pos = { x = 5, y = 0 },
-	display_size = { w = 65, h = 95 },
-	atlas = 'may_tarot',
+	atlas = 'tarot',
 	cost = 3,
 	unlocked = true,
     config = { extra = { cards = 1, target = 'm_may_super_mult'} }, 
@@ -297,13 +296,12 @@ SMODS.Consumable {
 				"into {C:attention}Overgrown{} cards"
 			},
 			{
-				"{C:inactive,E:1}Improved art by Violet{}"
+				"{C:inactive,E:1}Art by Violet{}"
 			}
 		}
 	},
 	pos = { x = 1, y = 0 },
-	display_size = { w = 65, h = 95 },
-	atlas = 'may_tarot',
+	atlas = 'tarot',
 	cost = 3,
 	config = { max_highlighted = 2, mod_conv = "m_may_overgrown" },
 	unlocked = true,
@@ -328,13 +326,12 @@ SMODS.Consumable {
 				"into a {C:attention}Platinum{} card"
 			},
 			{
-				"{C:inactive,E:1}Improved art by T3rragon{}"
+				"{C:inactive,E:1}Art by T3rragon{}"
 			}
 		}
 	},
 	pos = { x = 1, y = 1 },
-	display_size = { w = 65, h = 95 },
-	atlas = 'may_tarot',
+	atlas = 'tarot',
 	cost = 3,
 	unlocked = true,
     endless = true,
@@ -366,13 +363,12 @@ SMODS.Consumable {
 				"into a {C:attention}Scorched{} card"
 			},
 			{
-				"{C:inactive,E:1}Improved art by T3rragon{}"
+				"{C:inactive,E:1}Art by T3rragon{}"
 			}
 		}
 	},
 	pos = { x = 0, y = 0 },
-	display_size = { w = 65, h = 95 },
-	atlas = 'may_tarot',
+	atlas = 'tarot',
 	cost = 3,
 	unlocked = true,
 	config = { extra = { cards = 1, target = 'm_may_scorched'} }, 
@@ -400,13 +396,12 @@ SMODS.Consumable {
 				"into a {C:attention}Crystal{} card"
 			},
 			{
-				"{C:inactive,E:1}Improved art by T3rragon{}"
+				"{C:inactive,E:1}Art by T3rragon{}"
 			}
 		}
 	},
 	pos = { x = 4, y = 0 },
-	display_size = { w = 65, h = 95 },
-	atlas = 'may_tarot',
+	atlas = 'tarot',
 	cost = 3,
 	config = { max_highlighted = 1, mod_conv = "m_may_crystal" },
 	unlocked = true,
@@ -431,13 +426,12 @@ SMODS.Consumable {
 				"into {C:attention}Cardboard{} cards"
 			},
 			{
-				"{C:inactive,E:1}Improved art by T3rragon{}"
+				"{C:inactive,E:1}Art by T3rragon{}"
 			}
 		}
 	},
 	pos = { x = 3, y = 1 },
-	display_size = { w = 65, h = 95 },
-	atlas = 'may_tarot',
+	atlas = 'tarot',
 	cost = 3,
 	config = { max_highlighted = 2, mod_conv = "m_may_cardboard" },
 	unlocked = true,
@@ -462,13 +456,12 @@ SMODS.Consumable {
 				"into a {C:attention}Shadow{} card"
 			},
 			{
-				"{C:inactive,E:1}Improved art by Violet{}"
+				"{C:inactive,E:1}Art by Violet{}"
 			}
 		}
 	},
 	pos = { x = 4, y = 1 },
-	display_size = { w = 65, h = 95 },
-	atlas = 'may_tarot',
+	atlas = 'tarot',
 	cost = 3,
 	unlocked = true,
 	can_use = function(self, card)
@@ -496,13 +489,12 @@ SMODS.Consumable {
 				"into a {C:attention}Titanium{} card"
 			},
 			{
-				"{C:inactive,E:1}Improved art by T3rragon{}"
+				"{C:inactive,E:1}Art by T3rragon{}"
 			}
 		}
 	},
 	pos = { x = 0, y = 1 },
-	display_size = { w = 65, h = 95 },
-	atlas = 'may_tarot',
+	atlas = 'tarot',
 	cost = 3,
 	config = { max_highlighted = 1, mod_conv = "m_may_titanium" },
 	unlocked = true,
@@ -533,7 +525,6 @@ SMODS.Consumable {
 		}
 	},
 	pos = { x = 0, y = 2 },
-	display_size = { w = 65, h = 95 },
 	atlas = 'tarot',
 	cost = 3,
 	unlocked = true,

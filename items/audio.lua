@@ -75,10 +75,6 @@ may.sounds = {
 	{'big_score2', 'big_score2.ogg'},
 	{'big_score3', 'big_score3.ogg'},
 	
-	{'hyper_selection_limit', 'hyper_selection_limit.ogg'},
-	{'hyper_joker_slots', 'hyper_joker_slots.ogg'},
-	{'hyper_consumable_slots', 'hyper_consumable_slots.ogg'},
-	
 	{'c_ascended', 'consumable/ascended.ogg'},
 	
 	{'intro_pad', 'intro_pad.ogg'}, 

@@ -474,7 +474,7 @@ SMODS.Joker {
 				"Played {C:dark_edition}Stone Cards{} increase", 
 				may.hyp(3, 'chips', '^^^Chips').." gain by "..may.hyp(3, 'chips', '+^^^#3#').." before scoring",
 				may.pager(90),
-				"{C:planet}Deimos{} {C:green}no longer{} {C:mult}destroys{} cards", 
+				"{C:planet}Hi'iaka{} {C:green}no longer{} {C:mult}destroys{} cards", 
 				"and gives this Joker's "..may.hyp(3, 'chips', '^^^Chips')
 			},
             may.add_fusion_text('Astral Expunger', 'Zodium Calamitas', may.get_condition('zodium_calamitas'))
@@ -499,7 +499,7 @@ SMODS.Joker {
 		may.fuse_tip(info_queue, 'zodium_calamitas', { (G.GAME.may_stones_destroyed or 0), may.ctu('Tarot') })
         info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_medusa
-		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_deimos
+		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_hiiaka
 		return { vars = { card.ability.extra.EEEchip, card.ability.extra.EEEchip_gain, card.ability.extra.EEEchip_gain2 } }
 	end,
 	cost = 1e7,
@@ -510,7 +510,7 @@ SMODS.Joker {
 			    card2:set_edition({negative = true}, false, false)
 			    G.consumeables:emplace(card2)
 			    card2:add_to_deck()
-				local card3 = create_card('Planet', G.consumeables, nil, nil, nil, nil, 'c_may_deimos', 'may_rocco_pfilosofia')
+				local card3 = create_card('Planet', G.consumeables, nil, nil, nil, nil, 'c_may_hiiaka', 'may_rocco_pfilosofia')
 			    card3:set_edition({negative = true}, false, false)
 			    G.consumeables:emplace(card3)
 			    card3:add_to_deck()

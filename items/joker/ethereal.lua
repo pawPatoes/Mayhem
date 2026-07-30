@@ -435,7 +435,7 @@ SMODS.Joker {
 	pos = { x = 3, y = 12 },
 	soul_pos = { x = 0, y = 13 },
 	cost = 314,
-	config = { extra = { blindcards = 20, cards_gain = 5, Emult = 42, } },
+	config = { extra = { blindcards = 20, cards_gain = 5, Emult = 14, } },
 	attributes = {
 		'generation', 
 		'wheel', 

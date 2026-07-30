@@ -107,7 +107,7 @@ SMODS.Enhancement {
 		name = 'Super Mult Card',
 		text = {
             {
-				'{X:mult,C:white}^1.04{} Mult',
+				may.hyp(1, 'mult', '^1.04')..' Mult',
     		}, 
             {
         		'{C:inactive,E:1}Art by Superb Thing{}'

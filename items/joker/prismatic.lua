@@ -343,7 +343,7 @@ SMODS.Joker {
 	pos = { x = 4, y = 12 },
 	soul_pos = { x = 5, y = 12 },
 	cost = 500,
-	config = { extra = { blindcards = 40, cards_gain = 10, EEmult = 14, EEmult_alt = 80 } },
+	config = { extra = { blindcards = 40, cards_gain = 10, EEmult = 14, EEmult_alt = 42 } },
 	attributes = {
 		'generation', 
 		'wheel', 
@@ -428,7 +428,7 @@ SMODS.Joker {
 				"Played {C:dark_edition}Stone Cards{} increase", 
 				may.hyp(2, 'chips', '^^Chips').." gain by "..may.hyp(2, 'chips', '+^^#3#').." before scoring",
 				may.pager(),
-				"{C:planet}Deimos{} {C:green}no longer{} {C:mult}destroys{} cards", 
+				"{C:planet}Hi'iaka{} {C:green}no longer{} {C:mult}destroys{} cards", 
 				"and gives this Joker's "..may.hyp(2, 'chips', '^^Chips'),
 			},
             may.add_fusion_text('Omniversal Catalyst', 'Rock of Paramountcy', may.get_condition('rock_of_paramountcy')),
@@ -449,7 +449,7 @@ SMODS.Joker {
 		may.fuse_tip(info_queue, 'stones', { (G.GAME.may_stones_destroyed or 0) })
         info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_medusa
-		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_deimos
+		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_hiiaka
 		return { vars = { card.ability.extra.EEchip, card.ability.extra.EEchip_gain, card.ability.extra.EEchip_gain2 } }
 	end,
 	cost = 550,
@@ -467,7 +467,7 @@ SMODS.Joker {
 			    card2:set_edition({negative = true}, false, false)
 			    G.consumeables:emplace(card2)
 			    card2:add_to_deck()
-				local card3 = create_card('Planet', G.consumeables, nil, nil, nil, nil, 'c_may_deimos', 'may_rocco_pfilosofia')
+				local card3 = create_card('Planet', G.consumeables, nil, nil, nil, nil, 'c_may_hiiaka', 'may_rocco_pfilosofia')
 			    card3:set_edition({negative = true}, false, false)
 			    G.consumeables:emplace(card3)
 			    card3:add_to_deck()

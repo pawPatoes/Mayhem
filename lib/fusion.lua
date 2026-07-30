@@ -144,9 +144,6 @@ function Card:may_fuse_card()
 				elseif j_fusion:gc().rarity == 'may_demiurgic' then
 					may.add_round_timer(6, 'demiurgic_fuse')
 					may.a('Demiurgic Scaling will activate in 6 rounds!', '5', 0.5, G.C.RED)
-				elseif j_fusion:gc().rarity == 'may_transcendent' then
-					may.add_round_timer(3, 'transcendent_fuse')
-					may.a('Transcendent Scaling will activate in 3 rounds!', '5', 0.5, G.C.RED)
 				end
 			end
 			delay(0.1)

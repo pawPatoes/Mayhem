@@ -1554,7 +1554,7 @@ SMODS.Joker {
 					if card.ability.extra.rarity == 5 then 
 						play_sound('may_bundle')
 						for i = 1, card.ability.extra.consumables do
-							local card3 = create_card('Consumable', G.consumeables, nil, nil, nil, true, may.random_consumable('may_anniversary_cake', nil, nil, G.P_CENTER_POOLS.Consumeable, true).key, 'anniversary_cake')
+							local card3 = create_card('Consumeables', G.consumeables, nil, nil, nil, true, may.random_consumable('may_anniversary_cake', nil, nil, G.P_CENTER_POOLS.Consumeable, true).key, 'anniversary_cake')
 							card3:set_edition({negative = true}, false, false)
 							G.consumeables:emplace(card3)
 							card3:add_to_deck()

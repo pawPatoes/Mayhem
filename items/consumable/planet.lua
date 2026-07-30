@@ -371,6 +371,7 @@ SMODS.Consumable {
 		}
 	},
 	ignore_allplanets = true,
+	endless = true,
 	can_use = function(self, card)
 		return may.canuse()
 	end,
@@ -476,6 +477,9 @@ SMODS.Consumable {
 			return true end}))
 		end
 		SMODS.calculate_context({ playing_card_added = true, cards = created })
+	end,
+	in_pool = function(self, args)
+		return G.GAME.may_endless_mode, {allow_duplicates = false}
 	end
 }
 
@@ -970,17 +974,17 @@ SMODS.Consumable {
 
 SMODS.Consumable {
 	set = 'Planet',
-	key = 'demetrius',
+	key = 'hiiaka',
 	pos = { x = 4, y = 4 },
 	atlas = 'planet',
 	config = { extra = { Xchips = 0.2 } },
 	ignore_allplanets = true,
 	no_ring_display = true, 
 	set_card_type_badge = function(self, card, badges)
-		badges[1] = create_badge('Planet?', get_type_colour(self or card.config, card), nil, 1.2)
+		badges[1] = create_badge('Haumean Moon', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
 	loc_txt = {
-		name = 'Demetrius',
+		name = 'Hi\'iaka',
 		text = {
 			"{C:mult}Destroy{} all {C:attention}Suitless{} or {C:attention}Rankless{} cards in {C:attention}full deck{}",
 			"{X:chips,C:white}+X#1#{} Chips {C:attention}per{} destroyed {C:attention}card{} to",
@@ -1021,7 +1025,7 @@ SMODS.Consumable {
 		if destroy then 
 			SMODS.destroy_cards(found)
 		end
-		may.hand_multchips(card, may.favhand(), {0, 1 + (found * card.ability.extra.Xchips)})
+		may.hand_multchips(card, may.favhand(), {0, 1 + (#found * card.ability.extra.Xchips)})
 		if Engulf and card.edition then 
 			Engulf.EditionHand(card, may.favhand(), card.edition, 1)
 		end
@@ -1456,13 +1460,13 @@ SMODS.Consumable {
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.amount1, card.ability.extra.amount2, localize(may.favhand(), 'poker_hands') } }
 	end,
-	use = function(self, card)
+	use = function(self, card, copier)
 		may.th(may.favhand())
 		level_up_hand(card, may.favhand(), false, -card.ability.extra.amount1)
 		may.level_up_all_hands(card, false, card.ability.extra.amount2, may.favhand())
 		may.ch()
 	end,
-	bulk_use = function(self, card, number)
+	bulk_use = function(self, card, area, copier, number)
 		may.th(may.favhand())
 		level_up_hand(card, may.favhand(), false, -card.ability.extra.amount1 * number)
 		may.level_up_all_hands(card, false, card.ability.extra.amount2 * number, may.favhand())

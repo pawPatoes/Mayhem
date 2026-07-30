@@ -514,7 +514,7 @@ SMODS.Joker {
 		name = 'Cement Joker',
 		text = {
 			{
-			    "{C:planet}Deimos{} {C:green}no longer{}", 
+			    "{C:planet}Hi'iaka{} {C:green}no longer{}", 
                 "{C:mult}destroys{} cards when used", 
 				may.pager(),
                 "{C:green}#1# in #2#{} chance to create", 
@@ -543,7 +543,7 @@ SMODS.Joker {
 	}, 
 	loc_vars = function(self, info_queue, card)
 		may.fuse_tip(info_queue, 'stones', { (G.GAME.may_stones_destroyed or 0) })
-        info_queue[#info_queue + 1] = G.P_CENTERS.c_may_deimos
+        info_queue[#info_queue + 1] = G.P_CENTERS.c_may_hiiaka
         local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Cement Joker")
 		return { vars = { normal, odds } }
 	end,
@@ -558,7 +558,7 @@ SMODS.Joker {
 				    card2:juice_up(0.3, 0.5)
 			    return true end}))
                 return {
-                    message = "+Deimos", 
+                    message = "+Hi'iaka", 
                     colour = G.C.SECONDARY_SET.Planet,
                     card = card,
                 }

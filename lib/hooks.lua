@@ -177,13 +177,13 @@ function G.FUNCS.select_blind(e)
 			may.add_round_timer(117, 'ethereal_scale_warning')
 			may.add_round_timer(147, 'prismatic_scale_warning')
 			may.add_round_timer(207, 'demiurgic_scale_warning')
-			may.add_round_timer(297, 'transcendent_scale_warning')
+			--may.add_round_timer(297, 'transcendent_scale_warning')
 		
 			may.add_round_timer(60, 'mythic_scale')
 			may.add_round_timer(120, 'ethereal_scale')
 			may.add_round_timer(150, 'prismatic_scale')
 			may.add_round_timer(210, 'demiurgic_scale')
-			may.add_round_timer(300, 'transcendent_scale')
+			--may.add_round_timer(300, 'transcendent_scale')
 		end
 		G.GAME.may_initialized_start_timers = true
 	end
@@ -293,8 +293,8 @@ function Card:use_consumeable(area, copier)
 	G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 		if self:gc().set == 'Tarot' then 
 			G.GAME.last_tarot = self:gc().key
-		elseif self:gc().set == 'Planet' and (self:gc().planet_rarity or 0) < 1 then 
-			G.GAME.last_planet = self:gc().key
+		elseif self:gc().set == 'Planet' then 
+			G.GAME.last_planet = self:gc().key ~= 'c_may_gersemi_active' and self:gc().key or 'c_may_gersemi'
         elseif self:gc().set == 'Spectral' and not self:gc().hidden then 
 			G.GAME.last_spectral = self:gc().key
 		end
@@ -359,25 +359,6 @@ function ease_dollars(mod, instant)
 	if to_big(mod) == to_big(0) then instant = true end
 	mod = (mod or 0) * (G.GAME.may_money_multiplier or 1)
     vanf_ed(mod, instant)
-end
-
--- Taken from Partner
--- Prevents Displays from getting too close to the screen edges
-local Card_update_ref = Card.update
-function Card:update(dt)
-    Card_update_ref(self, dt)
-    if self:gc().set == "may_display" and not self.states.drag.is then
-        if self.T.x+self.T.w > G.ROOM.T.w then
-            self.T.x = G.ROOM.T.w-self.T.w
-        elseif self.T.x < 0 then
-            self.T.x = 0
-        end
-        if self.T.y+self.T.h > G.ROOM.T.h then
-            self.T.y = G.ROOM.T.h-self.T.h
-        elseif self.T.y < 0 then
-            self.T.y = 0
-        end
-    end
 end
 
 local vanf_er = end_round

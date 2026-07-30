@@ -521,10 +521,9 @@ SMODS.Back {
 			for i = 1, 25 do 
 				--[[local new = SMODS.add_card({ set = 'Planet' })
 				new:set_edition(SMODS.poll_edition({ guaranteed = true }))]] 
-				SMODS.add_card({ key = 'c_lovers' })
-				SMODS.add_card({ key = 'c_cryptid' })
 			end
 			SMODS.add_card({ key = 'j_may_acum' })
+			SMODS.add_card({ key = 'p_epz_blank_pack', area = G.consumeables })
 		return true end})) 
 	end, 
 }

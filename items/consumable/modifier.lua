@@ -1894,14 +1894,14 @@ SMODS.Consumable {
 
 SMODS.Consumable {
 	key = 'fortune_card',
-	config = { extra = { bonus = 0.1, target = 'm_may_fortune' } },
+	config = { extra = { bonus = 0.5, target = 'm_may_fortune' } },
 	loc_txt = {
 		name = 'Fortune Card',
 		text = {
 			{
 				"Each {C:dark_edition}Fortune Card{}", 
 				"{C:attention}held in hand{} gives", 
-				"{X:money,C:white}+X#1#{} Dollars to {C:attention}all{} {C:purple}Poker Hands{}", 
+				"{C:money}+#1#{} Dollars to {C:attention}all{} {C:purple}Poker Hands{}", 
 				"per held {C:tarot}Tarot Card{}",
 				"{C:inactive}Currently{} {X:money,C:white}X#2#{} {C:inactive}Dollars{}"
 			}, 
@@ -1951,7 +1951,7 @@ SMODS.Consumable {
 				end
 			end
 		end
-		return { vars = { card.ability.extra.bonus, (1 + (card.ability.extra.bonus * tarots)) ^ amount } }
+		return { vars = { card.ability.extra.bonus, card.ability.extra.bonus * tarots * amount } }
 	end,
 	use = function(self, card, area, copier)
 		local targets = {}
@@ -1974,8 +1974,8 @@ SMODS.Consumable {
 			return true end})) 
 		end
 		for k, v in pairs(targets) do 
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..1 + (card.ability.extra.bonus * tarots)}, colour = G.C.MONEY, delay = 0.45})
-			may.hand_mod_dollars_all(v, false, 0, 1 + (card.ability.extra.bonus * tarots), false)
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..(card.ability.extra.bonus * tarots)}, colour = G.C.MONEY, delay = 0.45})
+			may.hand_mod_dollars_all(v, false, 0, card.ability.extra.bonus * tarots, false)
 		end
 		may.refresh_score_operator()
 		may.ch()
@@ -2011,8 +2011,8 @@ SMODS.Consumable {
 			return true end})) 
 		end
 		for k, v in pairs(targets) do 
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..(1 + (card.ability.extra.bonus * tarots)) ^ number}, colour = G.C.MONEY, delay = 0.45})
-			may.hand_mod_dollars_all(v, false, 0, (1 + (card.ability.extra.bonus * tarots)) ^ number, false)
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..(card.ability.extra.bonus * tarots * number)}, colour = G.C.MONEY, delay = 0.45})
+			may.hand_mod_dollars_all(v, false, 0, card.ability.extra.bonus * tarots * number, false)
 		end
 		may.refresh_score_operator()
 		may.ch()
@@ -3820,7 +3820,7 @@ SMODS.Consumable {
 
 -- Seal Cards
 
-SMODS.Consumable {
+--[[SMODS.Consumable {
 	key = 'red_seal_card',
 	config = { extra = { retriggers = 1, target = 'Red' } },
 	loc_txt = {
@@ -3937,7 +3937,7 @@ SMODS.Consumable {
 			G.hand:unhighlight_all()
 		return true end}))
 	end, 
-}
+}]]
 
 SMODS.Consumable {
 	key = 'blue_seal_card',
@@ -4358,7 +4358,7 @@ SMODS.Consumable {
 			for i = 1, card.ability.extra.cards do
 				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
 					local choice = may.random_consumable('may_copper_seal_card')
-					local card2 = create_card(choice.set, G.consumables, nil, nil, nil, nil, choice.key, "may_copper_seal_card")
+					local card2 = create_card('Consumeables', G.consumables, nil, nil, nil, nil, choice.key, "may_copper_seal_card")
 					card2:add_to_deck()
 					G.consumeables:emplace(card2)
 					play_sound('timpani')
@@ -4395,7 +4395,7 @@ SMODS.Consumable {
 			for i = 1, card.ability.extra.cards * number do
 				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
 					local choice = may.random_consumable('may_copper_seal_card')
-					local card2 = create_card(choice.set, G.consumables, nil, nil, nil, nil, choice.key, "may_copper_seal_card")
+					local card2 = create_card('Consumeables', G.consumables, nil, nil, nil, nil, choice.key, "may_copper_seal_card")
 					card2:add_to_deck()
 					G.consumeables:emplace(card2)
 					play_sound('timpani')
@@ -4728,7 +4728,7 @@ SMODS.Consumable {
 			for i = 1, card.ability.extra.consumables do
 				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
 					local choice = may.random_consumable('may_inverted_seal_card')
-					local card2 = create_card(choice.set, G.consumables, nil, nil, nil, nil, choice.key, "may_inverted_seal_card")
+					local card2 = create_card('Consumeables', G.consumables, nil, nil, nil, nil, choice.key, "may_inverted_seal_card")
 					card2:add_to_deck()
 					card2:set_edition('e_negative')
 					G.consumeables:emplace(card2)
@@ -4766,7 +4766,7 @@ SMODS.Consumable {
 			for i = 1, card.ability.extra.consumables * number do
 				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
 					local choice = may.random_consumable('may_inverted_seal_card')
-					local card2 = create_card(choice.set, G.consumables, nil, nil, nil, nil, choice.key, "may_inverted_seal_card")
+					local card2 = create_card('Consumeables', G.consumables, nil, nil, nil, nil, choice.key, "may_inverted_seal_card")
 					card2:add_to_deck()
 					card2:set_edition('e_negative')
 					G.consumeables:emplace(card2)

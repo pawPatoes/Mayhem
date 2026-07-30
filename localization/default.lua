@@ -671,5 +671,5 @@ return {
 			may_n_yes = 'Yes', 
 			may_n_no = 'No',
 		}
-	}
+	}, 
 }

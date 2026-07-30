@@ -28,6 +28,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_fool',
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
@@ -79,6 +81,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_magician',
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
@@ -161,6 +165,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_high_priestess', 
 	show_ring_display = true,
 	loc_vars = function(self, info_queue, card)
@@ -275,6 +281,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_empress', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
@@ -335,7 +343,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"{C:mult}Destroy{} all owned {C:tarot}Tarot Cards{}",
-				"and create {C:attention}random{} {C:dark_edition}Negative{} {C:planet}Planet{}",
+				"and create {C:attention}random{} {C:planet}Planet{}",
 				"{C:dark_edition}CCDs{} {C:attention}in their place{}",
 				"which are shuffled into your deck",
 			},
@@ -350,9 +358,10 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_emperor', 
 	loc_vars = function(self, info_queue, card)
-		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		info_queue[#info_queue + 1] = { key = "may_ccd_tutorial", set = "Other" }
 		return { vars = {} }
 	end,
@@ -384,7 +393,6 @@ SMODS.Consumable {
 				new:juice_up()
 				play_sound('card1')
 				play_sound('tarot1')
-				new:set_edition({negative=true}, true)
 			return true end}))
 		end
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
@@ -445,6 +453,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_heirophant', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
@@ -520,6 +530,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_lovers', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
@@ -595,6 +607,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_chariot', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
@@ -670,6 +684,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_justice', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
@@ -744,6 +760,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_hermit', 
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
@@ -782,6 +800,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_wheel_of_fortune', 
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
@@ -836,6 +856,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_strength', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
@@ -906,6 +928,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_hanged_man', 
 	can_use = function(self, card)
 		return may.canuse() and #G.hand.highlighted ~= 0
@@ -949,6 +973,8 @@ SMODS.Consumable {
 	config = { extra = { dollars = 10 } },
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_death', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
@@ -993,6 +1019,8 @@ SMODS.Consumable {
 	config = { extra = { mul = 3 } },
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_temperance', 
 	can_use = function(self, card)
 		return may.canuse() and #G.jokers.cards >= 1 and #G.consumeables.cards >= 1
@@ -1050,6 +1078,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_devil', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
@@ -1125,6 +1155,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_tower', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
@@ -1200,6 +1232,8 @@ SMODS.Consumable {
 	config = { extra = { target_suit = 'Diamonds', conv_suit = 'Clubs' } },
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_star', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
@@ -1286,6 +1320,8 @@ SMODS.Consumable {
 	config = { extra = { target_suit = 'Clubs', conv_suit = 'Hearts' } },
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_moon', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
@@ -1372,6 +1408,8 @@ SMODS.Consumable {
 	config = { extra = { target_suit = 'Hearts', conv_suit = 'Spades' } },
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_sun', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
@@ -1457,6 +1495,8 @@ SMODS.Consumable {
 	config = { extra = { tarots = 4 } },
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_judgement', 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
@@ -1518,6 +1558,8 @@ SMODS.Consumable {
 	config = { extra = { target_suit = 'Spades', conv_suit = 'Diamonds' } },
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_world', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
@@ -1624,6 +1666,8 @@ for k, v in pairs(may.upside_down_planets) do
 		unlocked = true,
 		discovered = true,
 		no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 		upsd_base = 'c_'..(v[7] or v[1]), 
 		show_ring_display = true,
 		loc_vars = function(self, info_queue, card)
@@ -1677,6 +1721,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_familiar', 
 	can_use = function(self, card)
 		if G.hand then 
@@ -1727,6 +1773,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_grim', 
 	can_use = function(self, card)
 		if G.hand then 
@@ -1777,6 +1825,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_incantation', 
 	can_use = function(self, card)
 		if G.hand then 
@@ -1828,6 +1878,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_talisman', 
 	can_use = function(self, card)
 		for k, v in pairs(G.playing_cards) do 
@@ -1902,6 +1954,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_aura', 
 	show_ring_display = true,
 	can_use = function(self, card)
@@ -1962,6 +2016,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_wraith', 
 	can_use = function(self, card) 
 		if G.jokers then 
@@ -2013,6 +2069,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_sigil', 
 	can_use = function(self, card)
 		return may.canuse() and G.hand and #G.hand.highlighted == (1 + (card.area == G.hand and 1 or 0))
@@ -2065,6 +2123,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_ouija', 
 	can_use = function(self, card)
 		return may.canuse() and G.hand and #G.hand.highlighted == (1 + (card.area == G.hand and 1 or 0))
@@ -2118,6 +2178,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_ectoplasm', 
 	loc_vars = function(self, info_queue, card) 
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
@@ -2178,6 +2240,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_immolate', 
 	can_use = function(self, card)
 		return may.canuse() and G.hand and #G.hand.highlighted <= (5 + (card.area == G.hand and 1 or 0))
@@ -2222,6 +2286,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_ankh', 
 	can_use = function(self, card)
 		local joker_keys = {}
@@ -2285,6 +2351,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_deja_vu', 
 	can_use = function(self, card)
 		local joker_available
@@ -2351,6 +2419,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_hex', 
 	loc_vars = function(self, info_queue, card) 
 		info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
@@ -2402,6 +2472,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_trance', 
 	can_use = function(self, card) 
 		local joker_available
@@ -2471,6 +2543,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_medium', 
 	can_use = function(self, card)
 		for k, v in pairs(G.playing_cards) do 
@@ -2522,6 +2596,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_cryptid', 
 	can_use = function(self, card)
 		return may.canuse()
@@ -2571,6 +2647,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_soul', 
 	custom_soul_anim = function(self, layer)
 		local scale_mod = 0.05 - 0.05 * math.sin(1.8 * G.TIMERS.REAL) - 0.07 * math.sin(0.5 * (G.TIMERS.REAL - math.floor(G.TIMERS.REAL)) * math.pi * 14) * ( 1 + (G.TIMERS.REAL - math.floor(G.TIMERS.REAL))) ^ 1.5
@@ -2633,6 +2711,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_black_hole', 
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.tags } }
