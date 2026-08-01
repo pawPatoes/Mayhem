@@ -48,16 +48,17 @@ SMODS.Consumable:take_ownership('c_ankh', {
 		text = {
 			"Create {C:attention}#1#{} duplicates of", 
 			"a selected {C:mult}non-{}{C:dark_edition}hidden{} {C:attention}Consumable{}", 
-			"{C:inactive}Ankh and Aeon excluded, requires room{}", 
+			"{C:inactive}Certain Consumables excluded, requires room{}", 
 		}
 	}, 
 	config = { extra = { copies = 2 } }, 
+	may_no_ankh = true,
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.copies } }
 	end,
 	can_use = function(self, card)
 		for k, v in pairs(G.consumeables.highlighted) do
-			if v ~= card and v:gc().key ~= 'c_ankh' and v:gc().key ~= 'c_aeon' and v.ability.consumeable and not v:gc().hidden and not v:gc().no_doe then
+			if v ~= card and v:gc().key ~= 'c_ankh' and v:gc().key ~= 'c_aeon' and v.ability.consumeable and not v:gc().hidden and not v:gc().no_doe and not v:gc().may_no_ankh then
 				return #G.consumeables.highlighted <= 2 and (G.consumeables and #G.consumeables.cards < G.consumeables.config.card_limit + ( card.area == G.consumeables and 1 or 0 ))
 			end
 		end 
@@ -123,7 +124,7 @@ SMODS.Consumable:take_ownership('c_hex', {
 			play_sound('tarot1')
 		return true end})) 
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			G.jokers.highlighted[1]:set_sticker('perishable', true)
+			G.jokers.highlighted[1]:add_sticker('perishable', true)
 			G.jokers.highlighted[1]:juice_up(0.3, 0.5)
 			card:juice_up(0.3, 0.5)
 			play_sound('tarot1')
@@ -275,7 +276,7 @@ SMODS.Joker:take_ownership('j_stone', {
 })
 
 SMODS.Joker:take_ownership('j_satellite', {
-	rarity = 3
+	rarity = may.epic_key
 })
 
 SMODS.Joker:take_ownership('j_ring_master', {

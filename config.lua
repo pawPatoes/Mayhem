@@ -34,6 +34,7 @@ return {
 	}, 
 	["party_music_everywhere"] = false, 
 	["pagers"] = true, 
+	["scaling"] = true, 
 	["show_version"] = true,
 	["short_fusion"] = false,
 	["tutorial_tooltips"] = true,

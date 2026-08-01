@@ -151,9 +151,6 @@ function may.get_transcendence(immediate, multchips)
 end
  
 function may.calc_transcendence()
-	if not G.ARGS.push.may_true_music_volume then
-		G.ARGS.push.may_true_music_volume = G.SETTINGS.SOUND.music_volume
-	end
 	if may.conf.transcendence.effects > 1 and not may.should_do_transcendence() then
 		if may._last_ease_tr ~= 0 then
 			may._last_ease_tr = 0

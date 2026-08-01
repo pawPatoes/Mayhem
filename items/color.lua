@@ -343,7 +343,7 @@ function loc_colour(_c, _default)
     G.C.HAND_LEVELS[10] = G.C.BOOSTER
     G.C.HAND_LEVELS[11] = G.C.CHANCE
     G.C.HAND_LEVELS[12] = G.C.ETERNAL
-    G.C.HAND_LEVELS[13] = G.C.PERISHABLE
+    G.C.HAND_LEVELS[13] = may.C.score
     G.C.HAND_LEVELS[14] = G.C.GOLD
     G.C.HAND_LEVELS[15] = G.C.CHIPS
     G.C.HAND_LEVELS[16] = G.C.EDITION

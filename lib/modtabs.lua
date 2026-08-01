@@ -57,7 +57,14 @@ may.setting_tips = {
 		"{C:attention}descriptions{} will use {C:spectral}old{}, {C:purple}simpler{} formatting", 
 		"{C:inactive}E.g.{} {X:may_ee_chips_bg,C:may_ee_chips}^^2{} {C:inactive}Chips >>{} {X:chips,C:white}^^2{} {C:inactive}Chips{}", 
 	}, 
-	
+	debug = {
+		"{C:attention,E:1}REQUIRES RESTART{}", 
+		" ",
+		"Enables certain {C:chips}keybinds{} and {C:purple}functions{}",
+		"used for {C:attention}testing{}. You {C:mult}shouldn't{} enable this",
+		"if you're just {C:money}playing{} the mod {C:attention}regularly{}"
+	}, 
+		
 	tr_effects = {
 		"Changes how {C:mult}intense{} and {C:attention}diverse{} the {C:tarot}visual effects{}", 
 		"of {C:dark_edition,E:1}Transcendence{} are",
@@ -262,7 +269,15 @@ SMODS.current_mod.extra_tabs = function()
 								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
 									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "legacy_formatting" },
 								}},
-							}}, 
+							}},
+							{n = G.UIT.R, config = { align = "cm", padding = 0.1 }, nodes = {
+								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
+									{ n = G.UIT.T, config = { text = 'Debug', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.debug } }},
+								}},
+								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
+									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "debug" },
+								}},
+							}},							
 						}}
 					}}
 				end,
@@ -459,7 +474,7 @@ SMODS.current_mod.extra_tabs = function()
 								{ n = G.UIT.T, config = { text = 'Activate Scaling when obtaining Fusion Jokers', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.fusion_scaling } }},
 							}},
 							{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-							    create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "fusion_punishment"},
+							    create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "scaling"},
 							}},
 						}},
 						{n=G.UIT.R, config={}, nodes={

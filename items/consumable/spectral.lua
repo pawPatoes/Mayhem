@@ -61,6 +61,7 @@ SMODS.Consumable {
 	pos = { x = 1, y = 5 },
 	config = { extra = { cards = 1 } }, 
 	atlas = 'spectral',
+	may_no_ankh = true,
 	loc_txt = {
 		name = 'Aeon', 
 		text = {
@@ -1596,13 +1597,13 @@ SMODS.Consumable {
 	loc_txt = {
 		name = "Icarus",
 		text = {
-			"Levels up {C:attention}R{} random {C:purple}Poker Hands{} by {C:chips}C{}",
+			"Levels up {C:attention}R{} {C:inactive}(#1#){} random {C:purple}Poker Hands{} by {C:chips}C{} {C:inactive}(#2#){}",
 			may.pager(),
 			"{C:attention}R{} is the number of cards {C:attention}held in hand{}",
 			"{C:chips}C{} is the sum of card {C:attention}Nominal Chips{}", 
 			"held in hand {X:attention,C:white}X0.05{}",
 			may.pager(),
-			"{C:inactive}R = #1#, C = #2#, duplicate hands are allowed{}"
+			"{C:inactive}Duplicate hands are allowed{}"
 		}
 	},
 	pos = { x = 4, y = 2 },
@@ -1699,6 +1700,76 @@ SMODS.Consumable {
 		may.ch()
 	end,
 }
+
+SMODS.Consumable {
+	key = 'demetrius',
+	set = 'Spectral',
+	name = 'Demetrius',
+	loc_txt = {
+		name = "Demetrius",
+		text = {
+			"{C:planet}Level up{} all {C:purple}Poker Hands{} by {C:attention}+#1#{}", 
+			"per {C:attention}Rankless{} or {C:attention}Suitless{} card in full deck", 
+			"{C:dark_edition}Stone Cards{} give {C:attention}+#2#{} levels instead", 
+			"{C:inactive}Currently +#3# levels{}", 
+		}
+	},
+	pos = { x = 4, y = 3 },
+	config = { extra = { level1 = 0.05, level2 = 0.1 } },
+	atlas = 'spectral_planet',
+	cost = 6,
+	no_grc = true, 
+	hidden = true, 
+	soul_set = 'Planet', 
+	soul_rate = may.spectral_planet_rate, 
+	attributes = {
+		'spectral_planet',
+	},
+	unlocked = true,
+	show_ring_display = true,
+	can_use = function(self, card)
+		for k, v in pairs(G.playing_cards or {}) do 
+			if SMODS.has_no_rank(v) or SMODS.has_no_suit(v) then 
+				return may.canuse()
+			end 
+		end 
+		return false
+	end,
+	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = G.P_CENTERS.m_stone
+		local amount = 0
+		for k, v in pairs(G.playing_cards or {}) do 
+			if SMODS.has_no_rank(v) or SMODS.has_no_suit(v) then 
+				amount = amount + (SMODS.has_enhancement(v, 'm_stone') and card.ability.extra.level2 or card.ability.extra.level1)
+			end 
+		end
+		return { vars = { card.ability.extra.level1, card.ability.extra.level2, amount } }
+	end,
+	discovered = true,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Planet', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	use = function(self, card, area, copier)
+		local amount = 0
+		for k, v in pairs(G.playing_cards) do 
+			if SMODS.has_no_rank(v) or SMODS.has_no_suit(v) then 
+				amount = amount + (SMODS.has_enhancement(v, 'm_stone') and card.ability.extra.level2 or card.ability.extra.level1)
+			end 
+		end
+		may.level_up_all_hands(card, false, amount)
+		may.ch()
+	end,
+	bulk_use = function(self, card, area, copier, number)
+		local amount = 0
+		for k, v in pairs(G.playing_cards) do 
+			if SMODS.has_no_rank(v) or SMODS.has_no_suit(v) then 
+				amount = amount + (SMODS.has_enhancement(v, 'm_stone') and card.ability.extra.level2 or card.ability.extra.level1)
+			end 
+		end
+		may.level_up_all_hands(card, false, amount * number)
+		may.ch()
+	end
+} 
 
 -- Hidden Spectrals
 

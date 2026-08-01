@@ -70,7 +70,7 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Quasar",
 		text = {
-			"{C:attention}Quintuple{} the {C:may_ethereal}Level{} {C:purple}Mult & Chips{}",
+			"{C:attention}Quintuple{} the {C:may_demiurgic}Level{} {C:purple}Mult & Chips{}",
 			"of {C:attention}all{} {C:purple}Poker Hands{}",
 		}
 	},

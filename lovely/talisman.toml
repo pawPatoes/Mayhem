@@ -248,6 +248,6 @@ payload = '''
 extra = extra or {}
 colour = may.get_hyper_formatting(eval_type, h.hyper and amt[2] or amt)[1]
 extra.text_colour = may.get_hyper_formatting(eval_type, h.hyper and amt[2] or amt)[2]
-config.scale = may.get_hyper_formatting(eval_type, h.hyper and amt[2] or amt)[3]
+config.scale = math.min(may.get_hyper_formatting(eval_type, h.hyper and amt[2] or amt)[3], 3)
 '''
 match_indent = true

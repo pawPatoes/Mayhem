@@ -139,7 +139,7 @@ SMODS.Blind {
 		G.GAME.round_resets.temp_handsize = (G.GAME.round_resets.temp_handsize or 0) + 1
 	end, 
 	recalc_debuff = function(self, card, from_blind)
-		return card.area ~= G.jokers and SMODS.is_playing_card(card) and not card:is_face()
+		return card.area ~= G.jokers and SMODS.is_playing_card(card) and card:may_is_number()
 	end,
 	boss = {
 		min = 1,
@@ -190,6 +190,9 @@ SMODS.Blind {
             return true end}))
 		end
 	end,
+	in_pool = function(self)
+		return G.GAME.round_resets.ante > 6
+	end
 }
 
 SMODS.Blind {
@@ -408,7 +411,7 @@ SMODS.Blind {
 	end,
 	modify_hand = function(self, cards, poker_hands, text, mult, hand_chips)
 		if self.config.can_decrease then
-			return mult, hand_chips*0.2, true
+			return mult, hand_chips * 0.2, true
 		else
 			return mult, hand_chips, false
 		end
@@ -538,7 +541,8 @@ SMODS.Blind {
 			"Discards all", 
 			"cards with an Enhancement,", 
 			"Seal or Edition from full deck", 
-			"when selected"
+			"when selected",
+			"(1 card will remain)"
 		}
     },
 	disable = function(self)
@@ -546,7 +550,7 @@ SMODS.Blind {
 	end,
 	set_blind = function(self)
 		for k, v in pairs(G.playing_cards) do
-			if v.edition or v.seal or not SMODS.has_enhancement(v, 'c_base') then 
+			if v.edition or v.seal or not SMODS.has_enhancement(v, 'c_base') and #G.deck.cards > 1 then 
 				draw_card(v.area, G.discard, 100, 'up', false, v)
 			end
 		end
@@ -661,7 +665,7 @@ SMODS.Blind {
 			"#1# Blind Size",
 			"unless a Blind was", 
 			"skipped this Ante", 
-			"G is your highest hyperoperator"
+			"(G is your highest hyperoperator)"
 		}
     },
 	collection_loc_vars = function(self, info_queue, card)
@@ -809,10 +813,11 @@ SMODS.Blind {
 	config = { can_decrease = true, pre_decrease = 0 },
 	loc_txt = {
 		name = 'The Abstract',
-		text = { 
-			"Hand must contain", 
-			"a Suitless or Rankless", 
-			"card"
+		text = {
+			"#1# Blind Size if",
+			"hand doesn't contain", 
+			"a Suitless or Rankless card", 
+			"(G is your highest hyperoperator)"
 		}
     },
 	boss = {
@@ -824,16 +829,26 @@ SMODS.Blind {
 	mult = 2,
 	atlas = "blind",
 	pos = {x = 0, y = 24},
-	get_loc_debuff_text = function(self)
-		return "Hand must contain a Suitless or Rankless card"
+	collection_loc_vars = function(self, info_queue, card)
+		return { vars = { '{G}5' } }
 	end,
-	debuff_hand = function(self, cards, hand, handname, check)
+	loc_vars = function(self, info_queue, card)
+		return { vars = { '{G}5' } }
+	end,
+	modify_hand = function(self, cards, poker_hands, text, mult, hand_chips)
+		local found
 		for k, v in pairs(cards) do
 			if SMODS.has_no_rank(v) or SMODS.has_no_suit(v) then 
-				return false
+				found = true
+				break
 			end
 		end
-		return true
+		if not found then
+			G.GAME.blind.chips = to_big(G.GAME.blind.chips):arrow(may.global_op(), 5)
+			G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+			play_sound('may_blind_size')
+		end
+		return mult, hand_chips, false
 	end,
 	in_pool = function(self)
 		return G.GAME.round_resets.ante > 6

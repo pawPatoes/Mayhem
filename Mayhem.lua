@@ -99,7 +99,8 @@ may.cross_mod = {
 	'GRM', 
 	'BlindEditions', 
 	--'CardSleeves', 
-	'Spectrallib'
+	'Spectrallib',
+	'Espazio',
 }
 
 for k, v in pairs(may.cross_mod) do

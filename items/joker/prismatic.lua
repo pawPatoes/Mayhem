@@ -323,12 +323,12 @@ SMODS.Joker {
 				"When {C:attention}Blind{} is {C:attention}selected{},",
 				"create {C:attention}#1#{} {C:dark_edition}Negative{} copies of {C:purple}The Wheel of Fortune{}",
 				"with {C:mult}0{} {C:money}sell value{}", 
-				may.pager(60),
+				may.pager(65),
 				"{C:attention}Increases{} by {C:attention}#2#{} per {C:attention}card{} in {C:attention}played hand{}",
-				may.pager(60),
+				may.pager(65),
 				may.hyp(2, 'mult', '+^^#3#').." Mult per {C:attention}Joker{} with an {C:dark_edition}Edition{}",
 				may.hyp(2, 'mult', '+^^#4#').." Mult instead if {C:attention}this Joker{} has an {C:dark_edition}Edition{}",
-				may.pager(60), 
+				may.pager(65), 
 				"{C:inactive}Currently ^^#5# Mult{}"
 			},
 			may.add_fusion_text('Omniversal Catalyst', 'Diskus Distruktum', may.get_condition('diskus_distruktum')),
@@ -510,7 +510,7 @@ SMODS.Joker {
                 card = card, 
             }
         end
-		if context.using_consumeable and context.consumeable:gc().key == 'c_may_deimos' then 
+		if context.using_consumeable and context.consumeable:gc().key == 'c_may_hiiaka' then 
             may.hand_mod_multchips(may.favhand(), 'chips', 2, card.ability.extra.EEchip, false, context.consumeable)
         end
 	end

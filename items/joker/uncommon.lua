@@ -518,7 +518,7 @@ SMODS.Joker {
                 "{C:mult}destroys{} cards when used", 
 				may.pager(),
                 "{C:green}#1# in #2#{} chance to create", 
-                "a {C:attention}copy{} of {C:planet}Deimos{}", 
+                "a {C:attention}copy{} of {C:planet}Hi'iaka{}", 
                 "when {C:attention}Blind{} is {C:attention}selected{}",
 				may.pager(),
                 "{C:inactive}(Requires room){}"

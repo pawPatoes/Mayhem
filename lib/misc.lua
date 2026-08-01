@@ -195,20 +195,8 @@ function may.ease_instability(arrow, mod, silent)
 		local handarea = G.HUD:get_UIE_by_ID('hand_text_area')
 		delay(0.5)
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			local text 
-			if arrow >= 1 then
-				text = may.generate_arrow_text(arrow, 4)
-			elseif arrow == 0  then
-				text = 'X'
-			elseif arrow == -1 then
-				text = '+'
-			elseif arrow == -2 then
-				text = '-'
-			elseif arrow <= -3 then
-				text = '/'
-			end
 			attention_text({
-				text = text..(to_number(mod) or 0)..' Instability',
+				text = may.generate_arrow_text(arrow, 4)..(to_number(mod) or 0)..' Instability',
 				scale = 0.8, 
 				hold = 3,
 				cover = handarea,
@@ -423,14 +411,6 @@ function may.cu(key)
         end
     end
     return 0
-end
-
--- Check G.GAME as well as joker info for banned keys, taken from Cryptid 
-function may.no(center, m, key, no_no)
-	if no_no then
-		return center[m] or (G.GAME and G.GAME[m] and G.GAME[m][key]) or false
-	end
-	return may.no(center, "no_" .. m, key, true)
 end
 
 -- Gets a random consumable, taken from Cryptid
@@ -931,7 +911,7 @@ function may.rep_arrow(num1, arrow, num2, amt)
 	if arrow == -1 then
 		return num1 + num2 * amt
 	elseif arrow == 0 then
-		return num1 * num2 ^ amt
+		return to_big(num1):mul(to_big(num2):pow(to_big(amt))):normalize()
 	elseif arrow == 1 then
 		return num1 ^ (num2 ^ amt)
 	else
@@ -970,4 +950,15 @@ function may.change_operator(amount)
 	else 
 		change_operator(amount)
 	end
+end
+
+--[[ 
+	The function which you see right in front of your very eyes is a product of spite and poor decisions on behalf of people I have not interacted with in my life. 
+	You see, the purpose of this function is so simple and benign, yet incredibly useful at the same time. With that in mind, the fact that, at least in my opinion, an analogous function I not provided by the vanilla codebase is absolutely jarring.
+	Checking whether or not a playing card is numbered is, to put it lightly, very useful and frequent. Aces, however, are usually not treated as number cards or face cards. As such, checking if the card is not a face card will not suffice. The check for Aces is mandatory. 
+	I had shoved this discrepancy under a hypothetical rug for the longest time. I hid under the philosophy that nobody would really notice. That has been proven false, and I cannot easily pass it off as a personal choice since it is my duty to keep consistency with vanilla and other mods. 
+	That, my friend, is the story of this here function. A function you may consider senseless, but which hides beneath its silly surface a tragic tale of poor decisions and laziness.
+]]
+function Card:may_is_number()
+	return not self:is_face() and not SMODS.has_no_rank(self) and self:get_id() ~= 14
 end

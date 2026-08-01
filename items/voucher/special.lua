@@ -290,7 +290,7 @@ SMODS.Voucher {
 		    {
 			    "{C:attention}Both{} effects of {C:planet}Astronomy{} {C:mult}III{}", 
 				"will be {C:green}applied{} for any {C:planet}level up{}", 
-				may.pager(), 
+				may.pager(70), 
 				"When a {C:purple}Poker Hand{} is {C:planet}leveled up{},", 
 				"earn {C:money}Interest Cap{} equal to {X:attention,C:white}X0.0001{} the {C:planet}level{} {C:green}increase{}", 
 				"{C:inactive}Max of +(Current Interest Cap X 3){}"

@@ -553,7 +553,7 @@ SMODS.Joker {
                 card = card, 
             }
         end
-		if context.using_consumeable and context.consumeable:gc().key == 'c_may_deimos' then 
+		if context.using_consumeable and context.consumeable:gc().key == 'c_may_hiiaka' then 
             may.hand_mod_multchips(may.favhand(), 'chips', 3, card.ability.extra.EEEchip, false, context.consumeable)
         end
 	end

@@ -263,7 +263,7 @@ SMODS.Joker {
 	config = { extra = { x_hands = 0.5, mul = 0.2, lost = 0 } },
 	rarity = 4,
 	atlas = 'placeholder',
-	blueprint_compat = false ,
+	blueprint_compat = false,
 	demicoloncompat = true,
 	pos = { x = 1, y = 0 },
 	soul_pos = { x = 2, y = 0 },
@@ -308,10 +308,9 @@ SMODS.Joker {
 				"When {C:money}money{} is {C:green}increased{}, this {C:attention}Joker's{} {C:money}money{}", 
 				"counter {C:green}increases{} by a {C:mult}quarter{} of the {C:money}increase{}", 
 				may.pager(),
-                "When {C:money}money{} {C:attention}requirement{} is reached, adds", 
-				"{C:attention}#3#{} {C:dark_edition}Negative{} regular {C:green}Voucher{}", 
-				"and {C:attention}#4#{} {C:dark_edition}Negative{} {C:attention}Booster Packs{} to {C:attention}Consumable Slots{},", 
-				"{C:mult}resets{} and {C:mult}increases{} {C:money}money{} {C:attention}requirement{} by {X:dark_edition,C:white}^1.15{}", 
+                "When {C:money}money{} {C:attention}requirement{} is reached,", 
+				"creates a {C:attention}Pack Tag{} and {C:attention}Voucher Tag{},", 
+				"{C:mult}resets{} and {C:mult}increases{} {C:money}money{} {C:attention}requirement{} by {X:dark_edition,C:white}^1.1{}", 
 				may.pager(),
 				"{C:inactive}Max 100 triggers per money change{}",
 				"{C:inactive}Will not activate if current money{}", 
@@ -324,7 +323,7 @@ SMODS.Joker {
             }
 		}
 	},
-	config = { extra = { money = 0, money_req = 20, voucher = 1, pack = 2, increase = 1.15 } },
+	config = { extra = { money = 0, money_req = 20, voucher = 1, pack = 2, increase = 1.1 } },
 	rarity = 4,
 	atlas = 'joker2',
 	pos = { x = 0, y = 3 },
@@ -338,6 +337,8 @@ SMODS.Joker {
 		'scaling'
 	}, 
 	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = G.P_TAGS.tag_may_pack
+		info_queue[#info_queue + 1] = G.P_TAGS.tag_voucher
 		return { vars = { card.ability.extra.money, card.ability.extra.money_req, card.ability.extra.voucher, card.ability.extra.pack, card.ability.extra.increase } }
 	end,
 	calculate = function(self, card, context)
@@ -353,29 +354,15 @@ SMODS.Joker {
 				end
 			end
 			for i = 1, triggers do
-				for v = 1, card.ability.extra.voucher do
-				    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-					    local card2 = create_card('Voucher', G.consumeables, nil, nil, nil, nil, may.get_next_voucher_key(), 'may_thatch')
-					    card2:set_edition({negative = true}, false, false)
-						card2:add_to_deck() 
-					    G.consumeables:emplace(card2)
-						card:juice_up(0.3, 0.5)
-						play_sound('timpani')
-					return true end}))
-				end
-				for p = 1, card.ability.extra.pack do
-				    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-					    local card2 = create_card('Booster', G.consumeables, nil, nil, nil, nil, nil, 'may_thatch')
-					    card2:set_edition({negative = true}, false, false)
-					    G.consumeables:emplace(card2)
-					    card2:add_to_deck()
-						card:juice_up(0.3, 0.5)
-						play_sound('timpani')
-					return true end}))
-				end
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.15, func = function() 
+					card:juice_up(0.3, 0.5)
+					play_sound('tarot1')
+					add_tag(Tag('tag_may_pack'))
+					add_tag(Tag('tag_voucher'))
+				return true end}))
 			end
 			return {
-				message = triggers == 0 and localize('k_upgrade_ex') or "Activated! (x"..triggers..")",
+				message = triggers == 0 and localize('k_upgrade_ex') or "Activated!"..(triggers > 1 and "(x"..triggers..")" or ""),
 				message_card = card,
 			}
 		end

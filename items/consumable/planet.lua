@@ -367,7 +367,7 @@ SMODS.Consumable {
 			"{C:planet}Planet Card{} {C:attention}corresponding{}",
 			"to {C:attention}most played{} {C:purple}Poker Hand{} and",
 			"shuffle them into your {C:attention}deck{}",
-			"{C:inactive}#1# (defaults to Tartarus)",
+			"{C:inactive}#1#{}",
 		}
 	},
 	ignore_allplanets = true,
@@ -479,7 +479,7 @@ SMODS.Consumable {
 		SMODS.calculate_context({ playing_card_added = true, cards = created })
 	end,
 	in_pool = function(self, args)
-		return G.GAME.may_endless_mode, {allow_duplicates = false}
+		return G.GAME.may_endless_mode and may.planethand(may.favhand()), {allow_duplicates = false}
 	end
 }
 
@@ -893,12 +893,12 @@ SMODS.Consumable {
 	end,
 	use = function(self, card)
 		for i = 1, 3 do 
-			may.fast_level_up(card, may.rndhand(), false, 1)
+			level_up_hand(card, may.rndhand(), false, 1)
 		end
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		for i = 1, 3 * number do 
-			may.fast_level_up(card, may.rndhand(), number > 4, 1)
+			level_up_hand(card, may.rndhand(), number > 4, 1)
 		end
 		if number > 4 then 
 			may.h('Random Hands', '...', '...', '')
@@ -1008,7 +1008,7 @@ SMODS.Consumable {
 				amount = amount + 1
 			end
 		end
-		return { vars = { card.ability.extra.Xchips, may.favhand(), 1 + (card.ability.extra.Xchips * amount), } }
+		return { vars = { card.ability.extra.Xchips, localize(may.favhand(), 'poker_hands'), 1 + (card.ability.extra.Xchips * amount), } }
 	end,
 	use = function(self, card)
 		local found = {}
@@ -1022,35 +1022,23 @@ SMODS.Consumable {
 			end
 		end
 		local amount = #found
+		delay(0.5)
 		if destroy then 
-			SMODS.destroy_cards(found)
+			for k, v in pairs(found) do
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+					play_sound('card3')
+					v:juice_up(0.3, 0.5)
+					card:juice_up(0.3, 0.5)
+				return true end}))
+				SMODS.destroy_cards(v)
+			end
 		end
-		may.hand_multchips(card, may.favhand(), {0, 1 + (#found * card.ability.extra.Xchips)})
+		may.hand_multchips(card, may.favhand(), false, {0, 1 + (amount * card.ability.extra.Xchips)})
 		if Engulf and card.edition then 
 			Engulf.EditionHand(card, may.favhand(), card.edition, 1)
 		end
 		may.ch()
 	end,
-	--[[bulk_use = function(self, card, area, copier, number)
-		local found = 0
-		for k, v in pairs(G.playing_cards) do	
-			if SMODS.has_enhancement(v, "m_stone") then
-				found = found + 1
-				if (not next(SMODS.find_card('j_may_cement_joker'))) and (not next(SMODS.find_card('j_may_rocco_pfilosofia'))) and (not next(SMODS.find_card('j_may_infinity_stone'))) and (not next(SMODS.find_card('j_may_galaxy_eater'))) then 
-					SMODS.destroy_cards({v})
-				end
-			end
-		end
-		may.hand_mod_multchips(may.favhand(), 'chips', 0, found * card.ability.extra.Xchips, false, card)
-		local copy = create_card('Planet', G.consumeables, nil, nil, nil, nil, 'c_may_demetrius', nil)
-		G.consumeables:emplace(copy)
-		copy:add_to_deck()
-		copy:setQty(number - 1)
-		if Engulf and card.edition then 
-			Engulf.EditionHand(card, may.favhand(), card.edition, 1)
-			may.ch()
-		end
-	end,]]
 	in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards or {}) do
 			if SMODS.has_no_rank(v) or SMODS.has_no_suit(v) then

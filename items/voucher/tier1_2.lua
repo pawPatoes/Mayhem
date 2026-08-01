@@ -798,8 +798,6 @@ SMODS.Voucher {
 		text = {
 			"{C:dark_edition}Upside Down{} Consumables", 
 			"will appear {X:attention,C:white}35%{} more {C:green}frequently{}",
-			may.pager(40), 
-			"{C:inactive}#1# in #2# >> #1# in #3#{}"
 		}
 	},
 	pos = { x = 2, y = 4 },
@@ -810,7 +808,7 @@ SMODS.Voucher {
 		return { vars = { G.GAME.probabilities.normal, (G.GAME.may_upsd_rate or 80), (G.GAME.may_upsd_rate or 80) - ((G.GAME.may_upsd_rate or 80) * 0.35) } }
 	end,
 	redeem = function(self)
-		G.GAME.may_upsd_rate = (G.GAME.may_upsd_rate or 80) - ((G.GAME.may_upsd_rate or 80) * 0.35)
+		G.GAME.may_upsd_rate = (G.GAME.may_upsd_rate or 1) + (G.GAME.may_upsd_rate or 1) * 0.35
 	end 
 }
 
@@ -821,8 +819,6 @@ SMODS.Voucher {
 		text = {
 			"{C:dark_edition}Upside Down{} Consumables", 
 			"will appear {X:attention,C:white}50%{} more {C:green}frequently{}", 
-			may.pager(40), 
-			"{C:inactive}#1# in #2# >> #1# in #3#{}"
 		}
 	},
 	pos = { x = 3, y = 4 },
@@ -834,7 +830,7 @@ SMODS.Voucher {
 		return { vars = { G.GAME.probabilities.normal, (G.GAME.may_upsd_rate or 80), (G.GAME.may_upsd_rate or 80) - ((G.GAME.may_upsd_rate or 80) * 0.5) } }
 	end,
 	redeem = function(self)
-		G.GAME.may_upsd_rate = (G.GAME.may_upsd_rate or 80) - ((G.GAME.may_upsd_rate or 80) * 0.5)
+		G.GAME.may_upsd_rate = (G.GAME.may_upsd_rate or 1) + (G.GAME.may_upsd_rate or 1) * 0.5
 	end 
 }
 

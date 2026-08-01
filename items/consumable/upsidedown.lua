@@ -1831,7 +1831,7 @@ SMODS.Consumable {
 	can_use = function(self, card)
 		if G.hand then 
 			for k, v in ipairs(G.hand.cards) do
-			    if not v:is_face() then
+			    if v:may_is_number() then
 					return may.canuse()
 				end
 			end
@@ -1841,10 +1841,10 @@ SMODS.Consumable {
 	use = function(self, card, area, copier)
 		local targets = {}
         G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-		    for _, card in ipairs(G.hand.cards) do
-			    if not card:is_face() then
-				    card:start_dissolve(nil, false)
-				    table.insert(targets, card)
+		    for k, v in ipairs(G.hand.cards) do
+			    if v:may_is_number() then
+				    v:start_dissolve(nil, false)
+				    table.insert(targets, v)
 			    end
 		    end
 		    G.consumeables:change_size(2)
@@ -2698,7 +2698,6 @@ SMODS.Consumable {
 			{
 				"{C:mult}Levels down{} {C:attention}all Poker Hands{} by 1",
 				"Creates {C:attention}#1#{} random {C:attention}Tags",
-				"{C:inactive}Requires room{}",
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"

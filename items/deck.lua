@@ -197,23 +197,14 @@ SMODS.Back {
 	key = "rainbow_deck",
 	atlas = 'deck',
 	pos = { x = 1, y = 2 },
-	config = { hands = 1, discards = 1, hand_size = 1, size_mod = 1.75, dollars = 5 },
+	config = { hands = 1, discards = 1, hand_size = 1, size_mod = 1.65, dollars = 5 },
 	loc_txt = {
 		name = (#SMODS.find_mod('MoreFluff') ~= 0 and "Spectrum Deck" or "Rainbow Deck"),
 		text = {
 			"{C:green}+1{} {C:chips}hand{}, {C:mult}discard{} and {C:attention}Hand Size{}",
-			"{X:attention,C:white}X1.75{} Blind Size"
+			"{X:attention,C:white}X1.65{} Blind Size"
 		},
-	},
-	apply = function(self)
-		G.GAME.starting_params.ante_scaling = G.GAME.starting_params.ante_scaling * self.config.size_mod
-		G.E_MANAGER:add_event(Event({func = function()
-			local card2 = create_card('Joker', G.jokers, nil, 0.8, false, nil, nil, 'rainbow_deck')
-			G.jokers:emplace(card2)
-			card2:add_to_deck()
-			play_sound('holo1')
-		return true end}))
-	end
+	}, 
 }
 
 --[[SMODS.Back {
@@ -380,7 +371,7 @@ SMODS.Back {
 			"{C:purple}Poker Hands{} formed", 
 			"with {C:attention}at least 5 cards{}", 
 			"start with {X:purple,C:white}X3{}", 
-			"{C:may_ethereal}Level{} Mult & Chips"
+			"{C:may_demiurgic}Level{} Mult & Chips"
 		},
 	},
 	apply = function(self)
@@ -499,7 +490,7 @@ SMODS.Back {
 	end
 }]] 
 
-SMODS.Back {
+--[[SMODS.Back {
 	name = "Test Deck",
 	key = "test_deck",
 	atlas = 'deck',
@@ -520,10 +511,10 @@ SMODS.Back {
 			--add_skill_xp(99999)
 			for i = 1, 25 do 
 				--[[local new = SMODS.add_card({ set = 'Planet' })
-				new:set_edition(SMODS.poll_edition({ guaranteed = true }))]] 
+				new:set_edition(SMODS.poll_edition({ guaranteed = true }))
 			end
 			SMODS.add_card({ key = 'j_may_acum' })
-			SMODS.add_card({ key = 'p_epz_blank_pack', area = G.consumeables })
+			SMODS.add_card({ key = 'c_may_pallas', area = G.consumeables })
 		return true end})) 
 	end, 
-}
+}]]

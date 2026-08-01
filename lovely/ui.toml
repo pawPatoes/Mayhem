@@ -298,3 +298,29 @@ if #info_queue > 0 then
 end
 '''
 match_indent = true
+
+# Spectrallib stuff
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Spectrallib "Cryptlib/ascended.lua"]'''
+pattern = '''
+ease_colour(G.C.UI_CHIPS, copy_table(G.C.GOLD), 0.3)
+ease_colour(G.C.UI_MULT, copy_table(G.C.GOLD), 0.3)
+'''
+position = "at"
+payload = '''
+if (may.transcendence or 0) == 0 then 
+	G.GAME.may_override_monitor_colors = true
+	ease_colour(G.C.UI_CHIPS, copy_table(G.C.GOLD), 0.3)
+	ease_colour(G.C.UI_MULT, copy_table(G.C.GOLD), 0.3)
+end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Spectrallib "Cryptlib/ascended.lua"]'''
+pattern = '''if G.C.UI_CHIPS[1] == G.C.GOLD[1] then'''
+position = "after"
+payload = '''G.GAME.may_override_monitor_colors = nil'''
+match_indent = true

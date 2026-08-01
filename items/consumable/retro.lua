@@ -2,7 +2,7 @@
 
 SMODS.Consumable {
 	key = 'easter_egg',
-	config = { extra = { jokers = 1, mul = 1.5, ascension = 7 } },
+	config = { extra = { jokers = 1, mul = 1.5, ascension = 5 } },
 	loc_txt = {
 		name = 'EASTER_EGG',
 		text = {
@@ -66,7 +66,7 @@ SMODS.Consumable {
 			G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
 			G.GAME.may_retro_stats.easter_egg = math.ceil((G.GAME.may_retro_stats.easter_egg or 2) * card.ability.extra.mul)
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
-		elseif may.cu(self.key) + 1 == card.ability.extra.ascension then 
+		elseif may.cu(self.key) == card.ability.extra.ascension then 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Ascended!", colour = SMODS.Gradients.may_col_demiurgic, delay = 0.45, sound = 'may_c_ascended'})
 		end
 	end,
@@ -132,7 +132,7 @@ SMODS.Consumable {
 			G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
 			G.GAME.may_retro_stats.one_up = math.ceil((G.GAME.may_retro_stats.one_up or 5) * card.ability.extra.mul)
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
-		elseif may.cu(self.key) + 1 == card.ability.extra.ascension then 
+		elseif may.cu(self.key) == card.ability.extra.ascension then 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Ascended!", colour = SMODS.Gradients.may_col_demiurgic, delay = 0.45, sound = 'may_c_ascended'})
 		end
 	end,
@@ -202,7 +202,7 @@ SMODS.Consumable {
 			G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
 			G.GAME.may_retro_stats.lootbox = math.ceil((G.GAME.may_retro_stats.lootbox or 5) * card.ability.extra.mul)
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
-		elseif may.cu(self.key) + 1 == card.ability.extra.ascension then 
+		elseif may.cu(self.key) == card.ability.extra.ascension then 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Ascended!", colour = SMODS.Gradients.may_col_demiurgic, delay = 0.45, sound = 'may_c_ascended'})
 		end
 	end
@@ -273,7 +273,7 @@ SMODS.Consumable {
 			G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
 			G.GAME.may_retro_stats.upgrade = math.ceil((G.GAME.may_retro_stats.upgrade or 10) * card.ability.extra.mul)
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
-		elseif may.cu(self.key) + 1 == card.ability.extra.ascension then 
+		elseif may.cu(self.key) == card.ability.extra.ascension then 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Ascended!", colour = SMODS.Gradients.may_col_demiurgic, delay = 0.45, sound = 'may_c_ascended'})
 		end
 	end,
@@ -372,7 +372,7 @@ SMODS.Consumable {
 			G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
 			G.GAME.may_retro_stats.savescum = math.ceil((G.GAME.may_retro_stats.savescum or 5) * card.ability.extra.mul)
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
-		elseif may.cu(self.key) + 1 == card.ability.extra.ascension then 
+		elseif may.cu(self.key) == card.ability.extra.ascension then 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Ascended!", colour = SMODS.Gradients.may_col_demiurgic, delay = 0.45, sound = 'may_c_ascended'})
 		end
 	end,
@@ -439,7 +439,7 @@ SMODS.Consumable {
 			G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
 			G.GAME.may_retro_stats.gamble = math.ceil((G.GAME.may_retro_stats.gamble or 4) * card.ability.extra.mul)
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
-		elseif may.cu(self.key) + 1 == card.ability.extra.ascension then 
+		elseif may.cu(self.key) == card.ability.extra.ascension then 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Ascended!", colour = SMODS.Gradients.may_col_demiurgic, delay = 0.45, sound = 'may_c_ascended'})
 		end
 	end,
@@ -521,7 +521,7 @@ SMODS.Consumable {
 			G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
 			G.GAME.may_retro_stats.glitch = math.ceil((G.GAME.may_retro_stats.glitch or 5) * card.ability.extra.mul)
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
-		elseif may.cu(self.key) + 1 == card.ability.extra.ascension then 
+		elseif may.cu(self.key) == card.ability.extra.ascension then 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Ascended!", colour = SMODS.Gradients.may_col_demiurgic, delay = 0.45, sound = 'may_c_ascended'})
 		end
 	end,
@@ -587,7 +587,7 @@ SMODS.Consumable {
 			G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
 			G.GAME.may_retro_stats.wrong_warp = math.ceil((G.GAME.may_retro_stats.wrong_warp or 3) * card.ability.extra.mul)
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
-		elseif may.cu(self.key) + 1 == card.ability.extra.ascension then 
+		elseif may.cu(self.key) == card.ability.extra.ascension then 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Ascended!", colour = SMODS.Gradients.may_col_demiurgic, delay = 0.45, sound = 'may_c_ascended'})
 		end
 	end
@@ -650,7 +650,7 @@ SMODS.Consumable {
 			G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
 			G.GAME.may_retro_stats.out_of_bounds = math.ceil((G.GAME.may_retro_stats.out_of_bounds or 6) * card.ability.extra.mul)
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
-		elseif may.cu(self.key) + 1 == card.ability.extra.ascension then 
+		elseif may.cu(self.key) == card.ability.extra.ascension then 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Ascended!", colour = SMODS.Gradients.may_col_demiurgic, delay = 0.45, sound = 'may_c_ascended'})
 		end
 	end,
@@ -717,7 +717,7 @@ SMODS.Consumable {
 			G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
 			G.GAME.may_retro_stats.easter_egg = math.ceil((G.GAME.may_retro_stats.easter_egg or 4) * card.ability.extra.mul)
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
-		elseif may.cu(self.key) + 1 == card.ability.extra.ascension then 
+		elseif may.cu(self.key) == card.ability.extra.ascension then 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Ascended!", colour = SMODS.Gradients.may_col_demiurgic, delay = 0.45, sound = 'may_c_ascended'})
 		end
 	end,
