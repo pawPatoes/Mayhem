@@ -7,25 +7,44 @@ priority = 1000
 [[patches]]
 [patches.pattern]
 target = "functions/state_events.lua"
-pattern = '''play_sound('win')
-            G.SETTINGS.paused = true
+pattern = '''
+play_sound('win')
+G.SETTINGS.paused = true
 
-            G.FUNCS.overlay_menu{
-                definition = create_UIBox_win(),
-                config = {no_esc = true}
-            }'''
+G.FUNCS.overlay_menu{
+    definition = create_UIBox_win(),
+    config = {no_esc = true}
+}
+'''
 position = "at"
-payload = '''-- MEHM SUPREMACY'''
+payload = '''
+if may.enable_win_screen then
+	play_sound('win')
+	G.SETTINGS.paused = true
+	
+	G.FUNCS.overlay_menu {
+    	definition = create_UIBox_win(),
+    	config = {no_esc = true}
+	}
+end
+'''
 match_indent = true
 overwrite = true
 
 [[patches]]
 [patches.pattern]
 target = '''functions/state_events.lua'''
-pattern = '''win_game()
-                                G.GAME.won = true'''
+pattern = '''
+win_game()
+G.GAME.won = true
+'''
 position = "at"
-payload = '''-- MEHM SUPREMACY'''
+payload = '''
+if may.enable_win_screen then
+	win_game()
+	G.GAME.won = true
+end
+'''
 match_indent = true
 overwrite = true
 

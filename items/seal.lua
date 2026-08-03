@@ -247,10 +247,11 @@ SMODS.Seal {
 	sound = { sound = 'gold_seal', per = 1.2, vol = 0.4 },
 	calculate = function(self, card, context)
 		if context.cardarea == G.play and context.main_scoring then
-			local amount = card:may_get_nominal_chips() * 9
 			return {
-				hand_chips = amount, 
-				card = card
+				chip_mod = card:may_get_nominal_chips() * 9, 
+				card = card, 
+				message = '+'..(card:may_get_nominal_chips() * 9)..' Chips', 
+				colour = G.C.CHIPS
 			}
 		end
 	end

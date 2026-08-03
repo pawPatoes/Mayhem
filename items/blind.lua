@@ -640,8 +640,8 @@ SMODS.Blind {
 		}
     },
 	set_blind = function(self)
-		G.jokers:change_size(-(G.jokers.config.card_limit - #G.jokers.cards))
-		G.consumeables:change_size(-(G.consumeables.config.card_limit - #G.consumeables.cards))
+		G.jokers:change_size(math.min(0, -(G.jokers.config.card_limit - #G.jokers.cards)))
+		G.consumeables:change_size(math.min(0, -(G.consumeables.config.card_limit - #G.consumeables.cards)))
 	end,
 	boss = {
 		min = 1,

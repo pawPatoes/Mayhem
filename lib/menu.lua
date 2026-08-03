@@ -158,12 +158,6 @@ Game.main_menu = function(change_context)
 	-- Unstable SMODS notice
 	if table_hasvalue(may.unstable_smods, SMODS.version) then
 		may.display_notification('smods', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
-    end 
-	-- Config notice 
-	if not may.conf.notices.config and string.sub(may.version, 1, 5) == '1.4.0' then
-		may.display_notification('config', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
-		may.conf.notices.config = true 
-		G:save_settings()
     end
 	return ret
 end
@@ -231,9 +225,9 @@ if may.conf.custom_menu then
 			func = function()
 				for k, v in pairs(G.title_top.cards) do
 					if v:gc().key == chosen then
-							v:set_ability(G.P_CENTERS[may.menu_cards[math.random(1, #may.menu_cards)]])
-							v:resize(1.32)
-							v:set_edition(may.menu_editions[math.random(1, #may.menu_editions)], false, false)
+						v:set_ability(G.P_CENTERS[may.menu_cards[math.random(1, #may.menu_cards)]])
+						v:resize(1.32)
+						v:set_edition(may.menu_editions[math.random(1, #may.menu_editions)], false, false)
 						break
 					end
 				end

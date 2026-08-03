@@ -1,12 +1,10 @@
 -- In(n)it
 
 may.version = SMODS.current_mod.version
-may.info = { branch = 'main' }
-SMODS.current_mod.debug_info = { Branch = may.info.branch } 
 may.conf = SMODS.current_mod.config
 
 SMODS.current_mod.badge_colour = SMODS.Gradients.may_col_mayhem_gradient
-SMODS.current_mod.display_name = {"Mayhem", SMODS.current_mod.version, 'Branch: '..may.info.branch}
+SMODS.current_mod.display_name = {"Mayhem", SMODS.current_mod.version}
 
 SMODS.current_mod.optional_features = {
 	retrigger_joker = true,

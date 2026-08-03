@@ -419,7 +419,7 @@ SMODS.Joker {
 				may.hyp(2, 'chips', '^^#1#').." Chips",
 				may.pager(),
                 "When {C:attention}Blind{} is {C:attention}selected{},", 
-				"create a {C:dark_edition}Negative{} copy of {C:spectral}Medusa{} and {C:planet}Deimos{}",
+				"create a {C:dark_edition}Negative{} copy of {C:spectral}Medusa{} and {C:planet}Hi'iaka{}",
 				may.pager(),
                 "After scoring, {C:mult}destroy{} all", 
 				"{C:dark_edition}Stone Cards{} {C:attention}held in hand{} and gain", 

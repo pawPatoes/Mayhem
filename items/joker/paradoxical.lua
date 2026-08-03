@@ -104,15 +104,16 @@ SMODS.Joker {
 		text = {
             {
 			    "{C:money}Selling{} {C:attention}Jokers{} gives", 
-				"{C:attention}all{} {C:purple}Poker Hands{} "..may.hyp(3, 'multchips', '^^^#1#').." Chips & Mult", 
+				"{C:attention}all{} {C:purple}Poker Hands{} "..may.hyp(4, 'multchips', '#4##1#').." Chips & Mult", 
 				may.pager(60),
-                "Held copies of {C:dark_edition}Omniversal Catalyst{} give", 
-                may.hyp(3, 'multchips', '^^^#2#').." Chips & Mult", 
+                "Held copies of {C:may_paradoxical}Omniversal Catalyst{} give", 
+                may.hyp(4, 'multchips', '#4##2#').." Chips & Mult", 
 				may.pager(60),
                 "At {C:attention}the end of round{}, add {C:may_instability}Instability{}", 
-				"to {C:attention}above values{}", 
+				"to {C:attention}both operands{}", 
 				may.pager(60),
 				"{C:inactive}Instability is currently #3#{}", 
+				"{C:inactive}G = #5#{}", 
 				may.pager(60), 
                 "{C:inactive,E:1,s:0.7}i am evil now{}"
             }, 
@@ -121,7 +122,7 @@ SMODS.Joker {
             }
 		}
 	},
-	config = { extra = { EEEmultchips = 20, EEEmultchips2 = 250 } },
+	config = { extra = { hyper_multchips = 5, hyper_multchips2 = 25 } },
 	rarity = 'may_paradoxical',
 	atlas = 'joker2',
 	pos = { x = 4, y = 1 },
@@ -144,25 +145,22 @@ SMODS.Joker {
 	},
 	endless = true, 
 	loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_CENTERS.j_may_universal_collapse
-		return { vars = { card.ability.extra.EEEmultchips, card.ability.extra.EEEmultchips2, (G.GAME.may_instability or 0) } }
+        info_queue[#info_queue + 1] = G.P_CENTERS.j_may_omniversal_catalyst
+		return { vars = { card.ability.extra.hyper_multchips, card.ability.extra.hyper_multchips2, (G.GAME.may_instability or 0), '{G}', may.global_op() } }
 	end,
 	calculate = function(self, card, context)
 		if context.selling_card and context.card.ability.set == "Joker" and not context.blueprint then 
-            may.hand_mod_multchips_all('multchips', 3, card.ability.extra.EEEmultchips, false, card)
+            may.hand_multchips_all(card, nil, {may.global_op(), card.ability.extra.hyper_multchips}, {may.global_op(), card.ability.extra.hyper_multchips})
         end
         if context.other_joker and context.other_joker:gc().key == 'j_may_universal_collapse' then
             return {
-				message = "^^^"..card.ability.extra.EEEmultchips2.." Mult & Chips",
-				EEEmult_mod = card.ability.extra.EEEmultchips2,
-				EEEchip_mod = card.ability.extra.EEEmultchips2,
-				colour = G.C.PURPLE,
-				sound = 'may_eeeboth'
+				hyper_mult = {may.global_op(), card.ability.extra.hyper_multchips}, 
+				hyper_chips = {may.global_op(), card.ability.extra.hyper_multchips} 
 			}
         end
 		if context.end_of_round and context.game_over == false and context.main_eval then
-			card.ability.extra.EEEmultchips = card.ability.extra.EEEmultchips + (G.GAME.may_instability or 0)
-			card.ability.extra.EEEmultchips2 = card.ability.extra.EEEmultchips2 + (G.GAME.may_instability or 0)
+			card.ability.extra.hyper_multchips = card.ability.extra.hyper_multchips + (G.GAME.may_instability or 0)
+			card.ability.extra.hyper_multchips2 = card.ability.extra.hyper_multchips2 + (G.GAME.may_instability or 0)
 			if G.GAME.may_instability > 0 then 
 				return {
 					message = localize('k_upgrade_ex'), 
@@ -172,7 +170,4 @@ SMODS.Joker {
 			end
 		end 
 	end, 
-	global_op = function(self, card)
-		return 3
-	end
 }

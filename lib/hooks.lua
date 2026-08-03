@@ -120,37 +120,39 @@ function SMODS.upgrade_poker_hands(args)
 		    G.GAME.may_ring_bonuses.levels = 0
 	    end
 		local pre_astronomy = (args.level_up or 1)
-	    if may.has_card('v_may_astronomy_1') and ((args.level_up or 1) > 0) then
-		    args.level_up = to_big(args.level_up or 1):mul(to_big(2):pow(#SMODS.find_card('v_may_astronomy_1'))):normalize()
-	    end
-	    if may.has_card('v_may_astronomy_3') and (hand == may.favhand() or may.has_card('v_may_astronomy_5')) and ((args.level_up or 1) > 0) then
-		    args.level_up = to_big(args.level_up or 1):mul(to_big(4):pow(#SMODS.find_card('v_may_astronomy_3'))):normalize()
-	    end
-		if may.has_card('v_may_astronomy_4') and ((args.level_up or 1) > 0) then
-			local avg = 0
-			local num = 0
-			for k, v in pairs(G.GAME.hands) do 
-				if SMODS.is_poker_hand_visible(k) then
-					avg = avg + v.level
-					num = num + 1
+		if type(args.level_up) == 'number' then
+			if may.has_card('v_may_astronomy_1') and ((args.level_up or 1) > 0) then
+				args.level_up = to_big(args.level_up or 1):mul(to_big(2):pow(#SMODS.find_card('v_may_astronomy_1'))):normalize()
+			end
+			if may.has_card('v_may_astronomy_3') and (hand == may.favhand() or may.has_card('v_may_astronomy_5')) and ((args.level_up or 1) > 0) then
+				args.level_up = to_big(args.level_up or 1):mul(to_big(4):pow(#SMODS.find_card('v_may_astronomy_3'))):normalize()
+			end
+			if may.has_card('v_may_astronomy_4') and ((args.level_up or 1) > 0) then
+				local avg = 0
+				local num = 0
+				for k, v in pairs(G.GAME.hands) do 
+					if SMODS.is_poker_hand_visible(k) then
+						avg = avg + v.level
+						num = num + 1
+					end
+				end
+				avg = avg / num
+				if G.GAME.hands[args.hands[1]].level < avg then
+					args.level_up = to_big(args.level_up or 1):mul(to_big(5):pow(#SMODS.find_card('v_may_astronomy_4'))):normalize()
 				end
 			end
-			avg = avg / num
-			if G.GAME.hands[args.hands[1]].level < avg then
-				args.level_up = to_big(args.level_up or 1):mul(to_big(5):pow(#SMODS.find_card('v_may_astronomy_4'))):normalize()
+			if may.has_card('v_may_astronomy_6') and ((args.level_up or 1) > 0) then
+				args.level_up = to_big(args.level_up or 1):mul(to_big(50):pow(#SMODS.find_card('v_may_astronomy_6'))):normalize()
+			end 
+			if may.has_card('v_may_astronomy_9') and ((args.level_up or 1) > 0) then
+				args.level_up = to_big(args.level_up or 1):pow(to_big(1 + (G.GAME.hands[args.hands[1]].played * 0.025)):pow(#SMODS.find_card('v_may_astronomy_9'))):normalize()
+			end
+			if may.has_card('v_may_astronomy_10') and ((args.level_up or 1) > 0) then
+				-- puta meu vida de Amulet
+				args.level_up = to_big(args.level_up or 1):mul(to_big(may.global_op()):pow((to_big(pre_astronomy):pow(G.GAME.hands[args.hands[1]].played):mul(5)))):normalize()
+				ast10_money = pre_astronomy * G.GAME.hands[args.hands[1]].played
 			end
 		end
-	    if may.has_card('v_may_astronomy_6') and ((args.level_up or 1) > 0) then
-		    args.level_up = to_big(args.level_up or 1):mul(to_big(50):pow(#SMODS.find_card('v_may_astronomy_6'))):normalize()
-	    end 
-		if may.has_card('v_may_astronomy_9') and ((args.level_up or 1) > 0) then
-		    args.level_up = to_big(args.level_up or 1):pow(to_big(1 + (G.GAME.hands[args.hands[1]].played * 0.025)):pow(#SMODS.find_card('v_may_astronomy_9'))):normalize()
-	    end
-		if may.has_card('v_may_astronomy_10') and ((args.level_up or 1) > 0) then
-			-- puta meu vida de Amulet
-		    args.level_up = to_big(args.level_up or 1):mul(to_big(may.global_op()):pow((to_big(pre_astronomy):pow(G.GAME.hands[args.hands[1]].played):mul(5)))):normalize()
-			ast10_money = pre_astronomy * G.GAME.hands[args.hands[1]].played
-    	end
 	end
 	vanf_suph(args)
 	if args.level_up then
@@ -286,7 +288,7 @@ local vanf_cuc = Card.use_consumeable
 function Card:use_consumeable(area, copier)
 	vanf_cuc(self)
 	G.GAME.may_galileo_data = G.GAME.may_galileo_data or {}
-	if self:gc().set == 'may_modifiercard' and self:gc().key ~= 'c_may_nostalgic_card' then
+	if self:gc().set == 'may_modifiercard' then
 		G.GAME.last_modifier_card = self:gc().key
 	end
 	G.GAME.last_consumable = self:gc().key
@@ -456,16 +458,6 @@ function CardArea:add_to_highlighted(card, silent)
 	vanf_caath(self, card, silent)
 end
 
-local vanf_catd = Card.add_to_deck
-function Card:add_to_deck(from_debuff)
-	vanf_catd(self, from_debuff)
-	if self.gc and self:gc().set == 'may_display' then
-	    if self.area == G.consumeables or self.area == G.jokers then
-		    self:set_ability(may.random_consumable('display_failsafe', nil, nil, G.P_CENTER_POOLS.Consumeable, true), nil, true)
-		end 
-	end	
-end
-
 local vanf_sb = G.FUNCS.skip_booster
 G.FUNCS.skip_booster = function(e)
 	vanf_sb(e)
@@ -482,7 +474,7 @@ local vanf_ii = SMODS.injectItems
 function SMODS.injectItems(...)
     vanf_ii(...)
 	for k, v in pairs(G.P_CENTERS) do
-		if v.config and v.hand_type and (v.set or '') == 'Planet' then 
+		if v.config and v.config.hand_type and (v.set or '') == 'Planet' then 
 			SMODS.add_attribute('hand_specific', {v.key})
 		end
 		if may.is_fusable(v) then

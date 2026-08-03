@@ -62,7 +62,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"Use to {C:mult}destroy{} all held {C:planet}Planet Cards{}", 
-				"and give {C:attention}all{} {C:purple}Poker Hands{} "..may.hyp(4, 'multchips', "+#2#0.05").." Chips & Mult", 
+				"and give {C:attention}all{} {C:purple}Poker Hands{} "..may.hyp(4, 'multchips', "+#2#0.2").." Chips & Mult", 
 				"per {C:money}$0.5{} of {C:money}sell value{} destroyed cards had", 
 				"{C:inactive}Currently #1# Chips & Mult {}"
 			},
@@ -93,7 +93,7 @@ SMODS.Consumable {
 				end 
 			end 
 		end
-		return { vars = { may.generate_arrow_text(may.global_op())..tostring(1 + ((amount * 2) * 0.05)), '{G}' } }
+		return { vars = { may.generate_arrow_text(may.global_op())..tostring(1 + ((amount * 2) * 0.2)), '{G}' } }
 	end, 
 	can_use = function(self, card)
 		for k, v in pairs(G.consumeables.cards) do
@@ -119,7 +119,7 @@ SMODS.Consumable {
 				return true end}))
 			end 
 		end 
-		may.hand_multchips_all(card, nil, false, {may.global_op(), 1 + ((amount * 2) * 0.05)}, {may.global_op(), 1 + ((amount * 2) * 0.05)})
+		may.hand_multchips_all(card, nil, false, {may.global_op(), 1 + ((amount * 2) * 0.2)}, {may.global_op(), 1 + ((amount * 2) * 0.2)})
 		may.ch()
 	end,
 	in_pool = function(self, args)

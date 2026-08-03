@@ -448,7 +448,7 @@ return {
 				text = {
 					"{C:may_prismatic}G{} is the current {C:may_prismatic}Global Operator{}", 
 					"It is based on the {C:green}highest{} {C:dark_edition}hyperoperation{}", 
-					"amongst your {C:attention}Jokers{} and {C:dark_edition}Score Operator{}",
+					"amongst your {C:dark_edition}Fusion{} {C:attention}Jokers{} and {C:dark_edition}Score Operator{}",
 				}
 			}, 
 			

@@ -279,6 +279,14 @@ SMODS.Joker:take_ownership('j_satellite', {
 	rarity = may.epic_key
 })
 
+SMODS.Joker:take_ownership('j_constellation', {
+	rarity = 3,
+	endless = true, 
+	in_pool = function(self, args)
+        return G.GAME.may_endless_mode, { allow_duplicates = false }
+    end
+})
+
 SMODS.Joker:take_ownership('j_ring_master', {
 	rarity = 3, 
 	endless = true, 

@@ -1768,6 +1768,14 @@ SMODS.Consumable {
 		end
 		may.level_up_all_hands(card, false, amount * number)
 		may.ch()
+	end, 
+	in_pool = function(self, args)
+		for k, v in pairs(G.playing_cards) do 
+			if SMODS.has_no_rank(v) or SMODS.has_no_suit(v) then 
+				return true, { allow_duplicates = false }
+			end 
+		end
+		return false, { allow_duplicates = false }
 	end
 } 
 

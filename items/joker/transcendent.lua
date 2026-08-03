@@ -26,7 +26,7 @@ SMODS.Joker {
 	endless = true,
 	pos = { x = 0, y = 4 },
 	soul_pos = { x = 1, y = 4 },
-	cost = 1111111,
+	cost = 5555,
     set_card_type_badge = may.transcendent_badge,
 	attributes = {
 		'ace', 
@@ -186,7 +186,7 @@ SMODS.Joker {
 	custom_soul_anim = 'diskus_spin_fast',
 	pos = { x = 0, y = 5 },
 	soul_pos = { x = 1, y = 5 },
-	cost = 1e7,
+	cost = 5e3,
     set_card_type_badge = may.transcendent_badge,
 	attributes = {
 		'generation', 
@@ -325,7 +325,7 @@ SMODS.Joker {
 				may.hyp(4, 'chips', '#1##2#').." Chips, additional "..may.hyp(4, 'chips', '+#1##2#').." per held {C:planet}Planet Card{}",
 				may.pager(),
                 "When {C:attention}Blind{} is {C:attention}selected{},", 
-				"create a {C:dark_edition}Negative{} copy of {C:spectral}Medusa{} and {C:planet}Deimos{}",
+				"create a {C:dark_edition}Negative{} copy of {C:spectral}Medusa{} and {C:planet}Hi'iaka{}",
 				may.pager(),
                 "After scoring, {C:mult}destroy{} all", 
 				"{C:dark_edition}Stone Cards{} {C:attention}held in hand{} and gain", 
@@ -385,7 +385,7 @@ SMODS.Joker {
 			'{'..card.ability.extra.arrow..'}'..(card.ability.extra.hyper_chips * (amount + 1)),
 		} }
 	end,
-	cost = 1e7,
+	cost = 5e3,
     set_card_type_badge = may.transcendent_badge,
 	calculate = function(self, card, context)
 		if context.setting_blind then 

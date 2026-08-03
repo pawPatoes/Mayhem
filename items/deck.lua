@@ -490,7 +490,7 @@ SMODS.Back {
 	end
 }]] 
 
---[[SMODS.Back {
+SMODS.Back {
 	name = "Test Deck",
 	key = "test_deck",
 	atlas = 'deck',
@@ -510,11 +510,11 @@ SMODS.Back {
 			ease_dollars(9999)
 			--add_skill_xp(99999)
 			for i = 1, 25 do 
-				--[[local new = SMODS.add_card({ set = 'Planet' })
+				local new = SMODS.add_card({ set = 'Planet' })
 				new:set_edition(SMODS.poll_edition({ guaranteed = true }))
 			end
 			SMODS.add_card({ key = 'j_may_acum' })
 			SMODS.add_card({ key = 'c_may_pallas', area = G.consumeables })
 		return true end})) 
 	end, 
-}]]
+}

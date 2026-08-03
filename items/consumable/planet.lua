@@ -321,7 +321,7 @@ SMODS.Consumable {
 		may.hand_multchips_all(card, nil, false, {-1, amount})
 		if Engulf and card.edition then 
 			for k, v in pairs(G.GAME.hands) do
-				Engulf.EditionHand(card, k, card.edition, 1, false)
+				Engulf.EditionHand(card, k, card.edition, 1, true)
 			end
 		end
 		delay(0.2)
@@ -930,6 +930,7 @@ SMODS.Consumable {
 	config = { extra = { amount = 1.05 } },
 	atlas = 'planet',
 	cost = 3,
+	no_ring_display = true,
 	loc_txt = {
 		name = 'Parthenope',
 		text = {
@@ -1326,6 +1327,7 @@ SMODS.Consumable {
 	config = { extra = { amount = 1.1 } },
 	unlocked = true,
 	discovered = true,
+	no_ring_display = true,
 	can_use = function(self, card)
 		return may.canuse()
 	end,

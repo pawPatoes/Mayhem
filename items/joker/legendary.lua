@@ -255,7 +255,7 @@ SMODS.Joker {
 				"{C:inactive,E:1,s:0.7}I worked so hard to be born rich!{}",
 			},
 			{
-				"{C:inactive,E:1}Art by TBA{}", 
+				--"{C:inactive,E:1}Art by TBA{}", 
 				"{C:inactive,E:1}Character from Big Money!{}"
 			}
 		}
@@ -309,7 +309,7 @@ SMODS.Joker {
 				"counter {C:green}increases{} by a {C:mult}quarter{} of the {C:money}increase{}", 
 				may.pager(),
                 "When {C:money}money{} {C:attention}requirement{} is reached,", 
-				"creates a {C:attention}Pack Tag{} and {C:attention}Voucher Tag{},", 
+				"creates a {C:attention}Pack Tag{}, {C:attention}Voucher Tag{} and {C:attention}Coupon Tag{},", 
 				"{C:mult}resets{} and {C:mult}increases{} {C:money}money{} {C:attention}requirement{} by {X:dark_edition,C:white}^1.1{}", 
 				may.pager(),
 				"{C:inactive}Max 100 triggers per money change{}",
@@ -323,7 +323,7 @@ SMODS.Joker {
             }
 		}
 	},
-	config = { extra = { money = 0, money_req = 20, voucher = 1, pack = 2, increase = 1.1 } },
+	config = { extra = { money = 0, money_req = 15, voucher = 1, pack = 2, increase = 1.1 } },
 	rarity = 4,
 	atlas = 'joker2',
 	pos = { x = 0, y = 3 },
@@ -339,6 +339,7 @@ SMODS.Joker {
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_TAGS.tag_may_pack
 		info_queue[#info_queue + 1] = G.P_TAGS.tag_voucher
+		info_queue[#info_queue + 1] = G.P_TAGS.tag_coupon
 		return { vars = { card.ability.extra.money, card.ability.extra.money_req, card.ability.extra.voucher, card.ability.extra.pack, card.ability.extra.increase } }
 	end,
 	calculate = function(self, card, context)
@@ -359,6 +360,7 @@ SMODS.Joker {
 					play_sound('tarot1')
 					add_tag(Tag('tag_may_pack'))
 					add_tag(Tag('tag_voucher'))
+					add_tag(Tag('tag_coupon'))
 				return true end}))
 			end
 			return {
@@ -376,8 +378,7 @@ SMODS.Joker {
 		text = {
 			{
 				"If played hand contains {C:mult}only{} {C:spades}Spades{},",
-				"all played {C:attention}cards{} gain {X:chips,C:white}+X#1#{} Chips",
-				"{C:attention}before scoring{}",
+				"{C:attention}retrigger{} all scoring {C:attention}cards{}",
 				may.pager(45),
 				"{C:inactive,E:1,s:0.7}Meow!{}"
 			},
@@ -386,7 +387,6 @@ SMODS.Joker {
 			}
 		}
 	},
-	config = { extra = { x_chips = 0.4 } },
 	rarity = 4,
 	atlas = 'joker2',
 	blueprint_compat = true,
@@ -395,28 +395,23 @@ SMODS.Joker {
 	soul_pos = { x = 2, y = 0 },
 	cost = 20,
 	attributes = {
-		'xchips', 
 		'spades', 
-		'permabonus', 
+		'retrigger', 
 	}, 
-	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.extra.x_chips } }
-	end,
 	calculate = function(self, card, context)
-		if context.before or context.forcetrigger then
-			local can_upgrade = true
+		if context.cardarea == G.play and context.repetition and not context.repetition_only then
+			local can_retrigger = true
 			for k, v in pairs(G.play.cards) do
 				if not v:is_suit('Spades') then
 					can_upgrade = false
 					break
 				end
 			end
-			if can_upgrade then
-			    for k, v in pairs(G.play.cards) do
-					v.ability.perma_x_chips = (v.ability.perma_x_chips or 0) + card.ability.extra.x_chips
-					card_eval_status_text(v, 'extra', nil, nil, nil, { message = 'Upgraded!', colour = G.C.CHIPS, delay = 0.45})
-				end
-				card_eval_status_text(card, 'extra', nil, nil, nil, { message = 'Meow!', colour = G.C.CHIPS, delay = 0.45})
+			if can_retrigger then
+				return {
+					repetitions = 1, 
+					card = card
+				}
 			end
 		end
 	end, 
@@ -428,13 +423,13 @@ SMODS.Joker {
 		name = 'Corey',
 		text = {
 			{
-				"{X:mult,C:white}X#1#{} Mult",
-				may.pager(), 
 			    "{C:dark_edition}Shadow Cards{} {C:green}trigger{} while {C:attention}held in hand{} or {C:attention}in deck{}", 
-				may.pager(), 
-				"When a card is {C:mult}discarded{}, gain", 
-				"{X:attention,C:white}X#2#{} its {C:mult}+Mult{} as {X:mult,C:white}XMult{} and {C:mult}set it to 0{}", 
-				may.pager(), 
+				may.pager(65), 
+				"Before scoring, earn {C:money}money{}",
+				"based {C:dark_edition}logarithmically{} on the {C:mult}+Mult{} of all",
+				"scoring {C:attention}cards{}",
+				"{C:inactive}Max +$1000, gives +$(log1.3(+Mult ^ 0.8 + 1) ^ 0.9 X 1.2){}",
+				may.pager(65), 
 				"{C:inactive,E:1,s:0.7}Embrace the void and it'll embrace what's left of you.{}"
 			},
 			{
@@ -442,7 +437,6 @@ SMODS.Joker {
 			}
 		}
 	},
-	config = { extra = { x_mult = 1, mult = 0.03, temp_scale = 0 } },
 	rarity = 4,
 	atlas = 'joker2',
 	blueprint_compat = false,
@@ -451,39 +445,24 @@ SMODS.Joker {
 	soul_pos = { x = 3, y = 5 },
 	cost = 20,
 	attributes = {
-		'xmult', 
-		'scaling',
 		'passive', 
-		'permabonus'
+		'economy'
 	}, 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS['m_may_shadow']
-		return { vars = { card.ability.extra.x_mult, card.ability.extra.mult } }
 	end,
 	calculate = function(self, card, context)
-		if context.discard and (context.other_card.ability.perma_mult or 0) ~= 0 then 
-			card.ability.extra.temp_scale = context.other_card.ability.perma_mult * card.ability.extra.mult
-			context.other_card.ability.perma_mult = 0
-			SMODS.scale_card(card, {
-				ref_table = card.ability.extra,
-				ref_value = "x_mult",
-				scalar_value = "temp_scale",
-				scaling_message = {
-                    colour = G.C.MULT, 
-					message = localize('k_upgrade_ex'),
+		if context.before then 
+			local amount = 0
+			for k, v in pairs(context.scoring_hand) do
+				amount = amount + (v.ability.perma_mult or 0)
+			end
+			if amount > 0 then
+				return {
+					p_dollars = math.min((math.log((amount ^ 0.8) - 1, 1.3) ^ 0.9) * 1.2, 1000),
+					card = card,
 				}
-			})
-			return {
-				message = '=0 Mult', 
-				sound = 'may_eqmult', 
-				card = context.other_card, 
-			}
-		end
-		if context.joker_main and card.ability.extra.x_mult > 1 then 
-			return {
-				x_mult = card.ability.extra.x_mult, 
-				card = card,
-			}
+			end
 		end
 	end, 
 }
@@ -554,7 +533,7 @@ SMODS.Joker {
 		text = {
             {
 			    "{C:may_instability,s:2,E:may_alex343xd_name}??????{}",
-                "{C:may_instability,X:black}#1#/100{}", 
+                "{C:may_instability,X:black}#1#/150{}", 
 				may.pager(35),
                 "{C:inactive,E:1,s:0.7}h{}",
             }, 
@@ -583,7 +562,7 @@ SMODS.Joker {
             may.hand_mod_multchips_all('mult', 0, card.ability.extra.Xmult, false, card) 
         end
 		if context.end_of_round and context.game_over == false and context.main_eval then
-			if (G.GAME.may_instability or 0) >= 100 then
+			if (G.GAME.may_instability or 0) >= 150 then
                 G.E_MANAGER:add_event(Event({delay = 0.1, func = function() 
                     play_sound('may_big_score1')
                     play_sound('may_transcendent_joker', 0.5)
@@ -591,10 +570,6 @@ SMODS.Joker {
                     card:juice_up(2, 2)
                     card:set_ability(G.P_CENTERS['j_may_alex343xd_ascended'])
                     card:set_cost() 
-                    if may.conf.fusion_punishment then 
-                        may.add_round_timer(6, 'demiurgic_fuse')
-                        may.a('Demiurgic scaling will activate in 6 rounds!', '5', 0.5, G.C.RED) 
-                    end
                 return true end}))
 			end 
 		end

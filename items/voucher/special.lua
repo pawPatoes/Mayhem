@@ -32,8 +32,10 @@ SMODS.Voucher {
 	end,
 	redeem = function(self, card)
 		G.GAME.may_endless_mode = true
-		win_game()
-        G.GAME.won = true
+		if not may.enable_win_screen then 
+			win_game()
+        	G.GAME.won = true
+		end
 		G.E_MANAGER:add_event(Event({func = function()
 			play_sound('may_demiurgic_joker')
 		return true end}))

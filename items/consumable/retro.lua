@@ -77,7 +77,7 @@ SMODS.Consumable {
 
 SMODS.Consumable {
 	key = '1_up',
-	config = { extra = { dollars = 25, mul = 1.75, ascension = 8 } },
+	config = { extra = { dollars = 25, mul = 1.75, ascension = 9 } },
 	loc_txt = {
 		name = '1-UP',
 		text = {
@@ -140,7 +140,7 @@ SMODS.Consumable {
 
 SMODS.Consumable {
 	key = 'lootbox',
-	config = { extra = { cards = 5, mul = 1.75, ascension = 5 } },
+	config = { extra = { cards = 5, mul = 1.75, ascension = 7 } },
 	loc_txt = {
 		name = 'LOOTBOX',
 		text = {
@@ -380,7 +380,7 @@ SMODS.Consumable {
 
 SMODS.Consumable {
 	key = 'gamble',
-	config = { extra = { chips = 2, mul = 1.4, ascension = 8 } },
+	config = { extra = { chips = 2, mul = 1.4, ascension = 9 } },
 	loc_txt = {
 		name = 'GAMBLE',
 		text = {

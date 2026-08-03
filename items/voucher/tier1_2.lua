@@ -236,7 +236,7 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Stardust",
 		text = {
-			"{C:purple}Poker hands{} gain {C:mult}+5{} Mult and {C:chips}+15{} Chips when",
+			"{C:purple}Poker hands{} gain {C:chips}+15{} Chips and {C:mult}+5{} Mult when",
 			"{C:planet}leveled up{}"
 		}
 	},
@@ -256,7 +256,7 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Meteor",
 		text = {
-			"{C:purple}Poker hands{} gain {X:purple,C:white}X1.02{} Mult & Chips when",
+			"{C:purple}Poker hands{} gain {X:purple,C:white}X1.02{} Chips & Mult when",
 			"{C:planet}leveled up{}"
 		}
 	},
@@ -706,7 +706,6 @@ SMODS.Voucher {
 	atlas = 'voucher',
 	cost = 10,
 	unlocked = true,
-	voucher_sellable = true,
     requires = {'v_may_outerspacial'}, 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS.p_celestial_normal_1
@@ -716,7 +715,7 @@ SMODS.Voucher {
 	calculate = function(self, card, context)
         if context.open_booster and context.card:gc().kind == 'Celestial' then 
 			may.h('All hands', '+', '+', 0.15 * context.card.ability.cards)
-			may.level_up_all_hands(card, nil, true, 0.15 * context.card.ability.cards)
+			may.level_up_all_hands(card, true, 0.15 * context.card.ability.cards)
 			may.ch()
         end
     end
