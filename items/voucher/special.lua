@@ -336,9 +336,6 @@ SMODS.Voucher {
 		name = "Astronomy {C:may_score}VI{}",
 		text = {
 		    {
-			    "{C:spectral}Black Hole{} {C:attention}replaces{} all", 
-				"{C:chips}hand-specific{} {C:planet}Planet Cards{}", 
-				may.pager(), 
 				"{C:purple}Poker Hand{} {C:planet}level ups{} are {X:green,C:white}X50{} bigger", 
 				"{C:inactive}Only for positive amounts{}"
 		    }, 

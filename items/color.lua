@@ -12,20 +12,38 @@ may.C.brown = HEX('946d54')
 may.C.pure_black = HEX('000000')
 
 SMODS.Gradient {
+	key = 'col_gray_gradient',
+	colours = {HEX('828282'), HEX('686868')},
+	interpolation = 'trig'
+}
+
+SMODS.Gradient {
+	key = 'col_gray_gradient_dark1',
+	colours = {mix_colours(HEX('828282'), HEX('000000'), 0.5), mix_colours(HEX('686868'), HEX('000000'), 0.5)},
+	interpolation = 'trig'
+}
+
+SMODS.Gradient {
+	key = 'col_gray_gradient_dark2',
+	colours = {mix_colours(HEX('828282'), HEX('00000000'), 0.5), mix_colours(HEX('686868'), HEX('00000000'), 0.5)},
+	interpolation = 'trig'
+}
+
+SMODS.Gradient {
 	key = 'col_mayhem_gradient',
-	colours = {HEX('8c0303ff'), HEX('a14343ff')},
+	colours = {HEX('d61515ff'), HEX('841212ff')},
 	interpolation = 'trig'
 }
 
 SMODS.Gradient {
 	key = 'col_mayhem_gradient_dark1',
-	colours = {mix_colours(HEX('8c0303ff'), HEX('000000'), 0.5), mix_colours(HEX('a14343ff'), HEX('000000'), 0.5)},
+	colours = {mix_colours(HEX('d61515ff'), HEX('000000'), 0.5), mix_colours(HEX('841212ff'), HEX('000000'), 0.5)},
 	interpolation = 'trig'
 }
 
 SMODS.Gradient {
 	key = 'col_mayhem_gradient_dark2',
-	colours = {mix_colours(HEX('8c0303ff'), HEX('00000000'), 0.5), mix_colours(HEX('a14343ff'), HEX('00000000'), 0.5)},
+	colours = {mix_colours(HEX('d61515ff'), HEX('00000000'), 0.5), mix_colours(HEX('841212ff'), HEX('00000000'), 0.5)},
 	interpolation = 'trig'
 }
 

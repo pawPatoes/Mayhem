@@ -18,7 +18,7 @@ SMODS.Scoring_Calculation {
 	key = "substract",
 	func = function(self, chips, mult, flames) return chips - mult end,
 	text = '-',
-	colour = SMODS.Gradients.may_col_mayhem_gradient
+	colour = SMODS.Gradients.may_col_mayhem_gradient,
 }
 
 SMODS.Scoring_Calculation {

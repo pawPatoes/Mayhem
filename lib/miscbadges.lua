@@ -33,7 +33,7 @@ may.misc_badges = {
 	}, 
 	endless = {
 		text = {'Endless'}, 
-		col = G.C.PURPLE
+		col = G.C.PURPLE,
 	}, 
 	reserve = {
 		text = {'Reservable'}, 
@@ -150,7 +150,7 @@ function SMODS.create_mod_badges(obj, badges)
 											shadow = true,
 											offset_y = -0.03,
 											spacing = 1,
-											scale = 0.33 * 0.9,
+											scale = 0.33 * 0.9 * (v.scale or 1),
 										}),
 									},
 								},

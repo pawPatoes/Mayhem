@@ -22,42 +22,18 @@ local vanf_rs = G.FUNCS.reroll_shop
 G.FUNCS.reroll_shop = function(e)
 	vanf_rs(e)
 	G.GAME.may_current_rerolls = (G.GAME.may_current_rerolls or 0) + 1
-	if G.GAME.ultrastock then
-		if may.conf.Mode == 1 then
-			if (G.GAME.ultrastock_mod or 0) < 5 then
-				if pseudorandom('may_ultrastock') < G.GAME.probabilities.normal / 4 then
-					change_shop_size(1)
-					G.GAME.ultrastock_mod = (G.GAME.ultrastock_mod or 0) + 1
-					e:juice_up()
-					play_sound('highlight2', 1, 0.5)
-					play_sound('highlight1')
-					play_sound('cardFan2')
-				end
-			end
-		else
-			if pseudorandom('may_ultrastock') < G.GAME.probabilities.normal / 4 then
-				change_shop_size(1)
-				G.GAME.ultrastock_mod = (G.GAME.ultrastock_mod or 0) + 1
-				e:juice_up()
-				play_sound('highlight2', 1, 0.5)
-				play_sound('highlight1')
-				play_sound('cardFan2')
-			end
-		end
-	end
 	if may.conf.reroll_cost ~= 4 then
 		if G.GAME.may_current_rerolls >= may.conf.reroll_cost * 25 and not G.GAME.may_exp_reroll then
 			G.GAME.may_exp_reroll = true
 			G.GAME.may_exp_reroll_consecutive = (G.GAME.may_exp_reroll_consecutive or 0) + 1
 			e:juice_up()
-			e.config.colour = G.C.RED
 			play_sound('highlight2', 0.715, 0.2)
 			play_sound('generic1')
 		end
 	end
 	if (G.GAME.may_exp_reroll_consecutive or 0) >= 5 then
 		if may.conf.threshold_punishment then
-			may.a('Reroll price threshold reached 5 times consecutively! Opalescent Scaling will activate each reroll, including this one.', '5', 0.3, G.C.RED, 'talisman_eeechip', 0.7, 1)
+			may.a('Reroll price threshold reached 5 times consecutively! Opalescent Scaling will activate with each reroll, including this one.', '5', 0.3, G.C.RED, 'talisman_eeechip', 0.7, 1)
 			G.GAME.may_surreal_scaling = (G.GAME.may_surreal_scaling or 0) + 1
 		end
 	elseif G.GAME.may_exp_reroll_consecutive == 4 and G.GAME.may_exp_reroll then
@@ -201,11 +177,6 @@ function G.FUNCS.select_blind(e)
 	for k, v in pairs(elapsed_timers) do
 		table.remove(G.GAME.may_timers, v)
 	end
-	--[[if G.GAME.round_resets.ante > 8 and not G.GAME.may_announced_endless then 
-		may.a('Endless Mode reached! Endless-Exclusive content may now appear.', '20', 0.5, G.C.DARK_EDITION, 'may_ethereal_joker', 1, 1.5)
-		G.GAME.may_announced_endless = true
-		G.GAME.may_endless_mode = true
-	end]] 
 end
 
 -- don't ask
@@ -257,7 +228,7 @@ function get_blind_amount(ante)
 		--local surreal = to_big(G.GAME.may_surreal_scaling or 0)
 		local transcendent = to_big(G.GAME.may_transcendent_scaling or 0)
 		if mythic > to_big(0) then
-			amount = to_big(amount):arrow(1, to_big(((mythic * ((big10 + (to_big(ante) * big0_1)) + big1)))))
+			amount = to_big(amount):arrow(1, to_big(((mythic * ((big3 + (to_big(ante) * big0_1)) + big1)))))
 		    amount = FALLBACK(amount, ante)
 	    end
 		if ethereal > to_big(0) then
@@ -349,11 +320,6 @@ function Card:set_ability(center, initial, delay_sprites)
             self:set_ability(G.P_CENTERS.p_may_b_mega_premium1) 
         end 
     end 
-	if G.STAGE ~= G.STAGES.MAIN_MENU and self.gc and self:gc() then
-		if self:has_attribute('hand_specific') and may.has_card('v_may_astronomy_6') then
-			self:set_ability(G.P_CENTERS.c_black_hole)
-		end
-	end
 end
 
 local vanf_ed = ease_dollars
@@ -417,7 +383,7 @@ function Card:start_dissolve(dissolve_colours, silent, dissolve_time_fac, no_jui
 					vanf_csd(self, dissolve_colours, silent, dissolve_time_fac, no_juice)
 				end
 			else 
-				if SMODS.pseudorandom_probability(s, "may_metallic", (G.GAME.probabilities.normal or 1), 2, "Metallic") then
+				if SMODS.pseudorandom_probability(s, "may_metallic", (G.GAME.probabilities.normal or 1), 2, "Metallic", true) then
 					card_eval_status_text(self, 'extra', nil, nil, nil, { message = {'Nope!'}, colour = G.C.DARK_EDITION, delay = 0.45, sound = 'cancel' })
 					self.highlighted = false
 					if (self.area == G.play or self.area == G.hand) then
@@ -488,6 +454,7 @@ function SMODS.injectItems(...)
 		else
 			if may.is_fusion(v) then
 				SMODS.add_attribute('fusion', {v.key})
+				v.immutable = true
 			end
 		end
 		if v.rarity == 'may_mythic' then

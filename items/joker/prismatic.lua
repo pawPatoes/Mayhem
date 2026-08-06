@@ -69,7 +69,8 @@ SMODS.Joker {
 			for k, v in pairs(G.consumeables.cards) do 
                 if v:gc().set == 'Planet' then 
                     amount = amount + v:getQty()
-                    G.E_MANAGER:add_event(Event({ func = function()
+                    G.E_MANAGER:add_event(Event({func = function()
+						play_sound('card3')
                         v:start_dissolve()
                     return true end}))
                 end 
@@ -79,7 +80,10 @@ SMODS.Joker {
 				ref_table = card.ability.extra,
 				ref_value = "EEchip",
 				scalar_value = "temp_scale",
-                colour = G.C.CHIPS
+                scaling_message = {
+                    colour = G.C.CHIPS, 
+					message = localize('k_upgrade_ex')
+				}
 			})
 		end
 	end

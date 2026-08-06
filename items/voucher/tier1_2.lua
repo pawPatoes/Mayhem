@@ -278,7 +278,7 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Investment",
 		text = {
-			"{C:money}+1 Interest{}",
+			"{C:money}+1{} Interest",
 		}
 	},
 	pos = { x = 0, y = 1 },
@@ -301,7 +301,7 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Business",
 		text = {
-			"{C:money}+1 Interest{}",
+			"{C:money}+1{} Interest",
 		}
 	},
 	pos = { x = 1, y = 1 },
@@ -326,8 +326,8 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Spicy",
 		text = {
-			"{C:attention}+1 Ante{}",
-			"{C:attention}+2 Hand Size{}"
+			"{C:attention}+1{} Ante",
+			"{C:attention}+2{} Hand Size"
 		}
 	},
 	pos = { x = 4, y = 2 },
@@ -353,7 +353,7 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Hot",
 		text = {
-			"{C:attention}+1 Ante{}",
+			"{C:attention}+1{} Ante",
 			"{C:attention}+1{} {C:green}Voucher{} in Shop"
 		}
 	},
@@ -500,7 +500,7 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Misprint",
 		text = {
-			"{C:inactive,E:1}Art by by @silly_goober_0nthewall (Discord){}"
+			"{C:inactive,E:1}Art by by @silly_goober_0nthewall{}"
 		}
 	},
 	pos = { x = 0, y = 2 },
@@ -639,13 +639,9 @@ SMODS.Voucher {
             if choice == 1 then 
                 SMODS.add_card({ set = 'Planet', key_append = 'may_error' })
             elseif choice == 2 then 
-                G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-				    play_sound('talisman_echip')
-			    return true end}))
-			    return {
-				    e_chip = pseudorandom('may_misprint', 1.01, 1.09),
-				    remove_default_message = true,
-			    }
+                G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.1, func = function()
+					may.random_tag()
+				return true end}))
             elseif choice == 3 then 
                 ease_discard(1)
             elseif choice == 4 then
@@ -847,6 +843,7 @@ SMODS.Voucher {
 	atlas = 'voucher',
 	cost = 10,
 	unlocked = true,
+	endless = true,
 	calculate = function(self, card, context)
 		if context.buying_card and context.card:gc().set == 'Voucher' then 
 			for i = 1, 2 do 
@@ -859,7 +856,10 @@ SMODS.Voucher {
 				return true end})) 
 			end
 		end
-	end
+	end, 
+	in_pool = function(self, args)
+        return G.GAME.may_endless_mode, { allow_duplicates = false }
+    end
 }
 
 SMODS.Voucher {
@@ -875,6 +875,7 @@ SMODS.Voucher {
 	atlas = 'voucher',
 	cost = 10,
 	unlocked = true,
+	endless = true,
 	requires = {'v_may_fidelity_program'}, 
 	calculate = function(self, card, context)
 		if context.buying_card and context.card ~= card and context.card:gc().set == 'Voucher' and G.shop then 
@@ -882,5 +883,8 @@ SMODS.Voucher {
 				SMODS.add_booster_to_shop()
 			return true end})) 
 		end
-	end
+	end, 
+	in_pool = function(self, args)
+        return G.GAME.may_endless_mode, { allow_duplicates = false }
+    end
 }

@@ -108,7 +108,7 @@ SMODS.Joker {
 			}
 		}, 
 	},
-	config = { extra = { x_dollars = 0.15 } },
+	config = { extra = { x_dollars = 0.05 } },
 	rarity = 4,
 	atlas = 'joker1',
 	blueprint_compat = true,

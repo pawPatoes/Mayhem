@@ -857,11 +857,9 @@ SMODS.Joker {
                     amount = amount + v:getQty()
                 end 
             end 
-            if amount * card.ability.extra.Xchips > 1 then
+            if 1 + (amount * card.ability.extra.Xchips) > 1 then
 			    return {
-				    message = "X"..(amount * card.ability.extra.Xchips).." Chips",
-				    colour = G.C.CHIPS,
-				    Xchip_mod = 1 + (amount * card.ability.extra.Xchips),
+				    x_chips = 1 + (amount * card.ability.extra.Xchips),
 				    card = card,			
 			    }
             end
@@ -869,7 +867,8 @@ SMODS.Joker {
 		if context.end_of_round and context.cardarea == G.jokers and not context.blueprint then
 			for k, v in pairs(G.consumeables.cards) do 
                 if v:gc().set == 'Planet' then 
-                    G.E_MANAGER:add_event(Event({ func = function()
+                    G.E_MANAGER:add_event(Event({func = function()
+						play_sound('card3')
                         v:start_dissolve()
                     return true end}))
                 end 
@@ -878,7 +877,10 @@ SMODS.Joker {
 				ref_table = card.ability.extra,
 				ref_value = "Xchips",
 				scalar_value = "Xchips_gain",
-                colour = G.C.CHIPS
+				scaling_message = {
+                    colour = G.C.CHIPS, 
+					message = localize('k_upgrade_ex')
+				}
 			})
 		end
 	end

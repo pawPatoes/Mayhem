@@ -189,9 +189,9 @@ SMODS.Joker {
 	loc_txt = {
 		name = 'Cacophonous',
 		text = {
-			"{X:mult,C:white}+X#1#{} Mult for {C:attention}every owned Joker{}",
-			"{C:attention}Increases by {X:mult,C:white}+X#2#{} when a {C:attention}Joker is bought{}",
-			"{C:inactive}{X:mult,C:white}X#3#{} {C:inactive}Mult in total{}"
+			"{X:mult,C:white}+X#1#{} Mult per owned {C:attention}Joker{}",
+			"{C:attention}Increases{} by {X:mult,C:white}+X#2#{} when a {C:attention}Joker{} is {C:money}bought{}",
+			"{C:inactive}Currently X#3# Mult{}"
 		}
 	},
 	config = { extra = { Xmult = 0.3, Xmult_gain = 0.1,  } },
@@ -514,7 +514,7 @@ SMODS.Joker {
 		name = 'Voucher Joker',
 		text = {
             {
-			    "{C:attention}+#1#{} {C:green}Voucher Slot{}",
+			    "{C:attention}+#1#{} Voucher Slot in shop",
             }, 
             {
 			    "{C:inactive,E:1}Idea by _TeKKen_{}"

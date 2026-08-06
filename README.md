@@ -28,13 +28,13 @@ Mayhem has the following dependencies which must be installed for the mod to wor
 
 If this is your first time modding Balatro, check the Wiki on the Steamodded repository for a tutorial on how to set the essentials up.
 
-All of the dependencies on the latest (supported) versions are included in the Dependencies ZIP on every Mayhem release.
+All of the dependencies on the latest supported versions are included in the Dependencies ZIP on every Mayhem release.
 
-Mayhem may conflict with certain content mods. Most popular mods should work, but more obscure and rough mods may cause issues. Cryptid in particular is **NOT** officially supported.
+Mayhem may conflict with certain content mods. Don't expect it to crash with anything, but certain UI things and janky behavior may reveal themselves when paired up with other content mods that heavily modify vanilla and have complex mechanics.
 
 To actually download Mayhem, navigate to the Releases Tab on this repository and download the pre-packaged ZIP (or TAR.GZ) archive containing the source code. 
 
-[Overflow](https://github.com/lord-ruby/Overflow) can be used in place of Noituus, however this is not officially supported. 
+[Overflow](https://github.com/lord-ruby/Overflow) can be used in place of Noituus, however this is not officially supported or recommended. 
 
 # Contents 
 Mayhem is big and it grows with each update. Here's a rough overview of what this mod adds:
@@ -110,6 +110,9 @@ Mods marked with (CM) enable additional content from Mayhem when used.
 * Spectrum API: Adds the Spectrum hand type, which contains 5 different suits at once
 * Card Sleeves: Adds Sleeves which are equipped on top of decks, analogous to existing decks
 * Finity: Adds Showdown Jokers corresponding to each Finisher Boss Blind, which are obtained after defeating them
+
+# Recommended Config 
+The Recommended Config ZIP contains the recommended config files for all of the mods in the Mayhem modpack and the recommended vanilla config. You can use this ZIP to prepare all of the mods quickly (some mods have inconvenient default settings) and experience Mayhem pretty much exactly as I do.
 
 # For content creators 
 First of all, thank you. Second of all, here's some things you should keep in mind if you want to stream and/or make Mayhem content:

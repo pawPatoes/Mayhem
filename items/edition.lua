@@ -36,7 +36,8 @@ SMODS.Edition {
 		label = "Magenta",
 		text = {
 			may.hyp(1, 'score', '^1.05').." Score",
-			"{C:inactive}Shader by Supernova{}"
+			" ", 
+			"{C:inactive}Shader by Superb Thing{}"
 		}
 	},
 	shader = 'magenta',
@@ -57,6 +58,9 @@ SMODS.Edition {
 			return true end}))
 			card_eval_status_text(card, 'jokers', nil, percent, nil, {message = "^"..self.config.e_score.." Score", colour =  G.C.EDITION, edition = true})
 		end
+	end, 
+	in_pool = function(self, args)
+		return G.GAME.may_endless_mode, { allow_duplicates = true }
 	end
 }
 
@@ -124,7 +128,10 @@ SMODS.Edition {
 			"{C:money}+$0.5{} per {C:attention}Gold Card{}",
 			"in full deck",
 			"{C:inactive}Currently X#1# Mult and +$#2#{}",
-			"{C:inactive}Shader by Superb Thing{}"
+			" ", 
+			"{C:inactive}Shader by Superb Thing{}", 
+			" ", 
+			"{X:purple,C:white,E:2}Endless{}"
 		}
 	},
 	shader = 'alloy',
@@ -239,7 +246,8 @@ SMODS.Edition {
 			"{C:money}+$0.2{} per {C:attention}owned card{}",
 			"with an {C:dark_edition}Edition{}",
 			"{C:inactive}Currently +$#1#{}",
-			"{C:inactive}Shader by Supernova{}"
+			" ", 
+			"{C:inactive}Shader by Superb Thing{}"
 		}
 	},
 	shader = 'neon',
@@ -303,9 +311,12 @@ SMODS.Edition {
 		name = "Dichromatic",
 		label = "Dichromatic",
 		text = {
-			may.hyp(1, 'mult', '^1.4').." Mult",
+			may.hyp(1, 'mult', '^1.3').." Mult",
 			"{X:chips,C:white}X0.2{} Chips",
-			"{C:inactive}Shader by Supernova{}"
+			" ",
+			"{C:inactive}Shader by Superb Thing{}", 
+			" ", 
+			"{X:purple,C:white,E:2}Endless{}"
 		}
 	},
 	shader = 'dichromatic',
@@ -321,10 +332,13 @@ SMODS.Edition {
 	calculate = function(self, card, context)
 		if context.pre_joker or (context.main_scoring and context.cardarea == G.play) then
 			return {
-				e_mult = 1.4,
+				e_mult = 1.3,
 				x_chips = 0.2,
 			}
 		end
+	end, 
+	in_pool = function(self, args)
+		return G.GAME.may_endless_mode, { allow_duplicates = true }
 	end
 }
 
@@ -335,7 +349,10 @@ SMODS.Edition {
 		label = "Inverted",
 		text = {
 			"{C:money}+0.03{} Interest",
-			"{C:inactive}Shader by Supernova{}"
+			" ", 
+			"{C:inactive}Shader by Superb Thing{}", 
+			" ", 
+			"{X:purple,C:white,E:2}Endless{}"
 		}
 	},
 	shader = 'inverted',
@@ -366,7 +383,10 @@ SMODS.Edition {
 				end
 			}
 		end
-	end
+	end, 
+	in_pool = function(self, args)
+		return G.GAME.may_endless_mode, { allow_duplicates = true }
+	end 
 }
 
 
@@ -376,7 +396,9 @@ SMODS.Edition {
 		name = "Radioactive",
 		label = "Radioactive",
 		text = {
-			"{C:attention}Retrigger{} this card {C:attention}2{} times",
+			"{C:attention}Retrigger{} this card",
+			" ", 
+			"{X:purple,C:white,E:2}Endless{}"
 		}
 	},
 	shader = 'radioactive',
@@ -384,7 +406,7 @@ SMODS.Edition {
 	badge_colour = HEX('82e66e'),
 	sound = { sound = "may_e_radioactive", per = 1, vol = 2 },
 	unlocked = true,
-	config = { repetitions = 2 },
+	config = { repetitions = 1 },
 	in_shop = true,
 	weight = 1,
 	extra_cost = 12,
@@ -397,7 +419,10 @@ SMODS.Edition {
 				card = card,
 			}
 		end
-	end
+	end, 
+	in_pool = function(self, args)
+		return G.GAME.may_endless_mode, { allow_duplicates = true }
+	end 
 }
 
 SMODS.Edition {
@@ -639,7 +664,9 @@ SMODS.Edition {
 			may.hyp(1, 'multchips', '^1.5').." Mult & Chips",
 			"{C:attention}Retrigger{} this card",
 			" ",
-			"{C:inactive,E:1}Shader by Oiiman{}"
+			"{C:inactive,E:1}Shader by Oiiman{}", 
+			" ", 
+			"{X:purple,C:white,E:2}Endless{}"
 		}
 	},
 	shader = 'light',
@@ -670,5 +697,8 @@ SMODS.Edition {
 				card = card,
 			}
 		end
-	end
+	end, 
+	in_pool = function(self, args)
+		return G.GAME.may_endless_mode, { allow_duplicates = true }
+	end 
 }

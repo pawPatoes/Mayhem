@@ -77,7 +77,7 @@ may.sounds = {
 	
 	{'c_ascended', 'consumable/ascended.ogg'},
 	
-	{'intro_pad', 'intro_pad.ogg'}, 
+	{'intro', 'intro.ogg'}, 
 	
 	{'mythic_joker', 'rarity/mythic_joker.ogg'},
 	{'ethereal_joker', 'rarity/ethereal_joker.ogg'},

@@ -46,7 +46,7 @@ match_indent = true
 target = '''game.lua'''
 pattern = "play_sound('introPad1', 0.704, 0.6)"
 position = "at"
-payload = '''play_sound(may.conf.intro and 'may_intro_pad' or 'introPad1', may.conf.intro and 1 or 0.704, 0.6)'''
+payload = '''play_sound(may.conf.intro and 'may_intro' or 'introPad1', may.conf.intro and 1 or 0.704, 0.6)'''
 match_indent = true
 
 [[patches]]
@@ -55,14 +55,6 @@ target = '''game.lua'''
 pattern = "play_sound('splash_buildup', 1, 0.7)"
 position = "at"
 payload = '''play_sound(may.conf.intro and 'may_ethereal_joker' or 'splash_buildup', may.conf.intro and 0.5 or 1, 0.7)'''
-match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = '''game.lua'''
-pattern = "play_sound('magic_crumple', 1, 0.5)"
-position = "at"
-payload = '''play_sound(may.conf.intro and 'may_c_ascended' or 'magic_crumple', may.conf.intro and 0.75 or 1, 0.5)'''
 match_indent = true
 
 # Change the splash card

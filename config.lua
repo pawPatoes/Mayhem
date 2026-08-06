@@ -1,6 +1,6 @@
 return {
 	["custom_menu"] = true,
-	["menu_music"] = 2,
+	["menu_music"] = 1,
 	["debug"] = false,
 	["music"] = {
 		["party_time"] = true,

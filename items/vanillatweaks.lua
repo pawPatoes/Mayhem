@@ -400,9 +400,11 @@ SMODS.Consumable:take_ownership('c_fool', {
 
 -- Choose new defaults for vanilla consumables and change their collection display size
 
-SMODS.ObjectTypes.Tarot.collection_rows = {7, 7, 7}
-SMODS.ObjectTypes.Planet.collection_rows = {8, 8, 8}
-SMODS.ObjectTypes.Spectral.collection_rows = {6, 7, 6}
+if #SMODS.find_mod('Troubadour') == 0 then
+	SMODS.ObjectTypes.Tarot.collection_rows = {7, 7, 7}
+	SMODS.ObjectTypes.Planet.collection_rows = {8, 8, 8}
+	SMODS.ObjectTypes.Spectral.collection_rows = {6, 7, 6}
+end
 
 SMODS.ObjectTypes.Planet.default = 'c_may_dysnomia'
 SMODS.ObjectTypes.Tarot.default = 'c_fool'

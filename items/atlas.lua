@@ -2,7 +2,7 @@
 
 -- key, path, px, py, animated, frames
 may.atlases = {
-	{"modicon", "may_icon.png", 32, 32},
+	{"modicon", "may_icon.png", 34, 34},
 	
 	{"ccd_thing", "ccd_thing.png", 71, 95}, 
 	

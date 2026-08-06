@@ -58,9 +58,9 @@ SMODS.Joker {
 		name = 'Thumb',
 		text = {
             {
-			    "{C:money}+$#1#{} for {C:attention}every played card{}",
-			    "{C:attention}less{} than current {C:attention}Card Selection Limit{}",
-			    "{C:inactive}Max of $#2#{}",
+			    "{C:money}+$#1#{} for every played {C:attention}card{}",
+			    "{C:attention}less{} than current {C:purple}Card Selection Limit{}",
+			    "{C:inactive}Max of +$#2#{}",
             }, 
             {
 			    "{C:inactive,E:1}Art & idea by Goobert_Joke{}"
@@ -69,7 +69,7 @@ SMODS.Joker {
 	},
 	config = { extra = { dollars = 1 } },
 	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.extra.dollars, card.ability.extra.dollars*25} }
+		return { vars = { card.ability.extra.dollars, card.ability.extra.dollars * 25 } }
 	end,
 	rarity = 2,
 	atlas = 'joker1',
@@ -83,10 +83,8 @@ SMODS.Joker {
 	calculate = function(self, card, context)
 		if context.joker_main or context.forcetrigger and not (G.hand.config.highlighted_limit == #G.play.cards) then
 			return {
-				dollars = math.min(100, (G.hand.config.highlighted_limit - #G.play.cards)) * card.ability.extra.dollars,
-				message = '$'..math.min(100, (G.hand.config.highlighted_limit - #G.play.cards)) * card.ability.extra.dollars,
+				dollars = math.min((G.hand.config.highlighted_limit - context.scoring_hand) * card.ability.extra.dollars, card.ability.extra.dollars * 25), 
 				card = card,
-				colour = G.C.MONEY
 			}
 		end
 	end
@@ -97,9 +95,9 @@ SMODS.Joker {
 	loc_txt = {
 		name = 'Paper Shredder',
 		text = {
-			"{C:attention}After hand{} is played,",
-			"{C:mult}destroy{} a {C:attention}random card{}",
-			"{C:attention}held in hand{}"
+			"After hand is played,",
+			"{C:mult}destroy{} a random {C:attention}card{}",
+			"held in hand"
 		}
 	},
 	rarity = 2,
@@ -696,7 +694,7 @@ SMODS.Joker {
 	loc_txt = {
     	name = 'Gemstone',
     	text = {
-			"{C:attention}Glass Cards{} give {X:chips,C:white}X#1#{} Chips",
+			"{C:dark_edition}Glass Cards{} give {X:chips,C:white}X#1#{} Chips",
 			"when scored"
 		}
 	},
@@ -711,6 +709,7 @@ SMODS.Joker {
 		'xchips'
 	}, 
 	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = G.P_CENTERS.m_glass
 		return { vars = { card.ability.extra.Xchips } }
 	end,
 	calculate = function(self, card, context)

@@ -593,7 +593,7 @@ SMODS.Consumable {
 	end
 }
 
-SMODS.Consumable {
+--[[SMODS.Consumable {
 	key = 'out_of_bounds',
 	config = { extra = { slots = 1, mul = 2, ascension = 8 } },
 	loc_txt = {
@@ -654,11 +654,11 @@ SMODS.Consumable {
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Ascended!", colour = SMODS.Gradients.may_col_demiurgic, delay = 0.45, sound = 'may_c_ascended'})
 		end
 	end,
-}
+}]] 
 
 SMODS.Consumable {
 	key = 'bossfight',
-	config = { extra = { tags = 3, mul = 1.75, ascension = 9 } },
+	config = { extra = { tags = 2, mul = 1.75, ascension = 10 } },
 	loc_txt = {
 		name = 'BOSSFIGHT',
 		text = {

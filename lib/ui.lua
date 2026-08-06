@@ -815,3 +815,133 @@ function may.fuse_tip(queue, key, extras)
 		queue[#queue + 1] = { key = "may_"..key.."_fusion_tip", set = "Other", vars = extras }
 	end
 end
+
+function may.get_operator_text_hand_ui()
+	if SMODS.Scoring_Calculations then
+		if G.GAME.current_scoring_calculation_key == 'talisman_hyper' then
+			return {may.generate_arrow_text(may.get_score_operator()), SMODS.Gradients[may.score_operator_colors[math.min((G.GAME.hyper_operator or 2) - 1, #may.score_operator_colors)]]}
+		end
+		if SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or 'multiply'].may_hand_ui then
+			return SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or 'multiply'].may_hand_ui
+		elseif SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or 'multiply'].colour and SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or 'multiply'].text then
+			return {SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or 'multiply'].text, SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or 'multiply'].colour}	
+		end
+	end
+	return {'X', G.C.MULT}
+end
+
+-- HUD hover functions
+may.hover_funcs = {}
+
+function may.hover_funcs.money()
+	G.GAME.may_interest_temp = may.round(G.GAME.interest_amount)
+	G.GAME.may_interest_cap_temp = may.round(G.GAME.interest_cap)
+	return {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={
+		{n=G.UIT.R, config={padding = 0.05, r = 0.12, colour = G.C.DYN_UI.MAIN, emboss = 0.07}, nodes={
+			{n=G.UIT.R, config={align = "cm", padding = 0.07, r = 0.1, colour = G.C.WHITE }, nodes={
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Interest', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = G.C.MONEY, scale = 0.5, ref_table = G.GAME, ref_value = "may_interest_temp", }}
+				}},
+				
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Interest Cap', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = G.C.MONEY, scale = 0.5, ref_table = G.GAME, ref_value = "may_interest_cap_temp", }}
+				}},
+			}}
+		}}
+	}}
+end
+
+function may.hover_funcs.ante()
+	for k, v in pairs({
+		'may_mythic_scaling',
+		'may_ethereal_scaling',
+		'may_prismatic_scaling',
+		'may_demiurigc_scaling',
+	}) do
+		G.GAME[v] = G.GAME[v] or 0
+	end
+	return {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={
+		{n=G.UIT.R, config={padding = 0.05, r = 0.12, colour = G.C.DYN_UI.MAIN, emboss = 0.07}, nodes={
+			{n=G.UIT.R, config={align = "cm", padding = 0.07, r = 0.1, colour = G.C.WHITE }, nodes={
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Mythic Scaling', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = G.C.FILTER, scale = 0.5, ref_table = G.GAME, ref_value = "may_mythic_scaling", }}
+				}},
+				
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Ethereal Scaling', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = G.C.RARITY.may_ethereal, scale = 0.5, ref_table = G.GAME, ref_value = "may_ethereal_scaling", }}
+				}},
+				
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Prismatic Scaling', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = G.C.RARITY.may_prismatic, scale = 0.5, ref_table = G.GAME, ref_value = "may_prismatic_scaling", }}
+				}},
+				
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Demiurgic Scaling', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = G.C.RARITY.may_demiurgic, scale = 0.5, ref_table = G.GAME, ref_value = "may_demiurigc_scaling", }}
+				}},
+			}}
+		}}
+	}}
+end
+
+function may.hover_funcs.run_info()
+	for k, v in pairs({
+		'may_instability',
+	}) do
+		G.GAME[v..'_temp'] = may.round(G.GAME[v] or 0)
+	end
+	G.GAME.may_temp_global_op = may.global_op()
+	return {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={
+		{n=G.UIT.R, config={padding = 0.05, r = 0.12, colour = G.C.DYN_UI.MAIN, emboss = 0.07}, nodes={
+			{n=G.UIT.R, config={align = "cm", padding = 0.07, r = 0.1, colour = G.C.WHITE }, nodes={
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Instability', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = SMODS.Gradients.may_col_instability, scale = 0.5, ref_table = G.GAME, ref_value = "may_instability_temp", }}
+				}},
+				
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Global Operator', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = SMODS.Gradients.may_col_prismatic, scale = 0.5, ref_table = G.GAME, ref_value = "may_temp_global_op", }}
+				}},
+			}}
+		}}
+	}}
+end
+
+function may.hover_funcs.poker_hand(args)
+	return not args[2] and {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={
+		{n=G.UIT.R, config={padding = 0.05, r = 0.12, colour = G.C.JOKER_GREY, emboss = 0.07}, nodes={
+			{n=G.UIT.R, config={align = "cm", padding = 0.07, r = 0.1, colour = G.C.WHITE }, nodes={
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Per Level', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = G.C.CHIPS, scale = 0.5, ref_table = G.GAME.hands[args[1]], ref_value = "l_chips", }},
+					{n=G.UIT.T, config={align="cm", colour = G.C.GREY, scale = 0.5, text = '&' }},
+					{n=G.UIT.T, config={align="cm", colour = G.C.MULT, scale = 0.5, ref_table = G.GAME.hands[args[1]], ref_value = "l_mult", }},
+				}},
+			}}
+		}}
+	}} or nil
+end

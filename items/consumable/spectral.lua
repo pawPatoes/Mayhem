@@ -1425,6 +1425,8 @@ for k, v in pairs(may.generic_spectral_planets) do
 			return may.canuse()
 		end,
 		loc_vars = function(self, info_queue, card)
+			info_queue[#info_queue + 1] = G.P_CENTERS[may.jovianhand(card.ability.extra.hand)]
+			info_queue[#info_queue + 1] = G.P_CENTERS[may.saturnianhand(card.ability.extra.hand)]
 			return { vars = { card.ability.extra.hand, card.ability.extra.level } }
 		end,
 		discovered = true,
@@ -1797,8 +1799,7 @@ SMODS.Consumable {
 	},
 	pos = { x = 3, y = 4 },
 	soul_pos = { x = 4, y = 4 },
-	atlas = 'may_spectral',
-	misc_badge = may_uncommon_badge,
+	atlas = 'may_spectral', 
 	cost = 10,
 	unlocked = true,
 	can_use = function(self, card)
@@ -1821,6 +1822,59 @@ SMODS.Consumable {
 			end
 		end 
 	end,
+}
+
+SMODS.Consumable {
+	key = 'celestra',
+	set = 'Spectral',
+	name = 'Celestra',
+	loc_txt = {
+		name = "Celestra",
+		text = {
+			"Creates {C:dark_edition}Negative{} {C:chips}hand-specific{} {C:planet}Planet Cards{}", 
+			"for each {C:green}discovered{} {C:purple}Poker Hand{}", 
+			may.pager(),
+			"Base of {C:attention}#1#{} {C:planet}Planet{}, additional {C:attention}#2#{} {C:planet}Planet{}", 
+			"for every {C:attention}#3#{} times that", 
+			"{C:purple}Poker Hand{} was {C:attention}played{} this run"
+		}
+	},
+	config = { extra = { base = 1, add = 1, times = 2 } }, 
+	pos = { x = 5, y = 0 },
+	soul_pos = { x = 0, y = 1 },
+	atlas = 'may_spectral',
+	cost = 15,
+	unlocked = true,
+	immutable = true,
+	endless = true, 
+	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
+		return { vars = { card.ability.extra.base, card.ability.extra.add, card.ability.extra.times } }
+	end,
+	can_use = function(self, card)
+		return may.canuse()
+	end,
+	discovered = true,
+	no_grc = true, 
+	hidden = true,
+	soul_rate = 0.003, 
+	use = function(self, card, area, copier)
+		for k, v in pairs(G.GAME.hands) do
+			if SMODS.is_poker_hand_visible(k) and may.planethand(k) then 
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+					local card2 = SMODS.add_card({ key = may.planethand(k) })
+					card2:juice_up(0.3, 0.5)
+					card:juice_up(0.3, 0.5)
+					play_sound('timpani')
+					card2:set_edition('e_negative')
+					card2:setQty(card.ability.extra.base + math.floor(v.played / card.ability.extra.times) * card.ability.extra.add)
+				return true end})) 
+			end
+		end
+	end,
+	in_pool = function(self, args)
+        return G.GAME.may_endless_mode, { allow_duplicates = false }
+    end
 }
 
 --[[SMODS.Consumable {

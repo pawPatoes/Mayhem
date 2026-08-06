@@ -7,10 +7,11 @@ SMODS.Joker {
 		text = {
 			{
 				"When {C:attention}hand is played{}, add",
-				"{C:attention}random{} {C:dark_edition}Editions{} to all {C:attention}cards held in hand{}",
-				"{C:attention}with{} an {C:dark_edition}Enhancement{} {C:attention}or{} {C:dark_edition}Seal{}",
+				"random {C:dark_edition}Editions{} to all cards {C:attention}held in hand{}",
+				"with an {C:dark_edition}Enhancement{} or {C:dark_edition}Seal{}",
 				may.pager(),
-				"Played {C:attention}cards{} with {C:dark_edition}Editions{} give "..may.hyp(1, 'chips', '^#1#').." Chips"
+				"Played {C:attention}cards{} with {C:dark_edition}Editions{} give "..may.hyp(1, 'chips', '^#1#').." Chips", 
+				"when scored"
 			},
             may.add_fusion_text('Aurora Rave', 'Planet Ibiza', may.get_condition('planet_ibiza')), 
 			{
@@ -25,7 +26,7 @@ SMODS.Joker {
 	immutable = true,
 	pos = { x = 7, y = 3 },
 	soul_pos = { x = 8, y = 3 },
-	config = { extra = { Echip = 1.5 } },
+	config = { extra = { Echip = 1.25 } },
 	loc_vars = function(self, info_queue, card)
 		local count = 0
 		for k, v in pairs(G.playing_cards or {}) do
@@ -186,7 +187,7 @@ SMODS.Joker {
 	immutable = true,
 	pos = { x = 7, y = 4 },
 	soul_pos = { x = 8, y = 4 },
-	config = { extra = { Echip = 1, Echip_gain = 0.4, } },
+	config = { extra = { Echip = 1, Echip_gain = 0.25, } },
 	attributes = {
 		'echips', 
 		'generation', 

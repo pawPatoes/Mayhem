@@ -516,7 +516,7 @@ SMODS.current_mod.extra_tabs = function()
 								w = 6,
 								options = {
 									"Alptraum",
-									"Mayhem Theme",
+									"Legacy Mayhem Theme",
 									"Eternum Theme",
 									"Yotta Card",
 									"UltraBlind",
@@ -708,11 +708,11 @@ function may.get_mode_gradient(mode)
 end
 
 SMODS.current_mod.ui_config = {
-	colour = SMODS.Gradients[may.get_mode_gradient(may.conf.Mode)..'_dark1'],
-	author_colour = SMODS.Gradients[may.get_mode_gradient(may.conf.Mode)],
-	back_colour = SMODS.Gradients[may.get_mode_gradient(may.conf.Mode)],
-	tab_button_colour = SMODS.Gradients[may.get_mode_gradient(may.conf.Mode)],
-	collection_colour = SMODS.Gradients[may.get_mode_gradient(may.conf.Mode)..'_dark1'],
-	collection_bg_colour = SMODS.Gradients[may.get_mode_gradient(may.conf.Mode)..'_dark2'],
-	bg_colour = SMODS.Gradients[may.get_mode_gradient(may.conf.Mode)..'_dark2'],
+	colour = SMODS.Gradients['may_col_gray_gradient_dark1'],
+	author_colour = SMODS.Gradients['may_col_mayhem_gradient'],
+	back_colour = SMODS.Gradients['may_col_mayhem_gradient'],
+	tab_button_colour = SMODS.Gradients['may_col_mayhem_gradient'],
+	collection_colour = SMODS.Gradients['may_col_gray_gradient_dark1'],
+	collection_bg_colour = SMODS.Gradients['may_col_gray_gradient_dark2'],
+	bg_colour = SMODS.Gradients['may_col_gray_gradient_dark2'],
 }

@@ -8,7 +8,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"During a {C:attention}Blind{}, use for", 
-				"{X:money,C:white}X1.75${} and {X:may_col_huge_operator_alt,C:white}#1#5{} Blind Size",
+				"{X:money,C:white}X1.3${} and {X:may_col_huge_operator_alt,C:white}#1#10{} Blind Size",
 				"{C:inactive}G = #2#{}"
 			},
 			{
@@ -41,9 +41,9 @@ SMODS.Consumable {
 	soul_rate = 0.01,
 	soul_set = 'Spectral',
 	use = function(self, card, area, copier)
-		may.hypermoney(0, 1.75, false)
+		may.hypermoney(0, 1.3, false)
 		G.E_MANAGER:add_event(Event({trigger = 'before', func = function()
-			G.GAME.blind.chips = to_big(G.GAME.blind.chips):arrow(may.global_op(), 5)
+			G.GAME.blind.chips = to_big(G.GAME.blind.chips):arrow(may.global_op(), 10)
 			G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 			G.hand_text_area.blind_chips:juice_up()
 			play_sound('may_blind_size')

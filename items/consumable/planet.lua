@@ -567,7 +567,6 @@ SMODS.Consumable {
 	key = 'haumea',
 	pos = { x = 4, y = 1 },
 	atlas = 'planet',
-	endless = true,
 	no_ring_display = true, 
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Dwarf Planet', get_type_colour(self or card.config, card), nil, 1.2)
@@ -576,7 +575,7 @@ SMODS.Consumable {
 		name = 'Haumea',
 		text = {
 			"Gain the {C:money}Dollars{} of a",
-			"{C:attention}random{} {C:purple}Poker Hand{} as {C:money}Interest Cap{}",
+			"{C:attention}random{} {C:purple}Poker Hand{}",
 		}
 	},
 	can_use = function(self, card)
@@ -589,9 +588,9 @@ SMODS.Consumable {
 		local hand = may.rndhand()
 		may.th(hand)
 		if G.GAME.hands[hand].dollars then
-			may.ease_interest_cap(-1, G.GAME.hands[hand].dollars)
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..G.GAME.hands[hand].dollars..' Interest Cap'}, colour = G.C.DOLLARS, delay = 0.45})
+			ease_dollars(G.GAME.hands[hand].dollars)
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
+				play_sound('timpani')
 				card:juice_up(0.3, 0.5)
 			return true end}))
 		else
@@ -613,7 +612,6 @@ SMODS.Consumable {
 			local hand = may.rndhand()
 			may.th(hand)
 			if G.GAME.hands[hand].dollars then
-				may.ease_interest_cap(-1, G.GAME.hands[hand].dollars)
 				amount = amount + G.GAME.hands[hand].dollars
 			end
 			if Engulf and card.edition then 
@@ -621,12 +619,13 @@ SMODS.Consumable {
 				may.ch()
 			end 
 		end
-		card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..amount..' Interest Cap'}, colour = G.C.DOLLARS, delay = 0.45})
+		ease_dollars(amount)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
+			play_sound('timpani')
+			card:juice_up(0.3, 0.5)
+		return true end}))
 		may.ch()
 	end,
-	in_pool = function(self, args)
-		return G.GAME.may_endless_mode, {allow_duplicates = false}
-	end
 }
 
 --[[SMODS.Consumable {
@@ -706,7 +705,7 @@ SMODS.Consumable {
 	set = 'Planet',
 	key = 'namaka',
 	pos = { x = 2, y = 2 },
-	config = { extra = { odds = 3, dollars = 0.5 } },
+	config = { extra = { odds = 3, dollars = 0.25 } },
 	atlas = 'planet',
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Haumean Moon', get_type_colour(self or card.config, card), nil, 1.2)

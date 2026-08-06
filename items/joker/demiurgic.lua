@@ -107,7 +107,7 @@ SMODS.Joker {
 			}
 		}
 	},
-	config = { extra = { obtained = 1, odds = 15, mod = 1, blindmult = 200, h_chips = 10, active = 1 } },
+	config = { extra = { obtained = 1, odds = 5, mod = 1, blindmult = 200, h_chips = 10, active = 1 } },
 	rarity = 'may_demiurgic',
 	atlas = 'joker2',
 	blueprint_compat = false ,
@@ -435,7 +435,8 @@ SMODS.Joker {
 			for k, v in pairs(G.consumeables.cards) do 
                 if v:gc().set == 'Planet' then 
                     amount = amount + v:getQty()
-                    G.E_MANAGER:add_event(Event({ func = function()
+                    G.E_MANAGER:add_event(Event({func = function()
+						play_sound('card3')
                         v:start_dissolve()
                     return true end}))
                 end 
@@ -445,7 +446,10 @@ SMODS.Joker {
 				ref_table = card.ability.extra,
 				ref_value = "EEEchip",
 				scalar_value = "temp_scale",
-                colour = G.C.CHIPS
+                scaling_message = {
+                    colour = G.C.CHIPS, 
+					message = localize('k_upgrade_ex')
+				}
 			})
 		end
         if context.using_consumeable and context.consumeable and context.consumeable:gc().set == 'Tarot' then 

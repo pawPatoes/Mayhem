@@ -197,7 +197,7 @@ SMODS.Consumable {
 	can_use = function(self, card)
 		if G.consumeables and G.consumeables.cards then
 			for k, v in pairs(G.consumeables.cards) do
-				if v:gc().set == 'Tarot' or v:gc().set == 'Planet' or v:gc().set == 'Spectral' then 
+				if v:gc().set == 'Tarot' or v:gc().set == 'Planet' or v:gc().set == 'Spectral' and (not v.edition or v.edition.key ~= 'e_negative') then 
 					return may.canuse()
 				end
 			end

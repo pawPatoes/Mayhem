@@ -4,15 +4,15 @@ if math.random(1, 70) == 70 then
 	SMODS.Atlas({
 	    key = "titlecard",
 		path = "mehm_titlecard.png",
-	    px = 197,
-	    py = 43,
+	    px = 358,
+	    py = 120,
 	})
 else
 	SMODS.Atlas({
 	    key = "titlecard",
 		path = "may_titlecard.png",
-	    px = 197,
-	    py = 43,
+	    px = 512,
+	    py = 120,
 	})
 end
 
@@ -52,8 +52,8 @@ Game.main_menu = function(change_context)
 		    shader = "splash",
 			send = {
 				{ name = "time", ref_table = G.TIMERS, ref_value = "REAL_SHADER" },
-				{ name = "vort_speed", val = 0.4 },
-				{ name = "colour_1", ref_table = SMODS.Gradients, ref_value = "may_col_mayhem_gradient" },
+				{ name = "vort_speed", val = 0.25 },
+				{ name = "colour_1", ref_table = SMODS.Gradients, ref_value = "may_col_gray_gradient" },
 				{ name = "colour_2", ref_table = G.C, ref_value = 'BLACK' },
 			},
 		}})
@@ -98,10 +98,10 @@ Game.main_menu = function(change_context)
             scale = 0.3,
             initialize = true,
             lifespan = 3,
-            speed = 0.2,
+            speed = 0.1,
             padding = -1,
             attach = G.ROOM_ATTACH,
-            colours = { G.C.BLACK, SMODS.Gradients.may_col_mayhem_gradient },
+            colours = { G.C.BLACK, SMODS.Gradients.may_col_gray_gradient },
             fill = true
         })
         G.menu_particles.fade_alpha = 0.7
@@ -110,7 +110,7 @@ Game.main_menu = function(change_context)
 		-- Display Mayhem version on title screen
 		if may.conf.show_version then
 		    UIBox({
-                definition = {n = G.UIT.ROOT, config = { align = "cm", colour = SMODS.Gradients.may_col_mayhem_gradient_dark2 }, nodes = 
+                definition = {n = G.UIT.ROOT, config = { align = "cm", colour = SMODS.Gradients.may_col_gray_gradient_dark2 }, nodes = 
 					{{n = G.UIT.T, config = { scale = 0.3, text = "Mayhem "..may.version, colour = G.C.UI.TEXT_LIGHT}}
                 }},
                 config = { align = "tri", bond = "Weak", offset = { x = 0, y = 0.58 }, major = G.ROOM_ATTACH }
@@ -231,6 +231,9 @@ if may.conf.custom_menu then
 						break
 					end
 				end
+				if SMODS.is_playing_card(G.title_top.cards[1]) then 
+					G.title_top.cards[1]:set_edition(may.menu_editions[math.random(1, #may.menu_editions)], false, false)
+				end 
 			end
 		}
 	end
