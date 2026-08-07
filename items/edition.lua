@@ -361,8 +361,8 @@ SMODS.Edition {
 	sound = { sound = "may_e_inverted", per = 1, vol = 0.9 },
 	unlocked = true,
 	in_shop = true,
-	weight = 8,
-	extra_cost = 7,
+	weight = 4,
+	extra_cost = 8,
 	apply_to_float = true,
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
