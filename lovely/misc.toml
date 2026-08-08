@@ -136,7 +136,7 @@ payload = '''
 [[patches]] 
 [patches.pattern]
 target = "functions/common_events.lua"
-pattern = '''                    if (not v.config.softlock or G.GAME.hands[v.config.hand_type].played > 0) then'''
+pattern = '''if (not v.config.softlock or G.GAME.hands[v.config.hand_type].played > 0) then'''
 position = "at"
 payload = '''if (not v.config.softlock or (G.GAME.hands[v.config.hand_type or ""].played or 0) > 0) then'''
 match_indent = true
@@ -152,6 +152,7 @@ payload = '''self.F_SKIP_TUTORIAL = true'''
 match_indent = true
 overwrite = true
 
+# Stuff when reloading a run
 [[patches]]
 [patches.pattern]
 target = "game.lua"
@@ -243,23 +244,6 @@ position = 'at'
 payload = '''local dont_dissolve = card:gc().may_persist_after_use or G.GAME.may_no_dissolve_after_use'''
 match_indent = true
 
-[[patches]]
-[patches.pattern]
-target = 'functions/common_events.lua'
-pattern = "if G.shop_vouchers and G.shop_vouchers.cards then"
-position = 'before'
-payload = '''
-if G.vouchers then
-    for k2, v2 in pairs(G.vouchers.cards) do
-	    if v2:gc().key == v.key then
-		    include = false
-			break
-		end
-	end
-end 
-'''
-match_indent = true
-
 # help
 [[patches]]
 [patches.pattern]
@@ -267,4 +251,31 @@ target = '''=[SMODS _ "src/game_object.lua"]'''
 pattern = '''if ((self.pools and self.pools[k]) or (v.cards and v.cards[self.key])) then'''
 position = "at"
 payload = '''if ((self.pools and self.pools[k]) or (v.cards and v.cards[self.key])) and v.inject_card then'''
+match_indent = true
+
+# nuh uh
+[[patches]]
+[patches.pattern]
+target = '''card.lua'''
+pattern = '''if edi.type and not (card.config.center and card.config.center.cry_force_edition) then'''
+position = "at"
+payload = '''if edi.type and not (card.config.center and card.config.center.cry_force_edition) and may.has_card('v_may_TBA') then'''
+match_indent = true
+
+# vexing
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Spectrallib "Cryptlib/content_sets.lua"]'''
+pattern = '''if (SMODS.Mods["AntePreview"] or {}).can_load and not Spectrallib.can_mods_load({"Cryptid", "Cryptlib"}) then'''
+position = "at"
+payload = '''if false then'''
+match_indent = true
+
+# Sell playing cards
+[[patches]]
+[patches.pattern]
+target = '''card.lua'''
+pattern = '''ease_dollars(self.sell_cost)'''
+position = "at"
+payload = '''ease_dollars(SMODS.is_playing_card(self) and self:may_playing_sell_value() or self.sell_cost)'''
 match_indent = true

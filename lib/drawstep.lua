@@ -1,25 +1,5 @@
 -- Drawing steps for cards (eg midground layer on Opalescents)
 
--- CCD interceptor
--- Copy and paste from Cryptid
-if #SMODS.find_mod('Cryptid') == 0 then
-
-local interceptorSprite = nil
-SMODS.DrawStep({
-	key = "ccd_interceptor",
-	order = -5,
-	func = function(self)
-		local card_type = self.ability.set or "None"
-		if card_type ~= "Default" and card_type ~= "Enhanced" and self.playing_card and self.facing == "front" then
-			interceptorSprite = interceptorSprite or Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["may_ccd_thing"], { x = 0, y = 0 })
-			interceptorSprite.role.draw_major = self
-			interceptorSprite:draw_shader("dissolve", nil, nil, nil, self.children.center)
-		end
-	end,
-})
-
-end
-
 SMODS.DrawStep({
 	key = 'upsd_spectral_laminate',
 	order = 0,

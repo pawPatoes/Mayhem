@@ -113,7 +113,13 @@ SMODS.Consumable:take_ownership('c_hex', {
 				end
 			end
 		end
-		return selected <= card.ability.extra.cards and #G.jokers.highlighted == 1 and G.jokers.highlighted[1].edition and G.jokers.highlighted[1].edition.key ~= 'e_negative'
+		return 
+			selected <= card.ability.extra.cards and 
+			selected > 0 and 
+			#G.jokers.highlighted == 1 and
+			not G.jokers.highlighted[1]:may_is_fusion() and 
+			G.jokers.highlighted[1].edition and 
+			G.jokers.highlighted[1].edition.key ~= 'e_negative'
 	end,
 	use = function(self, card)
 		local edition = G.jokers.highlighted[1].edition.key

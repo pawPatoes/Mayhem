@@ -88,6 +88,9 @@ function SMODS.upgrade_poker_hands(args)
 	if type(args.hands) ~= 'table' then 
 		args.hands = {args.hands}
 	end
+	if may.conf.hand_speed > 1 then 
+		args.instant = true 
+	end
 	local ast10_money
 	if args.level_up then
 		if G.GAME.may_ring_bonuses and (G.GAME.may_ring_bonuses.levels or 0) ~= 0 then
@@ -342,6 +345,14 @@ function end_round()
 	end
 end
 
+local vanf_o = Card.open
+function Card:open(...)
+	if self.gc and self:gc().set == 'Booster' then
+		G.GAME.may_last_booster = self:gc().key
+	end
+	vanf_o(self, ...)
+end
+
 -- Starting paramaters buff
 -- Taken from Glue for Modpacks
 local vanf_gigo = Game.init_game_object
@@ -406,6 +417,14 @@ function Card:start_dissolve(dissolve_colours, silent, dissolve_time_fac, no_jui
 			end
         end
 	return true end}))
+end
+
+local vanf_cc = create_card
+function create_card(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
+	if (_type or '') == 'Booster' then
+		forced_key = forced_key or get_pack('shop_pack').key
+	end
+	return vanf_cc(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
 end
 
 local vanf_gfec = G.FUNCS.end_consumeable

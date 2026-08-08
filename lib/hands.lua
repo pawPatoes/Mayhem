@@ -115,6 +115,9 @@ end
 
 -- Hyperoperational hand level
 function may.level_up_hand_hyper(card, hand, instant, amount, arrow)
+	if may.conf.hand_speed > 1 then 
+		instant = true 
+	end
 	local former_level = G.GAME.hands[hand].level
 	arrow = arrow or 0
 	amount = amount or 1
@@ -149,6 +152,9 @@ end
 
 function may.set_hand_level(card, hand, instant, mod)
 	if hand and G.GAME.hands[hand] then
+		if may.conf.hand_speed > 1 then 
+			instant = true 
+		end
 		local previous = { mult = G.GAME.hands[hand].mult, chips = G.GAME.hands[hand].chips, level = G.GAME.hands[hand].level }
 		level_up_hand(card, hand, true, to_big(mod) - to_big(G.GAME.hands[hand].level))
 		--SMODS.upgrade_poker_hands({ hands = hand, level_up = to_big(mod) - to_big(G.GAME.hands[hand].level), instant = instant, from = card })
@@ -178,6 +184,9 @@ function may.set_hand_level(card, hand, instant, mod)
 end
 
 function may.level_up_all_hands(card, instant, amount, ignore)
+	if may.conf.hand_speed > 1 then 
+		instant = true 
+	end
 	if to_big(amount) ~= to_big(0) then
 		for k, v in pairs(G.GAME.hands) do
 			if ignore then
@@ -235,6 +244,9 @@ function may.level_up_all_hands(card, instant, amount, ignore)
 end
 
 function may.level_up_all_hands_hyper(card, instant, amount, arrow, ignore)
+	if may.conf.hand_speed > 1 then 
+		instant = true 
+	end
 	arrow = arrow or 0
 	if to_big(amount) ~= to_big(0) then
 		for k, v in pairs(G.GAME.hands) do
@@ -262,7 +274,7 @@ function may.level_up_all_hands_hyper(card, instant, amount, arrow, ignore)
 				if card then card:juice_up(0.8, 0.5) end
 				G.TAROT_INTERRUPT_PULSE = true
 			return true end}))
-			if to_big(amount) > to_big(0) then
+			if	 to_big(amount) > to_big(0) then
 				may.hm('+', true)
 			else
 				may.hm('-', true)
@@ -289,6 +301,9 @@ function may.level_up_all_hands_hyper(card, instant, amount, arrow, ignore)
 end
 
 function may.set_all_hand_levels(card, instant, mod, ignore)
+	if may.conf.hand_speed > 1 then 
+		instant = true 
+	end
 	for k, v in pairs(G.GAME.hands) do
 		if ignore then
 			if v ~= G.GAME.hands[ignore] then 
@@ -339,6 +354,9 @@ end
 
 -- New function for modifying level Mult & Chips. mult and chips are tables: {ARROW, MOD}
 function may.hand_lvl_multchips(card, hand, instant, chips, mult)
+	if may.conf.hand_speed > 2 then 
+		instant = true 
+	end
 	if not G.GAME.hands[hand] then return end 
 	mod = to_big(mod)
 	local prev_chips = to_big(G.GAME.hands[hand].l_chips)
@@ -397,6 +415,9 @@ function may.hand_lvl_multchips(card, hand, instant, chips, mult)
 end
 
 function may.hand_mod_dollars(card, hand, silent, arrow, mod)
+	if may.conf.hand_speed > 2 then 
+		silent = true 
+	end
 	if not G.GAME.hands[hand] then return end 
 	mod = to_big(mod)
 	G.GAME.hands[hand].dollars = to_big(G.GAME.hands[hand].dollars or 0)
@@ -445,6 +466,9 @@ function may.hand_mod_dollars(card, hand, silent, arrow, mod)
 end
 
 function may.hand_mod_dollars_all(card, silent, arrow, mod)
+	if may.conf.hand_speed > 2 then 
+		silent = true 
+	end
 	mod = to_big(mod)
 	for k, v in pairs(G.GAME.hands) do
 		v.dollars = to_big(v.dollars or 0)
@@ -499,6 +523,9 @@ function may.hand_mod_dollars_all(card, silent, arrow, mod)
 end
 
 function may.hand_mod_score(card, hand, silent, arrow, mod)
+	if may.conf.hand_speed > 2 then 
+		silent = true 
+	end
 	mod = to_big(mod)
 	G.GAME.hands[hand].score = to_big(G.GAME.hands[hand].score or 0)
 	local prev = G.GAME.hands[hand].score
@@ -546,6 +573,9 @@ function may.hand_mod_score(card, hand, silent, arrow, mod)
 end
 
 function may.hand_mod_score_dollars_composite(card, hand, silent, score, dollars)
+	if may.conf.hand_speed > 2 then 
+		silent = true 
+	end
 	G.GAME.hands[hand].score = to_big(G.GAME.hands[hand].score or 0)
 	G.GAME.hands[hand].dollars = to_big(G.GAME.hands[hand].dollars or 0)
 	local prev_score = G.GAME.hands[hand].score
@@ -619,6 +649,9 @@ function may.hand_mod_multchips(hand, multchips, arrow, mod, silent, card)
 end
 
 function may.hand_multchips(card, hand, instant, chips, mult)
+	if may.conf.hand_speed > 2 then 
+		instant = true 
+	end
 	local prev_mult = to_big(G.GAME.hands[hand].mult)
 	local prev_chips = to_big(G.GAME.hands[hand].chips)
 	if chips then
@@ -712,6 +745,9 @@ function may.hand_multchips(card, hand, instant, chips, mult)
 end
 
 function may.hand_multchips_all(card, ignore, instant, chips, mult, hand_text)
+	if may.conf.hand_speed > 2 then 
+		instant = true 
+	end
 	local targets = {}
 	for k, v in pairs(G.GAME.hands) do
 	    if (type(ignore) == 'string' and k ~= ignore) or (type(ignore) == 'table' and not table_hasvalue(ignore, k)) or (not ignore) then
@@ -782,6 +818,9 @@ function may.hand_mod_multchips_all(multchips, arrow, mod, silent, card, ignore)
 end
 
 function may.hand_mod_score_all(card, arrow, mod, silent)
+	if may.conf.hand_speed > 2 then 
+		silent = true 
+	end
 	mod = to_big(mod)
 	for k, v in pairs(G.GAME.hands) do
 		may.hand_mod_score(card, k, true, arrow, mod)
@@ -821,6 +860,9 @@ function may.hand_mod_lvl_multchips_all(multchips, arrow, mod)
 end
 
 function may.hand_lvl_multchips_all(card, immediate, chips, mult, ignore)
+	if may.conf.hand_speed > 2 then 
+		immediate = true 
+	end
 	for k, v in pairs(G.GAME.hands) do
 		if k ~= (ignore or '') then
 		    may.hand_lvl_multchips(card, k, true, chips, mult)

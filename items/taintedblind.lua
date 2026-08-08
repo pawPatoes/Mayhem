@@ -1049,7 +1049,7 @@ SMODS.Blind {
 	end
 }]] 
 
-SMODS.Blind {
+--[[SMODS.Blind {
 	key = 'tainted_mouth',
 	loc_txt = {
 		name = 'The Jaw',
@@ -1092,4 +1092,4 @@ SMODS.Blind {
 	in_pool = function(self, args)
 		return G.GAME.may_endless_mode and G.GAME.bosses_used['bl_mouth'] >= 1, { allow_duplicates = true }
 	end
-}
+}]] 

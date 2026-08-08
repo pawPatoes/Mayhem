@@ -19,12 +19,11 @@ target = "game.lua"
 pattern = 'self:load_profile(G.SETTINGS.profile or 1)'
 position = "before"
 payload = '''
-	if not Cryptid then Cryptid = {profile_prefix = "MAY"} end;
-	if type(G.SETTINGS.profile) ~= "string" or G.SETTINGS.profile:sub(1, #Cryptid.profile_prefix) ~= Cryptid.profile_prefix then
-		G.SETTINGS.profile = Cryptid.profile_prefix .. "1"
+	if type(G.SETTINGS.profile) ~= "string" or G.SETTINGS.profile:sub(1, 3) ~= 'MAY' then
+		G.SETTINGS.profile = "MAY1"
 	end
 	for i = 1, 3 do
-		G.PROFILES[Cryptid.profile_prefix .. i] = {}
+		G.PROFILES['MAY'..i] = {}
 	end
 '''
 match_indent = true
@@ -34,7 +33,7 @@ match_indent = true
 target = "functions/button_callbacks.lua"
 pattern = 'for i = 1, 3 do'
 position = "after"
-payload = 'if not Cryptid then Cryptid = {profile_prefix = "MAY"} end; i = Cryptid.profile_prefix .. i'
+payload = 'i = "MAY"..i'
 match_indent = true
 
 [[patches]]
@@ -67,28 +66,27 @@ pattern = '''
 '''
 position = "at"
 payload = '''
-if not Cryptid then Cryptid = {profile_prefix = "MAY"} end;
 	local t =   create_UIBox_generic_options({padding = 0,contents ={
 		{n=G.UIT.R, config={align = "cm", padding = 0, draw_layer = 1, minw = 4}, nodes={
 			create_tabs(
 				{tabs = {
 					 {
-						label = Cryptid.profile_prefix..1,
-						chosen = G.focused_profile == Cryptid.profile_prefix..1,
+						label = 'MAY'..1,
+						chosen = G.focused_profile == 'MAY'..1,
 						tab_definition_function = G.UIDEF.profile_option,
-						tab_definition_function_args = Cryptid.profile_prefix..1
+						tab_definition_function_args = 'MAY'..1
 					},
 					{
-						label = Cryptid.profile_prefix..2,
-						chosen = G.focused_profile == Cryptid.profile_prefix..2,
+						label = 'MAY'..2,
+						chosen = G.focused_profile == 'MAY'..2,
 						tab_definition_function = G.UIDEF.profile_option,
-						tab_definition_function_args = Cryptid.profile_prefix..2
+						tab_definition_function_args = 'MAY'..2
 					},
 					{
-						label = Cryptid.profile_prefix..3,
-						chosen = G.focused_profile == Cryptid.profile_prefix..3,
+						label = 'MAY'..3,
+						chosen = G.focused_profile == 'MAY'..3,
 						tab_definition_function = G.UIDEF.profile_option,
-						tab_definition_function_args = Cryptid.profile_prefix..3
+						tab_definition_function_args = 'MAY'..3
 					}
 			},
 '''

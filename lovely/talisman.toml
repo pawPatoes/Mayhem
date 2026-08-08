@@ -4,7 +4,6 @@ dump_lua = true
 priority = 1000000000
 
 # Custom hyperoperation effects
-
 [[patches]]
 [patches.pattern]
 target = "functions/common_events.lua"
@@ -248,6 +247,6 @@ payload = '''
 extra = extra or {}
 colour = may.get_hyper_formatting(eval_type, h.hyper and amt[2] or amt)[1]
 extra.text_colour = may.get_hyper_formatting(eval_type, h.hyper and amt[2] or amt)[2]
-config.scale = math.min(may.get_hyper_formatting(eval_type, h.hyper and amt[2] or amt)[3], 3)
+config.scale = math.min(may.get_hyper_formatting(eval_type, h.hyper and amt[2] or amt)[3], 2)
 '''
 match_indent = true

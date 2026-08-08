@@ -73,7 +73,7 @@ position = "at"
 payload = '''{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.HAND_LEVELS[math.floor(to_number(math.min(G.C.MAX_HAND_LEVEL_COLOR, G.GAME.hands[handname].level)))], minw = 1.5, outline = 0.8, outline_colour = G.C.WHITE}, nodes={'''
 match_indent = true
 
-# Misc Poker Hand values
+# Hand dollars 
 [[patches]]
 [patches.pattern]
 target = "functions/state_events.lua"
@@ -86,6 +86,7 @@ payload = '''
 '''
 match_indent = true
 
+# Hand score
 [[patches]]
 [patches.pattern]
 target = "functions/state_events.lua"
@@ -112,6 +113,7 @@ position = "at"
 payload = '''G.GAME.hands[hand or 'High Card'].level = math.max(0, to_big(G.GAME.hands[hand or 'High Card'].level) + to_big(amount))'''
 match_indent = true
 
+# Rings and level up context 
 [[patches]]
 [patches.pattern]
 target = '''=[SMODS _ "src/utils.lua"]'''

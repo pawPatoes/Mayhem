@@ -1,4 +1,4 @@
--- Decks
+{-- Decks
 
 SMODS.Back {
 	name = "Orange deck",

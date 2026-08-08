@@ -732,77 +732,6 @@ SMODS.Consumable {
     end
 }
 
---[[SMODS.Consumable {
-	key = 'morph',
-	set = 'Spectral',
-	name = 'Morph',
-	loc_txt = {
-		name = "Morph",
-		text = {
-			"Convert all {C:attention}selected{} {C:dark_edition}Enhanced{} playing cards",
-			"into random {C:spectral}Spectral{} {C:dark_edition}CCD{}s",
-			may.pager(40),
-			"{C:green}#1# in #2#{} chance to",
-			"apply {C:dark_edition}Negative{} to each card",
-		}
-	},
-	config = { extra = { odds = 2 } },
-	pos = { x = 2, y = 2 },
-	atlas = 'placeholder',
-	cost = 4,
-	unlocked = true,
-	can_use = function(self, card)
-		local count = 0
-		for k, v in pairs(G.hand.highlighted) do
-			if not SMODS.has_enhancement(v, 'c_base') then
-				count = count + 1
-			end
-		end
-		return may.canuse() and count == #G.hand.highlighted and #G.hand.highlighted > 0
-	end,
-	discovered = true,
-	loc_vars = function(self, info_queue, card)
-		info_queue[#info_queue + 1] = { key = 'may_ccd_tutorial', set = 'Other' }
-		info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
-		local normal, odds = SMODS.get_probability_vars(card, (G.GAME.probabilities.normal or 1), card.ability.extra.odds, "Morph")
-		return { vars = { normal, odds } }
-	end,
-	use = function(self, card, area, copier)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-			play_sound('tarot1')
-			card:juice_up(0.3, 0.5)
-		return true end}))
-		for i=1, #G.hand.highlighted, 1 do
-			local percent = 1.15 - (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.15, func = function() 
-				G.hand.highlighted[i]:flip()
-				play_sound('card1', percent)
-				G.hand.highlighted[i]:juice_up(0.3, 0.3)
-			return true end}))
-		end
-		for i=1, #G.hand.highlighted, 1 do
-			G.hand.highlighted[i]:set_ability(may.random_consumable('may_morph', nil, 'c_may_morph', G.P_CENTER_POOLS.Spectral, true), nil, true)
-		end
-		for i=1, #G.hand.highlighted, 1 do
-			local percent = 0.85 + (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function() 
-				G.hand.highlighted[i]:flip()
-				play_sound('card1', percent)
-				G.hand.highlighted[i]:juice_up(0.3, 0.3)
-			return true end}))
-		end
-		for i=1, #G.hand.highlighted, 1 do
-			if SMODS.pseudorandom_probability(card, "may_morph", 1, card.ability.extra.odds, "Morph") then
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.25, func = function() 
-					G.hand.highlighted[i]:set_edition({negative = true}, true)
-					play_sound('tarot1', percent)
-					G.hand.highlighted[i]:juice_up(0.3, 0.3)
-				return true end}))
-			end
-		end
-	end,
-}]]
-
 SMODS.Consumable {
 	key = 'morph',
 	set = 'Spectral',
@@ -1374,6 +1303,1320 @@ SMODS.Consumable {
 		return G.GAME.may_endless_mode, { allow_duplicates = false }
 	end
 }]] 
+
+-- Spectral Tarots
+
+SMODS.Consumable {
+	key = 'hopeless',
+	set = 'Spectral',
+	loc_txt = {
+		name = "The Hopeless",
+		text = {
+			"Create a {C:dark_edition}Negative{} copy of", 
+			"the last {C:attention}Booster Pack{}", 
+			"opened this run in your",
+			"{C:attention}Consumable Slots{}",
+		}
+	},
+	pos = { x = 0, y = 0 },
+	soul_pos = { x = 0, y = 3 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		return may.canuse() and G.GAME.may_last_booster
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
+		local fool_c = G.GAME.may_last_booster and G.P_CENTERS[G.GAME.may_last_booster] or nil
+		local last_booster = fool_c and localize { type = 'name_text', key = fool_c.key, set = 'Other' } or localize('k_none')
+		local colour = (not fool_c) and G.C.RED or G.C.DARK_EDITION
+		if fool_c then
+			info_queue[#info_queue + 1] = fool_c
+		end
+		local main_end = {
+			{
+				n = G.UIT.C,
+				config = { align = "bm", padding = 0.02 },
+				nodes = {
+					{
+						n = G.UIT.C,
+						config = { align = "m", colour = colour, r = 0.05, padding = 0.05 },
+						nodes = {
+							{ n = G.UIT.T, config = { text = ' ' .. last_booster .. ' ', colour = G.C.UI.TEXT_LIGHT, scale = 0.3, shadow = true } },
+						}
+					}
+				}
+			}
+		}
+		return { main_end = main_end }
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+			play_sound('timpani')
+			local card2 = create_card('Booster', G.consumeables, nil, nil, nil, nil, G.GAME.may_last_booster, 'may_galileo')
+			card2:add_to_deck()
+			G.consumeables:emplace(card2)
+			card:juice_up(0.3, 0.5)
+			card2:set_edition('e_negative')
+		return true end}))
+	end,
+	in_pool = function(self, args)
+		return G.GAME.may_last_booster, { allow_duplicates = false }
+	end 
+}
+
+SMODS.Consumable {
+	key = 'theurgist',
+	set = 'Spectral',
+	loc_txt = {
+		name = "The Theurgist",
+		text = {
+			"All cards {C:attention}held in hand{}",
+			"gain {X:mult,C:white}+X#1#{} Mult with a",
+			"{C:green}#2# in #3#{} chance to gain {C:money}+$#4#{}"
+		}
+	},
+	pos = { x = 1, y = 0 },
+	soul_pos = { x = 1, y = 3 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { x_mult = 0.5, p_dollars = 5, odds = 4 } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		return may.canuse() and #G.hand.cards ~= 0
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Theurgist")
+		return { vars = { card.ability.extra.x_mult, normal, odds, card.ability.extra.p_dollars } }
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		for k, v in pairs(G.hand.cards) do
+			card_eval_status_text(v, 'extra', nil, nil, nil, { message = {'+X'..card.ability.extra.x_mult..' Mult'}, colour = G.C.MULT, delay = 0.45, sound = 'may_permabonus' })
+			v.ability.perma_x_mult = (v.ability.perma_x_mult or 0) + card.ability.extra.x_mult
+			G.E_MANAGER:add_event(Event({trigger = 'after', func = function() 
+				card:juice_up(0.3, 0.5)
+			return true end}))
+			if SMODS.pseudorandom_probability(card, "may_theurgist", 1, card.ability.extra.odds, "Theurgist") then
+				card_eval_status_text(v, 'extra', nil, nil, nil, { message = {'+'..card.ability.extra.p_dollars..'$'}, colour = G.C.MONEY, delay = 0.45, sound = 'may_permabonus' })
+				v.ability.perma_p_dollars = (v.ability.perma_p_dollars or 0) + card.ability.extra.p_dollars
+				G.E_MANAGER:add_event(Event({trigger = 'after', func = function() 
+					card:juice_up(0.3, 0.5)
+				return true end}))
+			end
+		end
+	end,
+}
+
+SMODS.Consumable {
+	key = 'regality',
+	set = 'Spectral',
+	loc_txt = {
+		name = "The Regality",
+		text = {
+			"Create {C:attention}#1#{}",
+			"{C:planet}Meteor Tags{}",
+		}
+	},
+	pos = { x = 2, y = 0 },
+	soul_pos = { x = 2, y = 3 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { tags = 3 } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		return may.canuse()
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = G.P_TAGS.tag_meteor
+		return { vars = { card.ability.extra.tags } }
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+			for i = 1, card.ability.extra.tags do
+				add_tag(Tag('tag_meteor'))
+			end
+			play_sound('tarot1')
+			card:juice_up(0.3, 0.5)
+		return true end}))
+	end,
+}
+
+SMODS.Consumable {
+	key = 'reign',
+	set = 'Spectral',
+	loc_txt = {
+		name = "The Reign",
+		text = {
+			"All cards {C:attention}held in hand{}",
+			"gain {X:mult,C:white}+X#1#{} Mult"
+		}
+	},
+	pos = { x = 3, y = 0 },
+	soul_pos = { x = 3, y = 3 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { x_mult = 1 } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		return may.canuse() and #G.hand.cards ~= 0
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.x_mult } }
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		for k, v in pairs(G.hand.cards) do
+			card_eval_status_text(v, 'extra', nil, nil, nil, { message = {'+X'..card.ability.extra.x_mult..' Mult'}, colour = G.C.MULT, delay = 0.45, sound = 'may_permabonus' })
+			v.ability.perma_x_mult = (v.ability.perma_x_mult or 0) + card.ability.extra.x_mult
+			G.E_MANAGER:add_event(Event({trigger = 'after', func = function() 
+				card:juice_up(0.3, 0.5)
+			return true end}))
+		end
+	end,
+}
+
+SMODS.Consumable {
+	key = 'dominus',
+	set = 'Spectral',
+	loc_txt = {
+		name = "The Dominus",
+		text = {
+			"Create {C:attention}#1#{}",
+			"{C:tarot}Charm Tags{}",
+		}
+	},
+	pos = { x = 4, y = 0 },
+	soul_pos = { x = 4, y = 3 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { tags = 3 } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		return may.canuse()
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = G.P_TAGS.tag_charm
+		return { vars = { card.ability.extra.tags } }
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+			for i = 1, card.ability.extra.tags do
+				add_tag(Tag('tag_charm'))
+			end
+			play_sound('tarot1')
+			card:juice_up(0.3, 0.5)
+		return true end}))
+	end,
+}
+
+SMODS.Consumable {
+	key = 'paladin',
+	set = 'Spectral',
+	loc_txt = {
+		name = "The Paladin",
+		text = {
+			"All cards {C:attention}held in hand{}",
+			"gain {X:chips,C:white}+X#1#{} Chips"
+		}
+	},
+	pos = { x = 5, y = 0 },
+	soul_pos = { x = 5, y = 3 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { x_chips = 1 } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		return may.canuse() and #G.hand.cards ~= 0
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.x_chips } }
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		for k, v in pairs(G.hand.cards) do
+			card_eval_status_text(v, 'extra', nil, nil, nil, { message = {'+X'..card.ability.extra.x_chips..' Chips'}, colour = G.C.CHIPS, delay = 0.45, sound = 'may_permabonus' })
+			v.ability.perma_x_chips = (v.ability.perma_x_chips or 0) + card.ability.extra.x_chips
+			G.E_MANAGER:add_event(Event({trigger = 'after', func = function() 
+				card:juice_up(0.3, 0.5)
+			return true end}))
+		end
+	end,
+}
+
+SMODS.Consumable {
+	key = 'coalescent',
+	set = 'Spectral',
+	loc_txt = {
+		name = "The Coalescent",
+		text = {
+			"Increase {C:money}Interest{} by a {C:attention}quarter{} of",
+			"the number of {C:attention}unique Suits{} in full deck",
+			may.pager(),
+			"{C:dark_edition}Wild Cards{} are {C:mult}omitted{} when calculating",
+			"the number and instead give {C:money}+#1#{} Interest Cap",
+			may.pager(),
+			"{C:inactive}Currently +#2# Interest and +#3# Interest Cap{}",
+		}
+	},
+	pos = { x = 6, y = 0 },
+	soul_pos = { x = 6, y = 3 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { interest_cap = 2.5 } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		for k, v in pairs(G.playing_cards) do
+			if not SMODS.has_no_suit(v) then
+				return may.canuse()
+			end
+		end
+		return false
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		may.tut_tip(info_queue, 'interest')
+		info_queue[#info_queue + 1] = G.P_CENTERS.m_wild
+		local interest, interest_cap, found = 0, 0, {}
+		if G.playing_cards then
+			for k, v in pairs(G.playing_cards) do
+				if not SMODS.has_no_suit(v) and not SMODS.has_any_suit(v) then
+					if not table_hasvalue(found, v:may_get_suit()) then
+						table.insert(found, v:may_get_suit())
+						interest = interest + 0.25
+					end
+				else
+					if SMODS.has_any_suit(v) then
+						interest_cap = interest_cap + card.ability.extra.interest_cap
+					end
+				end
+			end
+		end
+		return { vars = { card.ability.extra.interest_cap, interest, interest_cap } }
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		local interest, interest_cap, found = 0, 0, {}
+		for k, v in pairs(G.playing_cards) do
+			if not SMODS.has_no_suit(v) and not SMODS.has_any_suit(v) then
+				if not table_hasvalue(found, v:may_get_suit()) then
+					table.insert(found, v:may_get_suit())
+					interest = interest + 0.25
+				end
+			else
+				if SMODS.has_any_suit(v) then
+					interest_cap = interest_cap + card.ability.extra.interest_cap
+				end
+			end
+		end
+		G.E_MANAGER:add_event(Event({func = function() 
+			card:juice_up(0.3, 0.5)
+			play_sound('timpani')
+		return true end}))
+		may.ease_interest(-1, interest)
+		if interest_cap > 0 then
+			G.E_MANAGER:add_event(Event({func = function() 
+				card:juice_up(0.3, 0.5)
+				play_sound('timpani')
+			return true end}))
+			may.ease_interest_cap(-1, interest_cap)
+		end
+	end,
+}
+
+SMODS.Consumable {
+	key = 'veneration',
+	set = 'Spectral',
+	loc_txt = {
+		name = "The Veneration",
+		text = {
+			"All cards {C:attention}held in hand{}",
+			"gain {X:mult,C:white}+X#1#{} held-in-hand Mult"
+		}
+	},
+	pos = { x = 7, y = 0 },
+	soul_pos = { x = 7, y = 3 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { h_x_mult = 1 } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		return may.canuse() and #G.hand.cards ~= 0
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.h_x_mult } }
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		for k, v in pairs(G.hand.cards) do
+			card_eval_status_text(v, 'extra', nil, nil, nil, { message = {'+X'..card.ability.extra.h_x_mult..' Mult'}, colour = G.C.MULT, delay = 0.45, sound = 'may_permabonus' })
+			v.ability.perma_h_x_mult = (v.ability.perma_h_x_mult or 0) + card.ability.extra.h_x_mult
+			G.E_MANAGER:add_event(Event({trigger = 'after', func = function() 
+				card:juice_up(0.3, 0.5)
+			return true end}))
+		end
+	end,
+}
+
+SMODS.Consumable {
+	key = 'equity',
+	set = 'Spectral',
+	loc_txt = {
+		name = "The Equity",
+		text = {
+			"All cards {C:attention}held in hand{}",
+			"gain {X:mult,C:white}+X#1#{} Mult with a",
+			"{C:green}#2# in #3#{} chance to be {C:mult}destroyed{}"
+		}
+	},
+	pos = { x = 8, y = 0 },
+	soul_pos = { x = 8, y = 3 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { x_mult = 2, odds = 4 } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		return may.canuse() and #G.hand.cards ~= 0
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Equity")
+		return { vars = { card.ability.extra.x_mult, normal, odds } }
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		for k, v in pairs(G.hand.cards) do
+			if SMODS.pseudorandom_probability(card, "may_theurgist", 1, card.ability.extra.odds, "Equity") then
+				G.E_MANAGER:add_event(Event({trigger = 'after', func = function() 
+					card:juice_up(0.3, 0.5)
+					v:juice_up(0.3, 0.5)
+				return true end}))
+				SMODS.destroy_cards(v)
+			else
+				card_eval_status_text(v, 'extra', nil, nil, nil, { message = {'+X'..card.ability.extra.x_mult..' Mult'}, colour = G.C.MULT, delay = 0.45, sound = 'may_permabonus' })
+				v.ability.perma_x_mult = (v.ability.perma_x_mult or 0) + card.ability.extra.x_mult
+				G.E_MANAGER:add_event(Event({trigger = 'after', func = function() 
+					card:juice_up(0.3, 0.5)
+				return true end}))
+			end
+		end
+	end,
+}
+
+SMODS.Consumable {
+	key = 'entombed',
+	set = 'Spectral',
+	loc_txt = {
+		name = "The Entombed",
+		text = {
+			"Sets {C:money}money{} to {C:money}Interest Cap{}",
+			may.pager(),
+			"{X:money,C:white}X#1#${} if {C:money}money{} is",
+			"above or equal to {C:money}Interest Cap{}",
+		}
+	},
+	pos = { x = 9, y = 0 },
+	soul_pos = { x = 9, y = 3 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { x_dollars = 1.1 } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		return may.canuse()
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.x_dollars } }
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		if G.GAME.dollars < G.GAME.interest_cap then
+			G.E_MANAGER:add_event(Event({func = function() 
+				card:juice_up(0.3, 0.5)
+				play_sound('timpani')
+			return true end}))
+			ease_dollars(G.GAME.interest_cap - G.GAME.dollars)
+		else
+			G.E_MANAGER:add_event(Event({func = function() 
+				card:juice_up(0.3, 0.5)
+			return true end}))
+			may.hypermoney(0, card.ability.extra.x_dollars)
+		end
+	end,
+}
+
+SMODS.Consumable {
+	key = 'predestined',
+	set = 'Spectral',
+	loc_txt = {
+		name = "Predestined",
+		text = {
+			"Apply random {C:dark_edition}Editions{}", 
+			"to all owned {C:attention}Jokers{}", 
+			"{C:inactive}Does not override existing Editions{}"
+		}
+	},
+	pos = { x = 0, y = 1 },
+	soul_pos = { x = 0, y = 4 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		for k, v in pairs(G.jokers.cards) do
+			if not v.edition then
+				return may.canuse()
+			end
+		end
+		return false 
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		for k, v in pairs(G.jokers.cards) do
+			if not v.edition then
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+					v:set_edition(SMODS.poll_edition({ guaranteed = true, no_negative = true }), true)
+					v:juice_up(0.3, 0.5)
+					card:juice_up(0.3, 0.5)
+					play_sound('tarot1')
+				return true end})) 
+			end
+		end
+	end,
+}
+
+SMODS.Consumable {
+	key = 'omniscient',
+	set = 'Spectral',
+	loc_txt = {
+		name = "Omniscient",
+		text = {
+			"Select up to {C:attention}#1#{} cards", 
+			"Sets their {C:attention}rank{} to the rank", 
+			"of the {C:attention}leftmost{} selected card"
+		}
+	},
+	pos = { x = 1, y = 1 },
+	soul_pos = { x = 1, y = 4 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { highlight = 5 } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		local left 
+		for k, v in pairs(G.hand.highlighted) do 
+			if v ~= card then 
+				left = v
+				break 
+			end
+		end
+		return may.canuse() and left and #G.hand.highlighted > 0 and #G.hand.highlighted <= (card.ability.extra.highlight + (card.area == G.hand and 1 or 0)) and not SMODS.has_no_rank(left)
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.highlight } }
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		local left 
+		for k, v in pairs(G.hand.highlighted) do 
+			if v ~= card then 
+				left = v
+			end
+		end
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+			play_sound('tarot1')
+			card:juice_up(0.3, 0.5)
+		return true end})) 
+		for k, v in pairs(G.hand.highlighted) do 
+			if v ~= left then 
+				local percent = 1.15 - (k - 0.999) / ((#G.hand.highlighted - 1) - 0.998) * 0.3
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+					play_sound('card1', percent)
+					v:flip()
+					v:juice_up(0.3, 0.5)
+				return true end})) 
+			end
+		end
+		for k, v in pairs(G.hand.highlighted) do 
+			if v ~= left then
+				local percent = 0.85 + (k-0.999)/((#G.hand.highlighted - 1)-0.998)*0.3
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+					assert(SMODS.change_base(v, nil, left:get_id())) 
+					play_sound('tarot2', percent)
+					v:flip()
+					v:juice_up(0.3, 0.5)
+				return true end}))
+			end
+		end
+	end,
+}
+
+SMODS.Consumable {
+	key = 'retribution',
+	set = 'Spectral',
+	loc_txt = {
+		name = "Retribution",
+		text = {
+			"{C:money}Sells{} all selected", 
+			"{C:attention}playing cards{}", 
+			"{C:inactive}Currently +$#1#{}"
+		}
+	},
+	pos = { x = 2, y = 1 },
+	soul_pos = { x = 2, y = 4 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		for k, v in pairs(G.hand.highlighted) do 
+			if v ~= card then
+				return may.canuse() and #G.hand.highlighted > 0
+			end
+		end
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		may.tut_tip(info_queue, 'sell_playing')
+		local amount = 0
+		if G.hand then 
+			for k, v in pairs(G.hand.highlighted) do 
+				if v ~= card then
+					amount = amount + v:may_playing_sell_value()
+				end
+			end 
+		end
+		return { vars = { amount } }
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+			play_sound('tarot1')
+			card:juice_up(0.3, 0.5)
+		return true end})) 
+		for k, v in pairs(G.hand.highlighted) do 
+			v:sell_card()
+		end
+	end,
+}
+
+SMODS.Consumable {
+	key = 'erasure',
+	set = 'Spectral',
+	loc_txt = {
+		name = "Erasure",
+		text = {
+			"Select a {C:attention}playing card{}", 
+			"All cards to the {C:attention}left{} of", 
+			"that card will be {C:attention}converted{}", 
+			"into that card,", 
+			"with a {C:mult}limit{} of {C:attention}#1#{} cards", 
+		}
+	},
+	pos = { x = 3, y = 1 },
+	soul_pos = { x = 3, y = 4 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { highlight = 3 } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		local selected 
+		for k, v in pairs(G.hand.highlighted) do 
+			if v ~= card then 
+				selected = v
+				break
+			end
+		end
+		local limit_reached = false
+		if G.hand.highlighted > (1 + (card.area ==G.hand and 1 or 0)) then 
+			return false
+		end
+		for k, v in ipairs(G.hand.cards) do 
+			if v == selected then
+				limit_reached = k - 1 > card.ability.extra.highlight
+				break
+			end
+		end
+		return may.canuse() and not limit_reached
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.highlight } }
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		local selected 
+		local targets = {}
+		for k, v in pairs(G.hand.highlighted) do 
+			if v ~= card then 
+				selected = v
+				break
+			end
+		end
+		for k, v in ipairs(G.hand.cards) do 
+			if v == selected then
+				break
+			else 
+				table.insert(targets, v)
+			end
+		end 
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+			play_sound('tarot1')
+			card:juice_up(0.3, 0.5)
+		return true end})) 
+		for k, v in pairs(targets) do 
+			local percent = 1.15 - (k - 0.999) / (#targets - 0.998) * 0.3
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+				play_sound('card1', percent)
+				v:flip()
+				v:juice_up(0.3, 0.5)
+			return true end})) 
+		end
+		for k, v in pairs(targets) do 
+			local percent = 0.85 + (k-0.999)/(#targets-0.998)*0.3
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+				SMODS.copy_card(selected, { new_card = v })
+				play_sound('tarot2', percent)
+				v:flip()
+				v:juice_up(0.3, 0.5)
+			return true end}))
+		end
+	end,
+}
+
+SMODS.Consumable {
+	key = 'equilibrium',
+	set = 'Spectral',
+	loc_txt = {
+		name = "Equilibrium",
+		text = {
+			"{C:dark_edition}Balance{} {C:money}sell value{} of all", 
+			"owned {C:mult}non-{}{C:dark_edition}Fusion Jokers{},", 
+			"then increase {C:money}Interest Cap{}", 
+			"by the {C:dark_edition}balanced{} amount", 
+			"{C:inactive}Balanced amount is currently $#1#{}", 
+		}
+	},
+	pos = { x = 4, y = 1 },
+	soul_pos = { x = 4, y = 4 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		for k, v in pairs(G.jokers.cards) do 
+			if v.sell_cost ~= 0 then
+				return may.canuse()
+			end
+		end
+		return false
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		local bal = 0
+		local num = 0
+		if G.jokers then 
+			for k, v in pairs(G.jokers.cards) do 
+				if not v:may_is_fusion() then
+					bal = bal + v.sell_cost
+					num = num + 1
+				end
+			end
+			bal = bal / num
+		end
+		return { vars = { bal } }
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		local bal = 0
+		local num = 0
+		for k, v in pairs(G.jokers.cards) do 
+			if not v:may_is_fusion() then
+				bal = bal + v.sell_cost
+				num = num + 1
+			end
+		end
+		bal = bal / num
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+			may.gong()
+			card:juice_up(0.3, 0.5)
+		return true end}))
+		for k, v in pairs(G.jokers.cards) do
+			v.sell_cost = bal
+			G.E_MANAGER:add_event(Event({func = function()
+				play_sound('timpani', 1, 0.6)
+				v:juice_up(0.2, 0.3)
+			return true end}))
+		end
+		G.E_MANAGER:add_event(Event({func = function()
+			play_sound('timpani')
+			card:juice_up(0.3, 0.5)
+		return true end}))
+		may.ease_interest_cap(-1, bal)
+	end,
+}
+
+SMODS.Consumable {
+	key = 'malicious',
+	set = 'Spectral',
+	loc_txt = {
+		name = "The Malicious",
+		text = {
+			"All cards {C:attention}held in hand{}",
+			"gain {C:money}+$#1#{} {C:attention}held-in-hand{}"
+		}
+	},
+	pos = { x = 5, y = 1 },
+	soul_pos = { x = 5, y = 4 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { p_dollars = 7 } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		return may.canuse() and #G.hand.cards ~= 0
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.p_dollars } }
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		for k, v in pairs(G.hand.cards) do
+			card_eval_status_text(v, 'extra', nil, nil, nil, { message = {'+#'..card.ability.extra.p_dollars}, colour = G.C.MONEY, delay = 0.45, sound = 'may_permabonus' })
+			v.ability.perma_h_p_dollars = (v.ability.perma_h_p_dollars or 0) + card.ability.extra.p_dollars
+			G.E_MANAGER:add_event(Event({trigger = 'after', func = function() 
+				card:juice_up(0.3, 0.5)
+			return true end}))
+		end
+	end,
+}
+
+SMODS.Consumable {
+	key = 'citadel',
+	set = 'Spectral',
+	loc_txt = {
+		name = "The Citadel",
+		text = {
+			"Create {C:attention}#1#{} {C:dark_edition}Stone Cards{} with", 
+			"random {C:dark_edition}Editions{} and shuffle them", 
+			"into your deck"
+		}
+	},
+	pos = { x = 6, y = 1 },
+	soul_pos = { x = 6, y = 4 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { cards = 10 } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		return may.canuse() and #G.hand.cards ~= 0
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = G.P_CENTERS.m_stone
+		return { vars = { card.ability.extra.cards } }
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		local created = {}
+		for i = 1, card.ability.extra.cards do 
+			local new = create_playing_card(nil, G.play, nil, i ~= 1, {G.C.SECONDARY_SET.Spectral})
+			new:set_ability(G.P_CENTERS.m_stone)
+			new:set_edition(SMODS.poll_edition({ guaranteed = true, no_negative = true }))
+			G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.1, func = function()
+				new:juice_up()
+				play_sound('card1')
+				play_sound('tarot1')
+			return true end}))
+			table.insert(created, new) 
+		end
+		for k, v in pairs(created) do
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+				v:add_to_deck()
+				G.play:remove_card(v)
+				G.deck:emplace(v)
+				play_sound('card1')
+			return true end}))
+		end
+		SMODS.calculate_context({ playing_card_added = true, cards = created })
+	end,
+}
+
+SMODS.Consumable {
+	key = 'supernova',
+	set = 'Spectral',
+	loc_txt = {
+		name = "The Supernova",
+		text = {
+			"Convert all {C:mult}unselected{}",
+			"cards {C:attention}held in hand{}", 
+			"into {C:diamonds}Diamonds{}",
+		}
+	},
+	pos = { x = 7, y = 1 },
+	soul_pos = { x = 7, y = 4 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { suit = 'Diamonds' } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		for k, v in pairs(G.hand.cards) do 
+			if not v.highlighted then 
+				return may.canuse()
+			end
+		end 
+		return false
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		local targets = {}
+		for k, v in pairs(G.hand.cards) do 
+			if not v.highlighted and not v:is_suit(card.ability.extra.suit) then 
+				table.insert(targets, v)
+			end
+		end
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+			play_sound('tarot1')
+			card:juice_up(0.3, 0.5)
+		return true end})) 
+		for k, v in pairs(targets) do 
+			local percent = 1.15 - (k - 0.999) / (#targets - 0.998) * 0.3
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+				play_sound('card1', percent)
+				v:flip()
+				v:juice_up(0.3, 0.5)
+			return true end})) 
+		end
+		for k, v in pairs(targets) do 
+			local percent = 0.85 + (k-0.999)/(#targets-0.998)*0.3
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+				v:change_suit(card.ability.extra.suit)
+				play_sound('tarot2', percent)
+				v:flip()
+				v:juice_up(0.3, 0.5)
+			return true end}))
+		end
+	end,
+}
+
+SMODS.Consumable {
+	key = 'twilight',
+	set = 'Spectral',
+	loc_txt = {
+		name = "The Twilight",
+		text = {
+			"Convert all {C:mult}unselected{}",
+			"cards {C:attention}held in hand{}", 
+			"into {C:clubs}Clubs{}",
+		}
+	},
+	pos = { x = 8, y = 1 },
+	soul_pos = { x = 8, y = 4 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { suit = 'Clubs' } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		for k, v in pairs(G.hand.cards) do 
+			if not v.highlighted then 
+				return may.canuse()
+			end
+		end 
+		return false
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		local targets = {}
+		for k, v in pairs(G.hand.cards) do 
+			if not v.highlighted and not v:is_suit(card.ability.extra.suit) then 
+				table.insert(targets, v)
+			end
+		end
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+			play_sound('tarot1')
+			card:juice_up(0.3, 0.5)
+		return true end})) 
+		for k, v in pairs(targets) do 
+			local percent = 1.15 - (k - 0.999) / (#targets - 0.998) * 0.3
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+				play_sound('card1', percent)
+				v:flip()
+				v:juice_up(0.3, 0.5)
+			return true end})) 
+		end
+		for k, v in pairs(targets) do 
+			local percent = 0.85 + (k-0.999)/(#targets-0.998)*0.3
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+				v:change_suit(card.ability.extra.suit)
+				play_sound('tarot2', percent)
+				v:flip()
+				v:juice_up(0.3, 0.5)
+			return true end}))
+		end
+	end,
+}
+
+SMODS.Consumable {
+	key = 'aurora',
+	set = 'Spectral',
+	loc_txt = {
+		name = "The Aurora",
+		text = {
+			"Convert all {C:mult}unselected{}",
+			"cards {C:attention}held in hand{}", 
+			"into {C:hearts}Hearts{}",
+		}
+	},
+	pos = { x = 9, y = 1 },
+	soul_pos = { x = 9, y = 4 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { suit = 'Hearts' } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		for k, v in pairs(G.hand.cards) do 
+			if not v.highlighted then 
+				return may.canuse()
+			end
+		end 
+		return false
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		local targets = {}
+		for k, v in pairs(G.hand.cards) do 
+			if not v.highlighted and not v:is_suit(card.ability.extra.suit) then 
+				table.insert(targets, v)
+			end
+		end
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+			play_sound('tarot1')
+			card:juice_up(0.3, 0.5)
+		return true end})) 
+		for k, v in pairs(targets) do 
+			local percent = 1.15 - (k - 0.999) / (#targets - 0.998) * 0.3
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+				play_sound('card1', percent)
+				v:flip()
+				v:juice_up(0.3, 0.5)
+			return true end})) 
+		end
+		for k, v in pairs(targets) do 
+			local percent = 0.85 + (k-0.999)/(#targets-0.998)*0.3
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+				v:change_suit(card.ability.extra.suit)
+				play_sound('tarot2', percent)
+				v:flip()
+				v:juice_up(0.3, 0.5)
+			return true end}))
+		end
+	end,
+}
+
+SMODS.Consumable {
+	key = 'jurisprudence',
+	set = 'Spectral',
+	loc_txt = {
+		name = "Jurisprudence",
+		text = {
+			"Create {C:attention}#1#{}",
+			"{C:attention}Buffoon Tags{}",
+		}
+	},
+	pos = { x = 0, y = 2 },
+	soul_pos = { x = 0, y = 5 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { tags = 3 } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		return may.canuse()
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = G.P_TAGS.tag_buffoon
+		return { vars = { card.ability.extra.tags } }
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+			for i = 1, card.ability.extra.tags do
+				add_tag(Tag('tag_buffoon'))
+			end
+			play_sound('tarot1')
+			card:juice_up(0.3, 0.5)
+		return true end}))
+	end,
+}
+
+SMODS.Consumable {
+	key = 'universe',
+	set = 'Spectral',
+	loc_txt = {
+		name = "The Universe",
+		text = {
+			"Convert all {C:mult}unselected{}",
+			"cards {C:attention}held in hand{}", 
+			"into {C:spades}Spades{}",
+		}
+	},
+	pos = { x = 1, y = 2 },
+	soul_pos = { x = 1, y = 5 },
+	atlas = 'spectraltarot',
+	cost = 8,
+	no_grc = true,
+	hidden = true, 
+	soul_set = 'Tarot', 
+	config = { extra = { suit = 'Spades' } },
+	soul_rate = 0.04,
+	attributes = {
+		'spectral_tarot',
+	},
+	unlocked = true,
+	can_use = function(self, card)
+		for k, v in pairs(G.hand.cards) do 
+			if not v.highlighted then 
+				return may.canuse()
+			end
+		end 
+		return false
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	discovered = true,
+	use = function(self, card, area, copier)
+		local targets = {}
+		for k, v in pairs(G.hand.cards) do 
+			if not v.highlighted and not v:is_suit(card.ability.extra.suit) then 
+				table.insert(targets, v)
+			end
+		end
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+			play_sound('tarot1')
+			card:juice_up(0.3, 0.5)
+		return true end})) 
+		for k, v in pairs(targets) do 
+			local percent = 1.15 - (k - 0.999) / (#targets - 0.998) * 0.3
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+				play_sound('card1', percent)
+				v:flip()
+				v:juice_up(0.3, 0.5)
+			return true end})) 
+		end
+		for k, v in pairs(targets) do 
+			local percent = 0.85 + (k-0.999)/(#targets-0.998)*0.3
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+				v:change_suit(card.ability.extra.suit)
+				play_sound('tarot2', percent)
+				v:flip()
+				v:juice_up(0.3, 0.5)
+			return true end}))
+		end
+	end,
+}
 
 -- Spectral Planets
 may.spectral_planet_rate = 0.005

@@ -1287,7 +1287,7 @@ SMODS.Consumable {
 		for i=1, #other, 1 do
 			local percent = 0.85 + (i - 0.999) / (#other - 0.998) * 0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			other[i]:change_suit(card.ability.extra.conv_suit)
+				other[i]:change_suit(card.ability.extra.conv_suit)
 				other[i]:flip()
 				play_sound('card1', percent)
 				other[i]:juice_up(0.3, 0.3)
@@ -1375,7 +1375,7 @@ SMODS.Consumable {
 		for i=1, #other, 1 do
 			local percent = 0.85 + (i - 0.999) / (#other - 0.998) * 0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			other[i]:change_suit(card.ability.extra.conv_suit)
+				other[i]:change_suit(card.ability.extra.conv_suit)
 				other[i]:flip()
 				play_sound('card1', percent)
 				other[i]:juice_up(0.3, 0.3)
@@ -1463,7 +1463,7 @@ SMODS.Consumable {
 		for i=1, #other, 1 do
 			local percent = 0.85 + (i - 0.999) / (#other - 0.998) * 0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			other[i]:change_suit(card.ability.extra.conv_suit)
+				other[i]:change_suit(card.ability.extra.conv_suit)
 				other[i]:flip()
 				play_sound('card1', percent)
 				other[i]:juice_up(0.3, 0.3)
@@ -1613,7 +1613,7 @@ SMODS.Consumable {
 		for i=1, #other, 1 do
 			local percent = 0.85 + (i - 0.999) / (#other - 0.998) * 0.3
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			other[i]:change_suit(card.ability.extra.conv_suit)
+				other[i]:change_suit(card.ability.extra.conv_suit)
 				other[i]:flip()
 				play_sound('card1', percent)
 				other[i]:juice_up(0.3, 0.3)

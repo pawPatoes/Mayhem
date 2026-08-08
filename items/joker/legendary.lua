@@ -297,7 +297,7 @@ SMODS.Joker {
 	end, 
 }
 
-SMODS.Joker {
+--[[SMODS.Joker {
 	key = 'thatch',
 	loc_txt = {
 		name = 'Thatch',
@@ -365,6 +365,91 @@ SMODS.Joker {
 			end
 			return {
 				message = triggers == 0 and localize('k_upgrade_ex') or "Activated!"..(triggers > 1 and "(x"..triggers..")" or ""),
+				message_card = card,
+			}
+		end
+	end, 
+}]]
+
+SMODS.Joker {
+	key = 'thatch',
+	loc_txt = {
+		name = 'Thatch',
+		text = {
+            {
+			    "{C:money}$#1#{} / {C:attention}$#2#{}", 
+				may.pager(),
+				"When {C:money}money{} is {C:green}increased{}, this {C:attention}Joker's{} {C:money}money{}", 
+				"counter {C:green}increases{} by a {C:mult}quarter{} of the {C:money}increase{}", 
+				may.pager(),
+                "When {C:money}money{} {C:attention}requirement{} is reached, adds", 
+				"{C:attention}#3#{} {C:dark_edition}Negative{} regular {C:green}Voucher{}", 
+				"and {C:attention}#4#{} {C:dark_edition}Negative{} {C:attention}Booster Packs{} to {C:attention}Consumable Slots{},", 
+				"{C:mult}resets{} and {C:mult}increases{} {C:money}money{} {C:attention}requirement{} by {X:dark_edition,C:white}^1.15{}", 
+				may.pager(),
+				"{C:inactive}Max 100 triggers per money change{}",
+				"{C:inactive}Will not activate if current money{}", 
+				"{C:inactive}or money change is bigger than ee308{}", 
+				may.pager(), 
+                "{C:inactive,E:1,s:0.7}Ye call this grog? I can still feel me face.{}",
+            }, 
+            {
+                "{C:inactive,E:1}Character from Brawlhalla{}"
+            }
+		}
+	},
+	config = { extra = { money = 0, money_req = 20, voucher = 1, pack = 2, increase = 1.15 } },
+	rarity = 4,
+	atlas = 'joker2',
+	pos = { x = 0, y = 3 },
+    soul_pos = { x = 1, y = 3 }, 
+    immutable = true, 
+	blueprint_compat = false,
+	demicoloncompat = false,
+	cost = 20,
+	attributes = {
+		'generation', 
+		'scaling'
+	}, 
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.money, card.ability.extra.money_req, card.ability.extra.voucher, card.ability.extra.pack, card.ability.extra.increase } }
+	end,
+	calculate = function(self, card, context)
+		if (not context.blueprint) and (context.money_altered and to_big(context.amount) > to_big(0) and to_big(context.amount) < Big.create(self, 'ee308') and to_big(G.GAME.dollars) < Big.create(self, 'ee308')) then
+			card.ability.extra.money = card.ability.extra.money + (context.amount * 0.25)
+			local triggers = 0
+			while to_big(card.ability.extra.money) > to_big(card.ability.extra.money_req) do
+				card.ability.extra.money = card.ability.extra.money - card.ability.extra.money_req
+				card.ability.extra.money_req = card.ability.extra.money_req ^ card.ability.extra.increase
+				triggers = triggers + 1
+				if triggers > 100 then
+					break
+				end
+			end
+			for i = 1, triggers do
+				for v = 1, card.ability.extra.voucher do
+				    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+					    local card2 = create_card('Voucher', G.consumeables, nil, nil, nil, nil, may.get_next_voucher_key(), 'may_thatch')
+					    card2:set_edition({negative = true}, false, false)
+						card2:add_to_deck() 
+					    G.consumeables:emplace(card2)
+						card:juice_up(0.3, 0.5)
+						play_sound('timpani')
+					return true end}))
+				end
+				for p = 1, card.ability.extra.pack do
+				    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+					    local card2 = create_card('Booster', G.consumeables, nil, nil, nil, nil, nil, 'may_thatch')
+					    card2:set_edition({negative = true}, false, false)
+					    G.consumeables:emplace(card2)
+					    card2:add_to_deck()
+						card:juice_up(0.3, 0.5)
+						play_sound('timpani')
+					return true end}))
+				end
+			end
+			return {
+				message = triggers == 0 and localize('k_upgrade_ex') or "Activated! (x"..triggers..")",
 				message_card = card,
 			}
 		end

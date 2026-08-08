@@ -3,8 +3,7 @@ version = "1.0.0"
 dump_lua = true
 priority = 1000000000
 
-# Custom loading screen things
-
+# Progress bar color 
 [[patches]] 
 [patches.pattern]
 target = '''main.lua'''
@@ -14,6 +13,7 @@ payload = '''love.graphics.setColor(0.9, 0, 0, 1)'''
 match_indent = true
 overwrite = true
 
+# Init fun facts
 [[patches]] 
 [patches.pattern]
 target = '''main.lua'''
@@ -84,6 +84,7 @@ payload = '''
 match_indent = true
 overwrite = true
 
+# Display fun fact
 [[patches]] 
 [patches.pattern]
 target = '''main.lua'''
@@ -116,6 +117,9 @@ if (not Noituus) and (not Overflow) then
 end
 if not Talisman then
 	error("MAYHEM: Missing dependency: Amulet | Make sure it is installed properly and is on a supported version.")
+end
+if #SMODS.find_mod('Spectrallib') == 0 then
+	error("MAYHEM: Missing dependency: SpectralLib | Make sure it is installed properly and is on a supported version.")
 end
 if not may then 
 	error([[

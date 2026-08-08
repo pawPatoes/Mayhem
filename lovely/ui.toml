@@ -133,9 +133,11 @@ target = "functions/UI_definitions.lua"
 pattern = '''
 local ret_val = {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={'''
 position = "at"
-payload = '''bordertextbg_shader = card.config.center and card.config.center.bordertextbg_shader or "none"
+payload = '''
+bordertextbg_shader = card.config.center and card.config.center.bordertextbg_shader or "none"
 bordertextbg_colour = card.config.center and card.config.center.bordertextbg_colour or G.C.UI.BACKGROUND_WHITE
-local ret_val = {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={'''
+local ret_val = {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={
+'''
 match_indent = true
 
 [[patches]]
@@ -145,9 +147,11 @@ pattern = '''{n=G.UIT.C, config={align = "cm", func = 'show_infotip',object = Mo
 {n=G.UIT.R, config={padding = outer_padding, r = 0.12, colour = lighten(G.C.JOKER_GREY, 0.5), emboss = 0.07}, nodes={
 {n=G.UIT.R, config={align = "cm", padding = 0.07, r = 0.1, colour = adjust_alpha(card_type_background, 0.8)}, nodes={'''
 position = "at"
-payload = '''{n=G.UIT.C, config={align = "cm", func = 'show_infotip',object = Moveable(),ref_table = next(info_boxes) and info_boxes or nil, shader = bordertextbg_shader}, nodes={
+payload = '''
+{n=G.UIT.C, config={align = "cm", func = 'show_infotip',object = Moveable(),ref_table = next(info_boxes) and info_boxes or nil, shader = bordertextbg_shader}, nodes={
 {n=G.UIT.R, config={padding = outer_padding, r = 0.12, colour = bordertextbg_colour, shader = bordertextbg_shader, emboss = 0.07}, nodes={
-{n=G.UIT.R, config={align = "cm", padding = 0.07, r = 0.1, colour = bg_colour, shader = bg_shader}, nodes={'''
+{n=G.UIT.R, config={align = "cm", padding = 0.07, r = 0.1, colour = bg_colour, shader = bg_shader}, nodes={
+'''
 match_indent = true
 
 [[patches]]
@@ -157,20 +161,23 @@ pattern = '''AUT.ccd and desc_from_rows(AUT.ccd.main) or nil,
 name_from_rows(AUT.name, is_playing_card and G.C.WHITE or nil),
 desc_from_rows(AUT.main),'''
 position = "at"
-payload = '''AUT.ccd and desc_from_rows(AUT.ccd.main, nil, nil, bordertextbg_shader, bordertextbg_colour) or nil,
+payload = '''
+AUT.ccd and desc_from_rows(AUT.ccd.main, nil, nil, bordertextbg_shader, bordertextbg_colour) or nil,
 name_from_rows(AUT.name, is_playing_card and G.C.WHITE or nil),
-desc_from_rows(AUT.main, nil, nil, bordertextbg_shader, bordertextbg_colour),'''
+desc_from_rows(AUT.main, nil, nil, bordertextbg_shader, bordertextbg_colour),
+'''
 match_indent = true
 
 [[patches]]
 [patches.pattern]
 target = "functions/UI_definitions.lua"
-pattern = '''
-info_boxes = {{n=G.UIT.R, config = {align="cm", padding = 0.05, card_pos = card.T.x }, nodes = info_cols}}'''
+pattern = '''info_boxes = {{n=G.UIT.R, config = {align="cm", padding = 0.05, card_pos = card.T.x }, nodes = info_cols}}'''
 position = "at"
-payload = '''local bg_shader = card.config.center and card.config.center.hoverbg_shader or "none"
+payload = '''
+local bg_shader = card.config.center and card.config.center.hoverbg_shader or "none"
 local bg_colour = may.conf.joker_shaders and card.config.center and card.config.center.hoverbg_colour or adjust_alpha(card_type_background, 0.8)
-info_boxes = {{n=G.UIT.R, config = {align="cm", padding = 0.05, card_pos = card.T.x }, nodes = info_cols}}'''
+info_boxes = {{n=G.UIT.R, config = {align="cm", padding = 0.05, card_pos = card.T.x }, nodes = info_cols}}
+'''
 match_indent = true
 	  
 [[patches]]

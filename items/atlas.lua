@@ -27,6 +27,7 @@ may.atlases = {
 	{"saturnianmoon", "saturnianmoon.png", 71, 95}, 
 	{"spectral", "spectral.png", 71, 95},  
 	{"spectral_planet", "spectral_planet.png", 71, 95}, 
+	{"spectraltarot", "spectraltarot.png", 71, 95}, 
 	{"yotta", "yotta.png", 71, 95},  
 	{"present", "present.png", 71, 71},  
 	{"retro", "retro.png", 71, 71},   

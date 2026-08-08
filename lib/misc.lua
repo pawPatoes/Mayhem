@@ -962,3 +962,73 @@ end
 function Card:may_is_number()
 	return not self:is_face() and not SMODS.has_no_rank(self) and self:get_id() ~= 14
 end
+
+-- man
+function Card:may_get_suit()
+	if SMODS.has_no_suit(self) or SMODS.has_any_suit(self) then
+		return
+	end
+	for k, v in pairs(SMODS.Suits) do
+		if self:is_suit(k) then
+			return k
+		end
+	end
+	return
+end
+
+function may.varda_amount(card)
+	local ret = 0
+	local exp = 0
+	if not SMODS.has_enhancement(card, 'c_base') then 
+		exp = exp + 1
+		ret = ret + math.max(0, math.max(0, math.ceil(1.4 - (G.P_CENTERS[card.config.center.key].weight or 1))) ^ 1.3) 
+	end
+	if card.edition then
+		exp = exp + 1
+		ret = math.ceil(ret * 1.1)
+		ret = ret + math.max(0, math.ceil((math.max(0, (20 - (G.P_CENTERS[card.edition.key].weight or 15)) * 0.15)) ^ 1.05))
+	end
+	if card.seal then
+		exp = exp + 1
+		ret = math.floor(ret * 1.35)
+	end
+	return math.floor(math.floor(ret * 0.85) ^ (1 + exp * 0.07))
+end
+
+-- Gets sell value of a playing card
+function Card:may_playing_sell_value()
+	if not SMODS.is_playing_card(self) then 
+		return 
+	end 
+	local ret = 1
+	if not SMODS.has_enhancement(self, 'c_base') then 
+		if G.P_CENTERS[self.config.center.key].sell_value then
+			ret = ret + G.P_CENTERS[self.config.center.key].sell_value
+		else 
+			ret = ret + math.max(0, math.max(0, math.ceil(1.4 - (G.P_CENTERS[self.config.center.key].weight or 1))) ^ 1.3) 
+		end
+	end
+	if not SMODS.has_enhancement(self, 'c_base') then 
+		if G.P_CENTERS[self.config.center.key].sell_value then
+			ret = ret + G.P_CENTERS[self.config.center.key].sell_value
+		else 
+			ret = ret + math.max(0, math.max(0, math.ceil(1.4 - (G.P_CENTERS[self.config.center.key].weight or 1))) ^ 1.3) 
+		end
+	end
+	if self.edition then 
+		ret = ret + (G.P_CENTERS[self.edition.key].extra_cost or 3)
+	end
+	if self.seal then 
+		ret = ret + (G.P_SEALS[self.seal].sell_value or 4)
+	end
+	if self:may_get_suit() and SMODS.Suits[self:may_get_suit()].sell_value then 
+		ret = ret + SMODS.Suits[self:may_get_suit()].sell_value
+	end 
+	if not SMODS.has_no_rank(self) and SMODS.Ranks[self:get_id()].sell_value then 
+		ret = ret + SMODS.Suits[self:get_id()].sell_value
+	end
+	if self.ability.playing_sell_value then 
+		ret = ret + self.ability.playing_sell_value
+	end 
+	return ret
+end

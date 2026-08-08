@@ -450,6 +450,20 @@ return {
 					"It is based on the {C:green}highest{} {C:dark_edition}hyperoperation{}", 
 					"amongst your {C:dark_edition}Fusion{} {C:attention}Jokers{} and {C:dark_edition}Score Operator{}",
 				}
+			},
+			may_sell_playing_tutorial = {
+				name = "Selling Playing Cards", 
+				text = {
+					"{C:attention}Playing cards{} give a base", 
+					"of {C:money}$1{} when {C:money}sold{}", 
+					may.pager(45),
+					"Additional {C:money}money{} is earned", 
+					"based on their", 
+					"{C:dark_edition}Enhancement{}, {C:dark_edition}Edition{} and/or {C:dark_edition}Seal{}", 
+					may.pager(45),
+					"Certain {C:attention}Ranks{} or {C:attention}Suits{}", 
+					"may increase the {C:money}sell value{}"
+				}
 			}, 
 			
 			may_acum_fusion_tip = {

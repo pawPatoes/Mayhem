@@ -67,6 +67,7 @@ end
 match_indent = true
 times = 1
 
+# Custom menu button colors 
 [[patches]]
 [patches.pattern]
 target = 'functions/UI_definitions.lua'
@@ -105,26 +106,4 @@ target = '''=[SMODS _ "src/ui.lua"]'''
 pattern = '''colour = SMODS.mod_button_alert and (G.SETTINGS.reduced_motion and G.C.RED or SMODS.Gradients.warning_bg) or G.C.BOOSTER,'''
 position = 'at'
 payload = '''colour = SMODS.mod_button_alert and (G.SETTINGS.reduced_motion and G.C.RED or SMODS.Gradients.warning_bg) or (may.conf.custom_menu and (G.F_QUIT_BUTTON and SMODS.Gradients.may_col_mayhem_gradient or G.C.GREY) or G.C.BOOSTER),'''
-match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = "game.lua"
-pattern = '''
-love.graphics.push()
-G.SPLASH_LOGO:translate_container()
-G.SPLASH_LOGO:draw()
-love.graphics.pop()'''
-position = "at"
-payload = '''
-love.graphics.push()
-G.SPLASH_LOGO:translate_container()
-    
-if G.SPLASH_LOGO and self and self.VT and may.conf.custom_menu then
-	G.SPLASH_LOGO:draw_shader('may_paradoxical_bg', nil, {math.min(self.VT.r*3, 1) + G.TIMERS.REAL/(28) + (self.juice and self.juice.r*20 or 0) + self.tilt_var.amt, G.TIMERS.REAL}) 
-end
-G.SPLASH_LOGO:draw()
-add_to_drawhash(G.SPLASH_LOGO)
-love.graphics.pop()
-'''
 match_indent = true
