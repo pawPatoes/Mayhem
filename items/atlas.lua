@@ -1,317 +1,65 @@
 -- Atlases
 
-SMODS.Atlas {
-  key = "joker1",
-  path = "joker1.png",
-  px = 71,
-  py = 95
+-- key, path, px, py, animated, frames
+may.atlases = {
+	{"modicon", "may_icon.png", 34, 34},
+	
+	{"ccd_thing", "ccd_thing.png", 71, 95}, 
+	
+	{"tag", "tag.png", 34, 34},
+	
+	{"stake", "stake.png", 29, 29},
+	
+	{"placeholder", "placeholder.png", 71, 95},
+	{"placeholder_vouchert4", "placeholder_vouchert4.png", 71, 95}, 
+	{"placeholder_voucher", "placeholder_voucher.png", 71, 95}, 
+	{"placeholder_booster", "placeholder_booster.png", 71, 95}, 
+	{"ascyotta_placeholder", "ascyotta_placeholder.png", 71, 95}, 
+	
+	{"joker1", "joker1.png", 71, 95}, 
+	{"joker2", "joker2.png", 71, 95}, 
+	
+	{"display", "display.png", 49, 49}, 
+	
+	{"tarot", "tarot.png", 71, 95}, 
+	{"planet", "planet.png", 71, 95}, 
+	{"jovianmoon", "jovianmoon.png", 65, 95}, 
+	{"saturnianmoon", "saturnianmoon.png", 71, 95}, 
+	{"spectral", "spectral.png", 71, 95},  
+	{"spectral_planet", "spectral_planet.png", 71, 95}, 
+	{"yotta", "yotta.png", 71, 95},  
+	{"present", "present.png", 71, 71},  
+	{"retro", "retro.png", 71, 71},   
+	{"modifier", "modifier.png", 71, 95}, 
+	{"upside_down", "upside_down.png", 71, 95}, 
+	{"asc_tarot", "asc_tarot.png", 65, 95}, 
+	{"ascyotta", "ascendedyotta.png", 71, 95},  
+	
+	{"voucher", "voucher.png", 71, 95}, 
+	{"misc_voucher", "misc_voucher.png", 71, 95}, 
+	{"voucher_bundle", "voucher_bundle.png", 71, 95}, 
+	
+	{"blind", "blind.png", 34, 34, true, 21},  
+	{"ultrablind", "ultrablind.png", 34, 34, true, 21}, 
+	{"taintedblind", "taintedblind.png", 34, 34, true, 21}, 
+	
+	{"booster", "booster.png", 71, 95}, 
+	
+	{"enhancement", "enhancement.png", 71, 95}, 
+	{"seal", "seal.png", 71, 95}, 
+	
+	{"achievement", "achievement.png", 63, 63}, 
+	
+	{"deck", "deck.png", 71, 95}, 
 }
 
-SMODS.Atlas {
-  key = "joker2",
-  path = "joker2.png",
-  px = 71,
-  py = 95
-}
-
-if may.conf.Mode == 1 then
-	SMODS.Atlas({
-		key = "modicon",
-		path = "may_icon.png",
-		px = 32,
-		py = 32,
-	})
-else
-	SMODS.Atlas({
-		key = "modicon",
-		path = "eternum_icon.png",
-		px = 32,
-		py = 32,
-	})
+for k, v in pairs(may.atlases) do
+	SMODS.Atlas {
+		key = v[1],
+		path = v[2],
+		px = v[3],
+		py = v[4],
+		atlas_table = v[5] and 'ANIMATION_ATLAS' or nil,
+		frames = v[5] and (v[6] or 21) or nil,
+	}
 end
-
-SMODS.Atlas {
-	key = "placeholder",
-	path = "placeholder.png",
-	px = 71,
-	py = 95
-}
-
-SMODS.Atlas {
-	key = "display",
-	path = "display.png",
-	px = 49,
-	py = 49
-}
-
-SMODS.Atlas {
-	key = "temp_store",
-	path = "temp_store.png",
-	px = 71,
-	py = 95
-}
-
-SMODS.Atlas {
-	key = "modifier",
-	path = "modifier.png",
-	px = 71,
-	py = 95
-}
-
-SMODS.Atlas {
-	key = "003_temp",
-	path = "003_temp.png",
-	px = 71,
-	py = 95
-}
-
-SMODS.Atlas {
-	key = "temp_doomsdaydevice",
-	path = "temp_doomsdaydevice.png",
-	px = 71,
-	py = 95
-}
-
-SMODS.Atlas {
-	key = "upside_down",
-	path = "upside_down.png",
-	px = 71,
-	py = 95
-}
-
-SMODS.Atlas {
-	key = "ccd_thing",
-	path = "ccd_thing.png",
-	px = 71,
-	py = 95
-}
-
-SMODS.Atlas {
-	key = "present",
-	path = "present.png",
-	px = 71,
-	py = 71
-}
-
-SMODS.Atlas {
-	key = "spectral",
-	path = "spectral.png",
-	px = 71,
-	py = 95
-}
-
-SMODS.Atlas {
-	key = "retro",
-	path = "retro.png",
-	px = 71,
-	py = 71
-} 
-
-SMODS.Atlas {
-	key = "spectral_planet",
-	path = "spectral_planet.png",
-	px = 71,
-	py = 95
-}
-
-SMODS.Atlas {
-	key = "tarot",
-	path = "tarot.png",
-	px = 65,
-	py = 95
-}
-
-SMODS.Atlas {
-	key = "jovianmoon",
-	path = "jovianmoon.png",
-	px = 65,
-	py = 95
-}
-
-SMODS.Atlas {
-	key = "saturnianmoon",
-	path = "saturnianmoon.png",
-	px = 71,
-	py = 95
-}
-
-SMODS.Atlas {
-	key = "tag",
-	path = "tag.png",
-	px = 34,
-	py = 34
-}
-
-SMODS.Atlas {
-	key = "planet",
-	path = "planet.png",
-	px = 71,
-	py = 95
-}
-
-SMODS.Atlas {
-	key = "rareplanet",
-	path = "rareplanet.png",
-	px = 71,
-	py = 95
-}
-
-SMODS.Atlas {
-	key = "legendaryplanet",
-	path = "legendaryplanet.png",
-	px = 71,
-	py = 95
-}
-
-SMODS.Atlas {
-	key = "mythicplanet",
-	path = "mythicplanet.png",
-	px = 71,
-	py = 95
-}
-
-SMODS.Atlas {
-	key = "editioncard",
-	path = "editioncard.png",
-	px = 71,
-	py = 95
-}
-
-SMODS.Atlas {
-	key = "asc_tarot",
-	path = "asc_tarot.png",
-	px = 65,
-	py = 95,
-}
-
-SMODS.Atlas {
-	key = "voucher",
-	path = "voucher.png",
-	px = 71,
-	py = 95,
-}
-
-SMODS.Atlas {
-	key = "misc_voucher",
-	path = "misc_voucher.png",
-	px = 71,
-	py = 95,
-}
-
-SMODS.Atlas {
-	key = "voucher_bundle",
-	path = "voucher_bundle.png",
-	px = 71,
-	py = 95,
-}
-
-SMODS.Atlas {
-	key = "placeholder_vouchert4",
-	path = "placeholder_vouchert4.png",
-	px = 71,
-	py = 95,
-}
-
-SMODS.Atlas {
-	key = "placeholder_voucher",
-	path = "placeholder_voucher.png",
-	px = 71,
-	py = 95,
-}
-
-SMODS.Atlas {
-	key = "ultrablind",
-	path = "ultrablind.png",
-	atlas_table = 'ANIMATION_ATLAS',
-	frames = 21,
-	px = 34,
-	py = 34,
-}
-
-SMODS.Atlas {
-	key = "stake",
-	path = "stake.png",
-	px = 29,
-	py = 29
-}
-
-SMODS.Atlas {
-	key = "blind",
-	path = "blind.png",
-	atlas_table = 'ANIMATION_ATLAS',
-	frames = 21,
-	px = 34,
-	py = 34,
-}
-
-SMODS.Atlas {
-	key = "taintedblind",
-	path = "taintedblind.png",
-	atlas_table = 'ANIMATION_ATLAS',
-	frames = 21,
-	px = 34,
-	py = 34,
-}
-
-SMODS.Atlas {
-	key = "booster",
-	path = "booster.png",
-	px = 71,
-	py = 95,
-}
-
-SMODS.Atlas {
-	key = "placeholder_booster",
-	path = "placeholder_booster.png",
-	px = 71,
-	py = 95,
-}
-
-SMODS.Atlas {
-	key = "enhancement",
-	path = "enhancement.png",
-	px = 71,
-	py = 95,
-}
-
-SMODS.Atlas {
-	key = "seal",
-	path = "seal.png",
-	px = 71,
-	py = 95,
-}
-
-SMODS.Atlas {
-	key = "yotta",
-	path = "yotta.png",
-	px = 71,
-	py = 95,
-}
-
-SMODS.Atlas {
-	key = "achievement",
-	path = "achievement.png",
-	px = 63,
-	py = 63,
-}
-
-SMODS.Atlas {
-	key = "ascyotta",
-	path = "ascendedyotta.png",
-	px = 71,
-	py = 95,
-}
-
-SMODS.Atlas {
-	key = "ascyotta_placeholder",
-	path = "ascyotta_placeholder.png",
-	px = 71,
-	py = 95,
-}
-
-SMODS.Atlas {
-	key = "deck",
-	path = "deck.png",
-	px = 71,
-	py = 95
-}

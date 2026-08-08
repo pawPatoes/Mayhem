@@ -28,6 +28,13 @@ SMODS.Joker {
 		'editions'
 	}, 
 	loc_vars = function(self, info_queue, card)
+		local count = 0
+		for k, v in pairs(G.playing_cards or {}) do
+			if not SMODS.has_enhancement(v, 'c_base') then
+				count = count + 1
+			end
+		end
+		may.fuse_tip(info_queue, 'wizard_university', { count })
 		return { vars = { card.ability.extra.chips_gain, card.ability.extra.chips } }
 	end,
 	calculate = function(self, card, context)
@@ -155,9 +162,10 @@ SMODS.Joker {
 			"{C:green}#2# in #3#{} chance for {X:mult,C:white}X#4#{} Mult"
 		}
 	},
-	config = { extra = { mult = 25, odds = 4, Xmult = 0.1 } },
+	config = { extra = { mult = 15, odds = 4, Xmult = 0.2 } },
 	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.extra.mult, G.GAME.probabilities.normal, card.ability.extra.odds, card.ability.extra.Xmult} }
+		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Dead Pixel")
+		return { vars = { card.ability.extra.mult, normal, odds, card.ability.extra.Xmult} }
 	end,
 	rarity = 1,
 	atlas = 'joker1',
@@ -172,7 +180,7 @@ SMODS.Joker {
 	}, 
 	calculate = function(self, card, context)
 		if context.cardarea == G.jokers and context.joker_main then
-			if pseudorandom('may_dead_pixel') < 1 / card.ability.extra.odds then	
+			if SMODS.pseudorandom_probability(card, "may_dead_pixel", 1, card.ability.extra.odds, "Dead Pixel") then	
 				return {
 					Xmult_mod = card.ability.extra.Xmult,
 					message = "X"..card.ability.extra.Xmult.." Mult",
@@ -374,4 +382,4 @@ SMODS.Joker {
             end
         end
 	end
-}]] 
+}]]

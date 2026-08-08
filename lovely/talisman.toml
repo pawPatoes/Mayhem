@@ -234,3 +234,20 @@ pattern = '''loc_vars = {tonumber(string.format("%.2f", (1.3 ^ (G.GAME.round_res
 position = "at"
 payload = '''loc_vars = {number_format(1.3 ^ (G.GAME.round_resets.ante or 0))}'''
 match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''
+colour = G.C[h.colorKey or 'WHITE']
+config.type = 'fade'
+config.scale = 0.7
+'''
+position = "at"
+payload = '''
+extra = extra or {}
+colour = may.get_hyper_formatting(eval_type, h.hyper and amt[2] or amt)[1]
+extra.text_colour = may.get_hyper_formatting(eval_type, h.hyper and amt[2] or amt)[2]
+config.scale = math.min(may.get_hyper_formatting(eval_type, h.hyper and amt[2] or amt)[3], 3)
+'''
+match_indent = true

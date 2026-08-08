@@ -1,192 +1,166 @@
 -- SFX
 
-SMODS.Sound({key = 'e_amber', path = 'edition/e_amber.ogg'})
-SMODS.Sound({key = 'e_nostalgic', path = 'edition/e_nostalgic.ogg'})
-SMODS.Sound({key = 'e_techno', path = 'edition/e_techno.ogg'})
-SMODS.Sound({key = 'e_antimatter', path = 'edition/e_antimatter.ogg'})
-SMODS.Sound({key = 'e_hypnotic', path = 'edition/e_hypnotic.ogg'})
-SMODS.Sound({key = 'e_omega', path = 'edition/e_omega.ogg'})
-SMODS.Sound({key = 'e_reverse', path = 'edition/e_reverse.ogg'})
-SMODS.Sound({key = 'e_wavy', path = 'edition/e_wavy.ogg'})
-SMODS.Sound({key = 'e_misprint', path = 'edition/e_misprint.ogg'})
-SMODS.Sound({key = 'e_otherworldly', path = 'edition/e_otherworldly.ogg'})
-SMODS.Sound({key = 'e_shimmering', path = 'edition/e_shimmering.ogg'})
-SMODS.Sound({key = 'e_cosmic', path = 'edition/e_cosmic.ogg'})
-SMODS.Sound({key = 'e_print', path = 'edition/e_print.ogg'})
-SMODS.Sound({key = 'e_goldfoil', path = 'edition/e_goldfoil.ogg'})
-SMODS.Sound({key = 'e_radioactive', path = 'edition/e_radioactive.ogg'})
-SMODS.Sound({key = 'e_bitcrush', path = 'edition/e_bitcrush.ogg'})
-SMODS.Sound({key = 'e_neon', path = 'edition/e_neon.ogg'})
-SMODS.Sound({key = 'e_vignette', path = 'edition/e_vignette.ogg'})
-SMODS.Sound({key = 'e_laminated', path = 'edition/e_laminated.ogg'})
-SMODS.Sound({key = 'e_inverted', path = 'edition/e_inverted.ogg'})
-SMODS.Sound({key = 'e_alloy', path = 'edition/e_alloy.ogg'})
-SMODS.Sound({key = 'e_dichromatic', path = 'edition/e_dichromatic.ogg'})
-SMODS.Sound({key = 'e_magenta', path = 'edition/e_magenta.ogg'})
-SMODS.Sound({key = 'e_light', path = 'edition/e_light.ogg'})
-SMODS.Sound({key = 'e_metallic', path = 'edition/e_metallic.ogg'})
-SMODS.Sound({key = 'e_twilight', path = 'edition/e_twilight.ogg'})
+-- key, path, volume
+may.sounds = {
+	{'e_amber', 'edition/e_amber.ogg'}, 
+	{'e_nostalgic', 'edition/e_nostalgic.ogg'}, 
+	{'e_techno', 'edition/e_techno.ogg'},
+	{'e_antimatter', 'edition/e_antimatter.ogg'},
+	{'e_hypnotic', 'edition/e_hypnotic.ogg'},
+	{'e_omega', 'edition/e_omega.ogg'},
+	{'e_reverse', 'edition/e_reverse.ogg'},
+	{'e_wavy', 'edition/e_wavy.ogg'},
+	{'e_misprint', 'edition/e_misprint.ogg'},
+	{'e_otherworldly', 'edition/e_otherworldly.ogg'},
+	{'e_shimmering', 'edition/e_shimmering.ogg'},
+	{'e_cosmic', 'edition/e_cosmic.ogg'},
+	{'e_print', 'edition/e_print.ogg'},
+	{'e_goldfoil', 'edition/e_goldfoil.ogg'},
+	{'e_radioactive', 'edition/e_radioactive.ogg'},
+	{'e_bitcrush', 'edition/e_bitcrush.ogg'},
+	{'e_neon', 'edition/e_neon.ogg'},
+	{'e_vignette', 'edition/e_vignette.ogg'},
+	{'e_laminated', 'edition/e_laminated.ogg'},
+	{'e_inverted', 'edition/e_inverted.ogg'},
+	{'e_alloy', 'edition/e_alloy.ogg'},
+	{'e_dichromatic', 'edition/e_dichromatic.ogg'},
+	{'e_magenta', 'edition/e_magenta.ogg'},
+	{'e_light', 'edition/e_light.ogg'},
+	{'e_metallic', 'edition/e_metallic.ogg'},
+	{'e_twilight', 'edition/e_twilight.ogg'},
+	
+	{'weezer', 'joker/weezer.ogg'},
+	{'st_hohoho', 'joker/santa/hohoho.ogg'},
+	{'st_bells', 'joker/santa/santa_bells.ogg'},
+	{'doggo_spawn', 'joker/doggo/spawn.ogg'},
+	{'doggo_success1', 'joker/doggo/success1.ogg'},
+	{'doggo_success2', 'joker/doggo/success2.ogg'},
+	{'doggo_success3', 'joker/doggo/success3.ogg'},
+	{'ah_yes_the_store', 'joker/ah_yes_the_store.ogg'}, 
+	{'cake_spawn', 'joker/anniversary_cake/spawn.ogg'},
+	{'cake_activate', 'joker/anniversary_cake/activate.ogg'},
+	{'cake_destroy', 'joker/anniversary_cake/destroy.ogg'},
+	
+	{'omniversal_catalyst', 'joker/omniversal_catalyst/spawn.ogg'}, 
+	{'instability_increase', 'joker/omniversal_catalyst/instability_increase.ogg'}, 
+	{'instability_threshold', 'joker/omniversal_catalyst/instability_threshold.ogg'}, 
+	
+	{'yotta', 'consumable/yotta.ogg'},
+	{'bundle', 'consumable/bundle.ogg'},
+	{'upside_down', 'consumable/upside_down.ogg'},
+	{'boost', 'boost.ogg'},
+	{'rare_planet', 'consumable/planet/rare_planet.ogg'},
+	{'legendary_planet', 'consumable/planet/legendary_planet.ogg'},
+	{'mythic_planet', 'consumable/planet/mythic_planet.ogg'},
+	
+	{'increase_operator', 'increase_operator.ogg'},
+	{'decrease_operator', 'decrease_operator.ogg'},
+	{'error', 'error.ogg'},
+	{'ascended_yotta', 'consumable/ascended_yotta.ogg'},
+	{'error_seal', 'error_seal.ogg'},
+	{'hyperoperator', 'hyperoperator.ogg'},
+	{'lvl_multchips', 'lvl_multchips.ogg'},
+	{'blind_size', 'blind_size.ogg'},
+	{'nominal_chips', 'nominal_chips.ogg'},
+	{'eq_level', 'level/eq_level.ogg'},
+	{'permabonus', 'permabonus.ogg', 0.6},
+	{'event', 'event.ogg', 1.5},
+	{'forcetrigger', 'forcetrigger.ogg'},
+	{'demitrigger', 'demitrigger.ogg'},
+	{'positive', 'positive.ogg'},
+	{'thunder1', 'thunder1.ogg'},
+	{'thunder2', 'thunder2.ogg'}, 
+	
+	{'big_score1', 'big_score1.ogg'}, 
+	{'big_score2', 'big_score2.ogg'},
+	{'big_score3', 'big_score3.ogg'},
+	
+	{'c_ascended', 'consumable/ascended.ogg'},
+	
+	{'intro', 'intro.ogg'}, 
+	
+	{'mythic_joker', 'rarity/mythic_joker.ogg'},
+	{'ethereal_joker', 'rarity/ethereal_joker.ogg'},
+	{'opalescent_joker', 'rarity/opalescent_joker.ogg'},
+	{'prismatic_joker', 'rarity/prismatic_joker.ogg'},
+	{'demiurgic_joker', 'rarity/demiurgic_joker.ogg'},
+	{'transcendent_joker', 'rarity/transcendent_joker.ogg'},
+	
+	{'tran0', 'tran/tran0.ogg'},
+	{'tran1', may.conf.legacy_tr1 and 'tran/tran1_old.ogg' or 'tran/tran1.ogg'},
+	{'tran2', 'tran/tran2.ogg'},
+	{'tran3', 'tran/tran3.ogg'},
+	{'tran4', 'tran/tran4.ogg'},
+	{'tran5', 'tran/tran5.ogg'},
+	{'tran6', 'tran/tran6.ogg'},
+	{'tran7', 'tran/tran7.ogg'},
+	{'tran8', 'tran/tran8.ogg'},
+	
+	{'eqscore', 'operation/EqualsScore.ogg'},
+	{'addscore', 'operation/AdditiveScore.ogg'},
+	{'xscore', 'operation/MultiplicativeScore.ogg'},
+	{'escore', 'operation/ExponentialScore.ogg'},
+	{'eescore', 'operation/TetrationalScore.ogg'},
+	{'eeescore', 'operation/PentationalScore.ogg'},
+	{'hexscore', 'operation/HexationalScore.ogg'},
+	
+	{'eboth', 'operation/ExponentialMultChips.ogg'},
+	{'eeboth', 'operation/TetrationalMultChips.ogg'},
+	{'eeeboth', 'operation/PentationalMultChips.ogg'},
+	{'hexboth', 'operation/HexationalMultChips.ogg'},
+	
+	{'x_level', 'level/x_level.ogg'},
+	{'e_level', 'level/e_level.ogg'},
+	{'ee_level', 'level/ee_level.ogg'},
+	{'eee_level', 'level/eee_level.ogg'},
+	{'hex_level', 'level/hex_level.ogg'},
+	
+	{'mdcmult', 'operation/ModocativeMult.ogg'},
+	{'mdcchip', 'operation/ModocativeChips.ogg'},
+	
+	{'bigmoney', 'hugemoney.ogg'},
+	
+	{'eqmult', 'operation/EqualsMult.ogg'},
+	{'hexmult', 'operation/HexationalMult.ogg'},
+	{'hepmult', may.conf.intense_hyperoperations and 'operation/HeptationalMult.ogg' or 'operation/tame/HeptationalMult.ogg'},
+	{'octmult', may.conf.intense_hyperoperations and 'operation/OctationalMult.ogg' or 'operation/tame/OctationalMult.ogg'},
+	{'ennmult', may.conf.intense_hyperoperations and 'operation/EnneationalMult.ogg' or 'operation/tame/EnneationalMult.ogg'},
+	{'decmult', may.conf.intense_hyperoperations and 'operation/DecationalMult.ogg' or 'operation/tame/DecationalMult.ogg'},
+	{'undmult', may.conf.intense_hyperoperations and 'operation/UndecationalMult.ogg' or 'operation/tame/UndecationalMult.ogg'},
+	{'doemult', may.conf.intense_hyperoperations and 'operation/DoedecationalMult.ogg' or 'operation/tame/DoedecationalMult.ogg'},
+	{'tremult', may.conf.intense_hyperoperations and 'operation/TredecationalMult.ogg' or 'operation/tame/TredecationalMult.ogg'},
+	
+	{'eqchip', 'operation/EqualsChips.ogg'},
+	{'hexchip', 'operation/HexationalChips.ogg'},
+	{'hepchip', may.conf.intense_hyperoperations and 'operation/HeptationalChips.ogg' or 'operation/tame/HeptationalChips.ogg'},
+	{'octchip', may.conf.intense_hyperoperations and 'operation/OctationalChips.ogg' or 'operation/tame/OctationalChips.ogg'},
+	{'ennchip', may.conf.intense_hyperoperations and 'operation/EnneationalChips.ogg' or 'operation/tame/EnneationalChips.ogg'},
+	{'decchip', may.conf.intense_hyperoperations and 'operation/DecationalChips.ogg' or 'operation/tame/DecationalChips.ogg'},
+	{'undchip', may.conf.intense_hyperoperations and 'operation/UndecationalChips.ogg' or 'operation/tame/UndecationalChips.ogg'},
+	{'doechip', may.conf.intense_hyperoperations and 'operation/DoedecationalChips.ogg' or 'operation/tame/DoedecationalChips.ogg'},
+	{'trechip', may.conf.intense_hyperoperations and 'operation/TredecationalChips.ogg' or 'operation/tame/TredecationalChips.ogg'},
+}
 
-SMODS.Sound({key = 'weezer', path = 'joker/weezer.ogg'})
-SMODS.Sound({key = 'st_hohoho', path = 'joker/santa/hohoho.ogg'})
-SMODS.Sound({key = 'st_bells', path = 'joker/santa/santa_bells.ogg'})
-SMODS.Sound({key = 'doggo_spawn', path = 'joker/doggo/spawn.ogg'})
-SMODS.Sound({key = 'doggo_success1', path = 'joker/doggo/success1.ogg'})
-SMODS.Sound({key = 'doggo_success2', path = 'joker/doggo/success2.ogg'})
-SMODS.Sound({key = 'doggo_success3', path = 'joker/doggo/success3.ogg'})
-SMODS.Sound({key = 'ah_yes_the_store', path = 'joker/ah_yes_the_store.ogg'}) 
-SMODS.Sound({key = 'cake_spawn', path = 'joker/anniversary_cake/spawn.ogg'})
-SMODS.Sound({key = 'cake_activate', path = 'joker/anniversary_cake/activate.ogg'})
-SMODS.Sound({key = 'cake_destroy', path = 'joker/anniversary_cake/destroy.ogg'})
-
-SMODS.Sound({key = 'universal_collapse', path = 'joker/universalcollapse/spawn.ogg'}) 
-SMODS.Sound({key = 'instability_increase', path = 'joker/universalcollapse/instability_increase.ogg'}) 
-SMODS.Sound({key = 'instability_threshold', path = 'joker/universalcollapse/instability_threshold.ogg'}) 
-
-SMODS.Sound({key = 'yotta', path = 'consumable/yotta.ogg'})
-SMODS.Sound({key = 'bundle', path = 'consumable/bundle.ogg'})
-SMODS.Sound({key = 'upside_down', path = 'consumable/upside_down.ogg'})
-SMODS.Sound({key = 'boost', path = 'boost.ogg'})
-SMODS.Sound({key = 'rare_planet', path = 'consumable/planet/rare_planet.ogg'})
-SMODS.Sound({key = 'legendary_planet', path = 'consumable/planet/legendary_planet.ogg'})
-SMODS.Sound({key = 'mythic_planet', path = 'consumable/planet/mythic_planet.ogg'})
-
-SMODS.Sound({key = 'increase_operator', path = 'increase_operator.ogg'})
-SMODS.Sound({key = 'decrease_operator', path = 'decrease_operator.ogg'})
-SMODS.Sound({key = 'error', path = 'error.ogg'})
-SMODS.Sound({key = 'ascended_yotta', path = 'consumable/ascended_yotta.ogg'})
-SMODS.Sound({key = 'error_seal', path = 'error_seal.ogg'})
-SMODS.Sound({key = 'hyperoperator', path = 'hyperoperator.ogg'})
-SMODS.Sound({key = 'lvl_multchips', path = 'lvl_multchips.ogg'})
-SMODS.Sound({key = 'blind_size', path = 'blind_size.ogg'})
-SMODS.Sound({key = 'nominal_chips', path = 'nominal_chips.ogg'})
-SMODS.Sound({key = 'eq_level', path = 'level/eq_level.ogg'})
-SMODS.Sound({key = 'permabonus', path = 'permabonus.ogg', volume = 0.6})
-SMODS.Sound({key = 'event', path = 'event.ogg', volume = 1.5})
-SMODS.Sound({key = 'forcetrigger', path = 'forcetrigger.ogg'})
-SMODS.Sound({key = 'demitrigger', path = 'demitrigger.ogg'})
-SMODS.Sound({key = 'positive', path = 'positive.ogg'})
-SMODS.Sound({key = 'thunder1', path = 'thunder1.ogg'})
-SMODS.Sound({key = 'thunder2', path = 'thunder2.ogg'}) 
-
-SMODS.Sound({key = 'big_score1', path = 'big_score1.ogg'}) 
-SMODS.Sound({key = 'big_score2', path = 'big_score2.ogg'})
-SMODS.Sound({key = 'big_score3', path = 'big_score3.ogg'})
-
-SMODS.Sound({key = 'hyper_selection_limit', path = 'hyper_selection_limit.ogg'})
-SMODS.Sound({key = 'hyper_joker_slots', path = 'hyper_joker_slots.ogg'})
-SMODS.Sound({key = 'hyper_consumable_slots', path = 'hyper_consumable_slots.ogg'})
-
-SMODS.Sound({key = 'c_ascended', path = 'consumable/ascended.ogg'})
-
-SMODS.Sound({key = 'intro_pad', path = 'intro_pad.ogg'}) 
-
-SMODS.Sound({key = 'mythic_joker', path = 'rarity/mythic_joker.ogg'})
-SMODS.Sound({key = 'ethereal_joker', path = 'rarity/ethereal_joker.ogg'})
-SMODS.Sound({key = 'opalescent_joker', path = 'rarity/opalescent_joker.ogg'})
-SMODS.Sound({key = 'prismatic_joker', path = 'rarity/prismatic_joker.ogg'})
-SMODS.Sound({key = 'demiurgic_joker', path = 'rarity/demiurgic_joker.ogg'})
-SMODS.Sound({key = 'transcendent_joker', path = 'rarity/transcendent_joker.ogg'})
-
-SMODS.Sound({key = 'tran0', path = 'tran/tran0.ogg'})
-if may.conf.LegacyTr1 then
-	SMODS.Sound({key = 'tran1', path = 'tran/tran1_old.ogg'})
-else
-	SMODS.Sound({key = 'tran1', path = 'tran/tran1.ogg'})
-end
-SMODS.Sound({key = 'tran2', path = 'tran/tran2.ogg'})
-SMODS.Sound({key = 'tran3', path = 'tran/tran3.ogg'})
-SMODS.Sound({key = 'tran4', path = 'tran/tran4.ogg'})
-SMODS.Sound({key = 'tran5', path = 'tran/tran5.ogg'})
-SMODS.Sound({key = 'tran6', path = 'tran/tran6.ogg'})
-SMODS.Sound({key = 'tran7', path = 'tran/tran7.ogg'})
-SMODS.Sound({key = 'tran8', path = 'tran/tran8.ogg'})
-
-SMODS.Sound({key = 'mass_use_ambiance', path = 'mass_use_ambiance.ogg'})
-
-SMODS.Sound({key = 'eqscore', path = 'operation/EqualsScore.ogg'})
-SMODS.Sound({key = 'addscore', path = 'operation/AdditiveScore.ogg'})
-SMODS.Sound({key = 'xscore', path = 'operation/MultiplicativeScore.ogg'})
-SMODS.Sound({key = 'escore', path = 'operation/ExponentialScore.ogg'})
-SMODS.Sound({key = 'eescore', path = 'operation/TetrationalScore.ogg'})
-SMODS.Sound({key = 'eeescore', path = 'operation/PentationalScore.ogg'})
-SMODS.Sound({key = 'hexscore', path = 'operation/HexationalScore.ogg'})
-
-SMODS.Sound({key = 'eboth', path = 'operation/ExponentialMultChips.ogg'})
-SMODS.Sound({key = 'eeboth', path = 'operation/TetrationalMultChips.ogg'})
-SMODS.Sound({key = 'eeeboth', path = 'operation/PentationalMultChips.ogg'})
-SMODS.Sound({key = 'hexboth', path = 'operation/HexationalMultChips.ogg'})
-
-SMODS.Sound({key = 'x_level', path = 'level/x_level.ogg'})
-SMODS.Sound({key = 'e_level', path = 'level/e_level.ogg'})
-SMODS.Sound({key = 'ee_level', path = 'level/ee_level.ogg'})
-SMODS.Sound({key = 'eee_level', path = 'level/eee_level.ogg'})
-SMODS.Sound({key = 'hex_level', path = 'level/hex_level.ogg'})
-
-SMODS.Sound({key = 'mdcmult', path = 'operation/ModocativeMult.ogg'})
-SMODS.Sound({key = 'mdcchip', path = 'operation/ModocativeChips.ogg'})
-
-SMODS.Sound({key = 'bigmoney', path = 'hugemoney.ogg'})
-
-if not may.conf.intense_hyperoperations then
-
-SMODS.Sound({key = 'eqmult', path = 'operation/EqualsMult.ogg'})
-SMODS.Sound({key = 'hexmult', path = 'operation/HexationalMult.ogg'})
-SMODS.Sound({key = 'hepmult', path = 'operation/tame/HeptationalMult.ogg'})
-SMODS.Sound({key = 'octmult', path = 'operation/tame/OctationalMult.ogg'})
-SMODS.Sound({key = 'ennmult', path = 'operation/tame/EnneationalMult.ogg'})
-SMODS.Sound({key = 'decmult', path = 'operation/tame/DecationalMult.ogg'})
-SMODS.Sound({key = 'undmult', path = 'operation/tame/UndecationalMult.ogg'})
-SMODS.Sound({key = 'doemult', path = 'operation/tame/DoedecationalMult.ogg'})
-SMODS.Sound({key = 'tremult', path = 'operation/tame/TredecationalMult.ogg'})
-SMODS.Sound({key = 'apemult', path = 'operation/tame/AperiotiveMult.ogg'})
-SMODS.Sound({key = 'factmult', path = 'operation/FactorialMult.ogg'})
-SMODS.Sound({key = 'expofactmult', path = 'operation/tame/ExponentialFactorialMult.ogg'})
-
-SMODS.Sound({key = 'eqchip', path = 'operation/EqualsChips.ogg'})
-SMODS.Sound({key = 'hexchip', path = 'operation/HexationalChips.ogg'})
-SMODS.Sound({key = 'hepchip', path = 'operation/tame/HeptationalChips.ogg'})
-SMODS.Sound({key = 'octchip', path = 'operation/tame/OctationalChips.ogg'})
-SMODS.Sound({key = 'ennchip', path = 'operation/tame/EnneationalChips.ogg'})
-SMODS.Sound({key = 'decchip', path = 'operation/tame/DecationalChips.ogg'})
-SMODS.Sound({key = 'undchip', path = 'operation/tame/UndecationalChips.ogg'})
-SMODS.Sound({key = 'doechip', path = 'operation/tame/DoedecationalChips.ogg'})
-SMODS.Sound({key = 'trechip', path = 'operation/tame/TredecationalChips.ogg'})
-SMODS.Sound({key = 'apechip', path = 'operation/tame/AperiotiveChips.ogg'})
-SMODS.Sound({key = 'factchip', path = 'operation/FactorialChips.ogg'})
-SMODS.Sound({key = 'expofactchip', path = 'operation/tame/ExponentialFactorialChips.ogg'})
-
-else
-
-SMODS.Sound({key = 'eqmult', path = 'operation/EqualsMult.ogg'})
-SMODS.Sound({key = 'hexmult', path = 'operation/HexationalMult.ogg'})
-SMODS.Sound({key = 'hepmult', path = 'operation/HeptationalMult.ogg'})
-SMODS.Sound({key = 'octmult', path = 'operation/OctationalMult.ogg'})
-SMODS.Sound({key = 'ennmult', path = 'operation/EnneationalMult.ogg'})
-SMODS.Sound({key = 'decmult', path = 'operation/DecationalMult.ogg'})
-SMODS.Sound({key = 'undmult', path = 'operation/UndecationalMult.ogg'})
-SMODS.Sound({key = 'doemult', path = 'operation/DoedecationalMult.ogg'})
-SMODS.Sound({key = 'tremult', path = 'operation/TredecationalMult.ogg'})
-SMODS.Sound({key = 'apemult', path = 'operation/AperiotiveMult.ogg'})
-SMODS.Sound({key = 'factmult', path = 'operation/FactorialMult.ogg'})
-SMODS.Sound({key = 'expofactmult', path = 'operation/ExponentialFactorialMult.ogg'})
-
-SMODS.Sound({key = 'eqchip', path = 'operation/EqualsChips.ogg'})
-SMODS.Sound({key = 'hexchip', path = 'operation/HexationalChips.ogg'})
-SMODS.Sound({key = 'hepchip', path = 'operation/HeptationalChips.ogg'})
-SMODS.Sound({key = 'octchip', path = 'operation/OctationalChips.ogg'})
-SMODS.Sound({key = 'ennchip', path = 'operation/EnneationalChips.ogg'})
-SMODS.Sound({key = 'decchip', path = 'operation/DecationalChips.ogg'})
-SMODS.Sound({key = 'undchip', path = 'operation/UndecationalChips.ogg'})
-SMODS.Sound({key = 'doechip', path = 'operation/DoedecationalChips.ogg'})
-SMODS.Sound({key = 'trechip', path = 'operation/TredecationalChips.ogg'})
-SMODS.Sound({key = 'apechip', path = 'operation/AperiotiveChips.ogg'})
-SMODS.Sound({key = 'factchip', path = 'operation/FactorialChips.ogg'})
-SMODS.Sound({key = 'expofactchip', path = 'operation/ExponentialFactorialChips.ogg'})
-
+for k, v in pairs(may.sounds) do 
+	SMODS.Sound({
+		key = v[1],
+		path = v[2],
+		volume = v[3] or 1
+	})
 end
 
 -- Music
+
+may.music_priorities = {
+	transcendence = 900,
+	joker_theme = 300,
+	pack = 200,
+	tainted = 190,
+	ultra = 190,
+	opalescent = 160,
+	transcendent = 150,
+	fusion = 140,
+}
 
 SMODS.Sound({
 	key = "music_santa",
@@ -195,7 +169,7 @@ SMODS.Sound({
 	volume = 0.55,
 	sync = true,
 	select_music_track = function()
-		return (#SMODS.find_card('j_may_santa') > 0  and may.conf.Santamusic and (may.transcendence or 0) < 9) and 100.2 or false
+		return (may.conf.music.santa and may.has_card('j_may_santa')) and may.music_priorities.joker_theme
 	end,
 })
 
@@ -206,7 +180,7 @@ SMODS.Sound({
     volume = 0.3,
 	sync = false,
 	select_music_track = function()
-		return (#SMODS.find_card('j_may_poker') > 0  and may.conf.Pokermusic and (may.transcendence or 0) < 9) and 100.2 or false
+		return (may.conf.music.poker and may.has_card('j_may_poker')) and may.music_priorities.joker_theme
 	end,
 })
 
@@ -218,19 +192,18 @@ SMODS.Sound({
 	sync = true,
 	select_music_track = function()
 		if G.GAME and not G.GAME.blind then
-			return ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 8) and 0 or false
-		end 
+			return may.conf.menu_music == 8 and 0
+		end
 		if may.conf.party_music_everywhere then
 			for k, v in pairs((G.jokers or {cards = {}}).cards) do 
-				if v:may_is_fusion() and v:gc().rarity ~= 'may_hyperascendant' and v:gc().rarity ~= 'may_surreal' then 
-					return (may.conf.Partymusic and (may.transcendence or 0) < 9 ) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 8) and 0 or false
+				if v:may_is_fusion() and v:gc().rarity ~= 'may_transcendent' and v:gc().rarity ~= 'may_opalescent' then 
+					return may.music_priorities.fusion
 				end 
 			end 
 		else 
-		    return ((#SMODS.find_card('j_may_party_time') > 0 or #SMODS.find_card('j_may_aurora_rave') > 0 or #SMODS.find_card('j_may_planet_ibiza') > 0 ) and not ((#SMODS.find_card('j_may_rondo_discoteca') > 0) and may.conf.Ibizamusic) and may.conf.Partymusic and (may.transcendence or 0) < 9 ) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 8) and 100.6 or false
+		    return may.conf.music.party_time and (may.has_card('j_may_party_time') or may.has_card('j_may_aurora_rave') or may.has_card('j_may_planet_ibiza')) and may.music_priorities.joker_theme + 1
 		end
 	end,
-	volume = 0.7
 })
 
 SMODS.Sound({
@@ -240,7 +213,22 @@ SMODS.Sound({
     volume = 1.1,
 	sync = true,
 	select_music_track = function()
-		return ((#SMODS.find_card('j_may_rondo_discoteca') > 0) and may.conf.Ibizamusic and (may.transcendence or 0) < 9) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 9) and 100.7
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 9 and 0 or nil
+		end
+		return may.has_card('j_may_rondo_discoteca') and may.conf.music.ibiza and may.music_priorities.joker_theme + 2
+	end,
+})
+
+-- THE DAWN OF A NEW ERA
+SMODS.Sound({
+	key = "music_alptraum",
+	path = "music/music_alptraum.ogg",
+	pitch = 1,
+	sync = true,
+	volume = 1.2,
+	select_music_track = function()
+		return may.conf.menu_music == 1 and (G.GAME and not G.GAME.blind) and 0
 	end,
 })
 
@@ -250,7 +238,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return (not may.conf.menu_music == 9 or may.conf.menu_music == 2 or (may.conf.menu_music == 1 and may.conf.Mode == 1)) and (G.GAME and not G.GAME.blind) and 0
+		return may.conf.menu_music == 2 and (G.GAME and not G.GAME.blind) and 0
 	end,
 })
 
@@ -261,7 +249,7 @@ SMODS.Sound({
 	volume = .85,
 	sync = true,
 	select_music_track = function()
-		return (not may.conf.menu_music == 9 or may.conf.menu_music == 3 or (may.conf.menu_music == 1 and may.conf.Mode == 2)) and (G.GAME and not G.GAME.blind) and 0
+		return may.conf.menu_music == 3 and (G.GAME and not G.GAME.blind) and 0
 	end,
 })
 
@@ -271,15 +259,17 @@ SMODS.Sound({
 	sync = true,
 	pitch = 1,
 	select_music_track = function()
-		local found_surreal
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 10 and 0
+		end
 		if G.jokers then
 			for k, v in pairs(G.jokers.cards) do
-				if v:gc().rarity == 'may_surreal' then
-					found_surreal = true
+				if v:gc().rarity == 'may_opalescent' then
+					return may.conf.music.opalescent and not may.booster() and may.music_priorities.opalescent
 				end
 			end
 		end
-		return (found_surreal and (may.conf.Surrealmusic and (may.transcendence or 0) < 9)) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 10) and 100.5
+		return nil
 	end
 })
 
@@ -289,15 +279,17 @@ SMODS.Sound({
 	sync = true,
 	pitch = 1,
 	select_music_track = function()
-		local found_surreal
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 17 and 0
+		end
 		if G.jokers then
 			for k, v in pairs(G.jokers.cards) do
 				if v:gc().rarity == 'may_opalescent' then
-					found_surreal = true
+					return may.conf.music.opalescent_shop and G.shop and not may.booster() and may.music_priorities.opalescent + 1
 				end
 			end
 		end
-		return (found_surreal and (may.conf.Surrealmusic and (may.transcendence or 0) < 9)) and G.shop and not may.booster() or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 17) and 100.5
+		return nil
 	end
 })
 
@@ -307,15 +299,17 @@ SMODS.Sound({
 	sync = true,
 	pitch = 1,
 	select_music_track = function()
-		local found_hyperascendant
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 6 and 0
+		end
 		if G.jokers then
 			for k, v in pairs(G.jokers.cards) do
 				if v:gc().rarity == 'may_transcendent' then
-					found_hyperascendant = true
+					return may.conf.music.transcendent and not may.booster() and may.music_priorities.transcendent
 				end
 			end
 		end
-		return (found_hyperascendant and (may.conf.Hyperascendantmusic and (may.transcendence or 0) < 9) and G.STATE ~= G.STATES.SHOP and not may.booster() and not G.shop) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 6) and 100.6
+		return nil
 	end
 })
 
@@ -325,15 +319,17 @@ SMODS.Sound({
 	sync = true,
 	pitch = 1,
 	select_music_track = function()
-		local found_hyperascendant
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 16 and 0
+		end
 		if G.jokers then
 			for k, v in pairs(G.jokers.cards) do
 				if v:gc().rarity == 'may_transcendent' then
-					found_hyperascendant = true
+					return may.conf.music.transcendent_shop and G.shop and not may.booster() and may.music_priorities.transcendent + 1
 				end
 			end
 		end
-		return (found_hyperascendant and (may.conf.Hyperascendantshopmusic and (may.transcendence or 0) < 9)) and G.shop and not may.booster() or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 16) and 100.6
+		return nil
 	end
 })
 
@@ -344,33 +340,11 @@ SMODS.Sound({
 	sync = true,
 	select_music_track = function()
 		if G.GAME and not G.GAME.blind then
-			return ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 13) and 0 or false
-		end
-		if G.GAME and G.GAME.blind and G.GAME.blind.config.blind.tainted and may.conf.Taintedmusic then
-			return false
-		end
-		local found_surreal
-		if G.jokers then
-			for k, v in pairs(G.jokers.cards) do
-				if v:gc().rarity == 'may_surreal' then
-					found_surreal = true
-				end
-			end
-		end
-		local found_hyperascendant
-		if G.jokers then
-			for k, v in pairs(G.jokers.cards) do
-				if v:gc().rarity == 'may_hyperascendant' then
-					found_hyperascendant = true
-				end
-			end
-		end
-		if found_surreal or found_hyperascendant or ((#SMODS.find_card('j_may_party_time') > 0 or #SMODS.find_card('j_may_aurora_rave') > 0 or #SMODS.find_card('j_may_planet_ibiza') > 0 ) and may.conf.Partymusic) then
-			return false
+			return may.conf.menu_music == 13 and 0
 		end
 		for k, v in pairs((G.jokers or {cards = {}}).cards) do 
-			if v:may_is_fusion() and v:gc().rarity ~= 'may_hyperascendant' and v:gc().rarity ~= 'may_surreal' then 
-				return (may.conf.Fusionmusic and (may.transcendence or 0) < 9 ) and (not may.conf.party_music_everywhere) and G.STATE ~= G.STATES.SHOP and not may.booster() and not G.shop and 100.4
+			if v:may_is_fusion() and v:gc().rarity ~= 'may_transcendent' and v:gc().rarity ~= 'may_opalescent' then 
+				return may.conf.music.fusion and not may.conf.party_music_everywhere and not may.booster() and may.music_priorities.fusion
 			end 
 		end 
 	end,
@@ -383,36 +357,14 @@ SMODS.Sound({
 	volume = 0.45,
 	sync = true,
 	select_music_track = function()
-		if G.GAME and not G.GAME.blind then
-			return ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 15) and 0 or false
-		end
-		if G.GAME and G.GAME.blind and G.GAME.blind.config.blind.tainted and may.conf.Taintedmusic then
-			return false
-		end
-		local found_surreal
-		if G.jokers then
-			for k, v in pairs(G.jokers.cards) do
-				if v:gc().rarity == 'may_surreal' then
-					found_surreal = true
-				end
-			end
-		end
-		local found_hyperascendant
-		if G.jokers then
-			for k, v in pairs(G.jokers.cards) do
-				if v:gc().rarity == 'may_hyperascendant' then
-					found_hyperascendant = true
-				end
-			end
-		end
-		if found_surreal or found_hyperascendant or ((#SMODS.find_card('j_may_party_time') > 0 or #SMODS.find_card('j_may_aurora_rave') > 0 or #SMODS.find_card('j_may_planet_ibiza') > 0 ) and may.conf.Partymusic) then
-			return false
+		 if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 15 and 0
 		end
 		for k, v in pairs((G.jokers or {cards = {}}).cards) do 
-			if v:may_is_fusion() and v:gc().rarity ~= 'may_hyperascendant' and v:gc().rarity ~= 'may_surreal' then 
-				return (may.conf.Fusionshopmusic and (may.transcendence or 0) < 9 ) and (not may.conf.party_music_everywhere) and G.shop and not may.booster() and 100.4 or false
+			if v:may_is_fusion() and v:gc().rarity ~= 'may_transcendent' and v:gc().rarity ~= 'may_opalescent' then 
+				return may.conf.music.fusion and not may.conf.party_music_everywhere and G.shop and not may.booster() and may.music_priorities.fusion + 1
 			end 
-		end 
+		end
 	end,
 })
 
@@ -424,7 +376,10 @@ SMODS.Sound({
 	volume = 1.1,
 	sync = true,
 	select_music_track = function()
-		return (G.booster_pack and not G.booster_pack.REMOVED and SMODS.OPENED_BOOSTER and SMODS.OPENED_BOOSTER.config.center.kind == "may_modifiercard" and may.conf.Editionmusic) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 7) and 0
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 7 and 0
+		end
+		return (G.booster_pack and not G.booster_pack.REMOVED and SMODS.OPENED_BOOSTER and SMODS.OPENED_BOOSTER.config.center.kind == "may_modifiercard" and may.conf.music.modifier) and may.music_priorities.pack
 	end
 })
 
@@ -435,7 +390,10 @@ SMODS.Sound({
 	volume = 0.9,
 	sync = true,
 	select_music_track = function()
-		return (G.booster_pack and not G.booster_pack.REMOVED and SMODS.OPENED_BOOSTER and SMODS.OPENED_BOOSTER.config.center.kind == "retrocards" and may.conf.Editionmusic) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 11) and 0
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 11 and 0
+		end
+		return (G.booster_pack and not G.booster_pack.REMOVED and SMODS.OPENED_BOOSTER and SMODS.OPENED_BOOSTER.config.center.kind == "retrocards" and may.conf.music.retro) and may.music_priorities.pack
 	end
 })
 
@@ -446,7 +404,10 @@ SMODS.Sound({
 	volume = 0.9,
 	sync = true,
 	select_music_track = function()
-		return (G.booster_pack and not G.booster_pack.REMOVED and SMODS.OPENED_BOOSTER and SMODS.OPENED_BOOSTER.config.center.kind == "fusion" and may.conf.Fusionpackmusic) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 14) and 0
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 14 and 0
+		end
+		return (G.booster_pack and not G.booster_pack.REMOVED and SMODS.OPENED_BOOSTER and SMODS.OPENED_BOOSTER.config.center.kind == "fusion" and may.conf.music.fusion_pack) and may.music_priorities.pack
 	end
 })
 
@@ -456,15 +417,17 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		local found_yotta = false
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 4 and 0
+		end
 		if G.pack_cards and G.pack_cards.cards then
 			for k, v in pairs(G.pack_cards.cards) do
 				if v:gc().set == 'yottacards' then
-					found_yotta = true
+					return may.conf.music.yotta and may.music_priorities.pack + 1
 				end
 			end
 		end
-		return (found_yotta and may.conf.Yottamusic) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 4) and 0
+		return
 	end
 })
 
@@ -475,7 +438,10 @@ SMODS.Sound({
 	volume = 1.1,
 	sync = true,
 	select_music_track = function()
-		return (G.GAME and G.GAME.blind and G.GAME.blind.config.blind.ultra and may.conf.Ultrablindmusic) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 5) and (may.transcendence or 0) < 9 and 100.1
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 5 and 0
+		end
+		return (G.GAME and G.GAME.blind and G.GAME.blind.config.blind.ultra and may.conf.music.ultrablind) and may.music_priorities.ultra
 	end
 })
 
@@ -485,7 +451,10 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return (G.GAME and G.GAME.blind and G.GAME.blind.config.blind.tainted and may.conf.Taintedmusic) or ((G.GAME and not G.GAME.blind) and may.conf.menu_music == 12) and (may.transcendence or 0) < 9 and 100.1
+		if G.GAME and not G.GAME.blind then
+			return may.conf.menu_music == 12 and 0
+		end
+		return (G.GAME and G.GAME.blind and G.GAME.blind.config.blind.tainted and may.conf.music.ultrablind) and may.music_priorities.tainted
 	end
 })
 
@@ -495,7 +464,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 9 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 9 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence
 	end,
 	volume = 2
 })
@@ -506,7 +475,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 10 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 10 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence 
 	end,
 	volume = 4
 })
@@ -517,7 +486,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 11 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 11 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence
 	end,
 	volume = 2
 })
@@ -528,7 +497,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 12 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 12 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence
 	end,
 	volume = 3
 })
@@ -539,7 +508,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 13 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 13 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence
 	end,
 	volume = 3
 })
@@ -550,7 +519,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 14 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 14 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence
 	end,
 	volume = 4
 })
@@ -561,7 +530,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 15 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 15 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence
 	end,
 	volume = 4
 })
@@ -572,7 +541,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 16 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 16 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence
 	end,
 	volume = 4
 })
@@ -583,7 +552,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 17 and may.conf.TrAudio ~= 0
+		return G.ARGS.score_intensity and G.ARGS.score_intensity.transcendence == 17 and may.conf.transcendence.volume ~= 0 and may.music_priorities.transcendence
 	end,
 	volume = 4
 })

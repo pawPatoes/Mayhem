@@ -10,18 +10,6 @@ function Card:is_playing_card()
     end
 end
 
-if #SMODS.find_mod('Cryptid') == 0 then
-
-local cuc = Card.can_use_consumeable
-function Card:can_use_consumeable(any_state, skip_check)
-	if not self.ability.consumeable then
-		return false
-	end
-	return cuc(self, any_state, skip_check)
-end
-
-end
-
 function may.generate_arrow_text(arrow, threshold)
 	arrow = type(arrow) ~= 'string' and to_number(to_big(arrow)) or arrow
 	if arrow == 'eq' then
@@ -62,13 +50,12 @@ may.score_operator_colors = {
 	'may_col_opalescent', 
 	'may_col_instability', 
 	'may_col_e_otherworldly', 
-	'may_col_ethereal', 
+	'may_col_e_omega', 
 	'may_col_big_operator',
 	'may_col_huge_operator', 
 }
 
 -- Mass redeem Vouchers
--- based on jl.voucher from jenlib
 -- can take in table of keys, or number of random vouchers
 function may.massvoucher(keys, amount, nobundle)
 	if keys and type(keys) == 'table' then
@@ -98,7 +85,7 @@ function may.massvoucher(keys, amount, nobundle)
 			local key = get_next_voucher_key(true)
             if nobundle then 
                 local tries = 0
-      		  while G.P_CENTERS[key].pools and G.P_CENTERS[key].pools.VoucherBundle do
+      		  while G.P_CENTERS[key].attributes and table_hasvalue(G.P_CENTERS[key].attributes, 'voucher_bundle') do
                     key = get_next_voucher_key(true)
                     tries = tries + 1
                     if tries > 50 then 
@@ -208,20 +195,8 @@ function may.ease_instability(arrow, mod, silent)
 		local handarea = G.HUD:get_UIE_by_ID('hand_text_area')
 		delay(0.5)
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			local text 
-			if arrow >= 1 then
-				text = may.generate_arrow_text(arrow, 4)
-			elseif arrow == 0  then
-				text = 'X'
-			elseif arrow == -1 then
-				text = '+'
-			elseif arrow == -2 then
-				text = '-'
-			elseif arrow <= -3 then
-				text = '/'
-			end
 			attention_text({
-				text = text..(to_number(mod) or 0)..' Instability',
+				text = may.generate_arrow_text(arrow, 4)..(to_number(mod) or 0)..' Instability',
 				scale = 0.8, 
 				hold = 3,
 				cover = handarea,
@@ -327,7 +302,7 @@ function may.get_operation_sound(operation, chipsmult)
 			'may_doechip',
 			'may_trechip',
 		}
-		return operation == 'eq' and 'may_eqchip' or tab[math.min(operation + 2, may.conf.CustomHyperoperations and #tab or 5)]
+		return operation == 'eq' and 'may_eqchip' or tab[math.min(operation + 2, may.conf.custom_hyperoperations and #tab or 5)]
 	elseif chipsmult == 'mult' then
 		local tab = {
 			'multhit1', 
@@ -344,7 +319,7 @@ function may.get_operation_sound(operation, chipsmult)
 			'may_doemult',
 			'may_tremult',
 		}
-		return operation == 'eq' and 'may_eqchip' or tab[math.min(operation + 2, may.conf.CustomHyperoperations and #tab or 5)]
+		return operation == 'eq' and 'may_eqchip' or tab[math.min(operation + 2, may.conf.custom_hyperoperations and #tab or 5)]
 	elseif chipsmult == 'dollars' then
 		local tab = {
 			'coin3', 
@@ -360,7 +335,7 @@ function may.get_operation_sound(operation, chipsmult)
 			'may_eeescore',
 			'may_hexscore',
 		}
-		return operation == 'eq' and 'may_eqscore' or tab[math.min(operation + 2, may.conf.CustomHyperoperations and #tab or 5)]
+		return operation == 'eq' and 'may_eqscore' or tab[math.min(operation + 2, may.conf.custom_hyperoperations and #tab or 5)]
 	end
 end
 
@@ -438,17 +413,9 @@ function may.cu(key)
     return 0
 end
 
--- Check G.GAME as well as joker info for banned keys, taken from Cryptid 
-function may.no(center, m, key, no_no)
-	if no_no then
-		return center[m] or (G.GAME and G.GAME[m] and G.GAME[m][key]) or false
-	end
-	return may.no(center, "no_" .. m, key, true)
-end
-
 -- Gets a random consumable, taken from Cryptid
 function may.random_consumable(seed, excluded_flags, banned_card, pool, no_undiscovered)
-	-- set up excluded flags - these are the kinds of consumables we DON'T want to have generating
+	--[[ set up excluded flags - these are the kinds of consumables we DON'T want to have generating
 	excluded_flags = excluded_flags or { "hidden", "no_doe", "no_grc" }
 	local selection = "n/a"
 	local passes = 0
@@ -474,6 +441,23 @@ function may.random_consumable(seed, excluded_flags, banned_card, pool, no_undis
 				return selection
 			end
 		end
+	end]]
+	local final_pool = pool or {}
+	if #final_pool == 0 and not pool then 
+		for k, v in pairs(G.P_CENTER_POOLS.Consumeables) do 
+			if v.key ~= (banned_card or '') then 
+				if not v.hidden and not v.no_doe and not v.no_grc then 
+					if (v.discovered or not no_undiscovered) then 
+						table.insert(final_pool, v)
+					end
+				end
+			end
+		end
+	end
+	if #final_pool > 0 then 
+		return SMODS.poll_object({ pool = final_pool, guaranteed = true, seed = seed })
+	else 
+		return G.P_CENTERS['c_strength']
 	end
 end
 
@@ -674,14 +658,14 @@ end
 function may.recursive_table(table_return_table, index)
 	local ret = table_return_table[index]
 	if index <= #table_return_table then
-		local function getDeepest(tbl)
+		local function get_deepest(tbl)
 			tbl = tbl or {}
 			while tbl.extra do
 				tbl = tbl.extra
 			end
 			return tbl
 		end
-		local prev = getDeepest(ret)
+		local prev = get_deepest(ret)
 		prev.extra = may.recursive_table(table_return_table, index + 1)
 	end
 	return ret
@@ -884,33 +868,7 @@ end
 
 -- Spawns in applicable Special Vouchers
 function may.handle_special_vouchers()
-	--[[round = round or G.GAME.round
-	if G.GAME.may_endless_mode then
-		if round % 1 == 0 then
-			if not may.has_card('v_may_astronomy_'..(may.get_highest_special_voucher_tier('astronomy') + 1)) then
-				SMODS.add_voucher_to_shop('v_may_astronomy_'..(may.get_highest_special_voucher_tier('astronomy') + 1))
-				G.E_MANAGER:add_event(Event({func = function()
-				    play_sound('may_positive')
-				return true end}))
-			end
-		end
-		if round % 15 == 0 then
-			if not may.has_card('v_may_reconfigure') then
-			    SMODS.add_voucher_to_shop('v_may_reconfigure')
-			    G.E_MANAGER:add_event(Event({func = function()
-					play_sound('may_positive')
-			    return true end}))
-			end
-		end
-	elseif to_big(G.GAME.round_resets.ante) >= to_big(9) then
-		if not may.has_card('v_may_endless_mode') then
-			SMODS.add_voucher_to_shop('v_may_endless_mode')
-		    G.E_MANAGER:add_event(Event({func = function()
-				play_sound('may_positive')
-            return true end}))
-		end
-	end]] 
-	for k, v in pairs(G.P_CENTER_POOLS.Voucher) do 
+	for k, v in pairs(G.P_CENTERS) do 
 		if v.special_voucher_behavior then 
 			local spawn, sound, func, duplicates = v.special_voucher_behavior(v) 
 			if spawn and (duplicates or not may.has_card(v.key)) then
@@ -953,14 +911,14 @@ function may.rep_arrow(num1, arrow, num2, amt)
 	if arrow == -1 then
 		return num1 + num2 * amt
 	elseif arrow == 0 then
-		return num1 * num2 ^ amt
+		return to_big(num1):mul(to_big(num2):pow(to_big(amt))):normalize()
 	elseif arrow == 1 then
 		return num1 ^ (num2 ^ amt)
 	else
 		for i = 1, math.min(to_number(amt), 1000) do
 			num1 = to_big(num1):arrow(arrow, num2)
 		end
-		return num1
+		return to_big(num1):normalize()
 	end
 end
 
@@ -975,4 +933,32 @@ function may.get_run_stage()
 	end
 	return G.GAME.may_endless_mode and 'endless' or 'pre-endless'
 end
-	
+
+CardArea.change_max_highlight = CardArea.change_max_highlight or function(self, mod, silent)
+	self.config.highlighted_limit = self.config.highlighted_limit + (mod or 0)
+	if self == G.hand then
+		SMODS.change_play_limit(mod)
+		SMODS.change_discard_limit(mod)
+	end
+end
+
+-- I LOVE TALISMAN
+function may.change_operator(amount)
+	if G.GAME.current_scoring_calculation_key ~= 'talisman_hyper' and SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or "multiply"].order + amount > 2 then 
+		G.GAME.current_scoring_calculation_key = 'talisman_hyper'
+		change_operator(amount - 2)
+	else 
+		change_operator(amount)
+	end
+end
+
+--[[ 
+	The function which you see right in front of your very eyes is a product of spite and poor decisions on behalf of people I have not interacted with in my life. 
+	You see, the purpose of this function is so simple and benign, yet incredibly useful at the same time. With that in mind, the fact that, at least in my opinion, an analogous function I not provided by the vanilla codebase is absolutely jarring.
+	Checking whether or not a playing card is numbered is, to put it lightly, very useful and frequent. Aces, however, are usually not treated as number cards or face cards. As such, checking if the card is not a face card will not suffice. The check for Aces is mandatory. 
+	I had shoved this discrepancy under a hypothetical rug for the longest time. I hid under the philosophy that nobody would really notice. That has been proven false, and I cannot easily pass it off as a personal choice since it is my duty to keep consistency with vanilla and other mods. 
+	That, my friend, is the story of this here function. A function you may consider senseless, but which hides beneath its silly surface a tragic tale of poor decisions and laziness.
+]]
+function Card:may_is_number()
+	return not self:is_face() and not SMODS.has_no_rank(self) and self:get_id() ~= 14
+end

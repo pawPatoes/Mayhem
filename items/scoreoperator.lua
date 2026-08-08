@@ -4,7 +4,7 @@ SMODS.Scoring_Calculation:take_ownership('add', {colour = G.C.CHIPS})
 
 SMODS.Scoring_Calculation:take_ownership('multiply', {colour = G.C.MULT})
 
-SMODS.Scoring_Calculation:take_ownership('exponent', {colour = SMODS.Gradients.may_col_eternum_green})
+SMODS.Scoring_Calculation:take_ownership('exponent', {colour = G.C.GREEN})
 
 SMODS.Scoring_Calculation:take_ownership('talisman_hyper', {
 	colour = function()
@@ -18,7 +18,7 @@ SMODS.Scoring_Calculation {
 	key = "substract",
 	func = function(self, chips, mult, flames) return chips - mult end,
 	text = '-',
-	colour = SMODS.Gradients.may_col_mayhem_gradient
+	colour = SMODS.Gradients.may_col_mayhem_gradient,
 }
 
 SMODS.Scoring_Calculation {
@@ -56,7 +56,7 @@ SMODS.Scoring_Calculation {
 	key = "max",
 	func = function(self, chips, mult, flames) return math.max(chips, mult) end,
 	text = 'max',
-	colour = SMODS.Gradients.may_col_hidden_enhancement
+	colour = SMODS.Gradients.may_col_instability
 }
 
 SMODS.Scoring_Calculation {
@@ -64,7 +64,7 @@ SMODS.Scoring_Calculation {
 	key = "min",
 	func = function(self, chips, mult, flames) return math.min(chips, mult) end,
 	text = 'min',
-	colour = SMODS.Gradients.may_col_surreal
+	colour = SMODS.Gradients.may_col_opalescent
 }
 
 SMODS.Scoring_Calculation {

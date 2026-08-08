@@ -217,3 +217,273 @@ pattern = '''G.SHADERS[shader]:send("uie_details", {element.VT.x * tile_scale, e
 position = "at"
 payload = '''G.SHADERS[shader]:send("uie_details", {element.VT.x * tile_scale + element.container.T.x * tile_scale, element.VT.y * tile_scale + element.container.T.y * tile_scale, element.VT.w * tile_scale, element.VT.h * tile_scale})'''
 match_indent = true
+
+# Dynatext pulse screen shake 
+[[patches]]
+[patches.pattern]
+target = "engine/text.lua"
+pattern = "letter.r = letter.r + (G.SETTINGS.reduced_motion and 0 or 1)*(letter.scale - 1)*(0.02*(-#self.strings[self.focused_string].letters/2 - 0.5 + k))"
+position = "after"
+payload = '''
+if to_number(letter.scale) > 8 and not may.invalid_number(letter.scale) and to_big(letter.scale) ~= R.NaN and to_big(letter.scale) ~= R.POSITIVEINFINITY and to_big(letter.scale) ~= R.NEGATIVEINFINITY then
+	G.ROOM.jiggle = math.min(G.ROOM.jiggle + to_number(math.min(to_big(10), ((letter.scale/24) * may.conf.score_shakiness.screen_shake))), 250)
+end
+'''
+match_indent = true
+
+# Allow UI to appear on any object in any card area
+[[patches]] 
+[patches.pattern]
+target = '''card.lua'''
+pattern = '''if self.ability.consumeable or self.ability.set == 'Joker' or (self.area and self.area == G.pack_cards) then'''
+position = "at"
+payload = '''if (self.area and self.area.config.type == 'joker') or (self.area == G.hand and self.ability.consumeable) or (self.area and self.area == G.pack_cards) or (self.area and self.area.config.type == 'voucher' and may.has_card('v_may_reconfigure')) then'''
+match_indent = true
+
+# Allow Vouchers to be selected in Run Info tab
+[[patches]] 
+[patches.pattern]
+target = '''cardarea.lua'''
+pattern = '''self.config.type == 'consumeable' or'''
+position = "after"
+payload = '''self.config.type == 'voucher' or'''
+match_indent = true
+
+# Make Chips jiggle like Mult
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/game_object.lua"]'''
+pattern = '''calculation_keys = {'chips', 'h_chips', 'chip_mod', 'x_chips', 'xchips', 'Xchip_mod',},'''
+position = "after"
+payload = '''juice_on_update = true,'''
+match_indent = true
+
+# Ring Bonuses display
+[[patches]] 
+[patches.pattern]
+target = '''functions/common_events.lua'''
+pattern = '''if not hide_desc and card and card.ability and (card.ability.extra_slots_used or 0) ~= 0 then'''
+position = "before"
+payload = '''
+if ((_c.set == 'Planet' or _c.show_ring_display) and not _c.no_ring_display) and first_pass then
+	for k, v in pairs(G.GAME.may_ring_bonuses or {}) do
+		if type(v) == 'number' and (v or 0) > 0 then 
+			info_queue[#info_queue + 1] = { key = "may_ring_bonus", set = "Other", vars = {
+				(G.GAME.may_ring_bonuses.chips or 0),
+				(G.GAME.may_ring_bonuses.mult or 0),
+				(G.GAME.may_ring_bonuses.lev_chips or 0),
+				(G.GAME.may_ring_bonuses.lev_mult or 0),
+				(G.GAME.may_ring_bonuses.dollars or 0),
+				(G.GAME.may_ring_bonuses.score or 0),
+				(G.GAME.may_ring_bonuses.levels or 0),
+			 } }
+			break
+		end
+	end
+end
+if #info_queue > 0 then 
+	local to_delete = {} 
+	for k, v in pairs(info_queue) do 
+		if v.key and string.sub(v.key, -8, -1) == 'tutorial' and string.sub(v.key, 1, 4) == 'may_' then
+			if not may.conf.tutorial_tooltips then 
+				table.insert(to_delete, k) 
+			end
+		end
+	end 
+	if #to_delete > 0 then 
+		for k, v in pairs(to_delete) do
+			table.remove(info_queue, v) 
+		end
+	end
+end
+'''
+match_indent = true
+
+# Spectrallib stuff
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Spectrallib "Cryptlib/ascended.lua"]'''
+pattern = '''
+ease_colour(G.C.UI_CHIPS, copy_table(G.C.GOLD), 0.3)
+ease_colour(G.C.UI_MULT, copy_table(G.C.GOLD), 0.3)
+'''
+position = "at"
+payload = '''
+if (may.transcendence or 0) == 0 then 
+	G.GAME.may_override_monitor_colors = true
+	ease_colour(G.C.UI_CHIPS, copy_table(G.C.GOLD), 0.3)
+	ease_colour(G.C.UI_MULT, copy_table(G.C.GOLD), 0.3)
+end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Spectrallib "Cryptlib/ascended.lua"]'''
+pattern = '''if G.C.UI_CHIPS[1] == G.C.GOLD[1] then'''
+position = "after"
+payload = '''G.GAME.may_override_monitor_colors = nil'''
+match_indent = true
+
+# HOVER TOOLTIPS
+
+# Taken from Cartomancer 
+[[patches]]
+[patches.pattern]
+target = "engine/ui.lua"
+pattern = '''if self.config.on_demand_tooltip or self.config.tooltip or self.config.detailed_tooltip then'''
+position = "before"
+payload = '''if self.config.may_hover_func then self.states.collide.can = true end'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "engine/ui.lua"
+pattern = '''function UIElement:hover()'''
+position = "after"
+payload = '''
+if self.config and self.config.may_hover_func then
+	self.config.h_popup = self.config.may_hover_func(self.config.may_hover_args)
+	self.config.h_popup_config = {
+		align = self.config.hover_align or 'cr',
+		offset = {x = 0.2, y = 0},
+		parent = self,
+	}
+end
+'''
+match_indent = true
+# Not taken from Cartomancer
+
+[[patches]]
+[patches.pattern]
+target = '''functions/UI_definitions.lua'''
+pattern = '''{n=G.UIT.C, config={align = "cm", r = 0.1, minw = 1.28*2+spacing, minh = 1, colour = temp_col2}, nodes={'''
+position = "at"
+payload = '''{n=G.UIT.C, config = { may_hover_func = may.hover_funcs.money, align = "cm", r = 0.1, minw = 1.28 * 2 + spacing, minh = 1, colour = temp_col2 }, nodes={'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''functions/UI_definitions.lua'''
+pattern = '''{n=G.UIT.C, config={id = 'hud_ante',align = "cm", padding = 0.05, minw = 1.45, minh = 1, colour = temp_col, emboss = 0.05, r = 0.1}, nodes={'''
+position = "at"
+payload = '''{n=G.UIT.C, config={may_hover_func = may.hover_funcs.ante, hover_align = 'tm', id = 'hud_ante', align = "cm", padding = 0.05, minw = 1.45, minh = 1, colour = temp_col, emboss = 0.05, r = 0.1}, nodes={'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''functions/UI_definitions.lua'''
+pattern = '''{n=G.UIT.R, config={id = 'run_info_button', align = "cm", minh = 1.75, minw = 1.5,padding = 0.05, r = 0.1, hover = true, colour = G.C.RED, button = "run_info", shadow = true}, nodes={'''
+position = "at"
+payload = '''{n=G.UIT.R, config={may_hover_func = may.hover_funcs.run_info, id = 'run_info_button', align = "cm", minh = 1.75, minw = 1.5,padding = 0.05, r = 0.1, hover = true, colour = G.C.RED, button = "run_info", shadow = true}, nodes={'''
+match_indent = true
+
+# Poker Hands - Run Info
+[[patches]]
+[patches.pattern]
+target = '''functions/UI_definitions.lua'''
+pattern = '''function create_UIBox_current_hand_row(handname, simple, in_collection)'''
+position = "after"
+payload = '''
+G.GAME.hands[handname].score = (G.GAME.hands[handname].score or 0)
+G.GAME.hands[handname].dollars = (G.GAME.hands[handname].dollars or 0)
+'''
+match_indent = true
+
+# Add score, dollars and level chips and mult
+[[patches]]
+[patches.pattern]
+target = '''functions/UI_definitions.lua'''
+pattern = '''
+{n=G.UIT.C, config={align = "cr", padding = 0.01, r = 0.1, colour = G.C.CHIPS, minw = 1.1}, nodes={
+{n=G.UIT.T, config={text = number_format(G.GAME.hands[handname].chips, 1000000), scale = 0.45, colour = G.C.UI.TEXT_LIGHT}},
+'''
+position = "before"
+payload = '''
+{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.CHIPS, minw = 1.1}, nodes={
+	{n=G.UIT.T, config={text = number_format(G.GAME.hands[handname].l_chips, 1000000), scale = 0.45, colour = G.C.UI.TEXT_LIGHT}},
+}},
+{n=G.UIT.T, config={text = "LVL.", scale = 0.45, colour = G.C.WHITE}},
+{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.MULT, minw = 1.1}, nodes={
+	{n=G.UIT.T, config={text = number_format(G.GAME.hands[handname].l_mult, 1000000), scale = 0.45, colour = G.C.UI.TEXT_LIGHT}},
+}},
+{n=G.UIT.B, config={w = 0.1, h = 0.01}},
+{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.MONEY, minw = 1.1}, nodes={
+	{n=G.UIT.T, config={text = number_format(G.GAME.hands[handname].dollars, 1000000), scale = 0.45, colour = G.C.UI.TEXT_LIGHT}},
+}},
+{n=G.UIT.T, config={text = "&", scale = 0.45, colour = G.C.GREY}},
+{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = may.C.score, minw = 1.1}, nodes={
+	{n=G.UIT.T, config={text = number_format(G.GAME.hands[handname].score, 1000000), scale = 0.45, colour = G.C.UI.TEXT_LIGHT}},
+}},
+{n=G.UIT.B, config={w = 0.1, h = 0.01}},
+'''
+match_indent = true
+
+# Center chips and mult
+[[patches]]
+[patches.pattern]
+target = '''functions/UI_definitions.lua'''
+pattern = '''
+{n=G.UIT.B, config={w = 0.08,h = 0.01}},
+{n=G.UIT.T, config={text = number_format(G.GAME.hands[handname].mult, 1000000), scale = 0.45, colour = G.C.UI.TEXT_LIGHT}}
+'''
+position = "at"
+payload = '''
+{n=G.UIT.T, config={text = number_format(G.GAME.hands[handname].mult, 1000000), scale = 0.45, colour = G.C.UI.TEXT_LIGHT}}
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''functions/UI_definitions.lua'''
+pattern = '''
+{n=G.UIT.T, config={text = number_format(G.GAME.hands[handname].chips, 1000000), scale = 0.45, colour = G.C.UI.TEXT_LIGHT}},
+{n=G.UIT.B, config={w = 0.08, h = 0.01}}
+'''
+position = "at"
+payload = '''
+{n=G.UIT.T, config={text = number_format(G.GAME.hands[handname].chips, 1000000), scale = 0.45, colour = G.C.UI.TEXT_LIGHT}},
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''functions/UI_definitions.lua'''
+pattern = '''{n=G.UIT.C, config={align = "cr", padding = 0.01, r = 0.1, colour = G.C.CHIPS, minw = 1.1}, nodes={'''
+position = "at"
+payload = '''{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.CHIPS, minw = 1.1}, nodes={'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''functions/UI_definitions.lua'''
+pattern = '''{n=G.UIT.C, config={align = "cl", padding = 0.01, r = 0.1, colour = G.C.MULT, minw = 1.1}, nodes={'''
+position = "at"
+payload = '''{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.MULT, minw = 1.1}, nodes={'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''functions/UI_definitions.lua'''
+pattern = '''{n=G.UIT.T, config={text = "X", scale = 0.45, colour = G.C.MULT}},'''
+position = "at"
+payload = '''{n=G.UIT.T, config={text = may.get_operator_text_hand_ui()[1], scale = 0.45, colour = may.get_operator_text_hand_ui()[2]}},'''
+match_indent = true
+
+# Hand status color thingies :tm:
+[[patches]]
+[patches.pattern]
+target = '''functions/UI_definitions.lua'''
+pattern = '''{n=G.UIT.O, config={object = DynaText({string = {tostring(in_collection and G.PROFILES[G.SETTINGS.profile].hand_usage[string.gsub(handname, " ", "")] and G.PROFILES[G.SETTINGS.profile].hand_usage[string.gsub(handname, " ", "")].count or G.GAME.hands[handname].played)}, maxw = 0.9, scale = 0.45, colours = {G.C.FILTER}, shadow = true})}},'''
+position = "at"
+payload = '''{n=G.UIT.O, config={object = DynaText({string = {tostring(in_collection and G.PROFILES[G.SETTINGS.profile].hand_usage[string.gsub(handname, " ", "")] and G.PROFILES[G.SETTINGS.profile].hand_usage[string.gsub(handname, " ", "")].count or G.GAME.hands[handname].played)}, maxw = 0.9, scale = 0.45, colours = 
+	(
+	(not in_collection and handname == may.favhand() and handname == may.hihand() and G.GAME.hands[handname].played > 0) and {G.C.DARK_EDITION} or
+	(not in_collection and handname == may.favhand() and G.GAME.hands[handname].played > 0) and {G.C.SECONDARY_SET.Spectral} or
+	(not in_collection and handname == may.hihand()) and {G.C.GREEN} or
+	(not in_collection and handname == may.lphand() and handname == may.lowhand() and G.GAME.hands[handname].played > 0) and {G.C.BLACK} or
+	(not in_collection and handname == may.lphand() and G.GAME.hands[handname].played > 0) and {G.C.MULT} or
+	(not in_collection and handname == may.lowhand()) and {SMODS.Gradients.may_eee_mult_bg} or
+	{G.C.FILTER}), 
+shadow = true})}},'''
+match_indent = true

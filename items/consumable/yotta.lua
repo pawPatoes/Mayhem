@@ -8,7 +8,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"During a {C:attention}Blind{}, use for", 
-				"{X:money,C:white}X1.75${} and {X:attention,C:white}#1#5{} Blind Size",
+				"{X:money,C:white}X1.3${} and {X:may_col_huge_operator_alt,C:white}#1#10{} Blind Size",
 				"{C:inactive}G = #2#{}"
 			},
 			{
@@ -41,9 +41,9 @@ SMODS.Consumable {
 	soul_rate = 0.01,
 	soul_set = 'Spectral',
 	use = function(self, card, area, copier)
-		may.hypermoney(0, 1.75, false)
+		may.hypermoney(0, 1.3, false)
 		G.E_MANAGER:add_event(Event({trigger = 'before', func = function()
-			G.GAME.blind.chips = to_big(G.GAME.blind.chips):arrow(may.global_op(), 5)
+			G.GAME.blind.chips = to_big(G.GAME.blind.chips):arrow(may.global_op(), 10)
 			G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 			G.hand_text_area.blind_chips:juice_up()
 			play_sound('may_blind_size')
@@ -62,9 +62,9 @@ SMODS.Consumable {
 		text = {
 			{
 				"Use to {C:mult}destroy{} all held {C:planet}Planet Cards{}", 
-				"and give {C:attention}all{} {C:purple}Poker Hands{} {X:purple,C:white}^0.05{} Mult & Chips", 
+				"and give {C:attention}all{} {C:purple}Poker Hands{} "..may.hyp(4, 'multchips', "+#2#0.2").." Chips & Mult", 
 				"per {C:money}$0.5{} of {C:money}sell value{} destroyed cards had", 
-				"{C:inactive}Currently ^#1# Mult & Chips{}"
+				"{C:inactive}Currently #1# Chips & Mult {}"
 			},
 			{
 				"Rarely appears in place of {C:planet}Planet Cards{}", 
@@ -84,6 +84,7 @@ SMODS.Consumable {
 	immutable = true,
 	endless = true,
 	loc_vars = function(self, info_queue, card)
+		may.tut_tip(info_queue, 'global_op')
 		local amount = 0
 		if G.consumeables then
 			for k, v in pairs(G.consumeables.cards) do
@@ -92,7 +93,7 @@ SMODS.Consumable {
 				end 
 			end 
 		end
-		return { vars = { 1 + ((amount * 2) * 0.05) } }
+		return { vars = { may.generate_arrow_text(may.global_op())..tostring(1 + ((amount * 2) * 0.2)), '{G}' } }
 	end, 
 	can_use = function(self, card)
 		for k, v in pairs(G.consumeables.cards) do
@@ -118,7 +119,8 @@ SMODS.Consumable {
 				return true end}))
 			end 
 		end 
-		may.hand_mod_multchips_all('multchips', 1, 1 + ((amount * 2) * 0.05), false, card)
+		may.hand_multchips_all(card, nil, false, {may.global_op(), 1 + ((amount * 2) * 0.2)}, {may.global_op(), 1 + ((amount * 2) * 0.2)})
+		may.ch()
 	end,
 	in_pool = function(self, args)
 		return G.GAME.may_endless_mode, { allow_duplicates = false }
@@ -138,10 +140,14 @@ SMODS.Consumable {
 				may.pager(),
 				"{X:may_ethereal,C:white}Ethereal{}: +1, {X:may_prismatic,C:white}Prismatic{}: +2,",
 				"{X:may_demiurgic,C:white}Demiurgic{}: +3, {X:may_transcendent,C:white}Transcendent{}: +10",
-				"{C:attention}Joker{} must have one of the {C:attention}rarities{} above"
+				may.pager(),
+				"{C:attention}Joker{} must have one of the {C:attention}rarities{} above", 
+				"Final {C:dark_edition}Score Operator{} is {C:mult}capped{} at {C:may_prismatic}G{}", 
+				may.pager(),
+				"{C:inactive}G = #1#{}"
 			},
 			{
-				"Rarely appears in place of {C:attention}Jokers{}", 
+				"Rarely appears in place of {C:retrocards}Retro Cards{}", 
 				"inside {C:attention}Booster Packs{}"
 			}, 
 			{
@@ -159,7 +165,7 @@ SMODS.Consumable {
 	endless = true,
 	can_use = function(self, card)
 		if G.jokers and #G.jokers.highlighted == 1 then 
-			return may.canuse() and (((G.jokers.highlighted[1]:may_is_fusion() and G.jokers.highlighted[1]:gc().rarity ~= 'may_mythic') or G.jokers.highlighted[1]:gc().rarity == 'may_surreal') and G.jokers.highlighted[1]:gc().rarity ~= 'may_mystery') 
+			return may.canuse() and (((G.jokers.highlighted[1]:may_is_fusion() and G.jokers.highlighted[1]:gc().rarity ~= 'may_mythic') or G.jokers.highlighted[1]:gc().rarity == 'may_opalescent') and G.jokers.highlighted[1]:gc().rarity ~= 'may_paradoxical') 
 		end 
 		return false
 	end,
@@ -167,10 +173,14 @@ SMODS.Consumable {
 	no_grc = true,
 	hidden = true,
 	soul_rate = 0.01,
-	soul_set = 'Joker',
+	soul_set = 'retrocards',
+	loc_vars = function(self, info_queue, card)
+		may.tut_tip(info_queue, 'global_op')
+		return { vars = { may.global_op() } }
+	end,
 	use = function(self, card, area, copier)
 		local amount = 0
-		if (G.jokers.highlighted[1]:may_is_fusion() and G.jokers.highlighted[1]:gc().rarity ~= 'may_mythic') or G.jokers.highlighted[1]:gc().rarity == 'may_surreal' then
+		if (G.jokers.highlighted[1]:may_is_fusion() and G.jokers.highlighted[1]:gc().rarity ~= 'may_mythic') or G.jokers.highlighted[1]:gc().rarity == 'may_opalescent' then
 			if G.jokers.highlighted[1]:gc().rarity == 'may_ethereal' then 
 				amount = amount + 1
 			elseif G.jokers.highlighted[1]:gc().rarity == 'may_opalescent' or G.jokers.highlighted[1]:gc().rarity == 'may_demiurgic' then 
@@ -187,12 +197,7 @@ SMODS.Consumable {
 			return true end}))
 		end
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-			if G.GAME.current_scoring_calculation_key ~= 'talisman_hyper' and SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or "multiply"].order + amount > 2 then 
-				G.GAME.current_scoring_calculation_key = 'talisman_hyper'
-				change_operator(amount-2)
-			else 
-				change_operator(amount)
-			end
+			may.change_operator(math.min(amount, may.global_op() - may.get_score_operator()))
 		return true end}))
 	end,
 	in_pool = function(self, args)
@@ -244,6 +249,7 @@ SMODS.Consumable {
 	soul_rate = 0.01,
 	soul_set = 'may_modifiercard',
 	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		local amount = 0
 		if G.consumeables then
 			for k, v in pairs(G.consumeables.cards) do
@@ -266,7 +272,6 @@ SMODS.Consumable {
 		for k, v in pairs(targets) do
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
 				local card2 = create_card(G.P_CENTERS[v].set, G.consumeables, nil, nil, nil, nil, v, 'may_speculum')
-				card2:start_materialize()
 				card2:setQty(2)
 				card2:set_edition({negative = true}, true)
 				card2:add_to_deck()

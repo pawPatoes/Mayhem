@@ -232,57 +232,57 @@ function may.pager(length)
 end
 
 -- Returns appropriate hyperoperational Mult/Chips formatting for anything above X
-function may.hyp(arrow, multchips)
-	if may.conf.simple_hyper then
+function may.hyp(arrow, multchips, text)
+	if may.conf.legacy_formatting then
 		if multchips == 'mult' then
-			return '{X:mult,C:white}'
+			return '{X:mult,C:white}'..text..(text and '{}' or '') 
 		elseif multchips == 'chips' then
-			return '{X:chips,C:white}'
+			return '{X:chips,C:white}'..text..(text and '{}' or '') 
 		elseif multchips == 'multchips' then
-			return '{X:purple,C:white}'
+			return '{X:purple,C:white}'..text..(text and '{}' or '') 
 		elseif multchips == 'score' then
-			return '{X:may_score,C:white}'
+			return '{X:may_score,C:white}'..text..(text and '{}' or '') 
 		end
 	else
 		if multchips == 'mult' then
 			if arrow == 1 then
-				return '{X:mult,C:black}'
+				return '{X:may_e_mult,C:white}'..text..(text and '{}' or '') 
 			elseif arrow == 2 then
-				return '{X:black,C:mult}'
+				return '{X:may_ee_mult_bg,C:may_ee_mult}'..text..(text and '{}' or '') 
 			elseif arrow == 3 then
-				return '{X:may_interdimensional,C:mult}'
+				return '{X:may_eee_mult_bg,C:may_eee_mult}'..text..(text and '{}' or '') 
 			else
-				return '{X:may_surreal,C:mult}'
+				return '{X:may_col_huge_operator_alt,C:may_hyper_mult}'..text..(text and '{}' or '') 
 			end
 		elseif multchips == 'chips' then
 			if arrow == 1 then
-				return '{X:chips,C:black}'
+				return '{X:may_e_chips,C:white}'..text..(text and '{}' or '') 
 			elseif arrow == 2 then
-				return '{X:black,C:chips}'
+				return '{X:may_ee_chips_bg,C:may_ee_chips}'..text..(text and '{}' or '') 
 			elseif arrow == 3 then
-				return '{X:may_interdimensional,C:chips}'
+				return '{X:may_eee_chips_bg,C:may_eee_chips}'..text..(text and '{}' or '') 
 			else
-				return '{X:may_surreal,C:chips}'
+				return '{X:may_col_huge_operator_alt,C:may_hyper_chips}'..text..(text and '{}' or '') 
 			end
 		elseif multchips == 'multchips' then
 			if arrow == 1 then
-				return '{X:purple,C:black}'
+				return '{X:may_e_chipsmult,C:white}'..text..(text and '{}' or '') 
 			elseif arrow == 2 then
-				return '{X:black,C:purple}'
+				return '{X:may_ee_chipsmult_bg,C:may_ee_chipsmult}'..text..(text and '{}' or '') 
 			elseif arrow == 3 then
-				return '{X:may_interdimensional,C:purple}'
+				return '{X:may_eee_chipsmult_bg,C:may_eee_chipsmult}'..text..(text and '{}' or '') 
 			else
-				return '{X:may_surreal,C:purple}'
+				return '{X:may_col_huge_operator_alt,C:may_hyper_chipsmult}'..text..(text and '{}' or '') 
 			end
 		elseif multchips == 'score' then
 			if arrow == 1 then
-				return '{X:may_score,C:black}'
+				return '{X:may_e_score,C:white}'..text..(text and '{}' or '') 
 			elseif arrow == 2 then
-				return '{X:black,C:may_score}'
+				return '{X:may_ee_score_bg,C:may_ee_score}'..text..(text and '{}' or '') 
 			elseif arrow == 3 then
-				return '{X:may_interdimensional,C:may_score}'
+				return '{X:may_eee_score_bg,C:may_eee_score}'..text..(text and '{}' or '') 
 			else
-				return '{X:may_surreal,C:may_score}'
+				return '{X:may_col_huge_operator_alt,C:may_hyper_score}'..text..(text and '{}' or '') 
 			end
 		end
 	end
@@ -296,7 +296,7 @@ function DynaText:pulse(amt, shake)
 		speed = 40,
 		width = 2.5,
 		start = G.TIMERS.REAL, 
-		amount = (amt or 0.2) * may.conf.Shakiness.pulsemult,
+		amount = (amt or 0.2) * may.conf.score_shakiness.pulsemult,
 		silent = false,
 		shake_screen = shake
 	}
@@ -305,22 +305,22 @@ end
 function DynaText:set_quiver(amt)
     self.config.quiver = {
         speed = 0.5,
-        amount = (amt or 0.7) * may.conf.Shakiness.quivermult,
+        amount = (amt or 0.7) * may.conf.score_shakiness.quivermult,
         silent = false
     }
 end
 
 function G.FUNCS.tsj_specific(e, quiver, pulse, juice, shake_screen)
 	if e and e.config and e.config.object and next(e.config.object) then
-		if may.conf.Shakiness.unlimitquiver then
+		if may.conf.score_shakiness.unlimitquiver then
 			e.config.object:set_quiver(quiver)
 		else
-			e.config.object:set_quiver(math.min(may.conf.Shakiness.quiverlimit, quiver))
+			e.config.object:set_quiver(math.min(may.conf.score_shakiness.quiverlimit, quiver))
 		end
-		if may.conf.Shakiness.unlimitpulse then
+		if may.conf.score_shakiness.unlimitpulse then
 			e.config.object:pulse(pulse, shake_screen)
 		else
-			e.config.object:pulse(math.min(may.conf.Shakiness.pulselimit, pulse), shake_screen)
+			e.config.object:pulse(math.min(may.conf.score_shakiness.pulselimit, pulse), shake_screen)
 		end
 		e.config.object:update_text()
 		e.config.object:align_letters()
@@ -405,7 +405,7 @@ function G.UIDEF.use_and_sell_buttons(card)
 		}}
 	end
 	-- Joker abilities
-	if card.area == G.jokers and card.config.center.key == 'j_may_ourania_kleidaria' then
+	if card.area == G.jokers and card:gc().ability then
         return {n = G.UIT.ROOT, config = { padding = 0, colour = G.C.CLEAR }, nodes = {
             {n=G.UIT.R, config={align = 'cl'}, nodes={
 			    {n=G.UIT.C, config={align = "cl"}, nodes={
@@ -425,43 +425,11 @@ function G.UIDEF.use_and_sell_buttons(card)
             }}, 
             {n=G.UIT.R, config={align = 'cl'}, nodes={
                 {n=G.UIT.C, config={align = "cl"}, nodes={
-                    {n=G.UIT.C, config={ref_table = card, align = "cl", padding = 0.2, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'may_ourania_kleidaria_ability', func = 'may_can_use_ourania_kleidaria_ability', handy_insta_action = 'ability'}, nodes={
+                    {n=G.UIT.C, config={ref_table = card, align = "cl", padding = 0.2, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'may_joker_ability', func = 'may_can_use_joker_ability', handy_insta_action = 'ability'}, nodes={
                         {n=G.UIT.B, config = {w=0.1,h=0.6}},
                         {n=G.UIT.C, config={align = "cm"}, nodes={
                             {n=G.UIT.R, config={align = "cm", maxw = 1.25}, nodes={
-                                {n=G.UIT.T, config={text = 'ABILITY',colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true}}
-                            }}
-                        }},
-                    }}, 
-                }}, 
-            }}
-		}}
-	end
-	if card.area == G.jokers and card.config.center.key == 'j_may_guacamole' then
-        return {n = G.UIT.ROOT, config = { padding = 0, colour = G.C.CLEAR }, nodes = {
-            {n=G.UIT.R, config={align = 'cl'}, nodes={
-			    {n=G.UIT.C, config={align = "cl"}, nodes={
-				    {n=G.UIT.C, config={ref_table = card, align = "cr", padding = 0.1, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'sell_card', func = 'can_sell_card', handy_insta_action = 'sell'}, nodes={
-					    {n=G.UIT.B, config = {w=0.1,h=0.6}},
-						{n=G.UIT.C, config={align = "tm"}, nodes={
-							{n=G.UIT.R, config={align = "cm", maxw = 1.25}, nodes={
-								{n=G.UIT.T, config={text = localize('b_sell'),colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true}}
-							}},
-							{n=G.UIT.R, config={align = "cm"}, nodes={
-							    {n=G.UIT.T, config={text = localize('$'),colour = G.C.WHITE, scale = 0.4, shadow = true}},
-							    {n=G.UIT.T, config={ref_table = card, ref_value = 'sell_cost_label',colour = G.C.WHITE, scale = 0.55, shadow = true}}
-                            }},
-					    }}
-				    }},
-                }}, 
-            }}, 
-            {n=G.UIT.R, config={align = 'cl'}, nodes={
-                {n=G.UIT.C, config={align = "cl"}, nodes={
-                    {n=G.UIT.C, config={ref_table = card, align = "cl", padding = 0.2, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'may_guacamole_ability', func = 'may_can_use_guacamole_ability', handy_insta_action = 'ability'}, nodes={
-                        {n=G.UIT.B, config = {w=0.1,h=0.6}},
-                        {n=G.UIT.C, config={align = "cm"}, nodes={
-                            {n=G.UIT.R, config={align = "cm", maxw = 1.25}, nodes={
-                                {n=G.UIT.T, config={text = 'ABILITY',colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true}}
+                                {n=G.UIT.T, config={text = 'ABILITY', colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true}}
                             }}
                         }},
                     }}, 
@@ -800,15 +768,15 @@ function may.add_fusion_text(joker1, joker2, condition)
 	condition = condition or 'ERROR'
 	if may.conf.short_fusion then
 		return {
-			"{C:dark_edition}FUSION:{} {C:attention}"..joker1.."{} {C:chips}>>{} {C:attention}"..joker2.."{}",
+			"{C:dark_edition}FUSION:{} {C:attention}"..joker1.."{} {C:chips}>>{} {C:dark_edition}"..joker2.."{}",
 			"{C:may_opalescent,s:1.1,u:may_opalescent}CONDITION{}",
 			condition
 		}
 	else
 	    return {
 		    "This Joker can {C:dark_edition}fuse{} with", 
-			"{C:attention}"..joker1.."{} to create {C:attention}"..joker2.."{}", 
-		    may.pager(math.max(string.len(condition), string.len("This Joker can {C:dark_edition}fuse{} with")) * 0.6), 
+			"{C:attention}"..joker1.."{} to create {C:dark_edition}"..joker2.."{}", 
+		    --may.pager(math.max(string.len(condition), string.len("This Joker can {C:dark_edition}fuse{} with")) * 0.6), 
 		    '{C:may_opalescent,s:1.2,u:may_opalescent}Fusion Condition{}', 
 		    condition
 	    }
@@ -834,4 +802,146 @@ end
 G.FUNCS.may_open_discord = function(e)
 	play_sound('cardFan2', 1, 0.75)
 	love.system.openURL("https://discord.gg/esrGbYWHEQ")
+end
+
+-- Adds a tutorial tooltip to info_queue
+function may.tut_tip(queue, key, extras)
+	queue[#queue + 1] = { key = "may_"..key.."_tutorial", set = "Other", vars = extras }
+end
+
+-- Adds a fusion tooltip to info_queue
+function may.fuse_tip(queue, key, extras)
+	if G.GAME and not G.title_top then 
+		queue[#queue + 1] = { key = "may_"..key.."_fusion_tip", set = "Other", vars = extras }
+	end
+end
+
+function may.get_operator_text_hand_ui()
+	if SMODS.Scoring_Calculations then
+		if G.GAME.current_scoring_calculation_key == 'talisman_hyper' then
+			return {may.generate_arrow_text(may.get_score_operator()), SMODS.Gradients[may.score_operator_colors[math.min((G.GAME.hyper_operator or 2) - 1, #may.score_operator_colors)]]}
+		end
+		if SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or 'multiply'].may_hand_ui then
+			return SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or 'multiply'].may_hand_ui
+		elseif SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or 'multiply'].colour and SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or 'multiply'].text then
+			return {SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or 'multiply'].text, SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or 'multiply'].colour}	
+		end
+	end
+	return {'X', G.C.MULT}
+end
+
+-- HUD hover functions
+may.hover_funcs = {}
+
+function may.hover_funcs.money()
+	G.GAME.may_interest_temp = may.round(G.GAME.interest_amount)
+	G.GAME.may_interest_cap_temp = may.round(G.GAME.interest_cap)
+	return {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={
+		{n=G.UIT.R, config={padding = 0.05, r = 0.12, colour = G.C.DYN_UI.MAIN, emboss = 0.07}, nodes={
+			{n=G.UIT.R, config={align = "cm", padding = 0.07, r = 0.1, colour = G.C.WHITE }, nodes={
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Interest', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = G.C.MONEY, scale = 0.5, ref_table = G.GAME, ref_value = "may_interest_temp", }}
+				}},
+				
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Interest Cap', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = G.C.MONEY, scale = 0.5, ref_table = G.GAME, ref_value = "may_interest_cap_temp", }}
+				}},
+			}}
+		}}
+	}}
+end
+
+function may.hover_funcs.ante()
+	for k, v in pairs({
+		'may_mythic_scaling',
+		'may_ethereal_scaling',
+		'may_prismatic_scaling',
+		'may_demiurigc_scaling',
+	}) do
+		G.GAME[v] = G.GAME[v] or 0
+	end
+	return {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={
+		{n=G.UIT.R, config={padding = 0.05, r = 0.12, colour = G.C.DYN_UI.MAIN, emboss = 0.07}, nodes={
+			{n=G.UIT.R, config={align = "cm", padding = 0.07, r = 0.1, colour = G.C.WHITE }, nodes={
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Mythic Scaling', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = G.C.FILTER, scale = 0.5, ref_table = G.GAME, ref_value = "may_mythic_scaling", }}
+				}},
+				
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Ethereal Scaling', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = G.C.RARITY.may_ethereal, scale = 0.5, ref_table = G.GAME, ref_value = "may_ethereal_scaling", }}
+				}},
+				
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Prismatic Scaling', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = G.C.RARITY.may_prismatic, scale = 0.5, ref_table = G.GAME, ref_value = "may_prismatic_scaling", }}
+				}},
+				
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Demiurgic Scaling', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = G.C.RARITY.may_demiurgic, scale = 0.5, ref_table = G.GAME, ref_value = "may_demiurigc_scaling", }}
+				}},
+			}}
+		}}
+	}}
+end
+
+function may.hover_funcs.run_info()
+	for k, v in pairs({
+		'may_instability',
+	}) do
+		G.GAME[v..'_temp'] = may.round(G.GAME[v] or 0)
+	end
+	G.GAME.may_temp_global_op = may.global_op()
+	return {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={
+		{n=G.UIT.R, config={padding = 0.05, r = 0.12, colour = G.C.DYN_UI.MAIN, emboss = 0.07}, nodes={
+			{n=G.UIT.R, config={align = "cm", padding = 0.07, r = 0.1, colour = G.C.WHITE }, nodes={
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Instability', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = SMODS.Gradients.may_col_instability, scale = 0.5, ref_table = G.GAME, ref_value = "may_instability_temp", }}
+				}},
+				
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Global Operator', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = SMODS.Gradients.may_col_prismatic, scale = 0.5, ref_table = G.GAME, ref_value = "may_temp_global_op", }}
+				}},
+			}}
+		}}
+	}}
+end
+
+function may.hover_funcs.poker_hand(args)
+	return not args[2] and {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={
+		{n=G.UIT.R, config={padding = 0.05, r = 0.12, colour = G.C.JOKER_GREY, emboss = 0.07}, nodes={
+			{n=G.UIT.R, config={align = "cm", padding = 0.07, r = 0.1, colour = G.C.WHITE }, nodes={
+				{n=G.UIT.R, config={align = "cm", padding = 0.01, colour = G.C.CLEAR}, nodes={
+					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Per Level', }}
+				}},
+				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
+					{n=G.UIT.T, config={align="cm", colour = G.C.CHIPS, scale = 0.5, ref_table = G.GAME.hands[args[1]], ref_value = "l_chips", }},
+					{n=G.UIT.T, config={align="cm", colour = G.C.GREY, scale = 0.5, text = '&' }},
+					{n=G.UIT.T, config={align="cm", colour = G.C.MULT, scale = 0.5, ref_table = G.GAME.hands[args[1]], ref_value = "l_mult", }},
+				}},
+			}}
+		}}
+	}} or nil
 end

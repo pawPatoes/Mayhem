@@ -35,7 +35,7 @@ may.setting_tips = {
 		" ",
 		"If enabled, {C:dark_edition}fusion{} details on {C:attention}Jokers{} will be", 
 		"more {C:chips}schematic{} and {C:money}direct{}", 
-		"ex. {C:attention}Wheel of Eternity{} {C:chips}>>{} {C:attention}Diskus{}", 
+		"ex. {C:attention}Wheel of Eternity{} {C:chips}>>{} {C:dark_edition}Diskus{}", 
 		"The {C:attention}Joker{} on the {C:attention}left{} is the 2nd {C:money}ingredient{}", 
 		"and the {C:attention}Joker{} to the {C:attention}right{} is the {C:dark_edition}result{}"
 	}, 
@@ -46,7 +46,25 @@ may.setting_tips = {
 		"in a small box on the {C:chips}main menu{}, like how", 
 		"{C:attention,E:1}Balatro{} or {C:tarot,E:1}Steamodded{} do it"
 	}, 
-	
+	tutorial_tooltips = {
+		"If enabled, {C:attention}tooltips{} will appear on certain {C:attention}cards{} {C:green}explaining{}", 
+		"certain {C:may_col_mayhem_gradient,E:1}Mayhem{} {C:dark_edition}mechanics{}"
+	}, 
+	legacy_formatting = {
+		"{C:attention,E:1}REQUIRES RESTART{}", 
+		" ",
+		"If enabled, mentions of {C:dark_edition}post-multiplication{} operators in", 
+		"{C:attention}descriptions{} will use {C:spectral}old{}, {C:purple}simpler{} formatting", 
+		"{C:inactive}E.g.{} {X:may_ee_chips_bg,C:may_ee_chips}^^2{} {C:inactive}Chips >>{} {X:chips,C:white}^^2{} {C:inactive}Chips{}", 
+	}, 
+	debug = {
+		"{C:attention,E:1}REQUIRES RESTART{}", 
+		" ",
+		"Enables certain {C:chips}keybinds{} and {C:purple}functions{}",
+		"used for {C:attention}testing{}. You {C:mult}shouldn't{} enable this",
+		"if you're just {C:money}playing{} the mod {C:attention}regularly{}"
+	}, 
+		
 	tr_effects = {
 		"Changes how {C:mult}intense{} and {C:attention}diverse{} the {C:tarot}visual effects{}", 
 		"of {C:dark_edition,E:1}Transcendence{} are",
@@ -126,6 +144,10 @@ may.setting_tips = {
 		"If enabled, powerful {C:dark_edition}Fusion Jokers{} will have {C:tarot}cosmetic{} {C:may_opalescent}shaders{}", 
 		"applied to their {C:attention}rarity badge{} and {C:attention}description background{}"
 	},
+	scoring_tr = {
+		"If enabled, {C:dark_edition,E:1}Transcendence{} will only", 
+		"visually occur during {C:attention}scoring{} and {C:mult}not{} when {C:attention}selecting cards{}"
+	}, 
 	
 	reroll_threshold = {
 		"{C:attention}Changes{} the number of {C:green}rerolls{} required", 
@@ -135,7 +157,7 @@ may.setting_tips = {
 		"If enabled, obtaining a {C:dark_edition}Fusion{} {C:attention}Joker{} will start a round {C:attention}countdown{}", 
 		"depending on its {C:attention}rarity{}. When the {C:attention}countdown{} {C:mult}finishes{},", 
 		"all {C:attention}Blind Sizes{} will be {C:mult}increased{} {C:dark_edition,E:1}drastically{} based on", 
-		"the {C:attention}Jokers rarity{}. This {C:chips}stacks{} with multiple {C:attention}Jokers{}."
+		"the {C:attention}Joker's rarity{}. This {C:chips}stacks{} with multiple {C:attention}Jokers{}"
 	}, 
 	reroll_price_punishment = {
 		"If enabled, {C:may_prismatic,E:1}Prismatic{} {C:dark_edition}Fusion Scaling{} will be immediately", 
@@ -154,7 +176,6 @@ may.setting_tips = {
 	
 	menu_music = {
 		"Changes the {C:tarot}theme{} that plays on the {C:chips}main menu{}", 
-		"{C:dark_edition}AUTO{}: Chooses the {C:tarot}menu theme{} corresponding to your current {C:attention}mode{}", 
 		"{C:attention}DEFAULT{}: Uses the default {C:attention,E:1}Balatro{} {C:tarot}theme{} or the {C:tarot}theme{} of another {C:purple}mod{}", 
 		"with {C:mult}lesser{} {C:chips}priority{}"
 	}, 
@@ -192,19 +213,6 @@ SMODS.current_mod.extra_tabs = function()
 				label = 'General', 
 				tab_definition_function = function()
 					return {n = G.UIT.ROOT, config = {align = 'cm',minw = 8,minh = 4,r = .1,padding = .1,colour = G.C.BLACK}, nodes = {
-						--[[{n=G.UIT.R, config={align = "cm"}, nodes={
-							{n = G.UIT.R, config = { align = "c", padding = 0 }, nodes = {
-								create_option_cycle({
-									label = "Mode",
-									scale = 1.2,
-									w = 8,
-									options = {"Mayhem", "Eternum"},
-									opt_callback = 'may_upd_mode',
-									current_option = may.conf.Mode,
-									on_demand_tooltip = { text = may.setting_tips.mode } 
-								})
-							}},
-						}},]]
 						{n=G.UIT.R, config={align = "cm"}, nodes={
 							{n = G.UIT.R, config = { align = "cm", padding = 0 }, nodes = {
 								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
@@ -246,6 +254,30 @@ SMODS.current_mod.extra_tabs = function()
 									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "show_version" },
 								}},
 							}},
+							{n = G.UIT.R, config = { align = "cm", padding = 0 }, nodes = {
+								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
+									{ n = G.UIT.T, config = { text = 'Tutorial tooltips', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.tutorial_tooltips } }},
+								}},
+								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
+									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "tutorial_tooltips" },
+								}},
+							}},
+							{n = G.UIT.R, config = { align = "cm", padding = 0 }, nodes = {
+								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
+									{ n = G.UIT.T, config = { text = 'Legacy hyperoperator formatting', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.legacy_formatting } }},
+								}},
+								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
+									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "legacy_formatting" },
+								}},
+							}},
+							{n = G.UIT.R, config = { align = "cm", padding = 0.1 }, nodes = {
+								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
+									{ n = G.UIT.T, config = { text = 'Debug', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.debug } }},
+								}},
+								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
+									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "debug" },
+								}},
+							}},							
 						}}
 					}}
 				end,
@@ -264,10 +296,10 @@ SMODS.current_mod.extra_tabs = function()
 								create_option_cycle({
 									label = "Transcendence Effects",
 									scale = 0.7,
-									w = 10,
+									w = 6,
 									options = {"Disabled", "Low", "Medium", "High", "Extreme"},
 									opt_callback = 'may_upd_treffects',
-									current_option = may.conf.TrEffects,
+									current_option = may.conf.transcendence.effects,
 									on_demand_tooltip = { text = may.setting_tips.tr_effects }
 								})
 							}},
@@ -277,7 +309,8 @@ SMODS.current_mod.extra_tabs = function()
 										label = "Score Shakiness: Pulse Limit",
 										label_scale = 0.4,
 										text_scale = 0.3,
-										ref_table = may.conf.Shakiness,
+										w = 4,
+										ref_table = may.conf.score_shakiness,
 										ref_value = "pulselimit",
 										min = 0,
 										max = 25,
@@ -289,7 +322,8 @@ SMODS.current_mod.extra_tabs = function()
 										label = "Score Shakiness: Quiver Limit",
 										label_scale = 0.4,
 										text_scale = 0.3,
-										ref_table = may.conf.Shakiness,
+										w = 4,
+										ref_table = may.conf.score_shakiness,
 										ref_value = "quiverlimit",
 										min = 0,
 										max = 25,
@@ -303,7 +337,8 @@ SMODS.current_mod.extra_tabs = function()
 										label = "Score Shakiness: Pulse Multiplier",
 										label_scale = 0.4,
 										text_scale = 0.3,
-										ref_table = may.conf.Shakiness,
+										w = 4,
+										ref_table = may.conf.score_shakiness,
 										ref_value = "pulsemult",
 										min = 0,
 										max = 2,
@@ -315,7 +350,8 @@ SMODS.current_mod.extra_tabs = function()
 										label = "Score Shakiness: Quiver Multiplier",
 										label_scale = 0.4,
 										text_scale = 0.3,
-										ref_table = may.conf.Shakiness,
+										w = 4,
+										ref_table = may.conf.score_shakiness,
 										ref_value = "quivermult",
 										min = 0,
 										max = 2,
@@ -328,7 +364,8 @@ SMODS.current_mod.extra_tabs = function()
 									label = "Score Shakiness: Screen Shake Multiplier",
 									label_scale = 0.4,
 									text_scale = 0.3,
-									ref_table = may.conf.Shakiness,
+									w = 4,
+									ref_table = may.conf.score_shakiness,
 									ref_value = "screen_shake",
 									min = 0,
 									max = 2,
@@ -340,13 +377,13 @@ SMODS.current_mod.extra_tabs = function()
 									{ n = G.UIT.T, config = { text = 'Score Shakiness: Unlimit Pulse', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.unlimit_pulse } }},
 								}},
 								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.Shakiness, ref_value = "unlimitpulse" },
+									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.score_shakiness, ref_value = "unlimitpulse" },
 								}},
 								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
 									{ n = G.UIT.T, config = { text = 'Score Shakiness: Unlimit Quiver', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.unlimit_quiver } }},
 								}},
 								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.Shakiness, ref_value = "unlimitquiver" },
+									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.score_shakiness, ref_value = "unlimitquiver" },
 								}},
 							}},
 							{n = G.UIT.R, config = { align = "cm", padding = 0 }, nodes = {
@@ -354,27 +391,27 @@ SMODS.current_mod.extra_tabs = function()
 									{ n = G.UIT.T, config = { text = 'Shake Cards during Transcendence', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.tr_shake_cards } }},
 								}},
 								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "TrShakeCards" },
+									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.transcendence, ref_value = "shake_cards" },
 								}},
 								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
 									{ n = G.UIT.T, config = { text = 'Shake Screen during Transcendence', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.tr_shake_screen } }},
 								}},
 								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "TrShakeScreen" },
+									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.transcendence, ref_value = "shake_screen" },
 								}},
 							}},
 							{n = G.UIT.R, config = { align = "cm", padding = 0 }, nodes = {
 								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
-									{ n = G.UIT.T, config = { text = 'Misc. Joker Effects', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.joker_effects } }},
+									{ n = G.UIT.T, config = { text = 'Transcendence only during scoring', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.scoring_tr } }},
 								}},
 								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "JokerEffects" },
+									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.transcendence, ref_value = "only_scoring" },
 								}},
 								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
 									{ n = G.UIT.T, config = { text = 'Shake HUD Elements during Transcendence', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.tr_shake_hud } }},
 								}},
 								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "TrShakeUI" },
+									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.transcendence, ref_value = "shake_ui" },
 								}},
 							}},
 							{n = G.UIT.R, config = { align = "cm", padding = 0 }, nodes = {
@@ -382,7 +419,7 @@ SMODS.current_mod.extra_tabs = function()
 									{ n = G.UIT.T, config = { text = 'White noise during Transcendence', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.tr_noise } }},
 								}},
 								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "TrNoise" },
+									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.transcendence, ref_value = "noise" },
 								}},
 								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
 									{ n = G.UIT.T, config = { text = 'Reduce Flashing Lights', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.epileptic } }},
@@ -396,13 +433,13 @@ SMODS.current_mod.extra_tabs = function()
 									{ n = G.UIT.T, config = { text = 'Transcendence Particles', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.tr_particles } }},
 								}},
 								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "TrParticles" },
+									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.transcendence, ref_value = "particles" },
 								}},
 								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
 									{ n = G.UIT.T, config = { text = 'Transcendence Bloom', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.tr_bloom } }},
 								}},
 								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "TrBloom" },
+									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.transcendence, ref_value = "bloom" },
 								}},
 							}},
 							{n = G.UIT.R, config = { align = "cm", padding = 0 }, nodes = {
@@ -437,7 +474,7 @@ SMODS.current_mod.extra_tabs = function()
 								{ n = G.UIT.T, config = { text = 'Activate Scaling when obtaining Fusion Jokers', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.fusion_scaling } }},
 							}},
 							{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-							    create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "fusion_punishment"},
+							    create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "scaling"},
 							}},
 						}},
 						{n=G.UIT.R, config={}, nodes={
@@ -478,8 +515,8 @@ SMODS.current_mod.extra_tabs = function()
 								scale = 1,
 								w = 6,
 								options = {
-									"Auto",
-									"Mayhem Theme",
+									"Alptraum",
+									"Legacy Mayhem Theme",
 									"Eternum Theme",
 									"Yotta Card",
 									"UltraBlind",
@@ -507,8 +544,9 @@ SMODS.current_mod.extra_tabs = function()
 								label = "Transcendence Volume",
 								label_scale = 0.4,
 								text_scale = 0.3,
-								ref_table = may.conf,
-								ref_value = "TrAudio",
+								w = 5,
+								ref_table = may.conf.transcendence,
+								ref_value = "volume",
 								min = 0,
 								max = 300,
 								on_demand_tooltip = { text = may.setting_tips.tr_volume }
@@ -519,25 +557,25 @@ SMODS.current_mod.extra_tabs = function()
 								{ n = G.UIT.T, config = { text = 'Santa', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "Santamusic" },
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.music, ref_value = "santa" },
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
 								{ n = G.UIT.T, config = { text = 'Party Time', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "Partymusic" },
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.music, ref_value = "party_time" },
 							}},
 							{n = G.UIT.C, config = { align = "cl", padding = 0 }, nodes = {
 								{ n = G.UIT.T, config = { text = 'Transcendent Joker', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
 							{n = G.UIT.C, config = { align = "cl", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "Hyperascendantmusic" },
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.music, ref_value = "transcendent" },
 							}},
 							{n = G.UIT.C, config = { align = "cr", padding = 0 }, nodes = {
 								{ n = G.UIT.T, config = { text = 'Yotta Card', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
 							{n = G.UIT.C, config = { align = "cr", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "Yottamusic" },
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.music, ref_value = "yotta" },
 							}},
 						}},
 						{n=G.UIT.R, config={ align = "cm" }, nodes={
@@ -545,25 +583,25 @@ SMODS.current_mod.extra_tabs = function()
 								{ n = G.UIT.T, config = { text = 'Enhanced Pack', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "Editionmusic" },
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.music, ref_value = "modifier" },
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
 								{ n = G.UIT.T, config = { text = 'UltraBlind', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "Ultrablindmusic" },
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.music, ref_value = "ultrablind" },
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
 								{ n = G.UIT.T, config = { text = 'Rondo Discoteca', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "Ibizamusic" },
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.music, ref_value = "ibiza" },
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
 								{ n = G.UIT.T, config = { text = 'Opalescent Joker', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "Surrealmusic" },
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.music, ref_value = "opalescent" },
 							}}, 
 						}},
 						{n=G.UIT.R, config={ align = "cm" }, nodes={
@@ -571,40 +609,47 @@ SMODS.current_mod.extra_tabs = function()
 								{ n = G.UIT.T, config = { text = 'Pixel Pack', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "Retromusic" },
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.music, ref_value = "retro" },
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
 								{ n = G.UIT.T, config = { text = 'POKER', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "Pokermusic" },
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.music, ref_value = "poker" },
 							}}, 
 							{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
 								{ n = G.UIT.T, config = { text = 'Fusion Joker', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "Fusionmusic" },
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.music, ref_value = "fusion" },
 							}}, 
 							{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
 								{ n = G.UIT.T, config = { text = 'Fusion Joker (Shop)', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "Fusionshopmusic" },
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.music, ref_value = "fusion_shop" },
 							}}, 
 							{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
 								{ n = G.UIT.T, config = { text = 'Fusion Pack', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
 							}},
 							{n = G.UIT.C, config = { align = "c", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "Fusionpackmusic" },
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.music, ref_value = "fusion_pack" },
 							}}, 
 						}},
-						
+						{n=G.UIT.R, config={ align = "cm" }, nodes={
+							{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
+								{ n = G.UIT.T, config = { text = 'Transcendent Joker (Shop)', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
+							}},
+							{n = G.UIT.C, config = { align = "c", padding = 0.05 }, nodes = {
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.music, ref_value = "transcendent_shop" },
+							}},
+						}}, 
 						{n=G.UIT.R, config={ align = "cm" }, nodes={
 							{n = G.UIT.C, config = { align = "cm", padding = 0 }, nodes = {
 								{ n = G.UIT.T, config = { text = 'Custom Hyperoperation Sounds', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.hyper_sounds } }},
 							}},
 							{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "CustomHyperoperations" },
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "custom_hyperoperations" },
 							}},
 
 							{n = G.UIT.C, config = { align = "cm", padding = 0 }, nodes = {
@@ -619,7 +664,7 @@ SMODS.current_mod.extra_tabs = function()
 								{ n = G.UIT.T, config = { text = 'Legacy Transcendence 1 Ambiance', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.legacy_tr1 } }},
 							}},
 							{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "LegacyTr1" },
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "legacy_tr1" },
 							}},
 						}},
 						{n=G.UIT.R, config={ align = "cm" }, nodes={
@@ -642,15 +687,7 @@ G.FUNCS.may_upd_mode = function(e)
 end
 
 G.FUNCS.may_upd_treffects = function(e)
-	may.conf.TrEffects = e.to_key
-end
-
-G.FUNCS.may_upd_scaling = function(e)
-	may.conf.scaling = e.to_key
-end 
-
-G.FUNCS.may_upd_limit = function(e)
-	may.conf.Limit = e.to_key
+	may.conf.transcendence.effects = e.to_key
 end
 
 G.FUNCS.may_upd_music = function(e)
@@ -665,16 +702,17 @@ G.FUNCS.may_upd_scaling_activation = function(e)
 	may.conf.scaling_activation = e.to_key
 end
 
+-- Deprecated
 function may.get_mode_gradient(mode)
-	return mode == 2 and 'may_col_eternum_green' or 'may_col_mayhem_gradient'
+	return 'may_col_mayhem_gradient' 
 end
 
 SMODS.current_mod.ui_config = {
-	colour = SMODS.Gradients[may.get_mode_gradient(may.conf.Mode)..'_dark1'],
-	author_colour = SMODS.Gradients[may.get_mode_gradient(may.conf.Mode)],
-	back_colour = SMODS.Gradients[may.get_mode_gradient(may.conf.Mode)],
-	tab_button_colour = SMODS.Gradients[may.get_mode_gradient(may.conf.Mode)],
-	collection_colour = SMODS.Gradients[may.get_mode_gradient(may.conf.Mode)..'_dark1'],
-	collection_bg_colour = SMODS.Gradients[may.get_mode_gradient(may.conf.Mode)..'_dark2'],
-	bg_colour = SMODS.Gradients[may.get_mode_gradient(may.conf.Mode)..'_dark2'],
+	colour = SMODS.Gradients['may_col_gray_gradient_dark1'],
+	author_colour = SMODS.Gradients['may_col_mayhem_gradient'],
+	back_colour = SMODS.Gradients['may_col_mayhem_gradient'],
+	tab_button_colour = SMODS.Gradients['may_col_mayhem_gradient'],
+	collection_colour = SMODS.Gradients['may_col_gray_gradient_dark1'],
+	collection_bg_colour = SMODS.Gradients['may_col_gray_gradient_dark2'],
+	bg_colour = SMODS.Gradients['may_col_gray_gradient_dark2'],
 }

@@ -107,7 +107,7 @@ SMODS.Enhancement {
 		name = 'Super Mult Card',
 		text = {
             {
-				'{X:mult,C:white}^1.04{} Mult',
+				may.hyp(1, 'mult', '^1.04')..' Mult',
     		}, 
             {
         		'{C:inactive,E:1}Art by Superb Thing{}'
@@ -228,8 +228,8 @@ SMODS.Enhancement {
 		name = 'Crystal Card',
 		text = {
             {
-			    '{C:money}+$3{} when scored',
-				'{C:attention}Suitless{}, {C:attention}Rankless{}, {C:green}always{} scores,', 
+			    '{C:money}+$4{} when scored',
+				'{C:attention}Suitless{}, {C:attention}Rankless{}, {C:green}always{} scores', 
             },
             {
                 '{C:inactive,E:1}Art by HuyCorn{}'
@@ -250,7 +250,7 @@ SMODS.Enhancement {
 	calculate = function(self, card, context)
 		if context.cardarea == G.play and context.main_scoring then
 			return {
-				p_dollars = 3
+				p_dollars = 4
 			}
 		end
 	end, 
@@ -409,10 +409,10 @@ SMODS.Enhancement {
 	loc_txt = {
 		name = 'Fortune Card',
 		text = {
-			'{X:money,C:white}+X0.03${} per held', 
+			'{C:money}+$5{} per held', 
             '{C:mult}non-{}{C:dark_edition}Negative{} {C:purple}Tarot Card{}', 
 			'before scoring if {C:attention}card{} scores',
-            '{C:inactive}Currently X#1#${}'
+            '{C:inactive}Currently +$#1#{}'
 		}
 	},
 	pos = { x = 12, y = 0 },
@@ -429,7 +429,7 @@ SMODS.Enhancement {
                 end
             end
         end
-        return { vars = { 1 + (amount * 0.03) } }
+        return { vars = { amount * 5 } }
     end, 
 	calculate = function(self, card, context)
 		if context.cardarea == G.play and context.before and table_hasvalue(context.scoring_hand, card) then
@@ -440,12 +440,9 @@ SMODS.Enhancement {
                 end
             end
 			return {
-				x_dollars = 1 + (amount * 0.03), 
+				p_dollars = amount * 5, 
                 card = card,
 			}
 		end
 	end, 
-    in_pool = function(self, args)
-        return G.GAME.may_endless_mode, { allow_duplicates = true }
-    end 
 }

@@ -7,7 +7,8 @@ SMODS.Seal {
 		label = 'Copper Seal',
 		text = {
 			"{C:mult}Destroy{} {C:attention}this card{}",
-			"to redeem a {C:attention}random{} regular {C:green}Voucher{}"
+			"to create {C:attention}4{} random {C:attention}Consumables{}", 
+			"{C:inactive}Does not require room{}"
 		}
 	},
 	atlas = 'seal',
@@ -16,9 +17,16 @@ SMODS.Seal {
 	sound = { sound = 'gold_seal', per = 1.2, vol = 0.4 },
 	calculate = function(self, card, context)
 		if context.remove_playing_cards and context.cardarea ~= G.discard and table_hasvalue(context.removed, card) then
-			G.E_MANAGER:add_event(Event({trigger = 'after', func = function()
-				may.voucher(may.get_next_voucher_key())
-			return true end}))
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+			for i = 1, 4 do
+				local choice = may.random_consumable('may_copper_seal')
+				local card2 = create_card('Consumeables', G.consumables, nil, nil, nil, nil, choice.key, "may_inverted_seal_card")
+				card2:add_to_deck()
+				G.consumeables:emplace(card2)
+			end
+			play_sound('may_bundle')
+			card:may_explode(nil, nil, true)
+		return true end})) 
 		end
 	end,
 	draw = function(self, card, layer)
@@ -35,12 +43,12 @@ SMODS.Seal {
 		label = 'Lime Seal',
 		text = {
 			"{X:chips,C:white}X#1#{} Chips",
-			"{C:attention}Increases{} by {X:chips,C:white}+X0.1{} when {C:mult}discarded{}"
+			"{C:attention}Increases{} by {X:chips,C:white}+X0.15{} when {C:mult}discarded{}"
 		}
 	},
 	atlas = 'seal',
 	pos = { x = 3, y = 0 },
-	config = { x_chips = 1.4 },
+	config = { x_chips = 1 },
 	badge_colour = HEX('acf097'),
 	sound = { sound = 'gold_seal', per = 1.2, vol = 0.4 },
 	loc_vars = function(self, info_queue, card)
@@ -53,7 +61,7 @@ SMODS.Seal {
 			}
 		end
 		if context.discard and context.other_card == card then
-			card.ability.seal.x_chips = card.ability.seal.x_chips + 0.1
+			card.ability.seal.x_chips = card.ability.seal.x_chips + 0.15
 			return {
 				message = 'Upgraded!',
 				colour = G.C.CHIPS,
@@ -81,11 +89,12 @@ SMODS.Seal {
 	sound = { sound = 'gold_seal', per = 1.2, vol = 0.4 },
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
-		return { vars = { G.GAME.probabilities.normal } }
+		local normal, odds = SMODS.get_probability_vars(card, 1, 3, "Inverted Seal")
+		return { vars = { normal } }
 	end, 
 	calculate = function(self, card, context)
 		if context.end_of_round and context.cardarea == G.hand and #G.consumeables.cards > 0 then
-			if pseudorandom('may_inverted_seal') < G.GAME.probabilities.normal / 3 then
+			if SMODS.pseudorandom_probability(card, "may_inverted_seal", 1, 3, "Inverted Seal") then
                if G.consumeables.cards[1] then
 				    local available
 				    for i = 1, #G.consumeables.cards do
@@ -130,13 +139,13 @@ SMODS.Seal {
 		label = 'Orange Seal',
 		text = {
 			"{X:mult,C:white}X#1#{} Mult",
-			"{C:attention}Increases{} by {X:mult,C:white}+X0.1{} when {C:attention}played{}"
+			"{C:attention}Increases{} by {X:mult,C:white}+X0.05{} when {C:attention}played{}"
 		}
 	},
 	atlas = 'seal',
 	pos = { x = 5, y = 0 },
 	badge_colour = HEX('ff5900'),
-	config = { x_mult = 1.4 },
+	config = { x_mult = 1 },
 	sound = { sound = 'gold_seal', per = 1.2, vol = 0.4 },
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.seal.x_mult } }
@@ -148,7 +157,7 @@ SMODS.Seal {
 			}
 		end
 		if context.before and context.cardarea == G.play then
-			card.ability.seal.x_mult = card.ability.seal.x_mult + 0.1
+			card.ability.seal.x_mult = card.ability.seal.x_mult + 0.05
 			return {
 				message = 'Upgraded!',
 				colour = G.C.MULT,
@@ -164,8 +173,8 @@ SMODS.Seal {
 		name = 'Pink Seal',
 		label = 'Pink Seal',
 		text = {
-			"{X:planet,C:white}X1.25{} level of {C:attention}played{}", 
-			"{C:purple}Poker Hand{} but {X:money,C:white}X0.85${}", 
+			"Levels up {C:attention}played{}", 
+			"{C:purple}Poker Hand{} but {C:mult}-$4{}", 
 			"after {C:attention}scoring{} if played"
 		}
 	},
@@ -173,11 +182,13 @@ SMODS.Seal {
 	pos = { x = 6, y = 0 },
 	badge_colour = HEX('ff00ea'),
 	sound = { sound = 'gold_seal', per = 1.2, vol = 0.4 },
+	show_ring_display = true,
 	calculate = function(self, card, context)
 		if context.cardarea == G.play and context.after then
-			may.level_up_hand_hyper(card, context.scoring_name, nil, 1.25, 0)
+			level_up_hand(card, context.scoring_name, nil, 1)
+			may.ch()
 			return {
-				x_dollars = 0.85
+				p_dollars = -4
 			}
 		end
 	end
@@ -236,10 +247,11 @@ SMODS.Seal {
 	sound = { sound = 'gold_seal', per = 1.2, vol = 0.4 },
 	calculate = function(self, card, context)
 		if context.cardarea == G.play and context.main_scoring then
-			local amount = card:may_get_nominal_chips() * 9
 			return {
-				hand_chips = amount, 
-				card = card
+				chip_mod = card:may_get_nominal_chips() * 9, 
+				card = card, 
+				message = '+'..(card:may_get_nominal_chips() * 9)..' Chips', 
+				colour = G.C.CHIPS
 			}
 		end
 	end
@@ -336,21 +348,20 @@ SMODS.Seal {
 		name = 'ERROR Seal',
 		label = 'ERROR Seal',
 		text = {
-			"Gives {C:may_ethereal,E:1}unknown{} {C:green}bonuses{}",
+			"Gives {C:may_ethereal,E:1}random{} {C:green}bonuses{}",
 			"when scored",
 		}
 	},
 	atlas = 'seal',
 	pos = { x = 1, y = 0 },
 	badge_colour = HEX('ffffff'),
-	weight = 0,
-	sound = { sound = 'may_error_seal', per = 1.2, vol = 0.3 },
+	sound = { sound = 'may_error_seal', per = 1.2, vol = 0.2 },
 	calculate = function(self, card, context)
 		if context.cardarea == G.play and context.main_scoring then
 			local operation = math.floor(pseudorandom('may_error_seal')*10)
 			if operation == 1 then
 				return {
-					x_dollars = pseudorandom('may_error_seal', 1, 1.35)
+					p_dollars = pseudorandom('may_error_seal', 1, 2)
 				}
 			elseif operation > 9 then
 				return {
@@ -362,31 +373,31 @@ SMODS.Seal {
 				}
 			elseif operation > 7 then
 				return {
-					mult = pseudorandom('may_error_seal', 1, 100),
+					score_mod = pseudorandom('may_error_seal', 1000, 3500),
 				}
 			elseif operation > 6 then
 				return {
-					e_mult = pseudorandom('may_error_seal', 1, 1.25),
+					e_mult = pseudorandom('may_error_seal', 1, 1.2),
 				}
 			elseif operation > 5 then
 				return {
-					e_chips = pseudorandom('may_error_seal', 1, 1.25),
+					e_chips = pseudorandom('may_error_seal', 1, 1.2),
 				}
 			elseif operation > 4 then
 				return {
-					x_mult = pseudorandom('may_error_seal', 1, 3),
+					x_mult = pseudorandom('may_error_seal', 1, 2),
 				}
 			elseif operation > 3 then
 				return {
-					x_chips = pseudorandom('may_error_seal', 1, 3),
+					x_chips = pseudorandom('may_error_seal', 1, 2),
 				}
 			elseif operation > 2 then
 				return {
-					mult = pseudorandom('may_error_seal', 1, 100),
+					mult = pseudorandom('may_error_seal', 1, 10),
 				}
 			elseif operation > 1 then
 				return {
-					chips = pseudorandom('may_error_seal', 1, 200),
+					chips = pseudorandom('may_error_seal', 1, 25),
 				}
 			elseif operation < 1 then
 				return {

@@ -5,10 +5,10 @@ return {
 			mayhem = {
 				name = 'Mayhem', 
 				text = {
-					"Ever thought {C:attention,E:1}Balatro{} runs are {C:mult}too short{}?", 
-					"{C:may_col_mayhem_gradient,E:1}Mayhem{} adds {C:green}elaborate{} {C:attention}Joker{} {C:may_col_instability}fusion chains{}, resulting in", 
-					"{C:may_opalescent,E:1}omnipotent{} {C:attention}Jokers{} capable of scoring {C:may_prismatic,E:1}incomprehensibly large numbers{}",
-					"That, however, {C:mult}doesn't{} mean you will not face any {C:mult,E:1}challenges{}",
+					"A {C:may_opalescent,E:1}crazy{} content mod for {C:attention,E:1}Balatro{} which is", 
+					"based on {C:chips}very long{}, {C:dark_edition}incremental{} progression in {C:attention}one run{}",
+					"{C:dark_edition}Fuse{} {C:attention}Jokers{} continuously and slowly become an {C:may_instability,E:may_transcendent_name}unstoppable god{}",
+					"There will be {C:mult,E:1}challenges{} along the way",
 					" ",
 					"{C:green,E:1,s:2}Thanks for playing!{}", 
 					" ",
@@ -369,6 +369,22 @@ return {
 			},
 		},
 		Other = {
+			may_ring_bonus = {
+				name = "Ring Bonuses",
+				text = {
+					"Next {C:purple}Poker Hand{} {C:planet}leveled up{}", 
+					"will gain the following:", 
+					may.pager(40),
+					"{C:chips}+#1#{} Chips | {C:mult}+#2#{} Mult", 
+					may.pager(40),
+					"{C:chips}+#3#{} {C:may_demiurgic}Level{} Chips | {C:mult}+#4#{} {C:may_demiurgic}Level{} Mult", 
+					may.pager(40),
+					"{C:money}+#5#{} Dollars | {C:may_score}+#6#{} Score", 
+					may.pager(40),
+					"{C:planet}+#7#{} additional levels"
+				},
+			},
+			
 			may_modocation_tutorial = {
 				name = "Modocation",
 				text = {
@@ -432,7 +448,57 @@ return {
 				text = {
 					"{C:may_prismatic}G{} is the current {C:may_prismatic}Global Operator{}", 
 					"It is based on the {C:green}highest{} {C:dark_edition}hyperoperation{}", 
-					"amongst your {C:attention}Jokers{} and {C:dark_edition}Score Operator{}",
+					"amongst your {C:dark_edition}Fusion{} {C:attention}Jokers{} and {C:dark_edition}Score Operator{}",
+				}
+			}, 
+			
+			may_acum_fusion_tip = {
+				name = "Current Fusion Condition Values", 
+				text = {
+					"{C:attention}#1#{} Aces in full deck"
+				}
+			}, 
+			may_kepler_fusion_tip = {
+				name = "Current Fusion Condition Values", 
+				text = {
+					"Highest {C:purple}Poker Hand{} level: {C:planet}#1#{}"
+				}
+			}, 
+			may_bedrock_fusion_tip = {
+				name = "Current Fusion Condition Values", 
+				text = {
+					"{C:attention}#1#{} {C:dark_edition}Stone Cards{} in full deck"
+				}
+			}, 
+			may_stones_fusion_tip = {
+				name = "Current Fusion Condition Values", 
+				text = {
+					"{C:attention}#1#{} {C:dark_edition}Stone Cards{} {C:mult}destroyed{} this run"
+				}
+			}, 
+			may_zodium_calamitas_fusion_tip = {
+				name = "Current Fusion Condition Values", 
+				text = {
+					"{C:attention}#1#{} {C:dark_edition}Stone Cards{} {C:mult}destroyed{} this run", 
+					"{C:attention}#2#{} {C:tarot}Tarot Cards{} used this run"
+				}
+			}, 
+			may_wizard_university_fusion_tip = {
+				name = "Current Fusion Condition Values", 
+				text = {
+					"{C:attention}#1#{} {C:dark_edition}Enhanced{} cards in full deck"
+				}
+			}, 
+			may_world_destroyer_fusion_tip = {
+				name = "Current Fusion Condition Values", 
+				text = {
+					"{C:attention}#1#{} {C:planet}Planet Cards{} used this run"
+				}
+			},
+			may_astral_expunger_fusion_tip = {
+				name = "Current Fusion Condition Values", 
+				text = {
+					"{C:attention}#1#{} {C:tarot}Tarot Cards{} used this run"
 				}
 			}, 
 			
@@ -590,6 +656,11 @@ return {
 		    may_notif_config_d2 = 'This unfortunately causes most of your settings', 
 		    may_notif_config_d3 = 'to be reset. You will have to set them back again.',
 			
+			may_notif_epileptic_1 = 'Photosensitivity warning', 
+		    may_notif_epileptic_d1 = 'Mayhem has *very* intense effects when you get large scores', 
+		    may_notif_epileptic_d2 = 'If you are prone to flashing lights and shaking things,', 
+		    may_notif_epileptic_d3 = 'please turn some settings down in Mayhem\'s Visual tab', 
+			
 			may_notif_welcome_1 = 'Welcome to Mayhem!', 
 		    may_notif_welcome_d1 = 'This is your first time playing Mayhem! Thanks!', 
 			may_notif_welcome_d2 = 'Until a proper tutorial is added, you should consult the wiki', 
@@ -600,5 +671,5 @@ return {
 			may_n_yes = 'Yes', 
 			may_n_no = 'No',
 		}
-	}
+	}, 
 }

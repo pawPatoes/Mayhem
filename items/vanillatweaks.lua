@@ -14,6 +14,10 @@ SMODS.Consumable:take_ownership('c_soul', {
 	}
 })
 
+SMODS.Tag:take_ownership('tag_orbital', {
+	show_ring_display = true,
+}, true)
+
 -- Buff Spectral Packs
 	
 SMODS.Booster:take_ownership('p_spectral_normal_1', {
@@ -36,47 +40,106 @@ SMODS.Booster:take_ownership('p_spectral_mega_1', {
 	config = {extra = 5, choose = 2}
 })
 
--- Unable to duplicate Fusion Jokers
+-- Spectral Reworks
 
 SMODS.Consumable:take_ownership('c_ankh', {
 	loc_txt = {
 		name = "Ankh", 
 		text = {
-			"{C:attention}Duplicate{} a {C:attention}random{}", 
-			"{C:mult}non-{}{C:dark_edition}Fusion{} {C:attention}Joker{}", 
-			"{C:mult}Destroy{} all {C:attention}other{} {C:mult}non-{}{C:dark_edition}Fusion{} {C:attention}Jokers{}", 
+			"Create {C:attention}#1#{} duplicates of", 
+			"a selected {C:mult}non-{}{C:dark_edition}hidden{} {C:attention}Consumable{}", 
+			"{C:inactive}Certain Consumables excluded, requires room{}", 
 		}
 	}, 
+	config = { extra = { copies = 2 } }, 
+	may_no_ankh = true,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.copies } }
+	end,
 	can_use = function(self, card)
-		for k, v in pairs(G.jokers.cards) do
-			if not v:may_is_fusion() and not (v:gc().rarity == 'may_surreal') then 
-				return may.canuse()
+		for k, v in pairs(G.consumeables.highlighted) do
+			if v ~= card and v:gc().key ~= 'c_ankh' and v:gc().key ~= 'c_aeon' and v.ability.consumeable and not v:gc().hidden and not v:gc().no_doe and not v:gc().may_no_ankh then
+				return #G.consumeables.highlighted <= 2 and (G.consumeables and #G.consumeables.cards < G.consumeables.config.card_limit + ( card.area == G.consumeables and 1 or 0 ))
 			end
 		end 
 		return false 
 	end,
 	use = function(self, card)
-		local targets = {}
-		for k, v in pairs(G.jokers.cards) do
-			if not v:may_is_fusion() and not (v:gc().rarity == 'may_surreal') then 
-				table.insert(targets, v)
+		local other 
+		for k, v in pairs(G.consumeables.highlighted) do
+			if v ~= card then 
+				other = v
 			end
 		end
-		local target = pseudorandom_element(targets, pseudoseed('may_ankh'))
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			local card2 = copy_card(target, nil, nil, nil, nil)
-			card2:start_materialize()
-			card2:add_to_deck()
-			G.jokers:emplace(card2)
-			play_sound('timpani')
+			if #G.consumeables.cards < G.consumeables.config.card_limit then
+				local card2 = copy_card(other, nil, nil, nil, nil)
+				card:juice_up(0.3, 0.5)
+				card2:add_to_deck()
+				card2:setQty(card.ability.extra.copies)
+				G.consumeables:emplace(card2)
+				play_sound('timpani')
+			end 
 		return true end})) 
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-			for k, v in pairs(targets) do
-				if v ~= target then 
-					v:start_dissolve()
+	end
+})
+
+SMODS.Consumable:take_ownership('c_hex', {
+	loc_txt = {
+		name = "Hex", 
+		text = {
+			"Select a {C:mult}non-{}{C:dark_edition}Fusion{} {C:attention}Joker{} and", 
+			"up to {C:attention}#1#{} playing cards",
+			may.pager(50),
+			"If the {C:attention}Joker{} has an {C:dark_edition}Edition{}, {C:mult}remove{} it,", 
+			"{C:green}apply{} it to selected {C:attention}playing cards{} and", 
+			"apply {C:enhanced}Perishable{} to the {C:attention}Joker{}", 
+			may.pager(50),
+			"{C:inactive}Negative excluded{}"
+		}
+	}, 
+	config = { extra = { cards = 4 } }, 
+	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
+		return { vars = { card.ability.extra.cards } }
+	end,
+	can_use = function(self, card)
+		local selected = 0 
+		for k, v in pairs(G.hand.highlighted) do
+			if v ~= card then 
+				selected = selected + 1
+				if selected > card.ability.extra.cards then 
+					return false
 				end
 			end
-		return true end}))
+		end
+		return selected <= card.ability.extra.cards and #G.jokers.highlighted == 1 and G.jokers.highlighted[1].edition and G.jokers.highlighted[1].edition.key ~= 'e_negative'
+	end,
+	use = function(self, card)
+		local edition = G.jokers.highlighted[1].edition.key
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+			G.jokers.highlighted[1]:set_edition()
+			G.jokers.highlighted[1]:juice_up(0.3, 0.5)
+			card:juice_up(0.3, 0.5)
+			play_sound('tarot1')
+		return true end})) 
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+			G.jokers.highlighted[1]:add_sticker('perishable', true)
+			G.jokers.highlighted[1]:juice_up(0.3, 0.5)
+			card:juice_up(0.3, 0.5)
+			play_sound('tarot1')
+		return true end})) 
+		for k, v in pairs(G.hand.highlighted) do 
+			local percent = 0.85 + (k-0.999)/(#G.hand.highlighted-0.998)*0.3
+			if v ~= card then
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+					v:set_edition(edition)
+					v:juice_up(0.3, 0.5)
+					card:juice_up(0.3, 0.5)
+					play_sound('tarot1', percent)
+				return true end})) 
+			end
+		end
 	end
 })
 
@@ -138,13 +201,17 @@ SMODS.Consumable:take_ownership('c_black_hole', {
 	cost = 6,
 	soul_rate = may.spectral_planet_rate,
 	loc_txt = {
-		name = {"Black Hole", "{C:dark_edition,s:0.7}Spectral Planet{}"}, 
+		name = "Black Hole", 
 		text = {
 			"{C:planet}Level up{} {C:attention}all{} {C:purple}Poker Hands{}", 
 			"by {C:attention}#1#{}"
 		}, 
 	},
 	config = { extra = { level = 1 } }, 
+	show_ring_display = true,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Planet', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
 	loc_vars = function(self, info_queue, card)
 		return {vars = { card.ability.extra.level } }
 	end, 
@@ -169,6 +236,15 @@ SMODS.Joker:take_ownership('j_marble', {
 		}, 
 	},
 	loc_vars = function(self, info_queue, card)
+		if G.GAME and G.GAME.blind then 
+			local count = 0
+			for k, v in pairs(G.playing_cards) do
+				if SMODS.has_enhancement(v, 'm_stone') then
+					count = count + 1
+				end
+			end
+			may.fuse_tip(info_queue, 'bedrock', { count }) 
+		end
 		info_queue[#info_queue + 1] = G.P_CENTERS.m_stone
 	end
 })
@@ -187,19 +263,28 @@ SMODS.Joker:take_ownership('j_stone', {
 		}, 
 	},
 	loc_vars = function(self, info_queue, card)
+		may.fuse_tip(info_queue, 'stones', { (G.GAME.may_stones_destroyed or 0) })
 		info_queue[#info_queue + 1] = G.P_CENTERS.m_stone
 		local amount = 0
-		for k, v in pairs(G.playing_cards or {}) do 
-			if SMODS.has_enhancement(v, 'm_stone') then 
+		for k, v in pairs(G.playing_cards or {}) do
+			if SMODS.has_enhancement(v, 'm_stone') then
 				amount = amount + 1
 			end
-		end 
-		return { card.ability.extra and (type(card.ability.extra) == 'table' and card.ability.extra.chips or false) or self.config.chips or 25, (card.ability.extra and (type(card.ability.extra) == 'table' and card.ability.extra.chips or false) or self.config.chips or 25) * amount }
+		end
+		return { card.ability.extra or self.config.chips or 25, (card.ability.extra or self.config.chips or 25) * amount }
 	end
 })
 
 SMODS.Joker:take_ownership('j_satellite', {
-	rarity = 3
+	rarity = may.epic_key
+})
+
+SMODS.Joker:take_ownership('j_constellation', {
+	rarity = 3,
+	endless = true, 
+	in_pool = function(self, args)
+        return G.GAME.may_endless_mode, { allow_duplicates = false }
+    end
 })
 
 SMODS.Joker:take_ownership('j_ring_master', {
@@ -315,9 +400,11 @@ SMODS.Consumable:take_ownership('c_fool', {
 
 -- Choose new defaults for vanilla consumables and change their collection display size
 
-SMODS.ObjectTypes.Tarot.collection_rows = {7, 7, 7}
-SMODS.ObjectTypes.Planet.collection_rows = {8, 8, 8}
-SMODS.ObjectTypes.Spectral.collection_rows = {6, 7, 6}
+if #SMODS.find_mod('Troubadour') == 0 then
+	SMODS.ObjectTypes.Tarot.collection_rows = {7, 7, 7}
+	SMODS.ObjectTypes.Planet.collection_rows = {8, 8, 8}
+	SMODS.ObjectTypes.Spectral.collection_rows = {6, 7, 6}
+end
 
 SMODS.ObjectTypes.Planet.default = 'c_may_dysnomia'
 SMODS.ObjectTypes.Tarot.default = 'c_fool'

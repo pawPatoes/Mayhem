@@ -3,43 +3,6 @@ version = "1.0.0"
 dump_lua = true
 priority = 1000
 
-# Error message if dependencies are missing because people are incapable or reading 
-[[patches]] 
-[patches.pattern]
-target = "game.lua"
-pattern = "function Game:splash_screen()"
-position = "after"
-payload = '''
-if (not Noituus) and (not Overflow) then
-    error("MAYHEM: Missing dependency: Noituus | Make sure it is installed properly.") 
-end'''
-match_indent = true
-overwrite = true
-
-# Playing card chip multiplier (brown deck, white seal)
-[[patches]] 
-[patches.pattern]
-target = "card.lua"
-pattern = "return self.base.nominal + self.ability.bonus + (self.ability.perma_bonus or 0)"
-position = "at"
-payload = '''
-if not G.GAME then
-	return (self.base.nominal + self.ability.bonus + (self.ability.perma_bonus or 0)) * (self.ability.nominal_multiplier or 1)
-else
-	return (self.base.nominal + self.ability.bonus + (self.ability.perma_bonus or 0)) * (G.GAME.playing_card_multiplier or 1) * (self.ability.nominal_multiplier or 1)
-end'''
-match_indent = true
-overwrite = true
-
-[[patches]] 
-[patches.pattern]
-target = "card.lua"
-pattern = "nominal_chips = self.base.nominal > 0 and self.base.nominal or nil,"
-position = "at"
-payload = "nominal_chips = (self.base.nominal > 0 and self.base.nominal or 0) * (G.GAME and G.GAME.playing_card_multiplier or 1) * (self.ability.nominal_multiplier or 1),"
-match_indent = true
-overwrite = true
-
 # Midground sprites
 # taken from Cryptid
 [[patches]]
@@ -54,19 +17,6 @@ payload = '''
 		self.children.floating_sprite2:draw_shader('dissolve',0, nil, nil, self.children.center,scale_mod, rotate_mod,nil, 0.1--[[ + 0.03*math.cos(1.8*G.TIMERS.REAL)--]],nil, 0.6)
 		self.children.floating_sprite2:draw_shader('dissolve', nil, nil, nil, self.children.center, scale_mod, rotate_mod)
 	end
-'''
-match_indent = true
-
-# Dynatext pulse screen shake 
-[[patches]]
-[patches.pattern]
-target = "engine/text.lua"
-pattern = "letter.r = letter.r + (G.SETTINGS.reduced_motion and 0 or 1)*(letter.scale - 1)*(0.02*(-#self.strings[self.focused_string].letters/2 - 0.5 + k))"
-position = "after"
-payload = '''
-if to_number(letter.scale) > 8 and not may.invalid_number(letter.scale) and to_big(letter.scale) ~= R.NaN and to_big(letter.scale) ~= R.POSITIVEINFINITY and to_big(letter.scale) ~= R.NEGATIVEINFINITY then
-	G.ROOM.jiggle = math.min(G.ROOM.jiggle + to_number(math.min(to_big(10), ((letter.scale/24) * may.conf.Shakiness.screen_shake))), 250)
-end
 '''
 match_indent = true
 
@@ -175,8 +125,8 @@ pattern = '''
 '''
 position = 'after'
 payload = '''
-    SMODS.calculate_context({ may_enter_shop = true, main_eval=true })
-    for i=1, (G.GAME.may_mega_boosters or 0) do 
+    SMODS.calculate_context({ may_enter_shop = true, main_eval = true })
+    for i = 1, (G.GAME.may_mega_boosters or 0) do 
         SMODS.add_booster_to_shop('p_buffoon_mega_1')
     end
 	may.handle_special_vouchers()
@@ -202,7 +152,6 @@ payload = '''self.F_SKIP_TUTORIAL = true'''
 match_indent = true
 overwrite = true
 
-# Disable displays if necessary to prevent crashing
 [[patches]]
 [patches.pattern]
 target = "game.lua"
@@ -242,7 +191,6 @@ payload = '''
         })
         G.transcendence_particles.fade_alpha = 1
 	end
-	
 '''
 match_indent = true
 
@@ -256,24 +204,6 @@ payload = '''if not start_colour then return end'''
 match_indent = true
 overwrite = true
 
-# Allow UI to appear on any object in any card area
-[[patches]] 
-[patches.pattern]
-target = '''card.lua'''
-pattern = '''if self.ability.consumeable or self.ability.set == 'Joker' or (self.area and self.area == G.pack_cards) then'''
-position = "at"
-payload = '''if (self.area and self.area.config.type == 'joker') or (self.area == G.hand and self.ability.consumeable) or (self.area and self.area == G.pack_cards) or (self.area and self.area.config.type == 'voucher' and may.has_card('v_may_reconfigure')) then'''
-match_indent = true
-
-# Allow Vouchers to be selected in Run Info tab
-[[patches]] 
-[patches.pattern]
-target = '''cardarea.lua'''
-pattern = '''self.config.type == 'consumeable' or'''
-position = "after"
-payload = '''self.config.type == 'voucher' or'''
-match_indent = true
-
 # Prevent background weirdness when inside a pack during a blind
 [[patches]] 
 [patches.pattern]
@@ -284,47 +214,6 @@ payload = '''
     if not G.pack_cards then
 	    ease_background_colour_blind(G.STATES.DRAW_TO_HAND)
 	end
-'''
-match_indent = true
-
-# ???????
-[[patches]]
-[patches.pattern]
-target = 'engine/ui.lua'
-pattern = "if self.config.colour[4] > 0.01 then"
-position = 'at'
-payload = "if (self.config and self.config.colour and self.config.colour[4] or 0) > 0.01 then"
-match_indent = true
-
-# ¿¿¿¿¿¿¿
-[[patches]]
-[patches.pattern]
-target = 'card.lua'
-pattern = "if next(self.eligible_strength_jokers) then return true end"
-position = 'at'
-payload = '''
-for k, v in pairs(G.jokers.cards) do
-	if not v.edition then
-		return true
-	end
-end
-return false
-'''
-match_indent = true
-
-# WHY
-[[patches]]
-[patches.pattern]
-target = 'card.lua'
-pattern = "if next(self.eligible_editionless_jokers) then return true end"
-position = 'at'
-payload = '''
-for k, v in pairs(G.jokers.cards) do
-	if not v.edition then
-		return true
-	end
-end
-return false
 '''
 match_indent = true
 
@@ -371,24 +260,6 @@ end
 '''
 match_indent = true
 
-# Invisible Joker crash
-[[patches]]
-[patches.pattern]
-target = 'card.lua'
-pattern = "if self.ability.name == 'Invisible Joker' and (self.ability.invis_rounds >= self.ability.extra) and not context.blueprint then"
-position = 'at'
-payload = '''if false then'''
-match_indent = true 
-
-# Make Chips jiggle like Mult
-[[patches]]
-[patches.pattern]
-target = '''=[SMODS _ "src/game_object.lua"]'''
-pattern = '''calculation_keys = {'chips', 'h_chips', 'chip_mod', 'x_chips', 'xchips', 'Xchip_mod',},'''
-position = "after"
-payload = '''juice_on_update = true,'''
-match_indent = true
-
 # help
 [[patches]]
 [patches.pattern]
@@ -397,29 +268,3 @@ pattern = '''if ((self.pools and self.pools[k]) or (v.cards and v.cards[self.key
 position = "at"
 payload = '''if ((self.pools and self.pools[k]) or (v.cards and v.cards[self.key])) and v.inject_card then'''
 match_indent = true
-
-# disable win screen
-[[patches]]
-[patches.pattern]
-target = "functions/state_events.lua"
-pattern = '''play_sound('win')
-            G.SETTINGS.paused = true
-
-            G.FUNCS.overlay_menu{
-                definition = create_UIBox_win(),
-                config = {no_esc = true}
-            }'''
-position = "at"
-payload = '''-- MEHM SUPREMACY'''
-match_indent = true
-overwrite = true
-
-[[patches]]
-[patches.pattern]
-target = '''functions/state_events.lua'''
-pattern = '''win_game()
-                                G.GAME.won = true'''
-position = "at"
-payload = '''-- MEHM SUPREMACY'''
-match_indent = true
-overwrite = true

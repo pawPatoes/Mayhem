@@ -65,6 +65,14 @@ position = "at"
 payload = '''{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.HAND_LEVELS[math.floor(to_number(math.min(G.C.MAX_HAND_LEVEL_COLOR, G.GAME.hands[handname].level)))], minw = 1.5, outline = 0.8, outline_colour = G.C.WHITE}, nodes={'''
 match_indent = true
 
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.HAND_LEVELS[math.min(7, G.GAME.hands[handname].level)], minw = 1.5, outline = 0.8, outline_colour = G.C.WHITE}, nodes={'''
+position = "at"
+payload = '''{n=G.UIT.C, config={align = "cm", padding = 0.01, r = 0.1, colour = G.C.HAND_LEVELS[math.floor(to_number(math.min(G.C.MAX_HAND_LEVEL_COLOR, G.GAME.hands[handname].level)))], minw = 1.5, outline = 0.8, outline_colour = G.C.WHITE}, nodes={'''
+match_indent = true
+
 # Misc Poker Hand values
 [[patches]]
 [patches.pattern]
@@ -86,9 +94,9 @@ position = "before"
 payload = '''
 	if text then
 		if to_big(G.GAME.hands[text].score or 0) > to_big(0) then
+		card_eval_status_text(G.HUD:get_UIE_by_ID('chip_UI_count'), 'extra', nil, nil, nil, { message = (to_big(G.GAME.hands[text].score) >= to_big(0) and '+' or '-')..number_format(math.abs(G.GAME.hands[text].score)), colour = may.C.score, delay = 0.45, sound = 'may_addscore'}) 
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function() 
 				G.GAME.chips = to_big(G.GAME.chips):add(G.GAME.hands[text].score)
-				card_eval_status_text(G.HUD:get_UIE_by_ID('chip_UI_count'), 'extra', nil, nil, nil, { message = (to_big(G.GAME.hands[text].score) >= to_big(0) and '+' or '-')..number_format(math.abs(G.GAME.hands[text].score)), colour = may.C.score, delay = 0.45, sound = 'may_addscore'})
 			return true end}))
 		end
 	end
@@ -120,11 +128,13 @@ payload = '''
 			    may.hand_lvl_multchips(args.from, hand, instant, (G.GAME.may_ring_bonuses.lev_chips or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.lev_chips or 0} or nil, (G.GAME.may_ring_bonuses.lev_mult or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.lev_mult or 0} or nil)
 			    G.GAME.may_ring_bonuses.lev_mult = 0
 				G.GAME.may_ring_bonuses.lev_chips = 0
+				may.refresh_score_operator() 
 		    end
 		    if (G.GAME.may_ring_bonuses.score or 0) ~= 0 or (G.GAME.may_ring_bonuses.dollars or 0) ~= 0  then
 			    may.hand_mod_score_dollars_composite(args.from, hand, instant, (G.GAME.may_ring_bonuses.score or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.score} or nil, (G.GAME.may_ring_bonuses.dollars or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.dollars} or nil)
 			    G.GAME.may_ring_bonuses.score = 0
 			    G.GAME.may_ring_bonuses.dollars = 0 
+				may.refresh_score_operator()
 		    end
 		    if (G.GAME.may_ring_bonuses.mult or 0) ~= 0 or (G.GAME.may_ring_bonuses.chips or 0) ~= 0 then
 			    may.hand_multchips(args.from, hand, instant, (G.GAME.may_ring_bonuses.chips or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.chips} or nil, (G.GAME.may_ring_bonuses.mult or 0) ~= 0 and {-1, G.GAME.may_ring_bonuses.mult} or nil)
@@ -136,7 +146,6 @@ payload = '''
 					Engulf.EditionHand(card, hand, v[1], v[2], instant)
 				end
 			end]]
-			may.refresh_score_operator()
 	    end
 	end
 	if args.level_up and not args.no_context then
@@ -226,9 +235,48 @@ pattern = "return base + G.GAME.hands[hand]['l_' .. parameter] * level_up"
 position = "at"
 payload = '''
 if may.has_card('v_may_astronomy_7') and level_up > 0 then 
-	return may.rep_arrow(base, may.global_op(), G.GAME.hands[hand]['l_' .. parameter], level_up)
+	return to_big(base):arrow(may.global_op(), 1 + (G.GAME.hands[hand]['l_' .. parameter] * level_up)) 
 else
-	return base + G.GAME.hands[hand]['l_' .. parameter] * level_up
+	return math.max(0, base + G.GAME.hands[hand]['l_' .. parameter] * level_up) 
 end
 '''
-match_indent = true 
+match_indent = true
+
+# Fast level ups
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/utils.lua"]'''
+pattern = '''if not instant then
+                    local StatusText = true''' 
+position = "at"
+payload = '''
+if not instant and not args.fast_level then
+    local StatusText = true
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/utils.lua"]'''
+pattern = "update_hand_text({sound = 'button', volume = 0.7, pitch = 0.9, delay = 0}, {level=G.GAME.hands[hand].level})"
+position = "before"
+payload = '''
+if args.fast_level then
+	may.hm((args.amount or 1) > 0 and '+' or '-', true)
+	may.hc((args.amount or 1) > 0 and '+' or '-', true)
+	delay(0.4)
+end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/utils.lua"]'''
+pattern = "update_hand_text({sound = 'button', volume = 0.7, pitch = 0.9, delay = 0}, {level=G.GAME.hands[hand].level})"
+position = "after"
+payload = '''
+if args.fast_level then
+	may.th(hand) 
+end
+'''
+match_indent = true

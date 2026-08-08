@@ -1,0 +1,106 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 1000
+
+# Disable win screen
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''
+play_sound('win')
+G.SETTINGS.paused = true
+
+G.FUNCS.overlay_menu{
+    definition = create_UIBox_win(),
+    config = {no_esc = true}
+}
+'''
+position = "at"
+payload = '''
+if may.enable_win_screen then
+	play_sound('win')
+	G.SETTINGS.paused = true
+	
+	G.FUNCS.overlay_menu {
+    	definition = create_UIBox_win(),
+    	config = {no_esc = true}
+	}
+end
+'''
+match_indent = true
+overwrite = true
+
+[[patches]]
+[patches.pattern]
+target = '''functions/state_events.lua'''
+pattern = '''
+win_game()
+G.GAME.won = true
+'''
+position = "at"
+payload = '''
+if may.enable_win_screen then
+	win_game()
+	G.GAME.won = true
+end
+'''
+match_indent = true
+overwrite = true
+
+# Invisible Joker
+[[patches]]
+[patches.pattern]
+target = 'card.lua'
+pattern = "if self.ability.name == 'Invisible Joker' and (self.ability.invis_rounds >= self.ability.extra) and not context.blueprint then"
+position = 'at'
+payload = '''if false then'''
+match_indent = true
+
+# Wheel of Fortune (??????) 
+[[patches]]
+[patches.pattern]
+target = 'engine/ui.lua'
+pattern = "if self.config.colour[4] > 0.01 then"
+position = 'at'
+payload = "if (self.config and self.config.colour and self.config.colour[4] or 0) > 0.01 then"
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'card.lua'
+pattern = "if next(self.eligible_strength_jokers) then return true end"
+position = 'at'
+payload = '''
+for k, v in pairs(G.jokers.cards) do
+	if not v.edition then
+		return true
+	end
+end
+return false
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'card.lua'
+pattern = "if next(self.eligible_editionless_jokers) then return true end"
+position = 'at'
+payload = '''
+for k, v in pairs(G.jokers.cards) do
+	if not v.edition then
+		return true
+	end
+end
+return false
+'''
+match_indent = true
+
+# Ankh
+[[patches]]
+[patches.pattern]
+target = 'card.lua'
+pattern = "if self.ability.name == 'Ankh' then"
+position = 'at'
+payload = '''if false then'''
+match_indent = true 

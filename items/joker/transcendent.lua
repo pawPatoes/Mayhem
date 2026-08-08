@@ -5,13 +5,13 @@ SMODS.Joker {
 	loc_txt = {
 		name = {'{C:dark_edition,s:1.2,E:may_transcendent_name}As Ultimatum{}', "{C:inactive,s:0.5}Acum Multiplexum + Kepler's Dream{}"},
 		text = {
-			"Played {C:attention}Aces{} give {X:purple,C:white}#1##2##3#X{} Mult & Chips",
+			"Played {C:attention}Aces{} give "..may.hyp(4, 'multchips', '#1##2##3#X').." Mult & Chips",
 			"and are retriggered {C:attention}#4# times{}",
 			may.pager(),
-			"{C:attention}Hyperoperand{} is {C:attention}equal{} to played {C:purple}Poker Hand{} {C:planet}level{}",
+			"{C:planet}X{} is {C:attention}equal{} to played {C:purple}Poker Hand{} {C:planet}level{}",
 			may.pager(),
 			"{C:attention}After scoring{}, {C:green}increase{} {C:dark_edition}hyperoperator{} by the",
-			"{C:attention}number{} of {C:attention}Aces{} in played hand", 
+			"{C:attention}number{} of {C:attention}Aces{} in played hand",
 			may.pager(),
 			"When {C:attention}Blind{} is {C:attention}selected{},", 
 			"turn {C:attention}all{} cards in deck into {C:attention}Aces{}",
@@ -20,12 +20,13 @@ SMODS.Joker {
 	config = { extra = { arrow = 4, repetitions = 11 } },
 	rarity = "may_transcendent",
 	atlas = 'joker1',
-	blueprint_compat = true,
-	demicoloncompat = true,
+	blueprint_compat = false,
+	demicoloncompat = false,
 	immutable = true,
+	endless = true,
 	pos = { x = 0, y = 4 },
 	soul_pos = { x = 1, y = 4 },
-	cost = 1111111,
+	cost = 5555,
     set_card_type_badge = may.transcendent_badge,
 	attributes = {
 		'ace', 
@@ -34,10 +35,6 @@ SMODS.Joker {
 		'retrigger', 
 		'scaling'
 	}, 
-	hoverbg_shader = "may_transcendent_bg",
-	hoverbg_colour = HEX("666666"),
-	bordertextbg_shader = "may_alpha_effect",
-	bordertextbg_colour = HEX("FFFFFF"),
 	loc_vars = function(self, info_queue, card)
         return { vars = { '{', card.ability.extra.arrow, '}', card.ability.extra.repetitions } }
     end,
@@ -166,10 +163,11 @@ SMODS.Joker {
 			    may.pager(98),
 			    "Using {C:tarot}The Wheel of Fortune{} applies random {C:dark_edition}Editions{} to all cards {C:attention}held in hand{}", 
 			    may.pager(98),
-			    "{X:chips,C:white}+#3#{} Chips per card {C:attention}held in hand{} with an {C:dark_edition}Edition{}, where {C:attention}N{} is {C:dark_edition}Score Operator{}", 
+			    may.hyp(4, 'chips', '+#3#').." Chips per card {C:attention}held in hand{} with an {C:dark_edition}Edition{}, where {C:attention}N{} is {C:dark_edition}Score Operator{}", 
 			    "level and {C:attention}X{} is the number of held copies of {C:tarot}The Wheel of Fortune{}", 
 				may.pager(98),
-			    "Increase {C:dark_edition}Score Operator{} level by {C:attention}#6#{} after scoring", 
+			    "{C:attention}After scoring{}, {C:green}increase{} {C:dark_edition}Score Operator{} level by the",
+				"{C:attention}number{} of played cards with an {C:dark_edition}Edition{}", 
 			    may.pager(98),
 				"{C:inactive}#3# is currently #8#, will give #9# Chips{}",
 			},
@@ -178,16 +176,17 @@ SMODS.Joker {
 			}
 		}
 	},
-	config = { extra = { obtained = 2, wheels = 1120, mod = 3, decrease = -0.25 } },
+	config = { extra = { obtained = 2, wheels = 1120, mod = 4, req_wheels = 14, used_wheels = 0 } },
 	rarity = "may_transcendent",
 	atlas = 'joker2',
-	blueprint_compat = true,
-	demicoloncompat = true,
+	blueprint_compat = false,
+	demicoloncompat = false,
 	immutable = true,
+	endless = true,
 	custom_soul_anim = 'diskus_spin_fast',
 	pos = { x = 0, y = 5 },
 	soul_pos = { x = 1, y = 5 },
-	cost = 1e7,
+	cost = 5e3,
     set_card_type_badge = may.transcendent_badge,
 	attributes = {
 		'generation', 
@@ -195,10 +194,6 @@ SMODS.Joker {
 		'editions', 
 		'hyperchips',
 	}, 
-	hoverbg_shader = "may_transcendent_bg",
-	hoverbg_colour = HEX("666666"),
-	bordertextbg_shader = "may_alpha_effect",
-	bordertextbg_colour = HEX("FFFFFF"),
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = G.P_CENTERS.c_wheel_of_fortune
         info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
@@ -223,7 +218,19 @@ SMODS.Joker {
 			end
 		end
         local normal, odds = SMODS.get_probability_vars(card, 1, 3, "Rondo Discoteca")
-        return { vars = { card.ability.extra.obtained, card.ability.extra.wheels, "{N + 1}X", normal, odds, card.ability.extra.mod, math.abs(card.ability.extra.decrease), "{"..(op + 1).."}"..amount, "{"..(op + 1).."}"..num } }
+        return { vars = { 
+			card.ability.extra.obtained,
+			card.ability.extra.wheels,
+			"{N + 1}X",
+			normal,
+			odds,
+			card.ability.extra.mod,
+			'EL PLACEHOLDER',
+			"{"..(op + 1).."}"..amount,
+			"{"..(op + 1).."}"..num,
+			card.ability.extra.req_wheels,
+			card.ability.extra.req_wheels - card.ability.extra.used_wheels
+		} }
     end,
     add_to_deck = function(self, card, from_debuff)
 		if not from_debuff then
@@ -256,6 +263,7 @@ SMODS.Joker {
                     end
                 end
             end
+			card.ability.extra.used_wheels = card.ability.extra.used_wheels + 1
         end 
         if context.joker_main or context.forcetrigger then
 			local op = SMODS.Scoring_Calculations[G.GAME.current_scoring_calculation_key or "multiply"].order
@@ -281,10 +289,22 @@ SMODS.Joker {
 			    }
 			end
 		end
-        if context.after and not context.blueprint then
-            G.E_MANAGER:add_event(Event({func = function()
-                change_operator(card.ability.extra.mod)
-            return true end}))
+		if context.after and not context.blueprint then
+			local num = 0
+			for k, v in pairs(G.play.cards) do
+				if v.edition then
+					num = num + 1
+				end
+			end
+			if num ~= 0 then
+				G.E_MANAGER:add_event(Event({func = function()
+                	change_operator(num)
+            	return true end}))
+				return {
+					message = 'Upgraded!', 
+					colour = G.C.DARK_EDITION 
+				}
+			end
 		end
 	end, 
 	global_op = function(self, card)
@@ -302,23 +322,23 @@ SMODS.Joker {
 		name = {'{C:dark_edition,s:1.2,E:may_transcendent_name}Zodium Calamitas{}', "{C:inactive,s:0.5}Rock of Paramountcy + Astral Expunger{}"},
 		text = {
 			{
-				"{X:chips,C:white}#1##2#{} Chips, additional {X:chips,C:white}+#1##2#{} per held {C:planet}Planet Card{}",
+				may.hyp(4, 'chips', '#1##2#').." Chips, additional "..may.hyp(4, 'chips', '+#1##2#').." per held {C:planet}Planet Card{}",
 				may.pager(),
                 "When {C:attention}Blind{} is {C:attention}selected{},", 
-				"create a {C:dark_edition}Negative{} copy of {C:spectral}Medusa{} and {C:planet}Deimos{}",
+				"create a {C:dark_edition}Negative{} copy of {C:spectral}Medusa{} and {C:planet}Hi'iaka{}",
 				may.pager(),
                 "After scoring, {C:mult}destroy{} all", 
 				"{C:dark_edition}Stone Cards{} {C:attention}held in hand{} and gain", 
-				"{X:chips,C:white}+H#3#{} Chips per destroyed card",
+				may.hyp(4, 'chips', '+H#3#').." Chips per destroyed card",
 				may.pager(), 
 				"Played {C:dark_edition}Stone Cards{} increase", 
-				"{X:chips,C:white}HChips{} gain by {X:chips,C:white}+H#4#{} before scoring",
+				may.hyp(4, 'chips', 'HChips').." gain by "..may.hyp(4, 'chips', '+H#4#').." before scoring",
 				may.pager(),
-				"{C:planet}Deimos{} {C:green}no longer{} {C:mult}destroys{} cards", 
-				"and gives this Joker's {X:chips,C:white}HChips{}",
+				"{C:planet}Hi'iaka{} {C:green}no longer{} {C:mult}destroys{} cards", 
+				"and gives this Joker's "..may.hyp(4, 'chips', 'HChips'), 
 				may.pager(),
 				"{C:attention}+#6#{} {C:dark_edition}hyperoperator{} every {C:attention}#7#{}", 
-				"{C:tarot}Tarot Cards{} used", 
+				"{C:dark_edition}Stone Cards{} {C:mult}destroyed{} by this Joker", 
 				may.pager(), 
 				"{C:inactive}Currently #9# Chips{}"
 			},
@@ -326,11 +346,12 @@ SMODS.Joker {
 	},
 	rarity = "may_transcendent",
 	atlas = 'placeholder',
-	blueprint_compat = true,
-	demicoloncompat = true,
+	blueprint_compat = false,
+	demicoloncompat = false,
 	immutable = true,
+	endless = true,
 	pos = { x = 0, y = 0 },
-	config = { extra = { arrow = 4, hyper_chips = 1, hyper_chips_gain = 1, hyper_chips_gain2 = 0.5, hyperop_decrease = -0.25, hyperop_increase = 1, tarots = 6, max = 5, increased = 0, used = 0 } },
+	config = { extra = { arrow = 4, hyper_chips = 1, hyper_chips_gain = 1, hyper_chips_gain2 = 0.5, hyperop_decrease = -0.25, hyperop_increase = 1, stones = 2, destroyed = 0 } },
 	attributes = {
 		'hyperchips', 
 		'generation', 
@@ -340,14 +361,10 @@ SMODS.Joker {
 		'planet',
 		'tarot'
 	}, 
-	hoverbg_shader = "may_transcendent_bg",
-	hoverbg_colour = HEX("666666"),
-	bordertextbg_shader = "may_alpha_effect",
-	bordertextbg_colour = HEX("FFFFFF"),
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_medusa
-		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_deimos
+		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_hiiaka
 		local amount = 0
 		if G.GAME.blind then
 		    for k, v in pairs(G.consumeables.cards) do
@@ -363,12 +380,12 @@ SMODS.Joker {
 			card.ability.extra.hyper_chips_gain2, 
 			tostring(-math.abs(card.ability.extra.hyperop_decrease)),
 			card.ability.extra.hyperop_increase,
-			card.ability.extra.tarots, 
+			card.ability.extra.stones, 
 			card.ability.extra.max, 
 			'{'..card.ability.extra.arrow..'}'..(card.ability.extra.hyper_chips * (amount + 1)),
 		} }
 	end,
-	cost = 1e7,
+	cost = 5e3,
     set_card_type_badge = may.transcendent_badge,
 	calculate = function(self, card, context)
 		if context.setting_blind then 
@@ -378,7 +395,7 @@ SMODS.Joker {
 			    card2:set_edition({negative = true}, false, false)
 			    G.consumeables:emplace(card2)
 			    card2:add_to_deck()
-				local card3 = create_card('Planet', G.consumeables, nil, nil, nil, nil, 'c_may_deimos', 'may_rocco_pfilosofia')
+				local card3 = create_card('Planet', G.consumeables, nil, nil, nil, nil, 'c_may_hiiaka', 'may_rocco_pfilosofia')
 			    card3:set_edition({negative = true}, false, false)
 			    G.consumeables:emplace(card3)
 			    card3:add_to_deck()
@@ -387,6 +404,7 @@ SMODS.Joker {
         if context.after and not context.blueprint then 
             for k, v in pairs(G.hand.cards) do
                 if SMODS.has_enhancement(v, 'm_stone') then 
+					card.ability.extra.destroyed = card.ability.extra.destroyed + 1
                     SMODS.destroy_cards(v)
                     SMODS.scale_card(card, {
                         ref_table = card.ability.extra,
@@ -397,6 +415,19 @@ SMODS.Joker {
 							message = localize('k_upgrade_ex')
 						}
                     })
+					if card.ability.extra.destroyed >= card.ability.extra.stones then 
+						card.ability.extra.destroyed = card.ability.extra.destroyed - card.ability.extra.stones
+						SMODS.scale_card(card, {
+							ref_table = card.ability.extra,
+							ref_value = "arrow",
+							scalar_value = "hyperop_increase",
+                        	scaling_message = {
+                            	colour = G.C.DARK_EDITION, 
+								message = localize('k_upgrade_ex'), 
+								sound = 'may_hyperoperator'
+							}
+						})
+					end
                 end 
             end 
         end
@@ -430,25 +461,8 @@ SMODS.Joker {
 			end
         end
 		if context.using_consumeable then 
-			if context.consumeable:gc().key == 'c_may_deimos' then
-                may.hand_mod_multchips(may.favhand(), 'chips', card.ability.extra.hyperoperator, card.ability.extra.hyper_chips, false, context.consumeable)
-			end
-			if context.consumeable:gc().set == 'Tarot' then
-				card.ability.extra.used = card.ability.extra.used + context.consumeable:getEvalQty()
-				if card.ability.extra.used >= card.ability.extra.tarots then 
-					card.ability.extra.used = card.ability.extra.used - card.ability.extra.tarots
-					card.ability.extra.increased = card.ability.extra.increased + 1
-					SMODS.scale_card(card, {
-						ref_table = card.ability.extra,
-						ref_value = "arrow",
-						scalar_value = "hyperop_increase",
-                        scaling_message = {
-                            colour = G.C.DARK_EDITION, 
-							message = localize('k_upgrade_ex'), 
-							sound = 'may_hyperoperator'
-						}
-					})
-				end
+			if context.consumeable:gc().key == 'c_may_hiiaka' then
+                may.hand_multchips(context.consumeable, may.favhand(), false, {card.ability.extra.hyperoperator, card.ability.extra.hyper_chips})
 			end
         end
 	end

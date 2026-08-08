@@ -13,7 +13,7 @@ SMODS.Joker {
                 "Played {C:clubs}Clubs{} give {X:chips,C:white}X#4#{} Chips", 
                 "Played {C:spades}Spades{} give {C:chips}+#5#{} Chips", 
 				may.pager(),
-                "{X:mult,C:white}^#6#{} Mult if played hand contains {C:attention}all suits{} above", 
+                may.hyp(1, 'mult', '^#6#').." Mult if played hand contains {C:attention}all suits{} above", 
 				may.pager(),
                 "{C:planet}Level up{} a {C:green}random{} {C:purple}Poker Hand{} by {C:attention}#7#{}", 
                 "when a {C:attention}consumable{} is {C:attention}used{}", 
@@ -189,9 +189,9 @@ SMODS.Joker {
 	loc_txt = {
 		name = 'Cacophonous',
 		text = {
-			"{X:mult,C:white}X#1#{} Mult for {C:attention}every owned Joker{}",
-			"{C:attention}Increases by {X:mult,C:white}#2#{} when a {C:attention}Joker is bought{}",
-			"{C:inactive}{X:mult,C:white}X#3#{} {C:inactive}Mult in total{}"
+			"{X:mult,C:white}+X#1#{} Mult per owned {C:attention}Joker{}",
+			"{C:attention}Increases{} by {X:mult,C:white}+X#2#{} when a {C:attention}Joker{} is {C:money}bought{}",
+			"{C:inactive}Currently X#3# Mult{}"
 		}
 	},
 	config = { extra = { Xmult = 0.3, Xmult_gain = 0.1,  } },
@@ -210,29 +210,24 @@ SMODS.Joker {
 		return { vars = { card.ability.extra.Xmult, card.ability.extra.Xmult_gain, G.jokers and ((#(G.jokers.cards or {})*card.ability.extra.Xmult) + 1) or 0 } }
 	end,
 	calculate = function(self, card, context) 
-		if context.joker_main and (card.ability.extra.Xmult*#G.jokers.cards) + 1 > 1 then
+		if context.joker_main and (card.ability.extra.Xmult * #G.jokers.cards) + 1 > 1 then
 			return {
-				Xmult_mod = ((card.ability.extra.Xmult*#G.jokers.cards)+1),
-				message = "X"..((card.ability.extra.Xmult*#G.jokers.cards)+1).." Mult",
+				Xmult_mod = ((card.ability.extra.Xmult * #G.jokers.cards) + 1),
+				message = "X"..((card.ability.extra.Xmult * #G.jokers.cards) + 1).." Mult",
 				card = card,
 				colour = G.C.RED,		
 			}
 		end
-		if context.buying_card and context.card.ability.set == 'Joker' then
-			card.ability.extra.Xmult = card.ability.extra.Xmult + card.ability.extra.Xmult_gain
-			return {
-				message = "Upgraded!",
-				card = card,
-				colour = G.C.RED,		
-			}
-		end
-		if context.forcetrigger then
-			card.ability.extra.Xmult = card.ability.extra.Xmult + card.ability.extra.Xmult_gain
-			return {
-				message = "Upgraded!",
-				card = card,
-				colour = G.C.RED,		
-			}
+		if (context.buying_card and context.card.ability.set == 'Joker' and context.card ~= card) or context.forcetrigger then
+			SMODS.scale_card(card, {
+                ref_table = card.ability.extra,
+                ref_value = "Xmult",
+                scalar_value = "Xmult_gain",
+				scaling_message = {
+                    colour = G.C.MULT, 
+					message = localize('k_upgrade_ex')
+				}
+             })
 		end
 	end
 }
@@ -344,7 +339,7 @@ SMODS.Joker {
 	loc_txt = {
 		name = '3D Joker',
 		text = {
-			"Played {C:attention}3s{} give {X:mult,C:white}^#1#{} Mult",
+			"Played {C:attention}3s{} give "..may.hyp(1, 'mult', '^#1#').." Mult",
 		}
 	},
 	config = { extra = { Emult = 1.13 } },
@@ -439,97 +434,6 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
-	key = 'anniversary_cake',
-	loc_txt = {
-		name = 'Anniversary Cake',
-		text = {
-			{
-                "At the {C:attention}end of round{}, if a {B:1,C:white}#1#{} {C:attention}Joker{} is owned,", 
-				"this Joker {C:green}creates{} another random {B:1,C:white}#1#{} {C:attention}Joker{}", 
-				"and {C:green}upgrades{} the listed {C:attention}rarities{},", 
-				"{C:mult}otherwise{} it will {C:mult}self destruct{}", 
-				may.pager(), 
-                "When this Joker {C:green}creates{} a {X:legendary,C:white}Legendary{} {C:attention}Joker{},", 
-				"it {C:mult}self destructs{} and creates", 
-				"{C:attention}#2#{} random {C:dark_edition}Negative{} {C:attention}consumables{}", 
-				may.pager(), 
-                "{C:inactive}Does not require room, excludes self{}", 
-                "{C:inactive}Common -> Uncommon -> Rare -> Epic -> Legendary{}", 
-			},
-			{
-				"{C:inactive,E:1}Art by 2Much{}"
-			}
-		}
-	},
-	config = { extra = { consumables = 10, rarity = 1 } },
-	pos = { x = 1, y = 7 },
-	cost = 20,
-	rarity = may.epic_key,
-	atlas = 'joker2',
-	blueprint_compat = false,
-	demicoloncompat = false,
-	attributes = {
-		'food', 
-		'generation', 
-	}, 
-    loc_vars = function(self, info_queue, card)
-		local rarities = {'Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'}
-		local colors = {'Common', 'Uncommon', 'Rare', may.epic_key, 'Legendary'}
-		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
-		return { vars = { rarities[card.ability.extra.rarity], card.ability.extra.consumables, colours = { G.C.RARITY[colors[card.ability.extra.rarity]] } } }
-    end,
-	add_to_deck = function(self, card, from_debuff)
-		if not from_debuff then
-			G.E_MANAGER:add_event(Event({func = function()
-				play_sound('may_cake_spawn')
-			return true end})) 
-		end
-	end, 
-    calculate = function(self, card, context)
-		if context.end_of_round and context.game_over == false and context.main_eval then
-			local rarities = {1, 2, 3, may.epic_key, 4}
-			local found
-			for k, v in pairs(G.jokers.cards) do 
-				if v ~= card and v:gc().rarity == rarities[card.ability.extra.rarity] then
-					found = true 
-					break
-				end
-			end
-			if found then
-				local rarity_amounts = { 0.01, 0.8, 1, may.epic_key, nope }
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-					local card2 = create_card('Joker', G.jokers, card.ability.extra.rarity == 5, rarity_amounts[card.ability.extra.rarity], nil, true, nil, 'anniversary_cake')
-					G.jokers:emplace(card2)
-					card2:add_to_deck()
-					card2:juice_up(0.5, 0.3)
-					if card.ability.extra.rarity == 5 then 
-						play_sound('may_bundle')
-						for i = 1, card.ability.extra.consumables do
-							local card3 = create_card('Consumable', G.consumeables, nil, nil, nil, true, may.random_consumable('may_anniversary_cake', nil, nil, G.P_CENTER_POOLS.Consumeable, true).key, 'anniversary_cake')
-							card3:set_edition({negative = true}, false, false)
-							G.consumeables:emplace(card3)
-							card3:add_to_deck()
-						end
-						card:start_dissolve()
-					end
-					card.ability.extra.rarity = card.ability.extra.rarity + 1
-					G.ROOM.jiggle = G.ROOM.jiggle + 1
-				return true end}))
-				if context.rarity ~= 5 then
-					card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Happy Birthday!", colour = may.C.score, delay = 0.45, sound = 'may_cake_activate'})
-				end
-			else
-                G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-					play_sound('may_cake_destroy')
-					card:start_dissolve()
-					G.ROOM.jiggle = G.ROOM.jiggle + 1
-				return true end}))			
-			end
-		end
-	end
-}
-
-SMODS.Joker {
 	key = 'kratos_verde',
 	loc_txt = {
 		name = 'Kratos Verde',
@@ -555,7 +459,14 @@ SMODS.Joker {
 	atlas = 'joker2',
 	blueprint_compat = true,
 	demicoloncompat = true,
-	misc_badge = may_sly25_kratos_verde,
+	misc_badge = {
+		colour = SMODS.Gradients.may_col_opalescent,
+		text_colour = G.C.WHITE,
+		text = {
+			'Sly25 Winner',
+			'roland_shelby'
+		}
+	},
 	pos = { x = 8, y = 6 },
 	cost = 12,
 	attributes = {
@@ -603,7 +514,7 @@ SMODS.Joker {
 		name = 'Voucher Joker',
 		text = {
             {
-			    "{C:attention}+#1#{} {C:green}Voucher Slot{}",
+			    "{C:attention}+#1#{} Voucher Slot in shop",
             }, 
             {
 			    "{C:inactive,E:1}Idea by _TeKKen_{}"
@@ -616,7 +527,7 @@ SMODS.Joker {
 	pos = { x = 3, y = 15 },
 	blueprint_compat = false,
 	demicoloncompat = false,
-	cost = 7,
+	cost = 9,
 	attributes = {
 		'passive', 
 	}, 

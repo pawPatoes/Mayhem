@@ -33,8 +33,7 @@ vec4 effect(vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords)
 
     col.r += min(0.0, 0.000001 * (text_scale + text_rot + letter_scale + letter_rot + (text_shadow ? 1.0 : 0.0) + text_details.x + text_details.y + text_details.z + text_details.w + letter_details.x + letter_details.y + letter_details.z + letter_details.w));
 
-    float brightness = dot(colour.rgb, vec3(0.299, 0.587, 0.114));
-    col *= brightness;
+	col *= colour.rgb;
 	
     return vec4(col, base.a);
 }

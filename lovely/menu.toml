@@ -18,7 +18,11 @@ match_indent = true
 target = "game.lua"
 pattern = "replace_card.states.visible = false"
 position = "before"
-payload = '''replace_card:set_ability(G.P_CENTERS.m_mult, false, false)'''
+payload = '''
+if may.conf.custom_menu then
+	replace_card:set_ability(G.P_CENTERS.m_mult, false, false)
+end
+'''
 match_indent = true
 overwrite = false
 
@@ -50,8 +54,8 @@ if G.may_titlecard then
     love.graphics.push()
     G.may_titlecard:translate_container()
     if not G.may_titlecard.states.drag.is then
-        local scale_mod = math.cos(G.TIMERS.REAL * 0.8) * 0.035
-        local rotate_mod = -(math.sin(G.TIMERS.REAL) * 0.05)
+        local scale_mod = math.cos(G.TIMERS.REAL * 0.5) * 0.03
+        local rotate_mod = -(math.sin(G.TIMERS.REAL * 0.8) * 0.04)
 
         G.may_titlecard:draw_shader('dissolve',0, nil, nil, G.may_titlecard,scale_mod, rotate_mod,nil, 0.1 + 0.08*math.sin(1.3*G.TIMERS.REAL),nil, 0.6)
         G.may_titlecard:draw_shader('dissolve', nil, nil, nil, G.may_titlecard, scale_mod, rotate_mod)
@@ -62,3 +66,65 @@ end
 '''
 match_indent = true
 times = 1
+
+[[patches]]
+[patches.pattern]
+target = 'functions/UI_definitions.lua'
+pattern = '''UIBox_button{id = 'main_menu_play', button = not G.SETTINGS.tutorial_complete and "start_run" or "setup_run", colour = G.C.BLUE, minw = 3.65, minh = 1.55, label = {localize('b_play_cap')}, scale = text_scale*2, col = true},'''
+position = 'at'
+payload = '''UIBox_button{id = 'main_menu_play', button = not G.SETTINGS.tutorial_complete and "start_run" or "setup_run", colour = may.conf.custom_menu and SMODS.Gradients.may_col_mayhem_gradient or G.C.BLUE, minw = 3.65, minh = 1.55, label = {localize('b_play_cap')}, scale = text_scale*2, col = true},'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/UI_definitions.lua'
+pattern = '''G.F_QUIT_BUTTON and UIBox_button{button = quit_func, colour = G.C.RED, minw = 2.65, minh = 1.35, label = {localize('b_quit_cap')}, scale = text_scale * 1.2, col = true} or nil,'''
+position = 'at'
+payload = '''G.F_QUIT_BUTTON and UIBox_button{button = quit_func, colour = may.conf.custom_menu and G.C.GREY or G.C.RED, minw = 2.65, minh = 1.35, label = {localize('b_quit_cap')}, scale = text_scale * 1.2, col = true} or nil,'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/UI_definitions.lua'
+pattern = '''UIBox_button{button = 'options', colour = G.C.ORANGE, minw = 2.65, minh = 1.35, label = {localize('b_options_cap')}, scale = text_scale * 1.2, col = true},'''
+position = 'at'
+payload = '''UIBox_button{button = 'options', colour = may.conf.custom_menu and (G.F_QUIT_BUTTON and SMODS.Gradients.may_col_mayhem_gradient or G.C.GREY) or G.C.ORANGE, minw = 2.65, minh = 1.35, label = {localize('b_options_cap')}, scale = text_scale * 1.2, col = true},'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/UI_definitions.lua'
+pattern = '''UIBox_button{id = 'collection_button', button = "your_collection", colour = G.C.PALE_GREEN, minw = 3.65, minh = 1.55, label = {localize('b_collection_cap')}, scale = text_scale*1.5, col = true},'''
+position = 'at'
+payload = '''UIBox_button{id = 'collection_button', button = "your_collection", colour = may.conf.custom_menu and (G.F_QUIT_BUTTON and G.C.GREY or SMODS.Gradients.may_col_mayhem_gradient) or G.C.PALE_GREEN, minw = 3.65, minh = 1.55, label = {localize('b_collection_cap')}, scale = text_scale*1.5, col = true},'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS _ "src/ui.lua"]'''
+pattern = '''colour = SMODS.mod_button_alert and (G.SETTINGS.reduced_motion and G.C.RED or SMODS.Gradients.warning_bg) or G.C.BOOSTER,'''
+position = 'at'
+payload = '''colour = SMODS.mod_button_alert and (G.SETTINGS.reduced_motion and G.C.RED or SMODS.Gradients.warning_bg) or (may.conf.custom_menu and (G.F_QUIT_BUTTON and SMODS.Gradients.may_col_mayhem_gradient or G.C.GREY) or G.C.BOOSTER),'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = '''
+love.graphics.push()
+G.SPLASH_LOGO:translate_container()
+G.SPLASH_LOGO:draw()
+love.graphics.pop()'''
+position = "at"
+payload = '''
+love.graphics.push()
+G.SPLASH_LOGO:translate_container()
+    
+if G.SPLASH_LOGO and self and self.VT and may.conf.custom_menu then
+	G.SPLASH_LOGO:draw_shader('may_paradoxical_bg', nil, {math.min(self.VT.r*3, 1) + G.TIMERS.REAL/(28) + (self.juice and self.juice.r*20 or 0) + self.tilt_var.amt, G.TIMERS.REAL}) 
+end
+G.SPLASH_LOGO:draw()
+add_to_drawhash(G.SPLASH_LOGO)
+love.graphics.pop()
+'''
+match_indent = true

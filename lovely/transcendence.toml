@@ -11,7 +11,7 @@ pattern = "G.ARGS.score_intensity.organ = G.video_organ or G.ARGS.score_intensit
 position = "at"
 payload = '''
 	if Big.arrow and G.GAME.blind and to_big(G.GAME.blind.chips or 0) > to_big(0) then
-		if is_number(SMODS.get_scoring_parameter('chips', true)) and is_number(SMODS.get_scoring_parameter('mult', true)) then
+		if is_number(SMODS.get_scoring_parameter('chips', true)) and is_number(SMODS.get_scoring_parameter('mult', true)) and not G.shop and G.GAME and G.GAME.blind then
 			G.ARGS.score_intensity.true_score = to_big(G.GAME.current_scoring_calculation:func(SMODS.get_scoring_parameter('chips', true), SMODS.get_scoring_parameter('mult', true), true))
 		else
 			G.ARGS.score_intensity.true_score = to_big(0)
@@ -21,24 +21,24 @@ payload = '''
 		
 		local req00 = math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs*1e50), 5)),0.) or 0
 		local req0 = math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs+1), 5)),0.) or 0
-		local req1 = math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs*1e100), 5)),0.)
-		local req2 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs^1e100), 5)),0.))
-		local req3 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(2, may.tr_constants.goog)), 5)),0.))
-		local req4 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(3, may.tr_constants.goog)), 5)),0.))
-		local req5 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(4, may.tr_constants.goog)), 5)),0.))
-		local req6 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(10, may.tr_constants.goog)), 5)),0.))
-		local req7 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(20, may.tr_constants.goog)), 5)),0.))
-		local req8 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(40, may.tr_constants.googchime)), 5)),0.))
-		local req9 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(80, may.tr_constants.googchime)), 5)),0.))
-		local req10 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(160, may.tr_constants.googchime)), 5)),0.))
-		local req11 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(500, may.tr_constants.googchime)), 5)),0.))
-		local req12 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(1000, may.tr_constants.googchime)), 5)),0.))
+		local req1 = math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs*1e100), 5)),0.) or 0
+		local req2 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs^1e100), 5)),0.)) or 0
+		local req3 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(2, may.tr_constants.goog)), 5)),0.)) or 0
+		local req4 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(3, may.tr_constants.goog)), 5)),0.)) or 0
+		local req5 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(4, may.tr_constants.goog)), 5)),0.)) or 0
+		local req6 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(30, may.tr_constants.goog)), 5)),0.)) or 0
+		local req7 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(80, may.tr_constants.goog)), 5)),0.)) or 0
+		local req8 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(200, may.tr_constants.googchime)), 5)),0.)) or 0
+		local req9 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(300, may.tr_constants.googchime)), 5)),0.)) or 0
+		local req10 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(400, may.tr_constants.googchime)), 5)),0.)) or 0
+		local req11 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(500, may.tr_constants.googchime)), 5)),0.)) or 0
+		local req12 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(1000, may.tr_constants.googchime)), 5)),0.)) or 0
 		-- using fake score requirements because laggy
-		local req13 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr13, 5)),0.))
-		local req14 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr14, 5)),0.))
-		local req15 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr15, 5)),0.))
-		local req16 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr16, 5)),0.))
-		local req17 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr17, 5)),0.))
+		local req13 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr13, 5)),0.)) or 0
+		local req14 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr14, 5)),0.)) or 0
+		local req15 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr15, 5)),0.)) or 0
+		local req16 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr16, 5)),0.)) or 0
+		local req17 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr17, 5)),0.)) or 0
 	
 		if not G.ARGS.score_intensity.tran1 then 
 			G.ARGS.score_intensity.tran1 = 0 
@@ -403,7 +403,7 @@ pattern = "G.ARGS.score_intensity.organ = G.video_organ or to_big(G.ARGS.score_i
 position = "at"
 payload = '''
 	if Big.arrow and G.GAME.blind and to_big(G.GAME.blind.chips or 0) > to_big(0) then
-		if is_number(SMODS.get_scoring_parameter('chips', true)) and is_number(SMODS.get_scoring_parameter('mult', true)) then
+		if is_number(SMODS.get_scoring_parameter('chips', true)) and is_number(SMODS.get_scoring_parameter('mult', true)) and not G.shop and G.GAME and G.GAME.blind then
 			G.ARGS.score_intensity.true_score = to_big(G.GAME.current_scoring_calculation:func(SMODS.get_scoring_parameter('chips', true), SMODS.get_scoring_parameter('mult', true), true))
 		else
 			G.ARGS.score_intensity.true_score = to_big(0)
@@ -414,23 +414,23 @@ payload = '''
 		local req00 = math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs*1e50), 5)),0.) or 0
 		local req0 = math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs+1), 5)),0.) or 0
 		local req1 = math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs*1e100), 5)),0.)
-		local req2 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs^1e100), 5)),0.))
-		local req3 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(2, may.tr_constants.goog)), 5)),0.))
-		local req4 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(3, may.tr_constants.goog)), 5)),0.))
-		local req5 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(4, may.tr_constants.goog)), 5)),0.))
-		local req6 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(10, may.tr_constants.goog)), 5)),0.))
-		local req7 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(20, may.tr_constants.goog)), 5)),0.))
-		local req8 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(40, may.tr_constants.googchime)), 5)),0.))
-		local req9 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(80, may.tr_constants.googchime)), 5)),0.))
-		local req10 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(160, may.tr_constants.googchime)), 5)),0.))
-		local req11 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(500, may.tr_constants.googchime)), 5)),0.))
-		local req12 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(1000, may.tr_constants.googchime)), 5)),0.))
+		local req2 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs^1e100), 5)),0.)) or 0
+		local req3 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(2, may.tr_constants.goog)), 5)),0.)) or 0
+		local req4 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(3, may.tr_constants.goog)), 5)),0.)) or 0
+		local req5 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(4, may.tr_constants.goog)), 5)),0.)) or 0
+		local req6 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(30, may.tr_constants.goog)), 5)),0.)) or 0
+		local req7 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(80, may.tr_constants.goog)), 5)),0.)) or 0
+		local req8 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(200, may.tr_constants.googchime)), 5)),0.)) or 0
+		local req9 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(300, may.tr_constants.googchime)), 5)),0.)) or 0
+		local req10 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(400, may.tr_constants.googchime)), 5)),0.)) or 0
+		local req11 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(500, may.tr_constants.googchime)), 5)),0.)) or 0
+		local req12 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/(reqs:arrow(1000, may.tr_constants.googchime)), 5)),0.)) or 0
 		-- using fake score requirements because laggy
-		local req13 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr13, 5)),0.))
-		local req14 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr14, 5)),0.))
-		local req15 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr15, 5)),0.))
-		local req16 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr16, 5)),0.))
-		local req17 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr17, 5)),0.))
+		local req13 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr13, 5)),0.)) or 0
+		local req14 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr14, 5)),0.)) or 0
+		local req15 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr15, 5)),0.)) or 0
+		local req16 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr16, 5)),0.)) or 0
+		local req17 = to_big(math.max(math.min(1, 0.1*math.log(G.ARGS.score_intensity.true_score/may.tr_constants.tr17, 5)),0.)) or 0
 	
 		if not G.ARGS.score_intensity.tran1 then 
 			G.ARGS.score_intensity.tran1 = 0 
@@ -794,16 +794,16 @@ target = "functions/misc_functions.lua"
 pattern = "ambientOrgan1 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.music_volume + 100)/200*(G.ARGS.score_intensity.organ) end},"
 position = "after"
 payload = '''
-    may_tran0 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran0 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
-	may_tran1 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran1 or 0) * 4) * (may.conf.TrAudio * 0.01) end},
-	may_tran2 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran2 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
-	may_tran3 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran3 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
-	may_tran4 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran4 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
-	may_tran5 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran5 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
-	may_tran6 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran6 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
-	may_tran7 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran7 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
-	may_tran8 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran8 or 0) * 3) * (may.conf.TrAudio * 0.01) end},
-	may_mass_use_ambiance = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((math.min((G.ROOM.MassUseIndex or 0) * 0.05, 100) * 1.3)) end},
+    may_tran0 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran0 or 0) * 3) * (may.conf.transcendence.volume * 0.01) * ((may.should_do_transcendence() or may.conf.transcendence.effects == 1) and 1 or 0) end},
+	may_tran1 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran1 or 0) * 4) * (may.conf.transcendence.volume * 0.01) * ((may.should_do_transcendence() or may.conf.transcendence.effects == 1) and 1 or 0) end},
+	may_tran2 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran2 or 0) * 3) * (may.conf.transcendence.volume * 0.01) * ((may.should_do_transcendence() or may.conf.transcendence.effects == 1) and 1 or 0) end},
+	may_tran3 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran3 or 0) * 3) * (may.conf.transcendence.volume * 0.01) * ((may.should_do_transcendence() or may.conf.transcendence.effects == 1) and 1 or 0) end},
+	may_tran4 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran4 or 0) * 3) * (may.conf.transcendence.volume * 0.01) * ((may.should_do_transcendence() or may.conf.transcendence.effects == 1) and 1 or 0) end},
+	may_tran5 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran5 or 0) * 3) * (may.conf.transcendence.volume * 0.01) * ((may.should_do_transcendence() or may.conf.transcendence.effects == 1) and 1 or 0) end},
+	may_tran6 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran6 or 0) * 3) * (may.conf.transcendence.volume * 0.01) * ((may.should_do_transcendence() or may.conf.transcendence.effects == 1) and 1 or 0) end},
+	may_tran7 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran7 or 0) * 3) * (may.conf.transcendence.volume * 0.01) * ((may.should_do_transcendence() or may.conf.transcendence.effects == 1) and 1 or 0) end},
+	may_tran8 = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((G.ARGS.score_intensity.tran8 or 0) * 3) * (may.conf.transcendence.volume * 0.01) * ((may.should_do_transcendence() or may.conf.transcendence.effects == 1) and 1 or 0) end},
+	--may_mass_use_ambiance = {volfunc = function(_prev_volume) return _prev_volume*(1 - dt) + dt*0.6*(G.SETTINGS.SOUND.game_sounds_volume + 100)/200*((math.min((G.ROOM.MassUseIndex or 0) * 0.05, 100) * 1.3)) end},
 	-- the rest of the transcendences are handled as a music tracks so they can replace the main theme
 '''
 match_indent = true
@@ -815,7 +815,7 @@ target = "game.lua"
 pattern = "G.GAME.blind:load(saveTable.BLIND)"
 position = "after"
 payload = '''
-    if may.conf.TrParticles and not G.transcendence_particles then 
+    if may.conf.transcendence.particles and not G.transcendence_particles then 
         G.transcendence_particles = Particles(1, 1, 0, 0, {
             timer = 0.015,
             scale = 0.3,
@@ -847,10 +847,10 @@ payload = '''
 for i=1, 3 do
 	local col = parameter.colour
 	if parameter.key == 'mult' then
-		col = (may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.get_transcendence_color(may.transcendence) or G.C.RED
+		col = (may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.should_do_transcendence() and may.get_transcendence_color(may.transcendence) or G.C.RED
 	end
 	if parameter.key == 'chips' then
-		col = (may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.get_transcendence_color(may.transcendence) or G.C.BLUE
+		col = (may.transcendence or 0) > 0 and (not G.GAME.may_override_monitor_colors) and may.should_do_transcendence() and may.get_transcendence_color(may.transcendence) or G.C.BLUE
 	end
 	parameter.lick[i] = math.min(math.max(((col[i]*0.5+G.C.YELLOW[i]*0.5) + 0.1)^2, 0.1), 1)
 end

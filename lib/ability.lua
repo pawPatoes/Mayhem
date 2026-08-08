@@ -1,7 +1,7 @@
 -- Card abilities
 -- Buttons are in ui.lua
 
-G.FUNCS.may_can_use_ourania_kleidaria_ability = function(e)
+--[[G.FUNCS.may_can_use_ourania_kleidaria_ability = function(e)
 	local joker
 	for i = 1, #G.jokers.cards do
 		if G.jokers.cards[i] == e.config.ref_table then
@@ -34,27 +34,20 @@ G.FUNCS.may_ourania_kleidaria_ability = function(e)
         e.config.ref_table:juice_up(0.3, 0.5)
         play_sound('tarot1')
 	return true end}))
-end
+end]] 
 
-G.FUNCS.may_can_use_guacamole_ability = function(e)
-	if G.consumeables then
-		e.config.colour = G.C.DARK_EDITION
-		e.config.button = "may_guacamole_ability"
+G.FUNCS.may_can_use_joker_ability = function(e)
+	if e.config.ref_table:gc().can_use_ability(e.config.ref_table:gc(), e.config.ref_table) then
+		e.config.colour = e.config.ref_table:gc().ability_color or G.C.DARK_EDITION
+		e.config.button = "may_joker_ability"
 	else
 		e.config.colour = G.C.UI.BACKGROUND_INACTIVE
 		e.config.button = nil
 	end
 end
 
-G.FUNCS.may_guacamole_ability = function(e)
-	local card2 = SMODS.create_card({ key = 'c_may_quac_n7' })
-	G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-		play_sound('tarot1')
-		play_sound('holo1')
-		card2:set_edition('e_negative')
-		card2:setQty(e.config.ref_table.ability.extra.copies)
-		e.config.ref_table:juice_up(0.3, 0.5)
-		e.config.ref_table:start_dissolve()
-		e.config.ref_table = nil 
-	return true end}))
-end  
+G.FUNCS.may_joker_ability = function(e)
+	if e and e.config.ref_table then
+		e.config.ref_table:gc().ability(e.config.ref_table:gc(), e.config.ref_table)
+	end
+end

@@ -6,7 +6,7 @@ SMODS.Joker {
 		name = 'Jonas',
 		text = {
             {
-			    "{X:mult,C:white}X#1#{} Mult"
+			    "{X:mult,C:white}X#1#{} Mult", 
             }, 
             {
                 "{C:inactive,E:1}Improved art by _TeKKen_{}"
@@ -47,7 +47,7 @@ SMODS.Joker {
 		name = "Lil' Prince",
 		text = {
             {
-			    "{X:mult,C:white}^#1#{} Mult if played",
+			    may.hyp(1, 'mult', '^#1#').." Mult if played",
 			    "hand is {C:attention}Royal Flush{}",
 			    "{C:attention}otherwise{} hand will {C:mult}not score{}",
             }, 
@@ -114,8 +114,8 @@ SMODS.Joker {
 	rarity = 3,
 	atlas = 'joker2',
 	pos = { x = 0, y = 9 },
-	blueprint_compat = false,
-	demicoloncompat = false,
+	blueprint_compat = true,
+	demicoloncompat = true,
 	cost = 10,
 	attributes = {
 		'xchips', 
@@ -144,13 +144,13 @@ SMODS.Joker {
 				})
             end
         end
-        if context.joker_main then
+        if context.joker_main or context.forcetrigger then
             return {
                 x_chips = card.ability.extra.x_chips,
 				card = card
             }
         end
-		if context.end_of_round and context.game_over == false and context.main_eval and context.beat_boss then
+		if context.end_of_round and not context.blueprint and context.game_over == false and context.main_eval and context.beat_boss then
 			card.ability.extra.x_chips = 1
 			return {
 				message = 'Reset!', 
@@ -179,8 +179,8 @@ SMODS.Joker {
 	rarity = 3,
 	atlas = 'joker2',
 	pos = { x = 1, y = 9 },
-	blueprint_compat = false,
-	demicoloncompat = false,
+	blueprint_compat = true,
+	demicoloncompat = true,
 	cost = 10,
 	attributes = {
 		'xchips', 
@@ -190,7 +190,7 @@ SMODS.Joker {
 		return { vars = { card.ability.extra.x_chips } }
 	end,
 	calculate = function(self, card, context)
-		if context.individual and context.cardarea == G.play and context.other_card:get_id() == 11 then
+		if (context.individual and context.cardarea == G.play and context.other_card:get_id() == 11) or context.forcetrigger then
 			return {
 				x_chips = card.ability.extra.x_chips, 
 				card = card 
@@ -213,11 +213,11 @@ SMODS.Joker {
 			},
 		}
 	},
-	config = { extra = { x_chips = 0.1 } },
+	config = { extra = { x_chips = 0.02 } },
 	rarity = 3,
 	atlas = 'joker2',
 	pos = { x = 2, y = 9 },
-	blueprint_compat = false,
+	blueprint_compat = true,
 	demicoloncompat = false,
 	cost = 10,
 	attributes = {
@@ -349,6 +349,8 @@ SMODS.Joker {
 			    "{C:attention}Held in hand{} {C:dark_edition}Steel{} cards",
 			    "give {C:attention}played{} {C:purple}Poker Hand{} {X:mult,C:white}X#1#{} Mult",
 			    "after scoring",
+				may.pager(45),
+				"{C:inactive,E:1,s:0.7}LONG LIVE LEGUMES{}"
 		    }, 
             {
 			    "{C:inactive,E:1}Art & idea by _TeKKen_{}"
@@ -371,24 +373,21 @@ SMODS.Joker {
 	end,
 	calculate = function(self, card, context)
 		if context.after then
+			local found
 			for k, v in pairs(G.hand.cards) do
-				if v.ability.name == 'Steel Card' then
-					may.th(G.GAME.current_round.current_hand.handname)
-					G.GAME.hands[context.scoring_name].mult = G.GAME.hands[context.scoring_name].mult * card.ability.extra.Xmult
-					delay(0.5)
-					Q(function() card:juice_up(.2, .3) return true end)
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-						play_sound('button')
-					return true end}))
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-						play_sound('multhit2')
-						card:juice_up(0.3, 0.5)
-						v:juice_up(0.3, 0.5)
-					return true end}))
-					may.hcm(nil, 'X'..card.ability.extra.Xmult..'', true)
-					may.ch()
-					delay(0.5)
+				if SMODS.has_enhancement(v, 'm_steel') then 
+					found = true 
+					break
 				end
+			end
+			if found then 
+				may.th(context.scoring_name)
+				for k, v in pairs(G.hand.cards) do
+					if SMODS.has_enhancement(v, 'm_steel') then
+						may.hand_multchips(v, context.scoring_name, false, nil, {0, card.ability.extra.Xmult})
+					end
+				end
+				may.ch()
 			end
 		end
 	end
@@ -672,7 +671,7 @@ SMODS.Joker {
 		name = 'Collector\'s Edition',
 		text = {
 			{
-				"{X:mult,C:white}^#1#{} Mult if",
+				may.hyp(1, 'mult', '^#1#').." Mult if",
 				"{C:attention}this Joker{} has an {C:dark_edition}Edition{}",
 			},
 			may.add_fusion_text('Diskus Kollectum', 'Diskus Dominus', may.get_condition('diskus_dominus'))
@@ -694,15 +693,7 @@ SMODS.Joker {
 		'editions'
 	}, 
 	calculate = function(self, card, context)
-		if context.joker_main and card.edition then
-			return {
-				message = "^"..card.ability.extra.Emult.." Mult",
-				colour = G.C.MULT,
-				Emult_mod = card.ability.extra.Emult,
-				card = card
-			}
-		end
-		if context.forcetrigger then
+		if (context.joker_main and card.edition) or context.forcetrigger then
 			return {
 				message = "^"..card.ability.extra.Emult.." Mult",
 				colour = G.C.MULT,
@@ -719,7 +710,7 @@ SMODS.Joker {
 		name = 'Collectionist',
 		text = {
 			{
-				"{C:attention}Jokers{} with an {C:dark_edition}Edition{}",
+				"Other {C:attention}Jokers{} with an {C:dark_edition}Edition{}",
 				"give {X:chips,C:white}X#1#{} Chips",
 			},
 			may.add_fusion_text('Diskus', 'Diskus Kollectum', may.get_condition('diskus_kollectum')), 
@@ -802,11 +793,13 @@ SMODS.Joker {
 			G.E_MANAGER:add_event(Event({ func = function()
 				card:juice_up(0.5, 0.5)
 				local wheel = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_wheel_of_fortune', nil)
-                wheel:setQty(math.ceil(card.ability.extra.cards))
+                wheel.no_variants = true 
+				wheel:setQty(math.ceil(card.ability.extra.cards))
 				wheel:add_to_deck()
                 wheel:set_edition('e_negative')
 				G.consumeables:emplace(wheel)
-				wheel.sell_cost = 0 
+				wheel.sell_cost = 0
+				wheel:set_cost()
                 play_sound('timpani')
 			return true end}))
 		end
@@ -821,8 +814,10 @@ SMODS.Joker {
 			{
 				"Gives {X:chips,C:white}+X#1#{} Chips per", 
 				"{C:attention}held{} {C:planet}Planet Card{} during scoring", 
+				may.pager(65),
                 "At the {C:attention}end of round{}, {C:mult}destroys{} all", 
                 "held {C:planet}Planet Cards{} and increases {X:chips,C:white}XChips{} by {X:chips,C:white}+X#2#{}", 
+				may.pager(65),
 				"{C:inactive}Currently {X:chips,C:white}X#3#{} {C:inactive}Chips{}"
 			},
 			may.add_fusion_text('Omniversal Catalyst', 'Intergalactic Tempest', may.get_condition('intergalactic_tempest')),
@@ -843,6 +838,7 @@ SMODS.Joker {
 		'planet'
 	}, 
 	loc_vars = function(self, info_queue, card)
+		may.fuse_tip(info_queue, 'world_destroyer', { may.ctu('Planet') })
         local amount = 0
         if G.consumeables then
             for k, v in pairs(G.consumeables.cards) do 
@@ -861,11 +857,9 @@ SMODS.Joker {
                     amount = amount + v:getQty()
                 end 
             end 
-            if amount * card.ability.extra.Xchips > 1 then
+            if 1 + (amount * card.ability.extra.Xchips) > 1 then
 			    return {
-				    message = "X"..(amount * card.ability.extra.Xchips).." Chips",
-				    colour = G.C.CHIPS,
-				    Xchip_mod = 1 + (amount * card.ability.extra.Xchips),
+				    x_chips = 1 + (amount * card.ability.extra.Xchips),
 				    card = card,			
 			    }
             end
@@ -873,7 +867,8 @@ SMODS.Joker {
 		if context.end_of_round and context.cardarea == G.jokers and not context.blueprint then
 			for k, v in pairs(G.consumeables.cards) do 
                 if v:gc().set == 'Planet' then 
-                    G.E_MANAGER:add_event(Event({ func = function()
+                    G.E_MANAGER:add_event(Event({func = function()
+						play_sound('card3')
                         v:start_dissolve()
                     return true end}))
                 end 
@@ -882,19 +877,22 @@ SMODS.Joker {
 				ref_table = card.ability.extra,
 				ref_value = "Xchips",
 				scalar_value = "Xchips_gain",
-                colour = G.C.CHIPS
+				scaling_message = {
+                    colour = G.C.CHIPS, 
+					message = localize('k_upgrade_ex')
+				}
 			})
 		end
 	end
 }
 
-SMODS.Joker {
+--[[SMODS.Joker {
 	key = 'royale',
 	loc_txt = {
 		name = 'Royale',
 		text = {
 			{
-				"This Joker {C:attention}gains{} {X:mult,C:white}X#1#{} Mult",
+				"This Joker {C:attention}gains{} {X:mult,C:white}+X#1#{} Mult",
 				"if played Poker Hand is {C:attention}Royal Flush{}",
 				"{C:inactive}Currently {X:mult,C:white}X#2#{} {C:inactive}Mult{}",
 			},
@@ -903,7 +901,7 @@ SMODS.Joker {
 	},
 	config = { extra = { Xmult_gain = 2, Xmult = 1 } },
 	pos = { x = 4, y = 3 },
-	cost = 6,
+	cost = 5,
 	rarity = 3,
 	unlocked = true,
 	discovered = true,
@@ -943,7 +941,7 @@ SMODS.Joker {
 			}
 		end
 	end
-}
+}]]
 
 SMODS.Joker {
 	key = 'bad_handwriting',
@@ -975,34 +973,10 @@ SMODS.Joker {
 		if context.before or context.forcetrigger then
 			for k, v in pairs(G.consumeables.cards) do 
                 if v:gc().key == may.planethand(context.scoring_name) then 
-                    for k2, v2 in pairs(G.GAME.hands) do 
-                        if k2 ~= context.scoring_name then
-                            level_up_hand(card, k2, true, card.ability.extra.levels * v:getQty()) 
-                        end 
-                    end 
-                    may.h('Other Hands', '...', '...', '')
-                    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-                        play_sound('tarot1')
-                        card:juice_up(0.8, 0.5)
-                        G.TAROT_INTERRUPT_PULSE = true
-                    return true end}))
-                    may.hm('+', true)
-                    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-                        play_sound('tarot1')
-                        card:juice_up(0.8, 0.5)
-                        G.TAROT_INTERRUPT_PULSE = true
-                    return true end}))
-                    may.hc('+', true)
-                    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
-                        play_sound('tarot1')
-                        card:juice_up(0.8, 0.5)
-                        G.TAROT_INTERRUPT_PULSE = true
-                    return true end}))
-                    may.hlv('+'..card.ability.extra.levels, true)
-                    delay(1.3)
-                    may.ch()
+                    may.level_up_all_hands(card, context.scoring_name, false, card.ability.extra.levels)
                 end 
             end
+			may.ch()
 		end
 	end
 }
@@ -1015,7 +989,7 @@ SMODS.Joker {
 			{
 				"If played hand has {C:attention}3 or less{} cards,",
 				"played {C:hearts}Hearts{} have a {C:green}#1# in #2#{} chance",
-				"to give {X:mult,C:white}^#3#{} Mult when scored",
+				"to give "..may.hyp(1, 'mult', '^#3#').." Mult when scored",
 			},
 			{
 				"{C:inactive,E:1}Art & idea by _TeKKen_{}"
@@ -1041,13 +1015,14 @@ SMODS.Joker {
 		'emult', 
 	}, 
 	loc_vars = function(self, info_queue, card)
-        return {vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds, card.ability.extra.Emult }}
+		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Ketchup")
+        return {vars = { normal, odds, card.ability.extra.Emult }}
     end,
     calculate = function(self, card, context)
 		if (context.individual and context.cardarea == G.play) or (context.individual and context.cardarea == G.play and context.blueprint) then
 			if #G.play.cards <= 3 then
 				if context.other_card:is_suit('Hearts') then	
-					if pseudorandom('may_ketchapp') < G.GAME.probabilities.normal / card.ability.extra.odds then
+					if SMODS.pseudorandom_probability(card, "may_ketchup", 1, card.ability.extra.odds, "Ketchup") then
 						return {
 							e_mult = card.ability.extra.Emult,
 							card = context.other_card,
@@ -1105,14 +1080,15 @@ SMODS.Joker {
 	}, 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
-        return {vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds, card.ability.extra.interest_cap } }
+		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Ketchup")
+        return {vars = { normal, odds, card.ability.extra.interest_cap } }
     end,
     calculate = function(self, card, context)
 		if context.after and context.cardarea == G.jokers then
 			if #G.jokers.cards + G.GAME.joker_buffer >= G.jokers.config.card_limit then
 				for k, v in pairs(G.play.cards) do
 					if v:is_suit('Diamonds') then
-						if pseudorandom('may_mustard') < G.GAME.probabilities.normal / card.ability.extra.odds then
+						if SMODS.pseudorandom_probability(card, "may_mustard", 1, card.ability.extra.odds, "Mustard") then
 							may.ease_interest_cap(-1, card.ability.extra.interest_cap)
 							card_eval_status_text(v, 'extra', nil, nil, nil, { message = {'+'..card.ability.extra.interest_cap..' Interest Cap'}, colour = G.C.MONEY, delay = 0.45})
 						end
@@ -1160,13 +1136,14 @@ SMODS.Joker {
 		'modifier_card'
 	}, 
 	loc_vars = function(self, info_queue, card)
-        return {vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds } }
+		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Soy Sauce")
+        return {vars = { normal, odds } }
     end,
     calculate = function(self, card, context)
 		if (context.individual and context.cardarea == G.play) or (context.individual and context.cardarea == G.play and context.blueprint) then
 			if to_big(chips) < to_big(mult) then
 				if context.other_card:is_suit('Spades') then
-					if pseudorandom('may_soy_sauce') < G.GAME.probabilities.normal / card.ability.extra.odds then
+					if SMODS.pseudorandom_probability(card, "may_soy_sauce", 1, card.ability.extra.odds, "Soy Sauce") then
 						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 							local card2 = create_card('may_modifiercard', G.consumeables, nil, nil, nil, nil, nil, nil)
 							G.consumeables:emplace(card2)
@@ -1227,13 +1204,14 @@ SMODS.Joker {
 		'chance', 
 	}, 
 	loc_vars = function(self, info_queue, card)
-        return {vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds, card.ability.extra.selectionlimit, card.ability.extra.multiplier }}
+		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Pesto")
+        return {vars = { normal, odds, card.ability.extra.selectionlimit, card.ability.extra.multiplier }}
     end,
     calculate = function(self, card, context)
 		if (context.individual and context.cardarea == G.play) or (context.individual and context.cardarea == G.play and context.blueprint) then
 			if G.hand.config.card_limit > G.hand.config.highlighted_limit * card.ability.extra.multiplier then
 				if context.other_card:is_suit('Clubs') then
-					if pseudorandom('may_pesto') < G.GAME.probabilities.normal / card.ability.extra.odds then
+					if SMODS.pseudorandom_probability(card, "may_pesto", 1, card.ability.extra.odds, "Pesto") then
 						G.hand:change_max_highlight(card.ability.extra.selectionlimit)
 						return {
 							message = '+'..card.ability.extra.selectionlimit..' Card Selection Limit'
@@ -1315,49 +1293,18 @@ SMODS.Joker {
 	blueprint_compat = true,
 	demicoloncompat = true,
 	pos = { x = 1, y = 4 },
-	cost = 6, 
+	cost = 8,
+	endless = true, 
 	calculate = function(self, card, context)
-		if context.joker_main then
-			local tag_key
-			repeat
-				tag_key = get_next_tag_key("may_bag_of_fortune")
-			until tag_key ~= "tag_boss"
-			local tag = Tag(tag_key)
-			if #SMODS.find_mod('Cryptid') ~= 0 then
-				tag.ability.shiny = Cryptid.is_shiny()
-			end
-			if tag.name == "Orbital Tag" then
-				local _poker_hands = {}
-				for k, v in pairs(G.GAME.hands) do
-					if v.visible then
-						_poker_hands[#_poker_hands + 1] = k
-					end
-				end
-				tag.ability.orbital_hand = pseudorandom_element(_poker_hands, pseudoseed("may_bag_of_fortune"))
-			end
-			add_tag(tag)
+		if context.joker_main or context.force_trigger then
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.1, func = function()
+				may.random_tag()
+			return true end}))
 		end
-		if context.force_trigger then
-			local tag_key
-			repeat
-				tag_key = get_next_tag_key("may_bag_of_fortune")
-			until tag_key ~= "tag_boss"
-			local tag = Tag(tag_key)
-			if #SMODS.find_mod('Cryptid') ~= 0 then
-				tag.ability.shiny = Cryptid.is_shiny()
-			end
-			if tag.name == "Orbital Tag" then
-				local _poker_hands = {}
-				for k, v in pairs(G.GAME.hands) do
-					if v.visible then
-						_poker_hands[#_poker_hands + 1] = k
-					end
-				end
-				tag.ability.orbital_hand = pseudorandom_element(_poker_hands, pseudoseed("may_bag_of_fortune"))
-			end
-			add_tag(tag)
-		end
-	end
+	end, 
+	in_pool = function(self, args)
+        return G.GAME.may_endless_mode, { allow_duplicates = false }
+    end
 }
 
 SMODS.Joker {
@@ -1366,8 +1313,10 @@ SMODS.Joker {
 		name = 'Ah yes, the store!',
 		text = {
 			{
-				"{C:attention}+#1# card slots{} in shop",
-                "{C:mult}-$#2#{} when rerolling"
+				"{C:attention}+#1#{} card slots in shop",
+                "{C:mult}-$#2#{} when rerolling",
+				may.pager(50),
+				"{C:inactive,E:1,s:0.7}When I go to the store, I like to buy cheese! :D{}"
 			},
 			{
 				"{C:inactive,E:1}Art by therealten95{}", 
@@ -1414,12 +1363,15 @@ SMODS.Joker {
 SMODS.Joker {
 	key = 'guacamole',
 	loc_txt = {
-		name = {'Guacamole', "{C:dark_edition,s:0.7}Content creator insert:{} {C:may_ethereal,u:may_ethereal,s:0.7}Exattox{}"}, 
+		name = 'Guacamole',
 		text = {
             {
-                "{C:dark_edition,E:1,s:1.5}Special Ability{}", 
+                "{C:dark_edition,E:2}Ability{} - {C:planet,E:1}Intergalactic Snack{}", 
+				"{C:attention,E:2}No Energy requirement{}", 
+				may.pager(),
                 "Create {C:attention}#1#{} {C:dark_edition}Negative{} copies of {C:planet}QUAC-N7{}", 
-				"and {C:mult}self destructs{}", 
+				"and {C:mult}self destruct{}", 
+				may.pager(),
 				"{C:inactive,E:1,s:0.7}I hope we're not gonna overscore too much...{}"
             }, 
 			{
@@ -1430,12 +1382,21 @@ SMODS.Joker {
 	pos = { x = 5, y = 5 },
 	cost = 6,
 	rarity = 3,
-	config = { extra = { copies = 8 } },
+	config = { extra = { copies = 4 } },
 	unlocked = true,
 	discovered = true,
 	atlas = 'joker2',
 	blueprint_compat = true,
 	demicoloncompat = true,
+	endless = true,
+	misc_badge = {
+		colour = SMODS.Gradients.may_col_instability,
+		text_colour = G.C.WHITE,
+		text = {
+			'Content Creator',
+			'Exattox'
+		}
+	},
 	attributes = {
 		'on_sell', 
 		'generation', 
@@ -1446,6 +1407,21 @@ SMODS.Joker {
         info_queue[#info_queue + 1] = G.P_CENTERS.c_may_quac_n7
 		return {vars = { card.ability.extra.copies } }
     end,
+	can_use_ability = function(self, card)
+		return G.consumeables 
+	end, 
+	ability = function(self, card)
+		local card2 = SMODS.add_card({ key = 'c_may_quac_n7' })
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+			play_sound('tarot1')
+			play_sound('holo1')
+			card2:set_edition('e_negative')
+			card2:setQty(card.ability.extra.copies)
+			card:juice_up(0.3, 0.5)
+			card:start_dissolve()
+			card = nil 
+		return true end}))
+	end,
     calculate = function(self, card, context)
 		if context.forcetrigger then 
 			local card2 = SMODS.create_card({ key = 'c_may_quac_n7' })
@@ -1459,7 +1435,10 @@ SMODS.Joker {
 				card = nil 
 			return true end}))
 		end
-	end
+	end, 
+	in_pool = function(self, args)
+        return G.GAME.may_endless_mode, { allow_duplicates = false }
+    end
 }
 
 SMODS.Joker {
@@ -1468,7 +1447,7 @@ SMODS.Joker {
 		name = 'AAAA',
 		text = {
 			{
-				"Retrigger all",
+				"{C:attention}Retrigger{} all",
 				"played {C:attention}Aces #1#{} times",
 			},
 			may.add_fusion_text('Omniversal Catalyst', 'Acum', may.get_condition('acum'))
@@ -1476,6 +1455,15 @@ SMODS.Joker {
 	},
 	config = { extra = { repetitions = 3 } },
 	loc_vars = function(self, info_queue, card)
+		if G.GAME and G.GAME.blind then
+			local count = 0
+			for k, v in pairs(G.playing_cards) do
+				if v:get_id() == 14 then
+					count = count + 1
+				end
+			end
+			may.fuse_tip(info_queue, 'acum', { count })
+		end
 		return { vars = { card.ability.extra.repetitions } }
 	end,
 	rarity = 3,
@@ -1496,6 +1484,97 @@ SMODS.Joker {
 					repetitions = card.ability.extra.repetitions,
 					card = card,
 				}
+			end
+		end
+	end
+}
+
+SMODS.Joker {
+	key = 'anniversary_cake',
+	loc_txt = {
+		name = 'Anniversary Cake',
+		text = {
+			{
+                "At the {C:attention}end of round{}, if a {B:1,C:white}#1#{} {C:attention}Joker{} is owned,", 
+				"this Joker {C:green}creates{} another random {B:1,C:white}#1#{} {C:attention}Joker{}", 
+				"and {C:green}upgrades{} the listed {C:attention}rarities{},", 
+				"{C:mult}otherwise{} it will {C:mult}self destruct{}", 
+				may.pager(), 
+                "When this Joker {C:green}creates{} a {X:legendary,C:white}Legendary{} {C:attention}Joker{},", 
+				"it {C:mult}self destructs{} and creates", 
+				"{C:attention}#2#{} random {C:dark_edition}Negative{} {C:attention}consumables{}", 
+				may.pager(), 
+                "{C:inactive}Does not require room, excludes self{}", 
+                "{C:inactive}Common -> Uncommon -> Rare -> Epic -> Legendary{}", 
+			},
+			{
+				"{C:inactive,E:1}Art by 2Much{}"
+			}
+		}
+	},
+	config = { extra = { consumables = 10, rarity = 1 } },
+	pos = { x = 1, y = 7 },
+	cost = 12,
+	rarity = 3,
+	atlas = 'joker2',
+	blueprint_compat = false,
+	demicoloncompat = false,
+	attributes = {
+		'food', 
+		'generation', 
+	}, 
+    loc_vars = function(self, info_queue, card)
+		local rarities = {'Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'}
+		local colors = {'Common', 'Uncommon', 'Rare', may.epic_key, 'Legendary'}
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
+		return { vars = { rarities[card.ability.extra.rarity], card.ability.extra.consumables, colours = { G.C.RARITY[colors[card.ability.extra.rarity]] } } }
+    end,
+	add_to_deck = function(self, card, from_debuff)
+		if not from_debuff then
+			G.E_MANAGER:add_event(Event({func = function()
+				play_sound('may_cake_spawn')
+			return true end})) 
+		end
+	end, 
+    calculate = function(self, card, context)
+		if context.end_of_round and context.game_over == false and context.main_eval then
+			local rarities = {1, 2, 3, may.epic_key, 4}
+			local found
+			for k, v in pairs(G.jokers.cards) do 
+				if v ~= card and v:gc().rarity == rarities[card.ability.extra.rarity] then
+					found = true 
+					break
+				end
+			end
+			if found then
+				local rarity_amounts = { 0.01, 0.8, 1, may.epic_key, nope }
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+					local card2 = create_card('Joker', G.jokers, card.ability.extra.rarity == 5, rarity_amounts[card.ability.extra.rarity], nil, true, nil, 'anniversary_cake')
+					G.jokers:emplace(card2)
+					card2:add_to_deck()
+					card2:juice_up(0.5, 0.3)
+					if card.ability.extra.rarity == 5 then 
+						play_sound('may_bundle')
+						for i = 1, card.ability.extra.consumables do
+							local card3 = create_card('Consumeables', G.consumeables, nil, nil, nil, true, may.random_consumable('may_anniversary_cake', nil, nil, G.P_CENTER_POOLS.Consumeable, true).key, 'anniversary_cake')
+							card3:set_edition({negative = true}, false, false)
+							G.consumeables:emplace(card3)
+							card3:add_to_deck()
+						end
+						card:start_dissolve()
+					end
+					card.ability.extra.rarity = card.ability.extra.rarity + 1
+					G.ROOM.jiggle = G.ROOM.jiggle + 1
+				return true end}))
+				if context.rarity ~= 5 then
+					card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Happy Birthday!", colour = may.C.score, delay = 0.45, sound = 'may_cake_activate'})
+				end
+			else
+                G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+					play_sound('may_cake_destroy')
+					card:start_dissolve()
+					G.ROOM.jiggle = G.ROOM.jiggle + 1
+				return true end}))			
 			end
 		end
 	end

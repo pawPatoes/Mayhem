@@ -9,7 +9,7 @@ SMODS.Back {
 	loc_txt = {
 		name = "Orange Deck",
 		text = {
-			"{C:attention}+1{} Hand size"
+			"{C:attention}+1{} Hand Size"
 		},
 	},
 }
@@ -75,13 +75,22 @@ SMODS.Back {
 	loc_txt = {
 		name = "Brown Deck",
 		text = {
-			"All cards start",
-			"with {X:attention,C:white}X5{} Nominal Chips"
+			"Playing cards give {C:mult}+Mult{}", 
+			"equal to {X:attention,C:white}20%{} of their", 
+			"{C:attention}Nominal Chips{} when scored"
 		},
 	},
-	apply = function(self)
-		G.GAME.playing_card_multiplier = self.config.mult
-	end
+	calculate = function(self, back, context)
+		if context.individual and context.cardarea == G.play then 
+			if not SMODS.has_no_rank(context.other_card) and context.other_card.base.nominal ~= 0 then 
+				return {
+					mult = context.other_card.base.nominal * 0.2, 
+					message_card = context.other_card, 
+					cars = context.other_card
+				}
+			end
+		end
+	end, 
 }
 
 SMODS.Back {
@@ -94,7 +103,6 @@ SMODS.Back {
 		text = {
 			"All {C:attention}cards{} in deck start with",
 			"a {C:attention}random{} {C:dark_edition}Seal{}",
-			may.pager(), 
 			"{C:inactive,E:1,s:0.7}actually its grey !!!{}"
 		},
 	},
@@ -108,16 +116,16 @@ SMODS.Back {
 }
 
 SMODS.Back {
-	name = "Turqoise deck",
-	key = "turqoise_deck",
+	name = "Turquoise deck",
+	key = "turquoise_deck",
 	atlas = 'deck',
 	pos = { x = 3, y = 2 },
 	config = {discount = 25},
 	loc_txt = {
-		name = "Turqoise Deck",
+		name = "Turquoise Deck",
 		text = {
 			"All {C:attention}cards{} in {C:attention}shop{} are",
-			"{C:attention}25%{} {C:money}cheaper{}"
+			"{X:green,C:white}25%{} {C:money}cheaper{}"
 		},
 	},
 	apply = function(self)
@@ -189,23 +197,14 @@ SMODS.Back {
 	key = "rainbow_deck",
 	atlas = 'deck',
 	pos = { x = 1, y = 2 },
-	config = { hands = 1, discards = 1, hand_size = 1, size_mod = 1.75, dollars = 5 },
+	config = { hands = 1, discards = 1, hand_size = 1, size_mod = 1.65, dollars = 5 },
 	loc_txt = {
 		name = (#SMODS.find_mod('MoreFluff') ~= 0 and "Spectrum Deck" or "Rainbow Deck"),
 		text = {
 			"{C:green}+1{} {C:chips}hand{}, {C:mult}discard{} and {C:attention}Hand Size{}",
-			"{X:attention,C:white}X1.75{} Blind Size"
+			"{X:attention,C:white}X1.65{} Blind Size"
 		},
-	},
-	apply = function(self)
-		G.GAME.starting_params.ante_scaling = G.GAME.starting_params.ante_scaling * self.config.size_mod
-		G.E_MANAGER:add_event(Event({func = function()
-			local card2 = create_card('Joker', G.jokers, nil, 0.8, false, nil, nil, 'rainbow_deck')
-			G.jokers:emplace(card2)
-			card2:add_to_deck()
-			play_sound('holo1')
-		return true end}))
-	end
+	}, 
 }
 
 --[[SMODS.Back {
@@ -326,18 +325,16 @@ SMODS.Back {
 	name = "DeeD",
 	key = "deed",
 	atlas = 'deck',
-	pos = { x = 0, y = 3 },
+	pos = { x = 0, y = 3 }, 
+	config = { vouchers = { 'v_may_upside_down_merchant', 'v_may_upside_down_tycoon' } }, 
 	loc_txt = {
 		name = "DeeD",
 		text = {
-			"{C:attention}All consumables{} are replaced with",
-			"their {C:dark_edition}Upside Down{} version",
-			"{C:inactive}If possible{}"
+			"Start run with", 
+			"{C:attention,T:v_may_upside_down_merchant}Upside Down Merchant{} and", 
+			"{C:attention,T:v_may_upside_down_tycoon}Upside Down Tycoon{}"
 		},
 	},
-	apply = function(self)
-		G.GAME.may_upside_down_deck = true
-	end
 }
 
 SMODS.Back {
@@ -374,7 +371,7 @@ SMODS.Back {
 			"{C:purple}Poker Hands{} formed", 
 			"with {C:attention}at least 5 cards{}", 
 			"start with {X:purple,C:white}X3{}", 
-			"{C:may_ethereal}Level{} Mult & Chips"
+			"{C:may_demiurgic}Level{} Mult & Chips"
 		},
 	},
 	apply = function(self)
@@ -493,7 +490,7 @@ SMODS.Back {
 	end
 }]] 
 
-SMODS.Back {
+--[[SMODS.Back {
 	name = "Test Deck",
 	key = "test_deck",
 	atlas = 'deck',
@@ -510,12 +507,14 @@ SMODS.Back {
 	apply = function(self)
 		G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
 			level_up_hand(nil, 'High Card', true, to_big(to_big(1e100):arrow(1, 10)):arrow(5005, to_big(to_big(1e100):arrow(1, 10))))
-			SMODS.change_voucher_limit(10)
-			SMODS.add_card({ key = 'j_may_thatch'})
-			ease_ante(7)
 			ease_dollars(9999)
-			add_skill_xp(99999)
-			SMODS.add_card({key='j_may_rondo_discoteca'})
+			--add_skill_xp(99999)
+			for i = 1, 25 do 
+				local new = SMODS.add_card({ set = 'Planet' })
+				new:set_edition(SMODS.poll_edition({ guaranteed = true }))
+			end
+			SMODS.add_card({ key = 'j_may_acum' })
+			SMODS.add_card({ key = 'c_may_pallas', area = G.consumeables })
 		return true end})) 
 	end, 
-}
+}]] 

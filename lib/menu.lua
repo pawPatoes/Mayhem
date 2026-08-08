@@ -4,15 +4,15 @@ if math.random(1, 70) == 70 then
 	SMODS.Atlas({
 	    key = "titlecard",
 		path = "mehm_titlecard.png",
-	    px = 197,
-	    py = 43,
+	    px = 358,
+	    py = 120,
 	})
 else
 	SMODS.Atlas({
 	    key = "titlecard",
 		path = "may_titlecard.png",
-	    px = 197,
-	    py = 43,
+	    px = 512,
+	    py = 120,
 	})
 end
 
@@ -52,8 +52,8 @@ Game.main_menu = function(change_context)
 		    shader = "splash",
 			send = {
 				{ name = "time", ref_table = G.TIMERS, ref_value = "REAL_SHADER" },
-				{ name = "vort_speed", val = 0.4 },
-				{ name = "colour_1", ref_table = SMODS.Gradients, ref_value = may.conf.Mode == 1 and "may_col_mayhem_gradient" or "may_col_eternum_green" },
+				{ name = "vort_speed", val = 0.25 },
+				{ name = "colour_1", ref_table = SMODS.Gradients, ref_value = "may_col_gray_gradient" },
 				{ name = "colour_2", ref_table = G.C, ref_value = 'BLACK' },
 			},
 		}})
@@ -63,7 +63,7 @@ Game.main_menu = function(change_context)
 		G.may_titlecard:set_alignment({major = G.title_top, type = 'cm', bond = 'Strong', offset = { x = 5, y = 3.5 }})
 		G.may_titlecard:define_draw_steps({{shader = 'dissolve'}})
 		G.may_titlecard.tilt_var = { mx = 0.2, my = 0, dx = 0, dy = 0, amt = 0.1 }
-		G.may_titlecard.dissolve_colours = { SMODS.Gradients[may.conf.Mode == 1 and 'may_col_mayhem_gradient' or 'may_col_eternum_green'], G.C.BLACK }
+		G.may_titlecard.dissolve_colours = { SMODS.Gradients.may_col_mayhem_gradient, G.C.BLACK }
 		G.may_titlecard.dissolve = 1
 		G.may_titlecard.states.collide.can = true
 		function G.may_titlecard:click()
@@ -98,10 +98,10 @@ Game.main_menu = function(change_context)
             scale = 0.3,
             initialize = true,
             lifespan = 3,
-            speed = 0.2,
+            speed = 0.1,
             padding = -1,
             attach = G.ROOM_ATTACH,
-            colours = { G.C.BLACK, SMODS.Gradients[may.conf.Mode == 1 and "may_col_mayhem_gradient" or "may_col_eternum_green"] },
+            colours = { G.C.BLACK, SMODS.Gradients.may_col_gray_gradient },
             fill = true
         })
         G.menu_particles.fade_alpha = 0.7
@@ -110,17 +110,25 @@ Game.main_menu = function(change_context)
 		-- Display Mayhem version on title screen
 		if may.conf.show_version then
 		    UIBox({
-                definition = {n = G.UIT.ROOT, config = { align = "cm", colour = SMODS.Gradients[may.conf.Mode == 1 and "may_col_mayhem_gradient_dark2" or "may_col_eternum_green_dark2"] }, nodes = 
+                definition = {n = G.UIT.ROOT, config = { align = "cm", colour = SMODS.Gradients.may_col_gray_gradient_dark2 }, nodes = 
 					{{n = G.UIT.T, config = { scale = 0.3, text = "Mayhem "..may.version, colour = G.C.UI.TEXT_LIGHT}}
                 }},
                 config = { align = "tri", bond = "Weak", offset = { x = 0, y = 0.58 }, major = G.ROOM_ATTACH }
             })
 		end
 	end
+	local first_time 
 	-- Welcome message 
 	if not may.conf.notices.welcome then
 		may.display_welcome_notification()
+		first_time = true
 		may.conf.notices.welcome = true 
+		G:save_settings()
+    end 
+	-- Photosensitivity notice
+	if not may.conf.notices.epileptic then
+		may.display_notification('epileptic', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
+		may.conf.notices.epileptic = true 
 		G:save_settings()
     end 
 	-- Slay the Jokers notice
@@ -150,13 +158,7 @@ Game.main_menu = function(change_context)
 	-- Unstable SMODS notice
 	if table_hasvalue(may.unstable_smods, SMODS.version) then
 		may.display_notification('smods', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
-    end 
-	--[[ Config notice 
-	if not may.conf.notices.config then
-		may.display_notification('config', function() play_sound("foil1", 0.7, 0.3); play_sound("gong", 1.4, 0.15) end)
-		may.conf.notices.config = true 
-		G:save_settings()
-    end]] 
+    end
 	return ret
 end
 
@@ -223,12 +225,15 @@ if may.conf.custom_menu then
 			func = function()
 				for k, v in pairs(G.title_top.cards) do
 					if v:gc().key == chosen then
-							v:set_ability(G.P_CENTERS[may.menu_cards[math.random(1, #may.menu_cards)]])
-							v:resize(1.32)
-							v:set_edition(may.menu_editions[math.random(1, #may.menu_editions)], false, false)
+						v:set_ability(G.P_CENTERS[may.menu_cards[math.random(1, #may.menu_cards)]])
+						v:resize(1.32)
+						v:set_edition(may.menu_editions[math.random(1, #may.menu_editions)], false, false)
 						break
 					end
 				end
+				if SMODS.is_playing_card(G.title_top.cards[1]) then 
+					G.title_top.cards[1]:set_edition(may.menu_editions[math.random(1, #may.menu_editions)], false, false)
+				end 
 			end
 		}
 	end

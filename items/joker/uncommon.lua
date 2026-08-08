@@ -58,9 +58,9 @@ SMODS.Joker {
 		name = 'Thumb',
 		text = {
             {
-			    "{C:money}+$#1#{} for {C:attention}every played card{}",
-			    "{C:attention}less{} than current {C:attention}Card Selection Limit{}",
-			    "{C:inactive}Max of $#2#{}",
+			    "{C:money}+$#1#{} for every played {C:attention}card{}",
+			    "{C:attention}less{} than current {C:purple}Card Selection Limit{}",
+			    "{C:inactive}Max of +$#2#{}",
             }, 
             {
 			    "{C:inactive,E:1}Art & idea by Goobert_Joke{}"
@@ -69,7 +69,7 @@ SMODS.Joker {
 	},
 	config = { extra = { dollars = 1 } },
 	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.extra.dollars, card.ability.extra.dollars*25} }
+		return { vars = { card.ability.extra.dollars, card.ability.extra.dollars * 25 } }
 	end,
 	rarity = 2,
 	atlas = 'joker1',
@@ -83,10 +83,8 @@ SMODS.Joker {
 	calculate = function(self, card, context)
 		if context.joker_main or context.forcetrigger and not (G.hand.config.highlighted_limit == #G.play.cards) then
 			return {
-				dollars = math.min(100, (G.hand.config.highlighted_limit - #G.play.cards)) * card.ability.extra.dollars,
-				message = '$'..math.min(100, (G.hand.config.highlighted_limit - #G.play.cards)) * card.ability.extra.dollars,
+				dollars = math.min((G.hand.config.highlighted_limit - context.scoring_hand) * card.ability.extra.dollars, card.ability.extra.dollars * 25), 
 				card = card,
-				colour = G.C.MONEY
 			}
 		end
 	end
@@ -97,9 +95,9 @@ SMODS.Joker {
 	loc_txt = {
 		name = 'Paper Shredder',
 		text = {
-			"{C:attention}After hand{} is played,",
-			"{C:mult}destroy{} a {C:attention}random card{}",
-			"{C:attention}held in hand{}"
+			"After hand is played,",
+			"{C:mult}destroy{} a random {C:attention}card{}",
+			"held in hand"
 		}
 	},
 	rarity = 2,
@@ -154,6 +152,11 @@ SMODS.Joker {
 		'space'
 	}, 
     loc_vars = function(self, info_queue, card)
+		local count = 1
+		for k, v in pairs(G.GAME.hands) do 
+			count = math.max(count, v.level)
+		end
+		may.fuse_tip(info_queue, 'kepler', { count })
         return {vars = { card.ability.extra.mul } }
     end,
     calculate = function(self, card, context)
@@ -188,7 +191,15 @@ SMODS.Joker {
 	pos = { x = 3, y = 2 },
 	config = { extra = { odds = 3 } },
 	loc_vars = function(self, info_queue, card)
-		return { vars = { (G.GAME.probabilities.normal or 1), card.ability.extra.odds } }
+		local count = 0
+		for k, v in pairs(G.playing_cards or {}) do
+			if not SMODS.has_enhancement(v, 'c_base') then
+				count = count + 1
+			end
+		end
+		may.fuse_tip(info_queue, 'wizard_university', { count })
+		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Mana Orb")
+		return { vars = { normal, odds } }
 	end,
 	cost = 4,
 	attributes = {
@@ -197,16 +208,14 @@ SMODS.Joker {
 		'enhancements'
 	}, 
 	calculate = function(self, card, context)
-		if context.before and context.cardarea == G.jokers and pseudorandom('may_mana_orb') < G.GAME.probabilities.normal / card.ability.extra.odds then
-			local enhance = {}
-			for k, v in ipairs(G.P_CENTER_POOLS['Enhanced']) do
-				if v.key ~= 'm_stone' then
-					table.insert(enhance, v)
-				end
-			end
+		if context.before and context.cardarea == G.jokers and SMODS.pseudorandom_probability(card, "may_mana_orb", 1, card.ability.extra.odds, "Mana Orb") then
 			for k, v in ipairs(context.scoring_hand) do
-				if v.ability.name == 'c_base' then
-					v:set_ability(pseudorandom_element(enhance, pseudoseed('may_mana_orb')), nil, true)
+				if SMODS.has_enhancement(v, 'c_base') then
+					G.E_MANAGER:add_event(Event({func = function()
+						v:juice_up(0.3, 0.5)
+						v:set_ability(G.P_CENTERS[SMODS.poll_enhancement({ guaranteed = true, no_replace = true })], nil, true)
+						play_sound('tarot1', 1, 0.7)
+					return true end})) 
 				end
 			end
 			return {
@@ -217,21 +226,19 @@ SMODS.Joker {
 			}
 		end
 		if context.forcetrigger then
-			local enhance = {}
-			for k, v in ipairs(G.P_CENTER_POOLS['Enhanced']) do
-				if v.key ~= 'm_stone' then
-					table.insert(enhance, v)
+			for k, v in ipairs(context.scoring_hand) do
+				if SMODS.has_enhancement(v, 'c_base') then
+					G.E_MANAGER:add_event(Event({func = function()
+						v:juice_up(0.3, 0.5)
+						v:set_ability(G.P_CENTERS[SMODS.poll_enhancement({ guaranteed = true, no_replace = true })], nil, true)
+						play_sound('tarot1', 1, 0.7)
+					return true end})) 
 				end
 			end
-			for k, v in ipairs(context.scoring_hand) do
-				v:set_ability(pseudorandom_element(enhance, pseudoseed('may_mana_orb')), nil, true)
-			end
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-				play_sound('holo1')
-			return true end}))
 			return {
 				card = card,
-				message = "Enhancements!",
+				message = "Enhancements...",
+				sound = 'holo1',
 				colour = G.C.DARK_EDITION
 			}
 		end
@@ -475,6 +482,7 @@ SMODS.Joker {
 	},
 	config = { extra = { odds = 3, level = 1 } },
 	loc_vars = function(self, info_queue, card)
+		may.fuse_tip(info_queue, 'astral_expunger', { may.ctu('Tarot') })
         local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Zodiac")
 		return { vars = { normal, odds, card.ability.extra.level, may.favhand() } }
 	end,
@@ -488,6 +496,7 @@ SMODS.Joker {
 		'chance', 
 		'tarot'
 	}, 
+	show_ring_display = true,
 	calculate = function(self, card, context)
 		if (context.using_consumeable and context.consumeable:gc().set == 'Tarot' and SMODS.pseudorandom_probability(card, "may_zodiac", 1, card.ability.extra.odds, "Zodiac")) or context.forcetrigger then 
             may.th(may.favhand())
@@ -503,11 +512,11 @@ SMODS.Joker {
 		name = 'Cement Joker',
 		text = {
 			{
-			    "{C:planet}Deimos{} {C:green}no longer{}", 
+			    "{C:planet}Hi'iaka{} {C:green}no longer{}", 
                 "{C:mult}destroys{} cards when used", 
 				may.pager(),
                 "{C:green}#1# in #2#{} chance to create", 
-                "a {C:attention}copy{} of {C:planet}Deimos{}", 
+                "a {C:attention}copy{} of {C:planet}Hi'iaka{}", 
                 "when {C:attention}Blind{} is {C:attention}selected{}",
 				may.pager(),
                 "{C:inactive}(Requires room){}"
@@ -531,7 +540,8 @@ SMODS.Joker {
 		'generation'
 	}, 
 	loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_CENTERS.c_may_deimos
+		may.fuse_tip(info_queue, 'stones', { (G.GAME.may_stones_destroyed or 0) })
+        info_queue[#info_queue + 1] = G.P_CENTERS.c_may_hiiaka
         local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Cement Joker")
 		return { vars = { normal, odds } }
 	end,
@@ -546,7 +556,7 @@ SMODS.Joker {
 				    card2:juice_up(0.3, 0.5)
 			    return true end}))
                 return {
-                    message = "+Deimos", 
+                    message = "+Hi'iaka", 
                     colour = G.C.SECONDARY_SET.Planet,
                     card = card,
                 }
@@ -585,6 +595,15 @@ SMODS.Joker {
 		'xchips'
 	}, 
 	loc_vars = function(self, info_queue, card)
+		if G.GAME and G.GAME.blind then 
+			local count = 0
+			for k, v in pairs(G.playing_cards) do
+				if SMODS.has_enhancement(v, 'm_stone') then
+					count = count + 1
+				end
+			end
+			may.fuse_tip(info_queue, 'bedrock', { count })
+		end
         info_queue[#info_queue + 1] = G.P_CENTERS.m_stone
 		return { vars = { card.ability.extra.x_chips } }
 	end,
@@ -675,7 +694,7 @@ SMODS.Joker {
 	loc_txt = {
     	name = 'Gemstone',
     	text = {
-			"{C:attention}Glass Cards{} give {X:chips,C:white}X#1#{} Chips",
+			"{C:dark_edition}Glass Cards{} give {X:chips,C:white}X#1#{} Chips",
 			"when scored"
 		}
 	},
@@ -690,6 +709,7 @@ SMODS.Joker {
 		'xchips'
 	}, 
 	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = G.P_CENTERS.m_glass
 		return { vars = { card.ability.extra.Xchips } }
 	end,
 	calculate = function(self, card, context)

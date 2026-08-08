@@ -28,6 +28,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_fool',
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
@@ -79,6 +81,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_magician',
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
@@ -138,10 +142,15 @@ SMODS.Consumable {
 		name = 'ThT HiiH PrieseirP',
 		text = {
 			{
-				"{C:mult}Destroy{} all held {C:tarot}Tarot{}, {C:planet}Planet{} and {C:spectral}Spectral{} Cards", 
+				"{C:mult}Destroy{} all held {C:mult}non-{}{C:dark_edition}Negative{}", 
+				"{C:tarot}Tarot{}, {C:planet}Planet{} and {C:spectral}Spectral{} Cards", 
+				may.pager(),
 				"{C:money}+$#1#{} per {C:tarot}Tarot Card{}", 
+				may.pager(),
 				"{C:planet}Level up{} all {C:purple}Poker Hands{} by {C:attention}#2#{} per {C:planet}Planet Card{}", 
+				may.pager(),
 				"Create {C:attention}#3# Tag{} per {C:spectral}Spectral Card{}", 
+				may.pager(),
 				"{C:inactive}Currently +$#4#, +#5# levels, #6# Tags{}"
 			},
 			{
@@ -156,17 +165,23 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_high_priestess', 
+	show_ring_display = true,
 	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		local tarot, planet, spectral = 0, 0, 0
 		if G.consumeables and G.consumeables.cards then
 			for k, v in pairs(G.consumeables.cards) do
-				if v:gc().set == 'Tarot' then 
-					tarot = tarot + v:getQty()
-				elseif v:gc().set == 'Planet' then 
-					planet = planet + v:getQty() 
-				elseif v:gc().set == 'Spectral' then 
-					spectral = spectral + v:getQty()
+				if not v.edition or v.edition.key ~= 'e_negative' then 
+					if v:gc().set == 'Tarot' then 
+						tarot = tarot + v:getQty()
+					elseif v:gc().set == 'Planet' then 
+						planet = planet + v:getQty() 
+					elseif v:gc().set == 'Spectral' then 
+						spectral = spectral + v:getQty()
+					end
 				end
 			end
 		end
@@ -182,7 +197,7 @@ SMODS.Consumable {
 	can_use = function(self, card)
 		if G.consumeables and G.consumeables.cards then
 			for k, v in pairs(G.consumeables.cards) do
-				if v:gc().set == 'Tarot' or v:gc().set == 'Planet' or v:gc().set == 'Spectral' then 
+				if v:gc().set == 'Tarot' or v:gc().set == 'Planet' or v:gc().set == 'Spectral' and (not v.edition or v.edition.key ~= 'e_negative') then 
 					return may.canuse()
 				end
 			end
@@ -192,30 +207,32 @@ SMODS.Consumable {
 	use = function(self, card, area, copier)
 		local tarot, planet, spectral = 0, 0, 0
 		for k, v in pairs(G.consumeables.cards) do
-			if v:gc().set == 'Tarot' then 
-				tarot = tarot + v:getQty()
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-					card:juice_up(0.3, 0.5)
-					v:juice_up(0.3, 0.5)
-					SMODS.destroy_cards({v})
-					play_sound('card3')
-				return true end})) 
-			elseif v:gc().set == 'Planet' then 
-				planet = planet + v:getQty() 
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-					card:juice_up(0.3, 0.5)
-					v:juice_up(0.3, 0.5)
-					SMODS.destroy_cards({v})
-					play_sound('card3')
-				return true end}))
-			elseif v:gc().set == 'Spectral' then 
-				spectral = spectral + v:getQty()
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-					card:juice_up(0.3, 0.5)
-					v:juice_up(0.3, 0.5)
-					SMODS.destroy_cards({v})
-					play_sound('card3')
-				return true end}))
+			if not v.edition or v.edition.key ~= 'e_negative' then 
+				if v:gc().set == 'Tarot' then 
+					tarot = tarot + v:getQty()
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+						card:juice_up(0.3, 0.5)
+						v:juice_up(0.3, 0.5)
+						SMODS.destroy_cards({v})
+						play_sound('card3')
+					return true end})) 
+				elseif v:gc().set == 'Planet' then 
+					planet = planet + v:getQty() 
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+						card:juice_up(0.3, 0.5)
+						v:juice_up(0.3, 0.5)
+						SMODS.destroy_cards({v})
+						play_sound('card3')
+					return true end}))
+				elseif v:gc().set == 'Spectral' then 
+					spectral = spectral + v:getQty()
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+						card:juice_up(0.3, 0.5)
+						v:juice_up(0.3, 0.5)
+						SMODS.destroy_cards({v})
+						play_sound('card3')
+					return true end}))
+				end
 			end
 		end
 		if tarot > 0 then
@@ -264,6 +281,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_empress', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
@@ -324,7 +343,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"{C:mult}Destroy{} all owned {C:tarot}Tarot Cards{}",
-				"and create {C:attention}random{} {C:dark_edition}Negative{} {C:planet}Planet{}",
+				"and create {C:attention}random{} {C:planet}Planet{}",
 				"{C:dark_edition}CCDs{} {C:attention}in their place{}",
 				"which are shuffled into your deck",
 			},
@@ -339,9 +358,10 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_emperor', 
 	loc_vars = function(self, info_queue, card)
-		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		info_queue[#info_queue + 1] = { key = "may_ccd_tutorial", set = "Other" }
 		return { vars = {} }
 	end,
@@ -373,7 +393,6 @@ SMODS.Consumable {
 				new:juice_up()
 				play_sound('card1')
 				play_sound('tarot1')
-				new:set_edition({negative=true}, true)
 			return true end}))
 		end
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
@@ -434,6 +453,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_heirophant', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
@@ -509,6 +530,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_lovers', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
@@ -584,6 +607,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_chariot', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
@@ -659,6 +684,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_justice', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
@@ -719,7 +746,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"{X:money,C:white}X#1#${}",
-				"{C:money}+#2# Interest{}",
+				"{C:money}+#2#{} Interest",
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -733,6 +760,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_hermit', 
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
@@ -757,7 +786,7 @@ SMODS.Consumable {
 			{
 				"{C:mult}Remove{} the {C:dark_edition}Edition{} of a",
 				"{C:attention}random Joker{}",
-				"{C:money}+#1# Interest Cap{}"
+				"{C:money}+#1#{} Interest Cap"
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -771,6 +800,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_wheel_of_fortune', 
 	loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
@@ -825,6 +856,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_strength', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
@@ -895,6 +928,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_hanged_man', 
 	can_use = function(self, card)
 		return may.canuse() and #G.hand.highlighted ~= 0
@@ -907,8 +942,6 @@ SMODS.Consumable {
 			G.deck.config.card_limit = G.deck.config.card_limit + 1
 			table.insert(G.playing_cards, _card)
 			G.hand:emplace(_card)
-			_card:start_materialize(nil, _first_dissolve)
-			_first_dissolve = true
 			play_sound('card1')
 		end
 		playing_card_joker_effects(new_cards)
@@ -940,6 +973,8 @@ SMODS.Consumable {
 	config = { extra = { dollars = 10 } },
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_death', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
@@ -984,6 +1019,8 @@ SMODS.Consumable {
 	config = { extra = { mul = 3 } },
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_temperance', 
 	can_use = function(self, card)
 		return may.canuse() and #G.jokers.cards >= 1 and #G.consumeables.cards >= 1
@@ -1041,6 +1078,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_devil', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
@@ -1116,6 +1155,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_tower', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.bonus } }
@@ -1191,6 +1232,8 @@ SMODS.Consumable {
 	config = { extra = { target_suit = 'Diamonds', conv_suit = 'Clubs' } },
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_star', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
@@ -1277,6 +1320,8 @@ SMODS.Consumable {
 	config = { extra = { target_suit = 'Clubs', conv_suit = 'Hearts' } },
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_moon', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
@@ -1363,6 +1408,8 @@ SMODS.Consumable {
 	config = { extra = { target_suit = 'Hearts', conv_suit = 'Spades' } },
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_sun', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
@@ -1448,6 +1495,8 @@ SMODS.Consumable {
 	config = { extra = { tarots = 4 } },
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_judgement', 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
@@ -1509,6 +1558,8 @@ SMODS.Consumable {
 	config = { extra = { target_suit = 'Spades', conv_suit = 'Diamonds' } },
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_world', 
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.dollars } }
@@ -1615,7 +1666,10 @@ for k, v in pairs(may.upside_down_planets) do
 		unlocked = true,
 		discovered = true,
 		no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 		upsd_base = 'c_'..(v[7] or v[1]), 
+		show_ring_display = true,
 		loc_vars = function(self, info_queue, card)
 			return { vars = { localize(v[3], 'poker_hands'), localize(v[4], 'poker_hands') } }
 		end,
@@ -1654,7 +1708,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"{C:mult}Destroys{} all {C:attention}face cards{} held in {C:attention}hand{}",
-				"{C:attention}+1 Hand Size{}",
+				"{C:attention}+1{} Hand Size",
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -1667,9 +1721,18 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_familiar', 
 	can_use = function(self, card)
-		return may.canuse()
+		if G.hand then 
+			for k, v in ipairs(G.hand.cards) do
+			    if v:is_face() then
+					return may.canuse()
+				end
+			end
+		end 
+		return false
 	end,
 	use = function(self, card, area, copier)
 		local targets = {}
@@ -1697,7 +1760,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"{C:mult}Destroys{} all {C:attention}Aces{} in {C:attention}full deck{}",
-				"{C:attention}-1 Ante{}",
+				"{C:attention}-1{} Ante",
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -1710,9 +1773,18 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_grim', 
 	can_use = function(self, card)
-		return may.canuse()
+		if G.hand then 
+			for k, v in ipairs(G.hand.cards) do
+			    if v:get_id() == 14 then
+					return may.canuse()
+				end
+			end
+		end 
+		return false
 	end,
 	use = function(self, card, area, copier)
 		local targets = {}
@@ -1740,7 +1812,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"{C:mult}Destroys{} all {C:attention}numbered cards{} held in {C:attention}hand{}",
-				"{C:attention}+2 Consumable Slots{}",
+				"{C:attention}+2{} Consumable Slots",
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -1753,17 +1825,26 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_incantation', 
 	can_use = function(self, card)
-		return may.canuse()
+		if G.hand then 
+			for k, v in ipairs(G.hand.cards) do
+			    if v:may_is_number() then
+					return may.canuse()
+				end
+			end
+		end 
+		return false
 	end,
 	use = function(self, card, area, copier)
 		local targets = {}
         G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-		    for _, card in ipairs(G.hand.cards) do
-			    if not card:is_face() then
-				    card:start_dissolve(nil, false)
-				    table.insert(targets, card)
+		    for k, v in ipairs(G.hand.cards) do
+			    if v:may_is_number() then
+				    v:start_dissolve(nil, false)
+				    table.insert(targets, v)
 			    end
 		    end
 		    G.consumeables:change_size(2)
@@ -1797,6 +1878,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_talisman', 
 	can_use = function(self, card)
 		for k, v in pairs(G.playing_cards) do 
@@ -1871,7 +1954,10 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_aura', 
+	show_ring_display = true,
 	can_use = function(self, card)
 		local other
 		for k, v in pairs(G.hand.highlighted) do 
@@ -1917,7 +2003,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"{C:mult}Destroy{} {C:attention}all{} {X:rare,C:white}Rare{} {C:attention}Jokers{}",
-				"{C:chips}+2 Hands{} and {C:mult}Discards{}",
+				"{C:green}+2{} {C:chips}Hands{} and {C:mult}Discards{}",
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -1930,6 +2016,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_wraith', 
 	can_use = function(self, card) 
 		if G.jokers then 
@@ -1981,6 +2069,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_sigil', 
 	can_use = function(self, card)
 		return may.canuse() and G.hand and #G.hand.highlighted == (1 + (card.area == G.hand and 1 or 0))
@@ -2033,6 +2123,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_ouija', 
 	can_use = function(self, card)
 		return may.canuse() and G.hand and #G.hand.highlighted == (1 + (card.area == G.hand and 1 or 0))
@@ -2086,6 +2178,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_ectoplasm', 
 	loc_vars = function(self, info_queue, card) 
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
@@ -2146,6 +2240,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_immolate', 
 	can_use = function(self, card)
 		return may.canuse() and G.hand and #G.hand.highlighted <= (5 + (card.area == G.hand and 1 or 0))
@@ -2161,8 +2257,6 @@ SMODS.Consumable {
 			G.deck.config.card_limit = G.deck.config.card_limit + 1
 			table.insert(G.playing_cards, _card)
 			G.hand:emplace(_card)
-			_card:start_materialize(nil, _first_dissolve)
-			_first_dissolve = true
 		end
 		playing_card_joker_effects(new_cards)
 		may.hand_mod_multchips(may.favhand(), 'mult', 0, #G.hand.highlighted*0.5)
@@ -2178,7 +2272,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"{C:mult}Destroys{} all {C:attention}duplicate Jokers{}",
-				"{C:attention}Creates{} a {C:attention}random{} {X:legendary,C:white}Legendary{} {C:attention}Joker{}",
+				"{C:attention}Creates{} a {C:attention}random{} {X:"..may.epic_key..",C:white}Epic{} {C:attention}Joker{}",
 				"{C:inactive}Does not require room{}"
 			},
 			{
@@ -2192,6 +2286,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_ankh', 
 	can_use = function(self, card)
 		local joker_keys = {}
@@ -2224,7 +2320,7 @@ SMODS.Consumable {
 		end
 		delay(0.5)
         G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-		    local card2 = create_card("Joker", G.consumables, true, 4, nil, nil, nil, "may_ankh_upsd")
+		    local card2 = create_card("Joker", G.consumables, nil, may.epic_key, nil, nil, nil, "may_ankh_upsd")
 		    card2:add_to_deck()
 		    G.jokers:emplace(card2)
             play_sound('timpani')
@@ -2255,6 +2351,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_deja_vu', 
 	can_use = function(self, card)
 		local joker_available
@@ -2308,7 +2406,7 @@ SMODS.Consumable {
 		text = {
 			{
 				"{C:mult}Removes{} {C:dark_edition}Polychrome{} from all Jokers",
-				"{C:money}+1 Interest{}",
+				"{C:money}+1{} Interest",
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -2321,6 +2419,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_hex', 
 	loc_vars = function(self, info_queue, card) 
 		info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
@@ -2372,6 +2472,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_trance', 
 	can_use = function(self, card) 
 		local joker_available
@@ -2441,6 +2543,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_medium', 
 	can_use = function(self, card)
 		for k, v in pairs(G.playing_cards) do 
@@ -2479,7 +2583,7 @@ SMODS.Consumable {
 			{
 				"{C:mult}Destroys{} all {C:attention}duplicates{}",
 				"of a {C:attention}random playing card{}",
-				"{C:money}+5 Interest Cap{}",
+				"{C:money}+5{} Interest Cap",
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -2492,6 +2596,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_cryptid', 
 	can_use = function(self, card)
 		return may.canuse()
@@ -2541,6 +2647,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_soul', 
 	custom_soul_anim = function(self, layer)
 		local scale_mod = 0.05 - 0.05 * math.sin(1.8 * G.TIMERS.REAL) - 0.07 * math.sin(0.5 * (G.TIMERS.REAL - math.floor(G.TIMERS.REAL)) * math.pi * 14) * ( 1 + (G.TIMERS.REAL - math.floor(G.TIMERS.REAL))) ^ 1.5
@@ -2583,14 +2691,13 @@ SMODS.Consumable {
 	key = 'black_hole_upsd',
 	set = 'upside_down_spectrals',
 	name = 'BlalB HooH',
-	config = { extra = { tags = 10 } },
+	config = { extra = { tags = 8 } },
 	loc_txt = {
 		name = "BlalB HooH",
 		text = {
 			{
 				"{C:mult}Levels down{} {C:attention}all Poker Hands{} by 1",
 				"Creates {C:attention}#1#{} random {C:attention}Tags",
-				"{C:inactive}Requires room{}",
 			},
 			{
 				"{C:inactive,E:1}Art by _TeKKen_{}"
@@ -2603,6 +2710,8 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = true,
     no_grc = true,
+	hidden = true,
+	soul_rate = 0,
 	upsd_base = 'c_black_hole', 
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.tags } }

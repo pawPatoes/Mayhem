@@ -3,14 +3,17 @@
 vanf_csc = Card.set_cost
 function Card:set_cost()
 	vanf_csc(self)
-	if (self.edition or {}).may_print then self.cost = self.cost * 0.2 end
-	if self:gc().set == 'Joker' then
-		if G.GAME.power_trip then
-			if self:gc().rarity == 2 or self:gc().rarity == 3 then
-				self.cost = 0
-			end
-		end
+	if (self.edition or {}).may_print then 
+		self.cost = self.cost * 0.2 
 	end
+end
+
+local cuc = Card.can_use_consumeable
+function Card:can_use_consumeable(any_state, skip_check)
+	if not self.ability.consumeable then
+		return false
+	end
+	return cuc(self, any_state, skip_check)
 end
 
 -- Exponential reroll price increase
@@ -19,42 +22,18 @@ local vanf_rs = G.FUNCS.reroll_shop
 G.FUNCS.reroll_shop = function(e)
 	vanf_rs(e)
 	G.GAME.may_current_rerolls = (G.GAME.may_current_rerolls or 0) + 1
-	if G.GAME.ultrastock then
-		if may.conf.Mode == 1 then
-			if (G.GAME.ultrastock_mod or 0) < 5 then
-				if pseudorandom('may_ultrastock') < G.GAME.probabilities.normal / 4 then
-					change_shop_size(1)
-					G.GAME.ultrastock_mod = (G.GAME.ultrastock_mod or 0) + 1
-					e:juice_up()
-					play_sound('highlight2', 1, 0.5)
-					play_sound('highlight1')
-					play_sound('cardFan2')
-				end
-			end
-		else
-			if pseudorandom('may_ultrastock') < G.GAME.probabilities.normal / 4 then
-				change_shop_size(1)
-				G.GAME.ultrastock_mod = (G.GAME.ultrastock_mod or 0) + 1
-				e:juice_up()
-				play_sound('highlight2', 1, 0.5)
-				play_sound('highlight1')
-				play_sound('cardFan2')
-			end
-		end
-	end
 	if may.conf.reroll_cost ~= 4 then
 		if G.GAME.may_current_rerolls >= may.conf.reroll_cost * 25 and not G.GAME.may_exp_reroll then
 			G.GAME.may_exp_reroll = true
 			G.GAME.may_exp_reroll_consecutive = (G.GAME.may_exp_reroll_consecutive or 0) + 1
 			e:juice_up()
-			e.config.colour = G.C.RED
 			play_sound('highlight2', 0.715, 0.2)
 			play_sound('generic1')
 		end
 	end
 	if (G.GAME.may_exp_reroll_consecutive or 0) >= 5 then
 		if may.conf.threshold_punishment then
-			may.a('Reroll price threshold reached 5 times consecutively! Opalescent Scaling will activate each reroll, including this one.', '5', 0.3, G.C.RED, 'talisman_eeechip', 0.7, 1)
+			may.a('Reroll price threshold reached 5 times consecutively! Opalescent Scaling will activate with each reroll, including this one.', '5', 0.3, G.C.RED, 'talisman_eeechip', 0.7, 1)
 			G.GAME.may_surreal_scaling = (G.GAME.may_surreal_scaling or 0) + 1
 		end
 	elseif G.GAME.may_exp_reroll_consecutive == 4 and G.GAME.may_exp_reroll then
@@ -104,14 +83,6 @@ function Game:update(dt)
 	end
 end
 
-local vanf_scs = SMODS.calculate_context
-function SMODS.calculate_context(...)
-	if G.GAME and G.GAME.blind then 
-		may.update_fusion_conditions()
-	end
-	return vanf_scs(...)
-end
-
 local vanf_suph = SMODS.upgrade_poker_hands
 function SMODS.upgrade_poker_hands(args)
 	if type(args.hands) ~= 'table' then 
@@ -125,42 +96,51 @@ function SMODS.upgrade_poker_hands(args)
 		    G.GAME.may_ring_bonuses.levels = 0
 	    end
 		local pre_astronomy = (args.level_up or 1)
-	    if #SMODS.find_card('v_may_astronomy_1') ~= 0 and (args.level_up or 1) > 0 then
-		    args.level_up = (args.level_up or 1) * (2 ^ #SMODS.find_card('v_may_astronomy_1'))
-	    end
-	    if #SMODS.find_card('v_may_astronomy_3') ~= 0 and (hand ~= may.favhand() or may.has_card('v_may_astronomy_5')) then
-		    args.level_up = args.level_up * (4 ^ #SMODS.find_card('v_may_astronomy_3'))
-	    end
-		if #SMODS.find_card('v_may_astronomy_4') ~= 0 then
-			local avg = 0
-			local num = 0
-			for k, v in pairs(G.GAME.hands) do 
-				if SMODS.is_poker_hand_visible(k) then
-					avg = avg + v.level
-					num = num + 1
+		if type(args.level_up) == 'number' then
+			if may.has_card('v_may_astronomy_1') and ((args.level_up or 1) > 0) then
+				args.level_up = to_big(args.level_up or 1):mul(to_big(2):pow(#SMODS.find_card('v_may_astronomy_1'))):normalize()
+			end
+			if may.has_card('v_may_astronomy_3') and (hand == may.favhand() or may.has_card('v_may_astronomy_5')) and ((args.level_up or 1) > 0) then
+				args.level_up = to_big(args.level_up or 1):mul(to_big(4):pow(#SMODS.find_card('v_may_astronomy_3'))):normalize()
+			end
+			if may.has_card('v_may_astronomy_4') and ((args.level_up or 1) > 0) then
+				local avg = 0
+				local num = 0
+				for k, v in pairs(G.GAME.hands) do 
+					if SMODS.is_poker_hand_visible(k) then
+						avg = avg + v.level
+						num = num + 1
+					end
+				end
+				avg = avg / num
+				if G.GAME.hands[args.hands[1]].level < avg then
+					args.level_up = to_big(args.level_up or 1):mul(to_big(5):pow(#SMODS.find_card('v_may_astronomy_4'))):normalize()
 				end
 			end
-			avg = avg / num
-			if G.GAME.hands[args.hands[1]].level < avg then
-				args.level_up = (args.level_up or 1) * (5 ^ #SMODS.find_card('v_may_astronomy_4'))
+			if may.has_card('v_may_astronomy_6') and ((args.level_up or 1) > 0) then
+				args.level_up = to_big(args.level_up or 1):mul(to_big(50):pow(#SMODS.find_card('v_may_astronomy_6'))):normalize()
+			end 
+			if may.has_card('v_may_astronomy_9') and ((args.level_up or 1) > 0) then
+				args.level_up = to_big(args.level_up or 1):pow(to_big(1 + (G.GAME.hands[args.hands[1]].played * 0.025)):pow(#SMODS.find_card('v_may_astronomy_9'))):normalize()
+			end
+			if may.has_card('v_may_astronomy_10') and ((args.level_up or 1) > 0) then
+				-- puta meu vida de Amulet
+				args.level_up = to_big(args.level_up or 1):mul(to_big(may.global_op()):pow((to_big(pre_astronomy):pow(G.GAME.hands[args.hands[1]].played):mul(5)))):normalize()
+				ast10_money = pre_astronomy * G.GAME.hands[args.hands[1]].played
 			end
 		end
-	    if #SMODS.find_card('v_may_astronomy_6') ~= 0 and (args.level_up or 1) > 0 then
-		    args.level_up = (args.level_up or 1) * (50 ^ #SMODS.find_card('v_may_astronomy_6'))
-	    end 
-		if #SMODS.find_card('v_may_astronomy_9') ~= 0 and (args.level_up or 1) > 0 then
-		    args.level_up = (args.level_up or 1) ^ ((1 + (G.GAME.hands[args.hands[1]].played * 0.025)) ^ #SMODS.find_card('v_may_astronomy_9'))
-	    end
-		if #SMODS.find_card('v_may_astronomy_10') ~= 0 and (args.level_up or 1) > 0 then
-		    args.level_up = (args.level_up or 1) * (may.global_op() ^ ((pre_astronomy ^ G.GAME.hands[args.hands[1]].played) * 5))
-			ast10_money = pre_astronomy * G.GAME.hands[args.hands[1]].played
-    	end
 	end
 	vanf_suph(args)
 	if args.level_up then
-		may.toggle_ring_display(false)
 		if ast10_money then
-			may.hand_dollars(args.from, args.hands[1], args.instant, -1, ast10_money)
+			if not args.instant then 
+				may.th(args.hands[1]) 
+			end 
+			may.hand_mod_dollars(args.from, args.hands[1], args.instant, -1, ast10_money)
+			if not args.instant then 
+				may.refresh_score_operator()
+				may.ch()
+			end
 		end
 	end
 end 
@@ -175,13 +155,13 @@ function G.FUNCS.select_blind(e)
 			may.add_round_timer(117, 'ethereal_scale_warning')
 			may.add_round_timer(147, 'prismatic_scale_warning')
 			may.add_round_timer(207, 'demiurgic_scale_warning')
-			may.add_round_timer(297, 'transcendent_scale_warning')
+			--may.add_round_timer(297, 'transcendent_scale_warning')
 		
 			may.add_round_timer(60, 'mythic_scale')
 			may.add_round_timer(120, 'ethereal_scale')
 			may.add_round_timer(150, 'prismatic_scale')
 			may.add_round_timer(210, 'demiurgic_scale')
-			may.add_round_timer(300, 'transcendent_scale')
+			--may.add_round_timer(300, 'transcendent_scale')
 		end
 		G.GAME.may_initialized_start_timers = true
 	end
@@ -197,11 +177,6 @@ function G.FUNCS.select_blind(e)
 	for k, v in pairs(elapsed_timers) do
 		table.remove(G.GAME.may_timers, v)
 	end
-	--[[if G.GAME.round_resets.ante > 8 and not G.GAME.may_announced_endless then 
-		may.a('Endless Mode reached! Endless-Exclusive content may now appear.', '20', 0.5, G.C.DARK_EDITION, 'may_ethereal_joker', 1, 1.5)
-		G.GAME.may_announced_endless = true
-		G.GAME.may_endless_mode = true
-	end]] 
 end
 
 -- don't ask
@@ -253,15 +228,15 @@ function get_blind_amount(ante)
 		--local surreal = to_big(G.GAME.may_surreal_scaling or 0)
 		local transcendent = to_big(G.GAME.may_transcendent_scaling or 0)
 		if mythic > to_big(0) then
-			amount = to_big(amount):arrow(1, to_big(((mythic * ((big20 + (to_big(ante) * big0_1)) + big1)))))
+			amount = to_big(amount):arrow(1, to_big(((mythic * ((big3 + (to_big(ante) * big0_1)) + big1)))))
 		    amount = FALLBACK(amount, ante)
 	    end
-		if transcendent > to_big(0) then
-			amount = to_big(amount):arrow(1, to_big((transcendent * (big30 + (to_big(ante) * big0_3)) + big1)))
+		if ethereal > to_big(0) then
+			amount = to_big(amount):arrow(1, to_big((ethereal * (big30 + (to_big(ante) * big0_3)) + big1)))
 		    amount = FALLBACK(amount, ante)
 	    end
-		if interdimensional > to_big(0) then
-			amount = to_big(amount):arrow(2, to_big((interdimensional * ((big20 + (to_big(ante) * big0_3)) + big1))))
+		if prismatic > to_big(0) then
+			amount = to_big(amount):arrow(2, to_big((prismatic * ((big20 + (to_big(ante) * big0_3)) + big1))))
 		    amount = FALLBACK(amount, ante)
 	    end
 		if demiurgic > to_big(0) then 
@@ -284,15 +259,15 @@ local vanf_cuc = Card.use_consumeable
 function Card:use_consumeable(area, copier)
 	vanf_cuc(self)
 	G.GAME.may_galileo_data = G.GAME.may_galileo_data or {}
-	if self:gc().set == 'may_modifiercard' and self:gc().key ~= 'c_may_nostalgic_card' then
+	if self:gc().set == 'may_modifiercard' then
 		G.GAME.last_modifier_card = self:gc().key
 	end
 	G.GAME.last_consumable = self:gc().key
 	G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 		if self:gc().set == 'Tarot' then 
 			G.GAME.last_tarot = self:gc().key
-		elseif self:gc().set == 'Planet' and (self:gc().planet_rarity or 0) < 1 then 
-			G.GAME.last_planet = self:gc().key
+		elseif self:gc().set == 'Planet' then 
+			G.GAME.last_planet = self:gc().key ~= 'c_may_gersemi_active' and self:gc().key or 'c_may_gersemi'
         elseif self:gc().set == 'Spectral' and not self:gc().hidden then 
 			G.GAME.last_spectral = self:gc().key
 		end
@@ -310,6 +285,10 @@ end
 
 local vanf_csc2 = Card.sell_card
 function Card:sell_card()
+	if self.gc and self:gc().indestructible then 
+		card_eval_status_text(self, 'extra', nil, nil, nil, { message = {'Nope!'}, colour = G.C.DARK_EDITION, delay = 0.45, sound = 'cancel' })
+		return
+	end
 	vanf_csc2(self)
 	if self.ability.consumeable and not (self:gc().hidden or self:gc().no_grc or self:gc().no_doe) then
 		G.GAME.may_last_consumable_sold = self:gc().key
@@ -346,27 +325,8 @@ end
 local vanf_ed = ease_dollars
 function ease_dollars(mod, instant)
 	if to_big(mod) == to_big(0) then instant = true end
-	mod = mod * (G.GAME.may_money_multiplier or 1)
+	mod = (mod or 0) * (G.GAME.may_money_multiplier or 1)
     vanf_ed(mod, instant)
-end
-
--- Taken from Partner
--- Prevents Displays from getting too close to the screen edges
-local Card_update_ref = Card.update
-function Card:update(dt)
-    Card_update_ref(self, dt)
-    if self:gc().set == "may_display" and not self.states.drag.is then
-        if self.T.x+self.T.w > G.ROOM.T.w then
-            self.T.x = G.ROOM.T.w-self.T.w
-        elseif self.T.x < 0 then
-            self.T.x = 0
-        end
-        if self.T.y+self.T.h > G.ROOM.T.h then
-            self.T.y = G.ROOM.T.h-self.T.h
-        elseif self.T.y < 0 then
-            self.T.y = 0
-        end
-    end
 end
 
 local vanf_er = end_round
@@ -408,7 +368,7 @@ function Card:start_dissolve(dissolve_colours, silent, dissolve_time_fac, no_jui
 			if self.ability.consumeable then
 				local success = 0
 				for i=1, self:getQty() do
-					if SMODS.pseudorandom_probability(s, "may_metallic", (G.GAME.probabilities.normal or 1), 2, "Metallic") then
+					if SMODS.pseudorandom_probability(s, "may_metallic", (G.GAME.probabilities.normal or 1), 2, "Metallic", true) then
 						success = success + 1
 					end
 				end
@@ -423,7 +383,7 @@ function Card:start_dissolve(dissolve_colours, silent, dissolve_time_fac, no_jui
 					vanf_csd(self, dissolve_colours, silent, dissolve_time_fac, no_juice)
 				end
 			else 
-				if SMODS.pseudorandom_probability(s, "may_metallic", (G.GAME.probabilities.normal or 1), 2, "Metallic") then
+				if SMODS.pseudorandom_probability(s, "may_metallic", (G.GAME.probabilities.normal or 1), 2, "Metallic", true) then
 					card_eval_status_text(self, 'extra', nil, nil, nil, { message = {'Nope!'}, colour = G.C.DARK_EDITION, delay = 0.45, sound = 'cancel' })
 					self.highlighted = false
 					if (self.area == G.play or self.area == G.hand) then
@@ -464,16 +424,6 @@ function CardArea:add_to_highlighted(card, silent)
 	vanf_caath(self, card, silent)
 end
 
-local vanf_catd = Card.add_to_deck
-function Card:add_to_deck(from_debuff)
-	vanf_catd(self, from_debuff)
-	if self.gc and self:gc().set == 'may_display' then
-	    if self.area == G.consumeables or self.area == G.jokers then
-		    self:set_ability(may.random_consumable('display_failsafe', nil, nil, G.P_CENTER_POOLS.Consumeable, true), nil, true)
-		end 
-	end	
-end
-
 local vanf_sb = G.FUNCS.skip_booster
 G.FUNCS.skip_booster = function(e)
 	vanf_sb(e)
@@ -490,6 +440,9 @@ local vanf_ii = SMODS.injectItems
 function SMODS.injectItems(...)
     vanf_ii(...)
 	for k, v in pairs(G.P_CENTERS) do
+		if v.config and v.config.hand_type and (v.set or '') == 'Planet' then 
+			SMODS.add_attribute('hand_specific', {v.key})
+		end
 		if may.is_fusable(v) then
 			if not may.is_fusion(v) then
 				SMODS.add_attribute('base_fusable', {v.key})
@@ -501,6 +454,7 @@ function SMODS.injectItems(...)
 		else
 			if may.is_fusion(v) then
 				SMODS.add_attribute('fusion', {v.key})
+				v.immutable = true
 			end
 		end
 		if v.rarity == 'may_mythic' then
@@ -512,6 +466,10 @@ function SMODS.injectItems(...)
 			v.bordertextbg_shader = v.bordertextbg_shader or "may_alpha_effect"
 		elseif v.rarity == 'may_prismatic' then
 			v.hoverbg_shader = v.hoverbg_shader or "may_prismatic_bg"
+			v.hoverbg_colour = v.hoverbg_colour or HEX("666666")
+			v.bordertextbg_shader = v.bordertextbg_shader or "may_alpha_effect"
+		elseif v.rarity == 'may_demiurgic' then
+			v.hoverbg_shader = v.hoverbg_shader or "may_demiurgic_bg"
 			v.hoverbg_colour = v.hoverbg_colour or HEX("666666")
 			v.bordertextbg_shader = v.bordertextbg_shader or "may_alpha_effect"
 		elseif v.rarity == 'may_transcendent' then
@@ -527,16 +485,33 @@ function SMODS.injectItems(...)
 			v.bordertextbg_colour = v.bordertextbg_colour or HEX("FFFFFF")
 			v.set_card_type_badge = v.set_card_type_badge or may.paradoxical_badge
 		end
+		if v.indestructible then
+			v.can_sell = function(self, card, context)
+				return false
+			end
+		end
 	end
 end
 
-local vanf_cc = create_card
-function create_card(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
-	local card = vanf_cc(_type, area, legendary, _rarity, skip_materialize, soulable, forced_key, key_append)
-	if G.STAGE ~= G.STAGES.MAIN_MENU and card.gc and card:gc() then
-		if card:has_attribute('hand_specific') and may.has_card('v_may_astronomy_6') then
-			card:set_ability(G.P_CENTERS.c_black_hole)
-		end
-	end
-	return card
+-- man
+local vanf_srus = SMODS.resolve_ui_shaders
+function SMODS.resolve_ui_shaders(node, shader, send)
+	if not node then return end
+	return vanf_srus(node, shader, send)
+end
+
+-- Thanks to fokuto
+local vamf_cmb = SMODS.create_mod_badges
+SMODS.create_mod_badges = function(obj, badges)
+    local before = #badges
+    vamf_cmb(obj, badges)
+    if obj and obj.mod and obj.mod.id == "mayhem" then
+        for i = before + 1, #badges do
+            local badge = badges[i]
+            local box = badge.nodes and badge.nodes[1]
+            if box and box.config then
+                box.config.shader = "may_mayhem"
+            end
+        end
+    end
 end

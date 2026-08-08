@@ -4,7 +4,11 @@ function may.no_context_lvl_up(card, hand, instant, amount)
     SMODS.upgrade_poker_hands({
         hands = hand,
         func = function(base, hand, parameter)
-            return base + G.GAME.hands[hand]['l_' .. parameter] * amount
+            if may.has_card('v_may_astronomy_7') and level_up > 0 then 
+				return to_big(base):arrow(may.global_op(), 1 + (G.GAME.hands[hand]['l_' .. parameter] * level_up)) 
+			else
+				return math.max(0, base + G.GAME.hands[hand]['l_' .. parameter] * level_up) 
+			end
         end,
         level_up = amount,
         from = card,
@@ -885,4 +889,39 @@ function may.saturnianhand(hand)
 		end
 	end
 	return key
-end 
+end
+
+function may.fast_level_up(card, hand, instant, amount)
+	--[[local prev_level = G.GAME.hands[hand].level
+	local prev_chips = G.GAME.hands[hand].chips
+	local prev_mult = G.GAME.hands[hand].mult
+	level_up_hand(card, hand, true, amount)
+	if not instant then 
+		may.h(localize(hand, 'poker_hands'), prev_chips, prev_mult, prev_level)
+		G.E_MANAGER:add_event(Event({trigger = 'after', func = function()
+			play_sound('tarot1')
+			card:juice_up(0.8, 0.5)
+		return true end}))
+		may.hm((amount or 1) > 0 and '+' or '-', true)
+		may.hc((amount or 1) > 0 and '+' or '-', true)
+		may.hlv(G.GAME.hands[hand].level, true)
+		delay(0.4)
+		may.th(hand)
+		delay(1)
+		may.ch()
+	end]] 
+	SMODS.upgrade_poker_hands({
+        hands = hand,
+        func = function(base, hand, parameter)
+            if may.has_card('v_may_astronomy_7') and level_up > 0 then 
+				return to_big(base):arrow(may.global_op(), 1 + (G.GAME.hands[hand]['l_' .. parameter] * level_up)) 
+			else
+				return math.max(0, base + G.GAME.hands[hand]['l_' .. parameter] * level_up) 
+			end
+        end,
+        level_up = amount,
+        from = card,
+        instant = instant, 
+		fast_level = true,
+    })
+end

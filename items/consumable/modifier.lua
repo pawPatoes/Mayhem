@@ -76,6 +76,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -103,8 +106,12 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end
 }
+		
 
 SMODS.Consumable {
 	key = 'mult_card',
@@ -178,6 +185,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -205,6 +215,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end
 }
 
@@ -286,6 +299,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -321,6 +337,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end
 }
 
@@ -396,6 +415,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -433,6 +455,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end
 }
 
@@ -510,6 +535,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -538,6 +566,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end
 }
 
@@ -614,6 +645,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -641,6 +675,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end
 }
 
@@ -718,6 +755,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -746,6 +786,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end
 }
 
@@ -830,6 +873,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -881,6 +927,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end
 }
 
@@ -956,6 +1005,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -983,6 +1035,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end, 
 	in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do
@@ -1066,6 +1121,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -1093,6 +1151,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
     in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do
@@ -1176,6 +1237,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -1204,6 +1268,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
     in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do
@@ -1287,6 +1354,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -1314,6 +1384,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
     in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do
@@ -1400,6 +1473,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -1428,6 +1504,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end, 
 	draw = function(self, card, layer)
 		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
@@ -1517,6 +1596,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -1544,6 +1626,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
     in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do
@@ -1631,6 +1716,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -1670,6 +1758,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
     in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do
@@ -1681,7 +1772,7 @@ SMODS.Consumable {
 	end
 }
 
-SMODS.Consumable {
+--[[SMODS.Consumable {
 	key = 'platinum_card',
 	config = { extra = { bonus = 1.1, target = 'm_may_platinum' } },
 	loc_txt = {
@@ -1756,6 +1847,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -1784,6 +1878,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
     in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do
@@ -1793,18 +1890,18 @@ SMODS.Consumable {
 		end
 		return false, {allow_duplicates = false}
 	end
-}
+}]]
 
 SMODS.Consumable {
 	key = 'fortune_card',
-	config = { extra = { bonus = 0.1, target = 'm_may_fortune' } },
+	config = { extra = { bonus = 0.5, target = 'm_may_fortune' } },
 	loc_txt = {
 		name = 'Fortune Card',
 		text = {
 			{
 				"Each {C:dark_edition}Fortune Card{}", 
 				"{C:attention}held in hand{} gives", 
-				"{X:money,C:white}+X#1#{} Dollars to {C:attention}all{} {C:purple}Poker Hands{}", 
+				"{C:money}+#1#{} Dollars to {C:attention}all{} {C:purple}Poker Hands{}", 
 				"per held {C:tarot}Tarot Card{}",
 				"{C:inactive}Currently{} {X:money,C:white}X#2#{} {C:inactive}Dollars{}"
 			}, 
@@ -1854,7 +1951,7 @@ SMODS.Consumable {
 				end
 			end
 		end
-		return { vars = { card.ability.extra.bonus, (1 + (card.ability.extra.bonus * tarots)) ^ amount } }
+		return { vars = { card.ability.extra.bonus, card.ability.extra.bonus * tarots * amount } }
 	end,
 	use = function(self, card, area, copier)
 		local targets = {}
@@ -1877,8 +1974,8 @@ SMODS.Consumable {
 			return true end})) 
 		end
 		for k, v in pairs(targets) do 
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..1 + (card.ability.extra.bonus * tarots)}, colour = G.C.MONEY, delay = 0.45})
-			may.hand_mod_dollars_all(v, false, 0, 1 + (card.ability.extra.bonus * tarots), false)
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..(card.ability.extra.bonus * tarots)}, colour = G.C.MONEY, delay = 0.45})
+			may.hand_mod_dollars_all(v, false, 0, card.ability.extra.bonus * tarots, false)
 		end
 		may.refresh_score_operator()
 		may.ch()
@@ -1889,6 +1986,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -1911,8 +2011,8 @@ SMODS.Consumable {
 			return true end})) 
 		end
 		for k, v in pairs(targets) do 
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'X'..(1 + (card.ability.extra.bonus * tarots)) ^ number}, colour = G.C.MONEY, delay = 0.45})
-			may.hand_mod_dollars_all(v, false, 0, (1 + (card.ability.extra.bonus * tarots)) ^ number, false)
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..(card.ability.extra.bonus * tarots * number)}, colour = G.C.MONEY, delay = 0.45})
+			may.hand_mod_dollars_all(v, false, 0, card.ability.extra.bonus * tarots * number, false)
 		end
 		may.refresh_score_operator()
 		may.ch()
@@ -1923,6 +2023,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
     in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do
@@ -2011,6 +2114,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -2040,6 +2146,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	in_pool = function(self, args)
 		return G.GAME.may_endless_mode, { allow_duplicates = false }
@@ -2117,6 +2226,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -2142,6 +2254,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
     in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do
@@ -2238,6 +2353,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -2274,6 +2392,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end, 
 	draw = function(self, card, layer)
 		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
@@ -2365,6 +2486,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -2401,6 +2525,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end, 
 	draw = function(self, card, layer)
 		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
@@ -2492,6 +2619,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -2528,6 +2658,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end, 
 	draw = function(self, card, layer)
 		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
@@ -2617,6 +2750,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -2652,6 +2788,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end, 
 	draw = function(self, card, layer)
 		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
@@ -2755,6 +2894,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -2803,6 +2945,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end, 
 	draw = function(self, card, layer)
 		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
@@ -2931,6 +3076,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -2987,6 +3135,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end, 
 	draw = function(self, card, layer)
 		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
@@ -3098,6 +3249,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -3146,6 +3300,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end, 
 	draw = function(self, card, layer)
 		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
@@ -3245,6 +3402,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -3281,6 +3441,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end, 
 	draw = function(self, card, layer)
 		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
@@ -3412,6 +3575,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local amount = 0
@@ -3464,6 +3630,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end, 
 	draw = function(self, card, layer)
 		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
@@ -3577,6 +3746,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -3627,6 +3799,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end, 
 	draw = function(self, card, layer)
 		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
@@ -3645,7 +3820,7 @@ SMODS.Consumable {
 
 -- Seal Cards
 
-SMODS.Consumable {
+--[[SMODS.Consumable {
 	key = 'red_seal_card',
 	config = { extra = { retriggers = 1, target = 'Red' } },
 	loc_txt = {
@@ -3722,6 +3897,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -3755,8 +3933,11 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end, 
-}
+}]]
 
 SMODS.Consumable {
 	key = 'blue_seal_card',
@@ -3837,6 +4018,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -3870,6 +4054,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end, 
 }
 
@@ -3952,6 +4139,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -3985,12 +4175,15 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end, 
 }
 
 SMODS.Consumable {
 	key = 'gold_seal_card',
-	config = { extra = { interest_cap = 5, target = 'Gold' } },
+	config = { extra = { interest_cap = 2, target = 'Gold' } },
 	loc_txt = {
 		name = 'Gold Seal Card',
 		text = {
@@ -4059,6 +4252,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -4085,6 +4281,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	draw = function(self, card, layer)
 		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
@@ -4095,15 +4294,16 @@ SMODS.Consumable {
 
 SMODS.Consumable {
 	key = 'copper_seal_card',
-	config = { extra = { odds = 3, target = 'may_copper_seal' } },
+	config = { extra = { cards = 2, target = 'may_copper_seal' } },
 	loc_txt = {
 		name = 'Copper Seal Card',
 		text = {
 			{
 				"Each card with {C:dark_edition}Copper Seal{}", 
-				"{C:attention}held in hand{}", 
-				"has a {C:green}#1# in #2#{} chance", 
-				"to redeem a random regular {C:green}Voucher{}",
+				"{C:attention}held in hand{} creates", 
+				"{C:attention}#1#{} random {C:attention}Consumables{}", 
+				"{C:inactive}Currently #2# Consumables{}",
+				"{C:inactive}Does not require room{}",
 			}, 
 			{
 				"{C:inactive,E:1}Art by Superb Thing{}"
@@ -4128,9 +4328,16 @@ SMODS.Consumable {
 		return false
 	end,
 	loc_vars = function(self, info_queue, card) 
-		info_queue[#info_queue + 1] = SMODS.Seals[card.ability.extra.target]
-		local normal, odds = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "Copper Seal Card")
-		return { vars = { normal, odds } }
+		info_queue[#info_queue + 1] = SMODS.Seals[card.ability.extra.target] 
+		local amount = 0
+		if G.hand then
+			for k, v in pairs(G.hand.cards) do 
+				if v.seal and v.seal == card.ability.extra.target then
+					amount = amount + 1
+				end
+			end
+		end 
+		return { vars = { card.ability.extra.cards, card.ability.extra.cards * amount } }
 	end,
 	use = function(self, card, area, copier)
 		local targets = {}
@@ -4147,29 +4354,15 @@ SMODS.Consumable {
 			return true end})) 
 		end
 		for k, v in pairs(targets) do 
-			if SMODS.pseudorandom_probability(card, "may_copper_seal", 1, card.ability.extra.odds, "Copper Seal") then
-			    card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+1 Voucher'}, colour = G.C.GREEN, delay = 0.45})
-				G.E_MANAGER:add_event(Event({trigger = 'after', func = function()
-				    may.voucher(may.get_next_voucher_key())
-			    return true end}))
-			else
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-                    attention_text({
-                        text = localize('k_nope_ex'),
-                        scale = 1.3,
-                        hold = 1.4,
-                        major = card,
-                        backdrop_colour = G.C.RED,
-                        align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and 'tm' or 'cm',
-                        offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
-                        silent = true
-                    })
-                    G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.06 * G.SETTINGS.GAMESPEED, blockable = false, blocking = false, func = function()
-                        play_sound('tarot2', 0.76, 0.4)
-                    return true end}))
-                    play_sound('tarot2', 1, 0.4)
-                    card:juice_up(0.3, 0.5)
-                return true end}))
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..card.ability.extra.cards..' Consumables'}, colour = G.C.FILTER, delay = 0.45})
+			for i = 1, card.ability.extra.cards do
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+					local choice = may.random_consumable('may_copper_seal_card')
+					local card2 = create_card('Consumeables', G.consumables, nil, nil, nil, nil, choice.key, "may_copper_seal_card")
+					card2:add_to_deck()
+					G.consumeables:emplace(card2)
+					play_sound('timpani')
+				return true end}))
 			end
 		end
 		for k, v in pairs(targets) do 
@@ -4179,6 +4372,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -4195,31 +4391,15 @@ SMODS.Consumable {
 			return true end})) 
 		end
 		for k, v in pairs(targets) do 
-			for i = 1, number do
-			    if SMODS.pseudorandom_probability(card, "may_copper_seal", 1, card.ability.extra.odds, "Copper Seal") then
-					card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+1 Voucher'}, colour = G.C.GREEN, delay = 0.45})
-				    G.E_MANAGER:add_event(Event({trigger = 'after', func = function()
-						may.voucher(may.get_next_voucher_key())
-					return true end}))
-			    else
-				    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-                        attention_text({
-                            text = localize('k_nope_ex'),
-                            scale = 1.3,
-                            hold = 1.4,
-                            major = card,
-                            backdrop_colour = G.C.RED,
-                            align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and 'tm' or 'cm',
-                            offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
-                            silent = true
-                        })
-                        G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.06 * G.SETTINGS.GAMESPEED, blockable = false, blocking = false, func = function()
-                            play_sound('tarot2', 0.76, 0.4)
-                        return true end}))
-                        play_sound('tarot2', 1, 0.4)
-                        card:juice_up(0.3, 0.5)
-                    return true end}))
-			    end
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'+'..card.ability.extra.cards..' Consumables'}, colour = G.C.FILTER, delay = 0.45})
+			for i = 1, card.ability.extra.cards * number do
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+					local choice = may.random_consumable('may_copper_seal_card')
+					local card2 = create_card('Consumeables', G.consumables, nil, nil, nil, nil, choice.key, "may_copper_seal_card")
+					card2:add_to_deck()
+					G.consumeables:emplace(card2)
+					play_sound('timpani')
+				return true end}))
 			end
 		end
 		for k, v in pairs(targets) do 
@@ -4229,6 +4409,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end, 
 	draw = function(self, card, layer)
 		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
@@ -4321,6 +4504,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -4354,6 +4540,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
     in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do
@@ -4433,6 +4622,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -4459,6 +4651,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
     in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do
@@ -4533,7 +4728,7 @@ SMODS.Consumable {
 			for i = 1, card.ability.extra.consumables do
 				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
 					local choice = may.random_consumable('may_inverted_seal_card')
-					local card2 = create_card(choice.set, G.consumables, nil, nil, nil, nil, choice.key, "may_inverted_seal_card")
+					local card2 = create_card('Consumeables', G.consumables, nil, nil, nil, nil, choice.key, "may_inverted_seal_card")
 					card2:add_to_deck()
 					card2:set_edition('e_negative')
 					G.consumeables:emplace(card2)
@@ -4548,6 +4743,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -4568,7 +4766,7 @@ SMODS.Consumable {
 			for i = 1, card.ability.extra.consumables * number do
 				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
 					local choice = may.random_consumable('may_inverted_seal_card')
-					local card2 = create_card(choice.set, G.consumables, nil, nil, nil, nil, choice.key, "may_inverted_seal_card")
+					local card2 = create_card('Consumeables', G.consumables, nil, nil, nil, nil, choice.key, "may_inverted_seal_card")
 					card2:add_to_deck()
 					card2:set_edition('e_negative')
 					G.consumeables:emplace(card2)
@@ -4583,6 +4781,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
     in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do
@@ -4662,6 +4863,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 		may.ch()
 	end,
 	bulk_use = function(self, card, area, copier, number)
@@ -4689,6 +4893,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 		may.ch()
 	end,
     in_pool = function(self, args)
@@ -4723,6 +4930,7 @@ SMODS.Consumable {
 	discovered = true,
 	reserve = true, 
 	atlas = 'modifier',
+	show_ring_display = true,
 	can_use = function(self, card)
 		if G.hand then
 			for k, v in pairs(G.hand.cards) do 
@@ -4772,6 +4980,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -4800,6 +5011,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
     in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do
@@ -4882,6 +5096,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 		may.ch()
 	end,
 	bulk_use = function(self, card, area, copier, number)
@@ -4909,6 +5126,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 		may.ch()
 	end,
     in_pool = function(self, args)
@@ -4981,6 +5201,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -5007,6 +5230,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
     in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do
@@ -5097,6 +5323,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -5133,6 +5362,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
     in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do
@@ -5227,7 +5459,7 @@ SMODS.Consumable {
 					card:juice_up(0.3, 0.5)
 				return true end}))
 			else
-				may.level_up_all_hands(card, nil, false, 0.5)
+				may.level_up_all_hands(card, false, 0.5, nil)
 			end
 		end
 		for k, v in pairs(targets) do 
@@ -5237,6 +5469,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		local targets = {}
@@ -5279,7 +5514,7 @@ SMODS.Consumable {
 						card:juice_up(0.3, 0.5)
 					return true end}))
 				else
-					may.level_up_all_hands(card, nil, false, 0.5)
+					may.level_up_all_hands(card, false, 0.5, nil)
 				end
 			end
 		end
@@ -5290,6 +5525,9 @@ SMODS.Consumable {
 				play_sound('card1', percent)
 			return true end})) 
 		end
+		G.E_MANAGER:add_event(Event({func = function()
+			G.hand:unhighlight_all()
+		return true end}))
 	end,
     in_pool = function(self, args)
 		for k, v in pairs(G.playing_cards) do
