@@ -1325,7 +1325,7 @@ SMODS.Consumable {
 	no_grc = true,
 	hidden = true, 
 	soul_set = 'Tarot', 
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1396,7 +1396,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { x_mult = 0.5, p_dollars = 5, odds = 4 } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1448,7 +1448,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { tags = 3 } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1493,7 +1493,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { x_mult = 1 } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1537,7 +1537,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { tags = 3 } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1582,7 +1582,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { x_chips = 1 } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1631,7 +1631,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { interest_cap = 2.5 } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1715,7 +1715,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { h_x_mult = 1 } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1760,7 +1760,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { x_mult = 2, odds = 4 } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1815,7 +1815,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { x_dollars = 1.1 } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1864,7 +1864,7 @@ SMODS.Consumable {
 	no_grc = true,
 	hidden = true, 
 	soul_set = 'Tarot', 
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1914,17 +1914,23 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { highlight = 5 } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
 	unlocked = true,
 	can_use = function(self, card)
 		local left 
-		for k, v in pairs(G.hand.highlighted) do 
+		local positions = {}
+		local lowest = math.huge
+		for k, v in ipairs(G.hand.highlighted) do 
 			if v ~= card then 
-				left = v
-				break 
+				table.insert(positions, {v, v.T.x})
+			end
+		end
+		for k, v in pairs(positions) do 
+			if v[2] < lowest then 
+				left = v[1]
 			end
 		end
 		return may.canuse() and left and #G.hand.highlighted > 0 and #G.hand.highlighted <= (card.ability.extra.highlight + (card.area == G.hand and 1 or 0)) and not SMODS.has_no_rank(left)
@@ -1938,9 +1944,16 @@ SMODS.Consumable {
 	discovered = true,
 	use = function(self, card, area, copier)
 		local left 
-		for k, v in pairs(G.hand.highlighted) do 
+		local positions = {}
+		local lowest = math.huge
+		for k, v in ipairs(G.hand.highlighted) do 
 			if v ~= card then 
-				left = v
+				table.insert(positions, {v, v.T.x})
+			end
+		end
+		for k, v in pairs(positions) do 
+			if v[2] < lowest then 
+				left = v[1]
 			end
 		end
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
@@ -1961,7 +1974,7 @@ SMODS.Consumable {
 			if v ~= left then
 				local percent = 0.85 + (k-0.999)/((#G.hand.highlighted - 1)-0.998)*0.3
 				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-					assert(SMODS.change_base(v, nil, left:get_id())) 
+					assert(SMODS.change_base(v, nil, SMODS.Ranks[left.base.value].key)) 
 					play_sound('tarot2', percent)
 					v:flip()
 					v:juice_up(0.3, 0.5)
@@ -1989,7 +2002,7 @@ SMODS.Consumable {
 	no_grc = true,
 	hidden = true, 
 	soul_set = 'Tarot', 
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2049,7 +2062,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { highlight = 3 } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2063,7 +2076,7 @@ SMODS.Consumable {
 			end
 		end
 		local limit_reached = false
-		if G.hand.highlighted > (1 + (card.area ==G.hand and 1 or 0)) then 
+		if #G.hand.highlighted > (1 + (card.area ==G.hand and 1 or 0)) then 
 			return false
 		end
 		for k, v in ipairs(G.hand.cards) do 
@@ -2072,7 +2085,7 @@ SMODS.Consumable {
 				break
 			end
 		end
-		return may.canuse() and not limit_reached
+		return may.canuse() and not limit_reached and #G.hand.highlighted > 0 and selected ~= G.hand.cards[1]
 	end,
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
@@ -2141,7 +2154,7 @@ SMODS.Consumable {
 	no_grc = true,
 	hidden = true, 
 	soul_set = 'Tarot', 
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2219,7 +2232,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { p_dollars = 7 } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2264,7 +2277,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { cards = 10 } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2324,7 +2337,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { suit = 'Diamonds' } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2391,7 +2404,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { suit = 'Clubs' } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2458,7 +2471,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { suit = 'Hearts' } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2524,7 +2537,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { tags = 3 } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2570,7 +2583,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { suit = 'Spades' } },
-	soul_rate = 0.04,
+	soul_rate = 0.0035,
 	attributes = {
 		'spectral_tarot',
 	},

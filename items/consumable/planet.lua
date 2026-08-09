@@ -953,6 +953,8 @@ SMODS.Consumable {
 		} 
 	},
 	immutable = true,
+	reserve = true, 
+	endless = true, 
 	can_use = function(self, card)
 		for k, v in pairs(G.hand.highlighted) do
 			if v ~= card then
@@ -964,6 +966,9 @@ SMODS.Consumable {
 		badges[1] = create_badge('Dwarf Planet', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
 	loc_vars = function(self, info_queue, card)
+		if Engulf and card.edition then 
+			info_queue[#info_queue + 1] = { key = "may_enf_varda", set = "Other" } 
+		end 
 		local selected
 		if G.hand then
 			for k, v in pairs(G.hand.highlighted) do
@@ -996,9 +1001,15 @@ SMODS.Consumable {
 				card2:juice_up(0.3, 0.5)
 				play_sound('timpani')
 				card:juice_up(0.3, 0.5)
+				if Engulf and card.edition then 
+					card2:set_edition(card.edition.key)
+				end
 			return true end}))
 		end
 	end,
+	in_pool = function(self, args)
+        return G.GAME.may_endless_mode, { allow_duplicates = false }
+    end
 }
 
 SMODS.Consumable {

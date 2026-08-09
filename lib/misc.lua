@@ -986,13 +986,13 @@ function may.varda_amount(card)
 	if card.edition then
 		exp = exp + 1
 		ret = math.ceil(ret * 1.1)
-		ret = ret + math.max(0, math.ceil((math.max(0, (20 - (G.P_CENTERS[card.edition.key].weight or 15)) * 0.15)) ^ 1.05))
+		ret = ret + math.max(0, math.ceil((math.max(0, (20 - (G.P_CENTERS[card.edition.key].weight or 15)) * 0.2)) ^ 1.1))
 	end
 	if card.seal then
 		exp = exp + 1
-		ret = math.floor(ret * 1.35)
+		ret = ret == 0 and 1 or math.ceil(ret * 1.45)
 	end
-	return math.floor(math.floor(ret * 0.85) ^ (1 + exp * 0.07))
+	return math.floor(math.floor(ret * 0.85) ^ (1 + exp * 0.085))
 end
 
 -- Gets sell value of a playing card
@@ -1001,13 +1001,6 @@ function Card:may_playing_sell_value()
 		return 
 	end 
 	local ret = 1
-	if not SMODS.has_enhancement(self, 'c_base') then 
-		if G.P_CENTERS[self.config.center.key].sell_value then
-			ret = ret + G.P_CENTERS[self.config.center.key].sell_value
-		else 
-			ret = ret + math.max(0, math.max(0, math.ceil(1.4 - (G.P_CENTERS[self.config.center.key].weight or 1))) ^ 1.3) 
-		end
-	end
 	if not SMODS.has_enhancement(self, 'c_base') then 
 		if G.P_CENTERS[self.config.center.key].sell_value then
 			ret = ret + G.P_CENTERS[self.config.center.key].sell_value
@@ -1024,11 +1017,11 @@ function Card:may_playing_sell_value()
 	if self:may_get_suit() and SMODS.Suits[self:may_get_suit()].sell_value then 
 		ret = ret + SMODS.Suits[self:may_get_suit()].sell_value
 	end 
-	if not SMODS.has_no_rank(self) and SMODS.Ranks[self:get_id()].sell_value then 
+	if not SMODS.has_no_rank(self) and SMODS.Ranks[self.base.value].sell_value then 
 		ret = ret + SMODS.Suits[self:get_id()].sell_value
 	end
 	if self.ability.playing_sell_value then 
 		ret = ret + self.ability.playing_sell_value
 	end 
-	return ret
+	return may.round(ret)
 end

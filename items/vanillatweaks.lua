@@ -168,7 +168,7 @@ SMODS.Joker:take_ownership('j_invisible', {
 		if context.selling_self and (card.ability.extra.invis_rounds >= card.ability.extra.total_rounds) and not context.blueprint then
 			local jokers = {}
 			for k, v in pairs(G.jokers.cards) do
-				if v ~= card and not v:may_is_fusion() and not (v:gc().rarity == 'may_surreal') then
+				if v:gc().key ~= 'j_invisible' and not v:may_is_fusion() and not (v:gc().rarity == 'may_opalescent') then
 					table.insert(jokers, v)
 				end
 			end

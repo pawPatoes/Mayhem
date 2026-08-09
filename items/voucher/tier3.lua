@@ -5,12 +5,17 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Power Trip",
 		text = {
-			"{X:"..may.epic_key..",C:white}Epic{} Jokers will", 
-			"appear {X:green,C:white}X4{} more frequently",
+			{
+				"{X:"..may.epic_key..",C:white}Epic{} Jokers will", 
+				"appear {X:green,C:white}X4{} more frequently",
+			}, 
+			{
+				"{C:inactive,E:1}Art by zikir8{}"
+			}
 		}
 	},
-	pos = { x = 2, y = 0 },
-	atlas = 'placeholder_voucher',
+	pos = { x = 7, y = 1 },
+	atlas = 'voucher',
 	cost = 15,
 	unlocked = true,
 	requires = {'v_may_natural_selection'},

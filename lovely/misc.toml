@@ -178,19 +178,23 @@ payload = '''
 	end
 	may.ch()
 	may.refresh_score_operator(nil, true)
-	if may.conf.TrParticles then
-        G.transcendence_particles = Particles(1, 1, 0, 0, {
-            timer = 0.015,
-            scale = 0.3,
-            initialize = true,
-            lifespan = 3,
-            speed = 5,
-            padding = -1,
-            attach = G.ROOM_ATTACH,
-            colours = { G.C.BLACK, G.C.DARK_EDITION },
-            fill = true
-        })
-        G.transcendence_particles.fade_alpha = 1
+	if may.conf.transcendence.particles then
+		if not G.transcendence_particles then
+        	G.transcendence_particles = Particles(1, 1, 0, 0, {
+            	timer = 0.015,
+            	scale = 0.3,
+            	initialize = true,
+            	lifespan = 3,
+            	speed = 5,
+            	padding = -1,
+            	attach = G.ROOM_ATTACH,
+            	colours = { G.C.BLACK, G.C.DARK_EDITION },
+            	fill = true
+        	})
+		end
+		if G.transcendence_particles then 
+        	G.transcendence_particles.fade_alpha = 1
+		end
 	end
 '''
 match_indent = true

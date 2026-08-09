@@ -615,6 +615,13 @@ return {
 					"{C:attention}this cards{} {C:dark_edition}Edition{}"
 				},
 			},
+			may_enf_varda = {
+				name = "Varda Edition Ability",
+				text = {
+					"Created {C:attention}cards{} have", 
+					"{C:attention}this cards{} {C:dark_edition}Edition{}"
+				},
+			},
 			may_enf_rings = {
 				name = "Ring Systems Edition Ability",
 				text = {
