@@ -60,14 +60,6 @@ match_indent = true
 # Wheel of Fortune (??????) 
 [[patches]]
 [patches.pattern]
-target = 'engine/ui.lua'
-pattern = "if self.config.colour[4] > 0.01 then"
-position = 'at'
-payload = "if (self.config and self.config.colour and self.config.colour[4] or 0) > 0.01 then"
-match_indent = true
-
-[[patches]]
-[patches.pattern]
 target = 'card.lua'
 pattern = "if next(self.eligible_strength_jokers) then return true end"
 position = 'at'

@@ -59,6 +59,7 @@ return {
 	["joker_shaders"] = true,
 	["intense_hyperoperations"] = false,
 	["alt_joker_page"] = true, 
+	["hand_speed"] = 1,
 	["notices"] = {
 		["stj"] = false, 
 		["cry"] = false, 

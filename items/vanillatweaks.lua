@@ -113,7 +113,13 @@ SMODS.Consumable:take_ownership('c_hex', {
 				end
 			end
 		end
-		return selected <= card.ability.extra.cards and #G.jokers.highlighted == 1 and G.jokers.highlighted[1].edition and G.jokers.highlighted[1].edition.key ~= 'e_negative'
+		return 
+			selected <= card.ability.extra.cards and 
+			selected > 0 and 
+			#G.jokers.highlighted == 1 and
+			not G.jokers.highlighted[1]:may_is_fusion() and 
+			G.jokers.highlighted[1].edition and 
+			G.jokers.highlighted[1].edition.key ~= 'e_negative'
 	end,
 	use = function(self, card)
 		local edition = G.jokers.highlighted[1].edition.key
@@ -162,7 +168,7 @@ SMODS.Joker:take_ownership('j_invisible', {
 		if context.selling_self and (card.ability.extra.invis_rounds >= card.ability.extra.total_rounds) and not context.blueprint then
 			local jokers = {}
 			for k, v in pairs(G.jokers.cards) do
-				if v ~= card and not v:may_is_fusion() and not (v:gc().rarity == 'may_surreal') then
+				if v:gc().key ~= 'j_invisible' and not v:may_is_fusion() and not (v:gc().rarity == 'may_opalescent') then
 					table.insert(jokers, v)
 				end
 			end

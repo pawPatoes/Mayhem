@@ -68,120 +68,6 @@ for k, v in pairs(SMODS.Scoring_Calculations) do
 	end
 end
 
--- Allow Vouchers and Booster Packs in Consumable Slots
--- Code mostly from Entropy
-G.FUNCS.can_open_pack = function(e)
-    local card = e.config.ref_table
-    if (not may.canuse()) or may.booster() then 
-        e.config.colour = G.C.UI.BACKGROUND_INACTIVE
-        e.config.button = nil
-    else
-        e.config.colour = G.C.MULT
-        e.config.button = 'open_pack'
-    end
-end
-
-G.FUNCS.open_pack = function(e)
-    local card = e.config.ref_table
-    --[[G.GAME.DefineBoosterState = G.STATE
-    delay(0.1)
-    local area = card.area
-    if card.ability.booster_pos then G.GAME.current_round.used_packs[card.ability.booster_pos] = 'USED' end
-	--G.hand:remove()
-    if not card.from_tag then 
-      G.GAME.round_scores.cards_purchased.amt = G.GAME.round_scores.cards_purchased.amt + 1
-    end
-    if card.RPerkeoPack then
-        G.RPerkeoPack = true
-    end
-    if G.shop and not G.shop.alignment.offset.py then
-        G.shop.alignment.offset.py = G.shop.alignment.offset.y
-        G.shop.alignment.offset.y = G.ROOM.T.y + 29
-    end
-    if G.blind_select and not G.blind_select.alignment.offset.py then
-        G.blind_select.alignment.offset.py = G.blind_select.alignment.offset.y
-        G.blind_select.alignment.offset.y = G.ROOM.T.y + 39
-    end
-    if G.round_eval and not G.round_eval.alignment.offset.py then
-        G.round_eval.alignment.offset.py = G.round_eval.alignment.offset.y
-        G.round_eval.alignment.offset.y = G.ROOM.T.y + 29
-    end
-    e.config.ref_table.cost = 0
-    e.config.ref_table:open()]] 
-	if #G.hand.cards > 0 then
-		for k, v in ipairs(G.hand.cards) do
-		    draw_card(G.hand, G.discard, 1, 'up', true, v, nil, true)
-			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-				play_sound('card1')
-			return true end}))
-		end
-	end
-	card.from_tag = true
-	card.cost = 0
-	if card.area then
-		card.area:remove_card(card)
-        draw_card(card.area, G.play, 1, 'up', true, card, nil, true) 
-	end
-	G.E_MANAGER:add_event(Event({delay = 0.4, trigger = 'after', func = function()
-		G.CONTROLLER.locks.use = nil
-		if card.ability.name:find('Arcana') then 
-            G.STATE = G.STATES.TAROT_PACK
-        elseif card.ability.name:find('Celestial') then
-            G.STATE = G.STATES.PLANET_PACK
-        elseif card.ability.name:find('Spectral') then
-            G.STATE = G.STATES.SPECTRAL_PACK
-        elseif card.ability.name:find('Standard') then
-            G.STATE = G.STATES.STANDARD_PACK
-        elseif card.ability.name:find('Buffoon') then
-            G.STATE = G.STATES.BUFFOON_PACK
-		else
-			G.STATE = G.STATES.SMODS_BOOSTER_OPENED
-        end
-		card:remove()
-	return true end}))
-	G.FUNCS.use_card({ config = { ref_table = card } }) 
-	-- cryptid.
-    if card.ability.cry_multiuse and to_big(card.ability.cry_multiuse) > to_big(1) then
-        local card = card
-        card.ability.cry_multiuse = card.ability.cry_multiuse - 1
-        card.ability.extra_value = -1 * math.max(1, math.floor(card.cost/2))
-        card:set_cost()
-        delay(0.4)
-        card:juice_up()
-        play_sound('generic1')
-        attention_text({
-            text = format_ui_value(card.ability.cry_multiuse),
-            scale = 1.1,
-            hold = 0.6,
-            major = card,
-            backdrop_colour = G.C.SET[card.config.center.set],
-            align = 'bm',
-            offset = {x = 0, y = 0.2}
-        })
-        local c2 = copy_card(card)
-        c2:add_to_deck()
-        area:emplace(c2)
-    end
-end
-
-G.FUNCS.can_redeem_voucher = function(e)
-    local card = e.config.ref_table
-    if (not may.canuse()) or may.booster() then 
-        e.config.colour = G.C.UI.BACKGROUND_INACTIVE
-        e.config.button = nil
-    else
-        e.config.colour = G.C.MULT
-        e.config.button = 'redeem_voucher'
-    end
-end
-
-G.FUNCS.redeem_voucher = function(e)
-    local card = e.config.ref_table
-	if card.config.center.set == 'Voucher' then
-		may.redeem_specific(card)
-	end
-end
-
 G.FUNCS.may_can_sell_voucher = function(e)
     local card = e.config.ref_table
     if not may.canuse() then 
@@ -437,7 +323,7 @@ function G.UIDEF.use_and_sell_buttons(card)
             }}
 		}}
 	end
-	-- Booster Packs and Vouchers in Consumable Slots
+	--[[ Booster Packs and Vouchers in Consumable Slots
 	if card:gc().set == "Voucher" and card.area == G.consumeables then
 		return {n=G.UIT.ROOT, config = {padding = 0, colour = G.C.CLEAR}, nodes={
             {n=G.UIT.C, config={padding = 0.15, align = 'cl'}, nodes={
@@ -497,156 +383,154 @@ function G.UIDEF.use_and_sell_buttons(card)
                 }},
             }},
         }}
-    end
+    end]]
 	return ui
 end
 
 -- Overhaul vouchers tab in run info so it can handle many vouchers + Selling vouchers
 -- taken from Betmma Better Vouchers This Run UI
---if #SMODS.find_mod('BetterVouchersThisRunUI') == 0 then
-	local PAIRS_PER_ROW = 5
-    local ROWS_PER_PAGE = 2
-    
-	function G.UIDEF.used_vouchers()
-		G.SETTINGS.paused = false
-        local silent = false
-        local keys_used = {}
-        local vouchers_used = {}
-        local area_count = 0
-        local voucher_areas = {}
-        local voucher_pairs = {}
-        local voucher_rows = {}
-        G.your_collection={}
-        for k, v in ipairs(G.P_CENTER_POOLS.Voucher) do
-            local key = 1 + math.floor((k-0.1)/2)
-            keys_used[key] = keys_used[key] or {}
-            if G.GAME.used_vouchers[v.key] then 
-                keys_used[key][#keys_used[key]+1] = v
-                table.insert(vouchers_used, v)
-                silent=true
-            end
-        end
-        local keys_used2={}
-        for k, v in ipairs(keys_used) do 
-            if next(v) then
-                area_count = area_count + 1
-                table.insert(keys_used2,v)
-            end
-        end
-        keys_used=keys_used2
+local PAIRS_PER_ROW = 5
+local ROWS_PER_PAGE = 2
 
-        for k, v in ipairs(keys_used) do 
-            if k>PAIRS_PER_ROW*ROWS_PER_PAGE then break end
-            if next(v) then
-                if #voucher_areas and #voucher_areas % PAIRS_PER_ROW==0 then 
-                    table.insert(voucher_rows, 
-                        {n=G.UIT.R, config={align = "cm", padding = 0, no_fill = true}, nodes=voucher_pairs}
-                    )
-                    voucher_pairs = {}
-                end
-                voucher_areas[#voucher_areas + 1] = CardArea(
-                    G.ROOM.T.x + 0.2*G.ROOM.T.w/2,G.ROOM.T.h,
-                    (#v == 1 and 1 or 1.33)*G.CARD_W,
-                    (area_count >=10 and 1 or 1.3)*G.CARD_H, 
-                    {card_limit = 2, type = 'voucher', highlight_limit = 2})
-                G.your_collection[#G.your_collection+1]=voucher_areas[#voucher_areas]
-                for kk, vv in ipairs(v) do 
-                    local center = G.P_CENTERS[vv.key]
-                    local card = Card(voucher_areas[#voucher_areas].T.x + voucher_areas[#voucher_areas].T.w/2, voucher_areas[#voucher_areas].T.y, G.CARD_W, G.CARD_H, nil, center, {bypass_discovery_center=true,bypass_discovery_ui=true,bypass_lock=true})
-                    card.ability.order = vv.order
-					card.ability.in_voucher_tab = true
-                    card:start_materialize(nil, silent)
-					card.area = voucher_areas[#voucher_areas]
-                    silent = true
-                    voucher_areas[#voucher_areas]:emplace(card)
-                end
-            table.insert(voucher_pairs, 
-                {n=G.UIT.C, config={align = "cm", padding = 0, no_fill = true}, nodes={
-                    {n=G.UIT.O, config={object = voucher_areas[#voucher_areas]}}
-                }}
-            )
-            end
-        end
-        table.insert(voucher_rows, 
-            {n=G.UIT.R, config={align = "cm", padding = 0, no_fill = true}, nodes=voucher_pairs}
-        )
-        local deck_tables = {}
+function G.UIDEF.used_vouchers()
+	G.SETTINGS.paused = false
+	local silent = false
+	local keys_used = {}
+	local vouchers_used = {}
+	local area_count = 0
+	local voucher_areas = {}
+	local voucher_pairs = {}
+	local voucher_rows = {}
+	G.your_collection={}
+	for k, v in ipairs(G.P_CENTER_POOLS.Voucher) do
+		local key = 1 + math.floor((k-0.1)/2)
+		keys_used[key] = keys_used[key] or {}
+		if G.GAME.used_vouchers[v.key] then 
+			keys_used[key][#keys_used[key]+1] = v
+			table.insert(vouchers_used, v)
+			silent=true
+		end
+	end
+	local keys_used2={}
+	for k, v in ipairs(keys_used) do 
+		if next(v) then
+			area_count = area_count + 1
+			table.insert(keys_used2,v)
+		end
+	end
+	keys_used=keys_used2
 
-        local voucher_options = {}
-        for i = 1, math.ceil(area_count/(PAIRS_PER_ROW*ROWS_PER_PAGE)) do
-            table.insert(voucher_options, localize('k_page')..' '..tostring(i)..'/'..tostring(math.ceil(area_count/(PAIRS_PER_ROW*ROWS_PER_PAGE))))
-        end
-        if not silent then
-            local t ={n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes={
-                {n=G.UIT.O, config={object = DynaText({string = {localize('ph_no_vouchers')}, colours = {G.C.UI.TEXT_LIGHT}, bump = true, scale = 0.6})}}
-            }}
-            return t
-        end
-        INIT_COLLECTION_CARD_ALERTS()
-        t={n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes={
-            {n=G.UIT.R, config={align = "cm"}, nodes={
-              {n=G.UIT.O, config={object = DynaText({string = {localize('ph_vouchers_redeemed')}, colours = {G.C.UI.TEXT_LIGHT}, bump = true, scale = 0.6})}}
-            }},
-            {n=G.UIT.R, config={align = "cm", minh = 0.5}, nodes={
-            }},
-            {n=G.UIT.R, config={align = "cm", colour = G.C.BLACK, r = 1, padding = 0.15, emboss = 0.05}, nodes={
-              {n=G.UIT.R, config={align = "cm"}, nodes=voucher_rows},
-            }},
-            {n=G.UIT.R, config={align = "cm"}, nodes={
-                create_option_cycle({options = voucher_options, w = 4.5, cycle_shoulders = true, opt_callback = 'used_voucher_page', focus_args = {snap_to = true, nav = 'wide'}, current_option = 1, colour = G.C.RED, no_pips = true})
-            }}
-          }}
-        return t
-    end
-	
-    G.FUNCS.used_voucher_page = function(args)
-        if not args or not args.cycle_config then return end
-        local keys_used = {}
-        local vouchers_used = {}
-        local area_count = 0
-        local voucher_areas = {}
-        local voucher_pairs = {}
-        local voucher_rows = {}
-        for k, v in ipairs(G.P_CENTER_POOLS["Voucher"]) do
-            local key = 1 + math.floor((k-0.1)/2)
-            keys_used[key] = keys_used[key] or {}
-            if G.GAME.used_vouchers[v.key] then 
-                keys_used[key][#keys_used[key]+1] = v
-                table.insert(vouchers_used,v)
-                silent=true
-            end
-        end
-        local keys_used2={}
-        for k, v in ipairs(keys_used) do 
-            if next(v) then
-                area_count = area_count + 1
-                table.insert(keys_used2,v)
-            end
-        end
-        keys_used=keys_used2
-        for j = 1, #G.your_collection do
-            for i = #G.your_collection[j].cards,1, -1 do
-                local c = G.your_collection[j]:remove_card(G.your_collection[j].cards[i])
-                c:remove()
-                c = nil
-            end
-        end
-        for i = 1, #G.your_collection do
-            v=keys_used[PAIRS_PER_ROW*ROWS_PER_PAGE*(args.cycle_config.current_option - 1)+i]
-            if not v then break end
-            for j = 1, #v do
-                local center = v[j]
-                if not center then break end
-                local card = Card(G.your_collection[j].T.x + G.your_collection[j].T.w/2, G.your_collection[j].T.y, G.CARD_W, G.CARD_H, G.P_CARDS.empty, center)
-                card:start_materialize(nil, i>1 or j>1)
-				card.area = voucher_areas[#voucher_areas]
+	for k, v in ipairs(keys_used) do 
+		if k>PAIRS_PER_ROW*ROWS_PER_PAGE then break end
+		if next(v) then
+			if #voucher_areas and #voucher_areas % PAIRS_PER_ROW==0 then 
+				table.insert(voucher_rows, 
+					{n=G.UIT.R, config={align = "cm", padding = 0, no_fill = true}, nodes=voucher_pairs}
+				)
+				voucher_pairs = {}
+			end
+			voucher_areas[#voucher_areas + 1] = CardArea(
+				G.ROOM.T.x + 0.2*G.ROOM.T.w/2,G.ROOM.T.h,
+				(#v == 1 and 1 or 1.33)*G.CARD_W,
+				(area_count >=10 and 1 or 1.3)*G.CARD_H, 
+				{card_limit = 2, type = 'voucher', highlight_limit = 2})
+			G.your_collection[#G.your_collection+1]=voucher_areas[#voucher_areas]
+			for kk, vv in ipairs(v) do 
+				local center = G.P_CENTERS[vv.key]
+				local card = Card(voucher_areas[#voucher_areas].T.x + voucher_areas[#voucher_areas].T.w/2, voucher_areas[#voucher_areas].T.y, G.CARD_W, G.CARD_H, nil, center, {bypass_discovery_center=true,bypass_discovery_ui=true,bypass_lock=true})
+				card.ability.order = vv.order
 				card.ability.in_voucher_tab = true
-                G.your_collection[i]:emplace(card)
-            end
-        end
-        INIT_COLLECTION_CARD_ALERTS()
-    end
---end
+				card:start_materialize(nil, silent)
+				card.area = voucher_areas[#voucher_areas]
+				silent = true
+				voucher_areas[#voucher_areas]:emplace(card)
+			end
+		table.insert(voucher_pairs, 
+			{n=G.UIT.C, config={align = "cm", padding = 0, no_fill = true}, nodes={
+				{n=G.UIT.O, config={object = voucher_areas[#voucher_areas]}}
+			}}
+		)
+		end
+	end
+	table.insert(voucher_rows, 
+		{n=G.UIT.R, config={align = "cm", padding = 0, no_fill = true}, nodes=voucher_pairs}
+	)
+	local deck_tables = {}
+
+	local voucher_options = {}
+	for i = 1, math.ceil(area_count/(PAIRS_PER_ROW*ROWS_PER_PAGE)) do
+		table.insert(voucher_options, localize('k_page')..' '..tostring(i)..'/'..tostring(math.ceil(area_count/(PAIRS_PER_ROW*ROWS_PER_PAGE))))
+	end
+	if not silent then
+		local t ={n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes={
+			{n=G.UIT.O, config={object = DynaText({string = {localize('ph_no_vouchers')}, colours = {G.C.UI.TEXT_LIGHT}, bump = true, scale = 0.6})}}
+		}}
+		return t
+	end
+	INIT_COLLECTION_CARD_ALERTS()
+	t={n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes={
+		{n=G.UIT.R, config={align = "cm"}, nodes={
+		  {n=G.UIT.O, config={object = DynaText({string = {localize('ph_vouchers_redeemed')}, colours = {G.C.UI.TEXT_LIGHT}, bump = true, scale = 0.6})}}
+		}},
+		{n=G.UIT.R, config={align = "cm", minh = 0.5}, nodes={
+		}},
+		{n=G.UIT.R, config={align = "cm", colour = G.C.BLACK, r = 1, padding = 0.15, emboss = 0.05}, nodes={
+		  {n=G.UIT.R, config={align = "cm"}, nodes=voucher_rows},
+		}},
+		{n=G.UIT.R, config={align = "cm"}, nodes={
+			create_option_cycle({options = voucher_options, w = 4.5, cycle_shoulders = true, opt_callback = 'used_voucher_page', focus_args = {snap_to = true, nav = 'wide'}, current_option = 1, colour = G.C.RED, no_pips = true})
+		}}
+	  }}
+	return t
+end
+
+G.FUNCS.used_voucher_page = function(args)
+	if not args or not args.cycle_config then return end
+	local keys_used = {}
+	local vouchers_used = {}
+	local area_count = 0
+	local voucher_areas = {}
+	local voucher_pairs = {}
+	local voucher_rows = {}
+	for k, v in ipairs(G.P_CENTER_POOLS["Voucher"]) do
+		local key = 1 + math.floor((k-0.1)/2)
+		keys_used[key] = keys_used[key] or {}
+		if G.GAME.used_vouchers[v.key] then 
+			keys_used[key][#keys_used[key]+1] = v
+			table.insert(vouchers_used,v)
+			silent=true
+		end
+	end
+	local keys_used2={}
+	for k, v in ipairs(keys_used) do 
+		if next(v) then
+			area_count = area_count + 1
+			table.insert(keys_used2,v)
+		end
+	end
+	keys_used=keys_used2
+	for j = 1, #G.your_collection do
+		for i = #G.your_collection[j].cards,1, -1 do
+			local c = G.your_collection[j]:remove_card(G.your_collection[j].cards[i])
+			c:remove()
+			c = nil
+		end
+	end
+	for i = 1, #G.your_collection do
+		v=keys_used[PAIRS_PER_ROW*ROWS_PER_PAGE*(args.cycle_config.current_option - 1)+i]
+		if not v then break end
+		for j = 1, #v do
+			local center = v[j]
+			if not center then break end
+			local card = Card(G.your_collection[j].T.x + G.your_collection[j].T.w/2, G.your_collection[j].T.y, G.CARD_W, G.CARD_H, G.P_CARDS.empty, center)
+			card:start_materialize(nil, i>1 or j>1)
+			card.area = voucher_areas[#voucher_areas]
+			card.ability.in_voucher_tab = true
+			G.your_collection[i]:emplace(card)
+		end
+	end
+	INIT_COLLECTION_CARD_ALERTS()
+end
 
 -- Invulnerable Blinds 
 -- Taken from POLTERWORX
@@ -862,7 +746,7 @@ function may.hover_funcs.ante()
 		'may_mythic_scaling',
 		'may_ethereal_scaling',
 		'may_prismatic_scaling',
-		'may_demiurigc_scaling',
+		'may_demiurgic_scaling',
 	}) do
 		G.GAME[v] = G.GAME[v] or 0
 	end
@@ -894,7 +778,7 @@ function may.hover_funcs.ante()
 					{n=G.UIT.T, config={align="cm", scale = 0.4, colour = G.C.GREY, text = 'Demiurgic Scaling', }}
 				}},
 				{n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes={
-					{n=G.UIT.T, config={align="cm", colour = G.C.RARITY.may_demiurgic, scale = 0.5, ref_table = G.GAME, ref_value = "may_demiurigc_scaling", }}
+					{n=G.UIT.T, config={align="cm", colour = G.C.RARITY.may_demiurgic, scale = 0.5, ref_table = G.GAME, ref_value = "may_demiurgic_scaling", }}
 				}},
 			}}
 		}}

@@ -200,9 +200,8 @@ SMODS.Blind {
 	loc_txt = {
 		name = 'The Bug',
 		text = { 
-			"Cards without",
-			"Enhancements, Editions", 
-			"or Seals are debuffed", 
+			"Unmodified cards", 
+			"are debuffed", 
 		}
     },
 	boss = {

@@ -17,7 +17,6 @@ may.libs = {
 	'timers.lua',
 	'calculationkeys.lua',
 	'omeganum.lua',
-	'unredeem.lua',
 	'pools.lua',
     'menu.lua',
 	'misc.lua',
@@ -99,7 +98,6 @@ may.cross_mod = {
 	'GRM', 
 	'BlindEditions', 
 	--'CardSleeves', 
-	'Spectrallib',
 	'Espazio',
 }
 

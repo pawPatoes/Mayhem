@@ -509,12 +509,17 @@ SMODS.Back {
 			level_up_hand(nil, 'High Card', true, to_big(to_big(1e100):arrow(1, 10)):arrow(5005, to_big(to_big(1e100):arrow(1, 10))))
 			ease_dollars(9999)
 			--add_skill_xp(99999)
-			for i = 1, 25 do 
-				local new = SMODS.add_card({ set = 'Planet' })
-				new:set_edition(SMODS.poll_edition({ guaranteed = true }))
-			end
+			--for i = 1, 25 do 
+				--local new = SMODS.add_card({ set = 'Planet' })
+				--new:set_edition(SMODS.poll_edition({ guaranteed = true }))
+			--end
 			SMODS.add_card({ key = 'j_may_acum' })
-			SMODS.add_card({ key = 'c_may_pallas', area = G.consumeables })
+			for i = 1, 5 do
+				SMODS.add_card({ key = 'c_may_erasure', area = G.consumeables })
+				SMODS.add_card({ key = 'c_aura' })
+				SMODS.add_card({ key = 'c_talisman' })
+				SMODS.add_card({ key = 'c_may_pickaxe' })
+			end
 		return true end})) 
 	end, 
 }]] 

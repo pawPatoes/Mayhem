@@ -202,6 +202,12 @@ may.setting_tips = {
 	party_everywhere = {
 		"If enabled, the {C:may_transcendent,E:1}Party Time{} {C:tarot}theme{} will replace the", 
 		"{C:attention}default{} {C:dark_edition}Fusion{} {C:attention}Joker{} {C:tarot}themes{}"
+	}, 
+	
+	hand_speed = {
+		"{C:mult}NONE{}: No effects", 
+		"{C:planet}SILENT LEVEL-UPS{}: All {C:purple}Poker Hand{} {C:planet}level ups{} will be {C:inactive}silent{}", 
+		"{C:attention}SILENT EVERYTHING{}: All {C:purple}Poker Hand{} {C:money}modifications{} will be {C:inactive}silent{}"
 	}
 }
 
@@ -679,11 +685,25 @@ SMODS.current_mod.extra_tabs = function()
 				}}
 			end
 		},
+		{
+			label = 'Quality of Life',
+			tab_definition_function = function()
+				return {n = G.UIT.ROOT, config = {align = 'cm',minw = 8,minh = 4,r = .1,padding = .1,colour = G.C.BLACK}, nodes = {
+					{n=G.UIT.R, config={}, nodes={
+						create_option_cycle({
+							label = "Poker Hand changes",
+							scale = 1,
+							w = 6,
+							options = {"None", "Silent level ups", "Silent everything"},
+							opt_callback = 'may_upd_hand_speed',
+							current_option = may.conf.hand_speed,
+							on_demand_tooltip = { text = may.setting_tips.hand_speed }
+						})
+					}},
+				}}
+			end,
+		},
 	}
-end
-
-G.FUNCS.may_upd_mode = function(e)
-	may.conf.Mode = e.to_key
 end
 
 G.FUNCS.may_upd_treffects = function(e)
@@ -700,6 +720,10 @@ end
 
 G.FUNCS.may_upd_scaling_activation = function(e)
 	may.conf.scaling_activation = e.to_key
+end
+
+G.FUNCS.may_upd_hand_speed = function(e)
+	may.conf.hand_speed = e.to_key
 end
 
 -- Deprecated

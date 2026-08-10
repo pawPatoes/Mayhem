@@ -5,13 +5,18 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Power Trip",
 		text = {
-			"{X:"..may.epic_key..",C:white}Epic{} Jokers will", 
-			"appear {X:green,C:white}X4{} more frequently",
+			{
+				"{X:"..may.epic_key..",C:white}Epic{} Jokers will", 
+				"appear {X:green,C:white}X4{} more frequently",
+			}, 
+			{
+				"{C:inactive,E:1}Art by zikir8{}"
+			}
 		}
 	},
-	pos = { x = 2, y = 0 },
-	atlas = 'placeholder_voucher',
-	cost = 10,
+	pos = { x = 7, y = 1 },
+	atlas = 'voucher',
+	cost = 15,
 	unlocked = true,
 	requires = {'v_may_natural_selection'},
 	redeem = function(self, card)
@@ -27,11 +32,16 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Booster Cataclysm",
 		text = {
-			"{C:attention}+2{} {C:green}Booster Packs{} in shop",
+			{
+				"{C:attention}+2{} {C:green}Booster Packs{} in shop",
+			}, 
+			{
+				"{C:inactive,E:1}Art by zikir8{}"
+			}
 		}
 	},
-	pos = { x = 2, y = 0 },
-	atlas = 'placeholder_voucher',
+	pos = { x = 6, y = 1 },
+	atlas = 'voucher',
 	cost = 10,
 	unlocked = true,
 	requires = {'v_may_booster_overabundance'},
@@ -48,14 +58,18 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Trifecta",
 		text = {
-			"{C:spectral}Spectral Cards{} may appear in {C:attention}shop{}"
+			{
+				"{C:spectral}Spectral Cards{} may appear in {C:attention}shop{}"
+			}, 
+			{
+				"{C:inactive,E:1}Art by zikir8{}"
+			}
 		}
 	},
-	pos = { x = 2, y = 0 },
-	atlas = 'placeholder_voucher',
-	cost = 10,
+	pos = { x = 7, y = 0 },
+	atlas = 'voucher',
+	cost = 15,
 	unlocked = true,
-	voucher_sellable = true,
 	requires = {'v_may_extended_selection'},
 	redeem = function(self, card)
 		G.GAME.spectral_rate = 4
@@ -70,14 +84,19 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Quasar",
 		text = {
-			"{C:attention}Quintuple{} the {C:may_demiurgic}Level{} {C:purple}Mult & Chips{}",
-			"of {C:attention}all{} {C:purple}Poker Hands{}",
+			{
+				"{C:attention}Quintuple{} the {C:may_demiurgic}Level{} {C:purple}Mult & Chips{}",
+				"of {C:attention}all{} {C:purple}Poker Hands{}",
+			},
+			{
+				"{C:inactive,E:1}Art by zikir8{}"
+			}
 		}
 	},
-	pos = { x = 2, y = 0 },
-	atlas = 'placeholder_voucher',
+	pos = { x = 6, y = 0 },
+	atlas = 'voucher',
 	requires = {'v_may_meteor'},
-	cost = 10,
+	cost = 15,
 	unlocked = true,
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "may_level_multchips_tutorial", set = "Other" }
@@ -87,5 +106,10 @@ SMODS.Voucher {
 		may.hand_lvl_multchips_all(card, false, {0, 5}, {0, 5})
 		may.ch()
 		may.refresh_score_operator()
-	end
+	end, 
+	unredeem = function(self, card)
+		may.hand_lvl_multchips_all(card, false, {0, 0.2}, {0, 0.2})
+		may.ch()
+		may.refresh_score_operator()
+	end 
 }

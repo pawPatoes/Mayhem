@@ -737,35 +737,39 @@ SMODS.Consumable {
 		if #hands > 0 then
 			for k, v in pairs(hands) do
 				may.hand_mod_dollars(card, v, true, -1, card.ability.extra.dollars)
-				may.th(v)
+				if may.conf.hand_speed < 3 then
+					may.th(v)
+				end
 				if Engulf and card.edition then 
-					Engulf.EditionHand(card, v, card.edition, 1)
+					Engulf.EditionHand(card, v, card.edition, 1, may.conf.hand_speed < 3)
 				end
 			end 
-			may.h('Random Hands', '...', '---', '...')
-			G.GAME.may_override_monitor_colors = true
-			may.cosmetic_score_operator('', {0, 0, 0, 0})
-			G.E_MANAGER:add_event(Event({delay = 0.2, func = function()
-				ease_colour(G.C.UI_CHIPS, copy_table(G.C.GOLD), 0.1)
-			return true end}))
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-				G.TAROT_INTERRUPT_PULSE = true
-				play_sound('coin3')
-				card:juice_up(0.8, 0.5)
-			return true end}))
-			may.hc('+'..card.ability.extra.dollars, true)
-			delay(0.2)
-			may.hc('...', false)
-			delay(1.3)
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-				ease_colour(G.C.UI_CHIPS, G.C.BLUE, 0.1)
-				G.GAME.may_override_monitor_colors = nil
-			return true end}))
-			G.E_MANAGER:add_event(Event({func = function()
-				G.TAROT_INTERRUPT_PULSE = nil
-			return true end}))
-			may.refresh_score_operator()
-			may.ch()
+			if may.conf.hand_speed < 3 then
+				may.h('Random Hands', '...', '---', '...')
+				G.GAME.may_override_monitor_colors = true
+				may.cosmetic_score_operator('', {0, 0, 0, 0})
+				G.E_MANAGER:add_event(Event({delay = 0.2, func = function()
+					ease_colour(G.C.UI_CHIPS, copy_table(G.C.GOLD), 0.1)
+				return true end}))
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+					G.TAROT_INTERRUPT_PULSE = true
+					play_sound('coin3')
+					card:juice_up(0.8, 0.5)
+				return true end}))
+				may.hc('+'..card.ability.extra.dollars, true)
+				delay(0.2)
+				may.hc('...', false)
+				delay(1.3)
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+					ease_colour(G.C.UI_CHIPS, G.C.BLUE, 0.1)
+					G.GAME.may_override_monitor_colors = nil
+				return true end}))
+				G.E_MANAGER:add_event(Event({func = function()
+					G.TAROT_INTERRUPT_PULSE = nil
+				return true end}))
+				may.refresh_score_operator()
+				may.ch()
+			end
 		else
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
 				attention_text({
@@ -816,37 +820,41 @@ SMODS.Consumable {
 		if #hands > 0 then
 			for k, v in pairs(hands) do
 				may.hand_mod_dollars(card, v[1], true, -1, card.ability.extra.dollars * v[2])
-				may.th(v[1])
-				may.hlv('X'..v[2])
-				delay(0.2)
+				if may.conf.hand_speed < 3 then
+					may.th(v[1])
+					may.hlv('X'..v[2])
+					delay(0.2)
+				end
 				if Engulf and card.edition then 
-					Engulf.EditionHand(card, v[1], card.edition, v[2])
+					Engulf.EditionHand(card, v[1], card.edition, v[2], may.conf.hand_speed < 3)
 				end
 			end 
-			may.h('Random Hands', '...', '---', '...')
-			G.GAME.may_override_monitor_colors = true
-			may.cosmetic_score_operator('', {0, 0, 0, 0})
-			G.E_MANAGER:add_event(Event({delay = 0.2, func = function()
-				ease_colour(G.C.UI_CHIPS, copy_table(G.C.GOLD), 0.1)
-			return true end}))
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-				G.TAROT_INTERRUPT_PULSE = true
-				play_sound('coin3')
-				card:juice_up(0.8, 0.5)
-			return true end}))
-			may.hc('+...', true)
-			delay(0.2)
-			may.hc('...', false)
-			delay(1.3)
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
-				ease_colour(G.C.UI_CHIPS, G.C.BLUE, 0.1)
-				G.GAME.may_override_monitor_colors = nil
-			return true end}))
-			G.E_MANAGER:add_event(Event({func = function()
-				G.TAROT_INTERRUPT_PULSE = nil
-			return true end}))
-			may.refresh_score_operator()
-			may.ch()
+			if may.conf.hand_speed < 3 then
+				may.h('Random Hands', '...', '---', '...')
+				G.GAME.may_override_monitor_colors = true
+				may.cosmetic_score_operator('', {0, 0, 0, 0})
+				G.E_MANAGER:add_event(Event({delay = 0.2, func = function()
+					ease_colour(G.C.UI_CHIPS, copy_table(G.C.GOLD), 0.1)
+				return true end}))
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+					G.TAROT_INTERRUPT_PULSE = true
+					play_sound('coin3')
+					card:juice_up(0.8, 0.5)
+				return true end}))
+				may.hc('+...', true)
+				delay(0.2)
+				may.hc('...', false)
+				delay(1.3)
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+					ease_colour(G.C.UI_CHIPS, G.C.BLUE, 0.1)
+					G.GAME.may_override_monitor_colors = nil
+				return true end}))
+				G.E_MANAGER:add_event(Event({func = function()
+					G.TAROT_INTERRUPT_PULSE = nil
+				return true end}))
+				may.refresh_score_operator()
+				may.ch()
+			end
 		else
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
 				attention_text({
@@ -920,6 +928,88 @@ SMODS.Consumable {
 			may.ch()
 		end
 	end,
+}
+
+SMODS.Consumable {
+	set = 'Planet',
+	key = 'varda',
+	pos = { x = 5, y = 4 },
+	atlas = 'planet',
+	cost = 3,
+	loc_txt = {
+		name = 'Varda',
+		text = {
+			"{C:mult}Destroys{} a selected {C:dark_edition}modified{} {C:attention}playing card{}",
+			"in exchange for {C:planet}Planet Cards{}",
+			may.pager(),
+			"Base of {C:mult}0{} {C:planet}Planets{}, additional {C:planet}Planets{}",
+			"given based on the {C:attention}rarity{}",
+			"of its {C:dark_edition}Enhancement{}, {C:dark_edition}Edition{} and/or {C:dark_edition}Seal{}",
+			"Increases {C:dark_edition}exponentially{} if card is",
+			"{C:green}heavily{} {C:dark_edition}modified{}",
+			may.pager(),
+			"{C:inactive}Currently #1# Planet Cards{}",
+			"{C:inactive}Does not require room{}",
+		} 
+	},
+	immutable = true,
+	reserve = true, 
+	endless = true, 
+	can_use = function(self, card)
+		for k, v in pairs(G.hand.highlighted) do
+			if v ~= card then
+				return may.canuse() and #G.hand.highlighted <= (card.area == G.hand and 2 or 1) and may.varda_amount(v) > 0
+			end
+		end
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Dwarf Planet', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		if Engulf and card.edition then 
+			info_queue[#info_queue + 1] = { key = "may_enf_varda", set = "Other" } 
+		end 
+		local selected
+		if G.hand then
+			for k, v in pairs(G.hand.highlighted) do
+				if v ~= card then
+					selected = v
+					break
+				end
+			end
+		end
+		return { vars = { (selected and #G.hand.highlighted <= (card.area == G.hand and 2 or 1)) and may.varda_amount(selected) or 'NaN' } }
+	end,
+	use = function(self, card)
+		local selected
+		for k, v in pairs(G.hand.highlighted) do
+			if v ~= card then
+				selected = v
+				break
+			end
+		end
+		local amount = may.varda_amount(selected)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+			play_sound('card3')
+			card:juice_up(0.3, 0.5)
+			selected:juice_up(0.3, 0.5)
+		return true end}))
+		SMODS.destroy_cards(selected)
+		for i = 1, amount do
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.1, func = function()
+				local card2 = SMODS.add_card({ set = 'Planet' })
+				card2:juice_up(0.3, 0.5)
+				play_sound('timpani')
+				card:juice_up(0.3, 0.5)
+				if Engulf and card.edition then 
+					card2:set_edition(card.edition.key)
+				end
+			return true end}))
+		end
+	end,
+	in_pool = function(self, args)
+        return G.GAME.may_endless_mode, { allow_duplicates = false }
+    end
 }
 
 SMODS.Consumable {
