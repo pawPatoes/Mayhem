@@ -130,13 +130,13 @@ match_indent = true
 [[patches]]
 [patches.pattern]
 target = "functions/UI_definitions.lua"
-pattern = '''
-local ret_val = {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={'''
-position = "at"
+pattern = '''AUT.main.background_colour = AUT.main.background_colour or AUT.box_colours and AUT.box_colours[1] or nil'''
+position = "before"
 payload = '''
-bordertextbg_shader = card.config.center and card.config.center.bordertextbg_shader or "none"
-bordertextbg_colour = card.config.center and card.config.center.bordertextbg_colour or G.C.UI.BACKGROUND_WHITE
-local ret_val = {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={
+local bg_shader = card.config.center and card.config.center.hoverbg_shader or "none"
+local bg_colour = may.conf.joker_shaders and card.config.center and card.config.center.hoverbg_colour or adjust_alpha(card_type_background, 0.8)
+local bordertextbg_shader = card.config.center and card.config.center.bordertextbg_shader or "none"
+local bordertextbg_colour = card.config.center and card.config.center.bordertextbg_colour or G.C.UI.BACKGROUND_WHITE
 '''
 match_indent = true
 
@@ -157,6 +157,28 @@ match_indent = true
 [[patches]]
 [patches.pattern]
 target = "functions/UI_definitions.lua"
+pattern = '''table.insert(slib_ret_rows, 3, name_from_rows(AUT.ccd.name, G.C.WHITE))
+table.insert(slib_ret_rows, 4, desc_from_rows(AUT.ccd.main))'''
+position = "at"
+payload = '''
+table.insert(slib_ret_rows, 3, name_from_rows(AUT.ccd.name, G.C.WHITE))
+table.insert(slib_ret_rows, 4, desc_from_rows(AUT.ccd.main, nil, nil, bordertextbg_shader, bordertextbg_colour))
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''desc_from_rows(card:generate_UIBox_unlock_table(true).main)'''
+position = "at"
+payload = '''
+desc_from_rows(card:generate_UIBox_unlock_table(true).main, nil, nil, bordertextbg_shader, bordertextbg_colour)
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
 pattern = '''AUT.ccd and desc_from_rows(AUT.ccd.main) or nil,
 name_from_rows(AUT.name, is_playing_card and G.C.WHITE or nil),
 desc_from_rows(AUT.main),'''
@@ -165,18 +187,6 @@ payload = '''
 AUT.ccd and desc_from_rows(AUT.ccd.main, nil, nil, bordertextbg_shader, bordertextbg_colour) or nil,
 name_from_rows(AUT.name, is_playing_card and G.C.WHITE or nil),
 desc_from_rows(AUT.main, nil, nil, bordertextbg_shader, bordertextbg_colour),
-'''
-match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = "functions/UI_definitions.lua"
-pattern = '''info_boxes = {{n=G.UIT.R, config = {align="cm", padding = 0.05, card_pos = card.T.x }, nodes = info_cols}}'''
-position = "at"
-payload = '''
-local bg_shader = card.config.center and card.config.center.hoverbg_shader or "none"
-local bg_colour = may.conf.joker_shaders and card.config.center and card.config.center.hoverbg_colour or adjust_alpha(card_type_background, 0.8)
-info_boxes = {{n=G.UIT.R, config = {align="cm", padding = 0.05, card_pos = card.T.x }, nodes = info_cols}}
 '''
 match_indent = true
 	  
@@ -209,8 +219,6 @@ target = "functions/UI_definitions.lua"
 pattern = '''multi_boxes[#multi_boxes+1] = desc_from_rows(box)'''
 position = "at"
 payload = '''
-local bordertextbg_shader = may.conf.joker_shaders and card.config.center and card.config.center.bordertextbg_shader or "none"
-local bordertextbg_colour = may.conf.joker_shaders and card.config.center and card.config.center.bordertextbg_colour or G.C.UI.BACKGROUND_WHITE
 multi_boxes[#multi_boxes+1] = desc_from_rows(box, nil, nil, bordertextbg_shader, bordertextbg_colour)
 '''
 match_indent = true

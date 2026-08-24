@@ -359,7 +359,7 @@ SMODS.Consumable {
 		name = "The Torch",
 		text = {
 			{
-				"Enhances a {C:attention}random{} card held in {C:attention}hand{}",
+				"Enhances up to {C:attention}#1#{} selected card in {C:attention}hand{}",
 				"into a {C:attention}Scorched{} card"
 			},
 			{
@@ -370,19 +370,16 @@ SMODS.Consumable {
 	pos = { x = 0, y = 0 },
 	atlas = 'tarot',
 	cost = 3,
+	config = { max_highlighted = 1, mod_conv = "m_may_scorched" },
 	unlocked = true,
-	config = { extra = { cards = 1, target = 'm_may_scorched'} }, 
-	loc_vars = function(self, info_queue, card)
-		info_queue[#info_queue + 1] = G.P_CENTERS[card.ability.extra.target]
-        return { vars = { card.ability.extra.cards } }
-	end,
 	can_use = function(self, card)
-		return may.canuse() and #G.hand.cards ~= 0
+		return may.canuse() and #G.hand.highlighted <= (card.ability.max_highlighted + (card.area == G.hand and 1 or 0)) and #G.hand.highlighted > (card.area == G.hand and 1 or 0)
 	end,
-	discovered = true,
-	use = function(self, card, area, copier)
-		may.random_enhancement(card.ability.extra.target, 'may_torch')
-	end
+	loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = G.P_CENTERS[card.ability.mod_conv]
+		return { vars = { card.ability.max_highilghted or self.config.max_highlighted } }
+	end,
+	discovered = true
 }
 
 SMODS.Consumable {

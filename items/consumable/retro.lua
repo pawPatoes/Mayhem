@@ -77,7 +77,7 @@ SMODS.Consumable {
 
 SMODS.Consumable {
 	key = '1_up',
-	config = { extra = { dollars = 25, mul = 1.75, ascension = 9 } },
+	config = { extra = { dollars = 25, mul = 1.75, ascension = 10 } },
 	loc_txt = {
 		name = '1-UP',
 		text = {
@@ -140,7 +140,7 @@ SMODS.Consumable {
 
 SMODS.Consumable {
 	key = 'lootbox',
-	config = { extra = { cards = 5, mul = 1.75, ascension = 7 } },
+	config = { extra = { cards = 5, mul = 1.75, ascension = 6 } },
 	loc_txt = {
 		name = 'LOOTBOX',
 		text = {
@@ -210,7 +210,7 @@ SMODS.Consumable {
 
 SMODS.Consumable {
 	key = 'upgrade',
-	config = { extra = { cards = 4, mul = 2, ascension = 7 } },
+	config = { extra = { cards = 4, mul = 2, ascension = 8 } },
 	loc_txt = {
 		name = 'UPGRADE',
 		text = {
@@ -658,7 +658,7 @@ SMODS.Consumable {
 
 SMODS.Consumable {
 	key = 'bossfight',
-	config = { extra = { tags = 2, mul = 1.75, ascension = 10 } },
+	config = { extra = { tags = 2, mul = 1.75, ascension = 11 } },
 	loc_txt = {
 		name = 'BOSSFIGHT',
 		text = {
@@ -715,7 +715,7 @@ SMODS.Consumable {
 		return true end}))
 		if may.cu(self.key) < card.ability.extra.ascension then
 			G.GAME.may_retro_stats = G.GAME.may_retro_stats or {}
-			G.GAME.may_retro_stats.easter_egg = math.ceil((G.GAME.may_retro_stats.easter_egg or 4) * card.ability.extra.mul)
+			G.GAME.may_retro_stats.bossfight = math.ceil((G.GAME.may_retro_stats.bossfight or 4) * card.ability.extra.mul)
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Increased!", colour = G.C.SECONDARY_SET.retrocards, delay = 0.45, sound = 'may_forcetrigger'})
 		elseif may.cu(self.key) == card.ability.extra.ascension then 
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Ascended!", colour = SMODS.Gradients.may_col_demiurgic, delay = 0.45, sound = 'may_c_ascended'})

@@ -973,7 +973,7 @@ SMODS.Joker {
 		if context.before or context.forcetrigger then
 			for k, v in pairs(G.consumeables.cards) do 
                 if v:gc().key == may.planethand(context.scoring_name) then 
-                    may.level_up_all_hands(card, context.scoring_name, false, card.ability.extra.levels)
+                    may.level_up_all_hands(card, false, card.ability.extra.levels * v:getQty(), context.scoring_name)
                 end 
             end
 			may.ch()
