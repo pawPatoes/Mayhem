@@ -26,6 +26,7 @@ Mayhem has the following dependencies which must be installed for the mod to wor
 * [Amulet](https://github.com/frostice482/Amulet) - Adds support for *very* large, hyperoperational numbers 
 * [Noituus](https://codeberg.org/alex343xd/Noituus) - Stacks identical Consumables and allows you to use most of them in bulk
 * [SpectralLib](https://github.com/Spectralpack/spectrallib) - Library mod
+* 
 If this is your first time modding Balatro, check the Wiki on the Steamodded repository for a tutorial on how to set the essentials up.
 
 All of the dependencies on the latest supported versions are included in the Dependencies ZIP on every Mayhem release.
