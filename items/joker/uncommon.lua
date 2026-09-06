@@ -83,7 +83,7 @@ SMODS.Joker {
 	calculate = function(self, card, context)
 		if context.joker_main or context.forcetrigger and not (G.hand.config.highlighted_limit == #G.play.cards) then
 			return {
-				dollars = math.min((G.hand.config.highlighted_limit - context.scoring_hand) * card.ability.extra.dollars, card.ability.extra.dollars * 25), 
+				dollars = math.min((G.hand.config.highlighted_limit - #context.scoring_hand) * card.ability.extra.dollars, card.ability.extra.dollars * 25), 
 				card = card,
 			}
 		end

@@ -295,7 +295,7 @@ SMODS.Voucher {
 				may.pager(70), 
 				"When a {C:purple}Poker Hand{} is {C:planet}leveled up{},", 
 				"earn {C:money}Interest Cap{} equal to {X:attention,C:white}X0.0001{} the {C:planet}level{} {C:green}increase{}", 
-				"{C:inactive}Max of +(Current Interest Cap X 3){}"
+				"{C:inactive}Max of +(Current Interest Cap X 0.1){}"
 		    }, 
 		    {
 			    "Appears every {C:attention}9 rounds{}", 
@@ -319,7 +319,7 @@ SMODS.Voucher {
 	end,
 	calculate = function(self, card, context)
 		if context.level_up_hand and to_big(context.amount) > to_big(0) then
-			may.ease_interest_cap(-1, math.min(G.GAME.interest_cap * 3, to_number(context.amount) * 0.0001), context.instant)
+			may.ease_interest_cap(-1, math.min(G.GAME.interest_cap * 0.1, to_number(context.amount) * 0.0001), context.instant)
 		end
 	end,
 	special_voucher_behavior = function(self)
@@ -442,7 +442,7 @@ SMODS.Voucher {
 	end, 
 	calculate = function(self, card, context)
 		if context.level_up_hand and to_big(context.amount) < to_big(0) then
-			may.level_up_all_hands(context.other_card, context.hand, context.instant, math.abs(context.amount) * (context.hand == may.favhand() and 200 or 125))
+			may.level_up_all_hands(context.other_card, context.instant, math.abs(context.amount) * (context.hand == may.favhand() and 200 or 125), context.hand)
 		end 
 	end, 
 	special_voucher_behavior = function(self)
@@ -486,7 +486,7 @@ SMODS.Voucher {
 		badges[1] = create_badge('Special Voucher', SMODS.Gradients.may_col_huge_operator_alt , nil, 1.2)
 	end, 
 	loc_vars = function(self, info_queue, card)
-		return { vars = {  may.global_op() } }
+		return { vars = { may.global_op() } }
 	end,
 	special_voucher_behavior = function(self)
 		return may.get_run_stage() == 'post-transcendent' and G.GAME.round % 9 == 0 and may.get_highest_special_voucher_tier('astronomy') == 8

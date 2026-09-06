@@ -278,7 +278,7 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Investment",
 		text = {
-			"{C:money}+1{} Interest",
+			"{C:money}+0.25{} Interest",
 		}
 	},
 	pos = { x = 0, y = 1 },
@@ -289,10 +289,10 @@ SMODS.Voucher {
         info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
     end,
 	redeem = function(self, card)
-		may.ease_interest(-1, 1)
+		may.ease_interest(-1, 0.25)
 	end,
 	unredeem = function(self, card)
-		may.ease_interest(-1, -1)
+		may.ease_interest(-1, -0.25)
 	end,
 }
 
@@ -301,7 +301,7 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Business",
 		text = {
-			"{C:money}+1{} Interest",
+			"{C:money}+0.5{} Interest",
 		}
 	},
 	pos = { x = 1, y = 1 },
@@ -313,10 +313,10 @@ SMODS.Voucher {
         info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
     end,
 	redeem = function(self, card)
-		may.ease_interest(-1, 1)
+		may.ease_interest(-1, 0.5)
 	end,
 	unredeem = function(self, card)
-		may.ease_interest(-1, -1)
+		may.ease_interest(-1, -0.5)
 	end,
 }
 
@@ -835,7 +835,7 @@ SMODS.Voucher {
 		name = "Fidelity Program",
 		text = {
 			"When a {C:green}Voucher{} is redeemed,", 
-			"create {C:attention}2{} random {C:attention}Consumables{}", 
+			"create a random {C:attention}Consumable{}", 
 			"{C:inactive}Does not require room{}"
 		}
 	},
@@ -846,15 +846,13 @@ SMODS.Voucher {
 	endless = true,
 	calculate = function(self, card, context)
 		if context.buying_card and context.card:gc().set == 'Voucher' then 
-			for i = 1, 2 do 
-				G.E_MANAGER:add_event(Event({func = function() 
-					if context.card ~= card then 
-						local card2 = SMODS.add_card({ set = 'Consumeables', key = may.random_consumable('may_fidelity_program', nil, nil, nil, true).key })
-						card2:juice_up(0.3, 0.5)
-						play_sound('timpani')
-					end
-				return true end})) 
-			end
+			G.E_MANAGER:add_event(Event({func = function() 
+				if context.card ~= card then 
+					local card2 = SMODS.add_card({ set = 'Consumeables', key = may.random_consumable('may_fidelity_program', nil, nil, nil, true).key })
+					card2:juice_up(0.3, 0.5)
+					play_sound('timpani')
+				end
+			return true end})) 
 		end
 	end, 
 	in_pool = function(self, args)
@@ -867,8 +865,8 @@ SMODS.Voucher {
 	loc_txt = {
 		name = "Membership Prize",
 		text = {
-			"When a {C:green}Voucher{} is redeemed inside the shop,", 
-			"add a random {C:attention}Booster Pack{} to the shop",
+			"When a {C:green}Voucher{} is redeemed,", 
+			"create a random {C:attention}Tag{}",
 		}
 	},
 	pos = { x = 5, y = 4 },
@@ -880,7 +878,8 @@ SMODS.Voucher {
 	calculate = function(self, card, context)
 		if context.buying_card and context.card ~= card and context.card:gc().set == 'Voucher' and G.shop then 
 			G.E_MANAGER:add_event(Event({func = function() 
-				SMODS.add_booster_to_shop()
+				may.random_tag()
+				play_sound('tarot1')
 			return true end})) 
 		end
 	end, 

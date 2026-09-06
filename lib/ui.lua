@@ -653,16 +653,16 @@ function may.add_fusion_text(joker1, joker2, condition)
 	if may.conf.short_fusion then
 		return {
 			"{C:dark_edition}FUSION:{} {C:attention}"..joker1.."{} {C:chips}>>{} {C:dark_edition}"..joker2.."{}",
-			"{C:may_opalescent,s:1.1,u:may_opalescent}CONDITION{}",
-			condition
+			--[["{C:may_opalescent,s:1.1,u:may_opalescent}CONDITION{}",
+			condition]] 
 		}
 	else
 	    return {
 		    "This Joker can {C:dark_edition}fuse{} with", 
 			"{C:attention}"..joker1.."{} to create {C:dark_edition}"..joker2.."{}", 
-		    --may.pager(math.max(string.len(condition), string.len("This Joker can {C:dark_edition}fuse{} with")) * 0.6), 
+		    --[[may.pager(math.max(string.len(condition), string.len("This Joker can {C:dark_edition}fuse{} with")) * 0.6), 
 		    '{C:may_opalescent,s:1.2,u:may_opalescent}Fusion Condition{}', 
-		    condition
+		    condition]] 
 	    }
 	end
 end
@@ -718,8 +718,8 @@ end
 may.hover_funcs = {}
 
 function may.hover_funcs.money()
-	G.GAME.may_interest_temp = may.round(G.GAME.interest_amount)
-	G.GAME.may_interest_cap_temp = may.round(G.GAME.interest_cap)
+	G.GAME.may_interest_temp = may.round(G.GAME.interest_amount, 3)
+	G.GAME.may_interest_cap_temp = may.round(G.GAME.interest_cap, 3)
 	return {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={
 		{n=G.UIT.R, config={padding = 0.05, r = 0.12, colour = G.C.DYN_UI.MAIN, emboss = 0.07}, nodes={
 			{n=G.UIT.R, config={align = "cm", padding = 0.07, r = 0.1, colour = G.C.WHITE }, nodes={
@@ -789,7 +789,7 @@ function may.hover_funcs.run_info()
 	for k, v in pairs({
 		'may_instability',
 	}) do
-		G.GAME[v..'_temp'] = may.round(G.GAME[v] or 0)
+		G.GAME[v..'_temp'] = may.round(G.GAME[v] or 0, 3)
 	end
 	G.GAME.may_temp_global_op = may.global_op()
 	return {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={

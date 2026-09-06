@@ -55,7 +55,7 @@ SMODS.Seal {
 		return { vars = { card.ability.seal.x_chips } }
 	end, 
 	calculate = function(self, card, context)
-		if context.cardarea == G.play and context.main_scoring then
+		if context.cardarea == G.play and context.main_scoring and card.ability.seal.x_chips > 1 then
 			return {
 				x_chips = card.ability.seal.x_chips
 			}
