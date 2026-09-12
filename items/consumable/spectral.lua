@@ -623,7 +623,7 @@ SMODS.Consumable {
 	end
 }]] 
 
-SMODS.Consumable {
+--[[SMODS.Consumable {
 	key = 'warp',
 	set = 'Spectral',
 	loc_txt = {
@@ -652,7 +652,7 @@ SMODS.Consumable {
 		ease_ante(card.ability.extra.ante)
 		may.level_up_all_hands(card, false, (G.GAME.round_resets.ante + card.ability.extra.ante) * card.ability.extra.mul)
 	end
-}
+}]] 
 
 SMODS.Consumable {
 	key = 'nemesis',
@@ -1325,7 +1325,7 @@ SMODS.Consumable {
 	no_grc = true,
 	hidden = true, 
 	soul_set = 'Tarot', 
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1340,6 +1340,9 @@ SMODS.Consumable {
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		local fool_c = G.GAME.may_last_booster and G.P_CENTERS[G.GAME.may_last_booster] or nil
 		local last_booster = fool_c and localize { type = 'name_text', key = fool_c.key, set = 'Other' } or localize('k_none')
+		if last_booster == 'ERROR' then 
+			last_booster = localize { type = 'name_text', key = string.sub(fool_c.key or '', 1, -3), set = 'Other' }
+		end
 		local colour = (not fool_c) and G.C.RED or G.C.DARK_EDITION
 		if fool_c then
 			info_queue[#info_queue + 1] = fool_c
@@ -1396,7 +1399,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { x_mult = 0.5, p_dollars = 5, odds = 4 } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1448,7 +1451,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { tags = 3 } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1493,7 +1496,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { x_mult = 1 } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1537,7 +1540,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { tags = 3 } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1582,7 +1585,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { x_chips = 1 } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1631,7 +1634,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { interest_cap = 2.5 } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1715,7 +1718,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { h_x_mult = 1 } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1760,7 +1763,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { x_mult = 2, odds = 4 } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1815,7 +1818,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { x_dollars = 1.1 } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1864,7 +1867,7 @@ SMODS.Consumable {
 	no_grc = true,
 	hidden = true, 
 	soul_set = 'Tarot', 
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -1914,26 +1917,20 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { highlight = 5 } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
 	unlocked = true,
 	can_use = function(self, card)
 		local left 
-		local positions = {}
-		local lowest = math.huge
-		for k, v in ipairs(G.hand.highlighted) do 
-			if v ~= card then 
-				table.insert(positions, {v, v.T.x})
+		for k, v in ipairs(G.hand.cards) do 
+			if table_hasvalue(G.hand.highlighted, v) then 
+				left = v
+				break 
 			end
 		end
-		for k, v in pairs(positions) do 
-			if v[2] < lowest then 
-				left = v[1]
-			end
-		end
-		return may.canuse() and left and #G.hand.highlighted > 0 and #G.hand.highlighted <= (card.ability.extra.highlight + (card.area == G.hand and 1 or 0)) and not SMODS.has_no_rank(left)
+		return may.canuse() and left and #G.hand.highlighted > 1 and #G.hand.highlighted <= (card.ability.extra.highlight + (card.area == G.hand and 1 or 0)) and not SMODS.has_no_rank(left)
 	end,
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Spectral Tarot', get_type_colour(self or card.config, card), nil, 1.2)
@@ -1944,16 +1941,10 @@ SMODS.Consumable {
 	discovered = true,
 	use = function(self, card, area, copier)
 		local left 
-		local positions = {}
-		local lowest = math.huge
-		for k, v in ipairs(G.hand.highlighted) do 
-			if v ~= card then 
-				table.insert(positions, {v, v.T.x})
-			end
-		end
-		for k, v in pairs(positions) do 
-			if v[2] < lowest then 
-				left = v[1]
+		for k, v in ipairs(G.hand.cards) do 
+			if table_hasvalue(G.hand.highlighted, v) then 
+				left = v
+				break 
 			end
 		end
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
@@ -2002,7 +1993,7 @@ SMODS.Consumable {
 	no_grc = true,
 	hidden = true, 
 	soul_set = 'Tarot', 
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2062,7 +2053,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { highlight = 3 } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2154,7 +2145,7 @@ SMODS.Consumable {
 	no_grc = true,
 	hidden = true, 
 	soul_set = 'Tarot', 
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2200,11 +2191,13 @@ SMODS.Consumable {
 			card:juice_up(0.3, 0.5)
 		return true end}))
 		for k, v in pairs(G.jokers.cards) do
-			v.sell_cost = bal
-			G.E_MANAGER:add_event(Event({func = function()
-				play_sound('timpani', 1, 0.6)
-				v:juice_up(0.2, 0.3)
-			return true end}))
+			if not v:may_is_fusion() then 
+				v.sell_cost = bal
+				G.E_MANAGER:add_event(Event({func = function()
+					play_sound('timpani', 1, 0.6)
+					v:juice_up(0.2, 0.3)
+				return true end}))
+			end
 		end
 		G.E_MANAGER:add_event(Event({func = function()
 			play_sound('timpani')
@@ -2232,7 +2225,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { p_dollars = 7 } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2277,7 +2270,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { cards = 10 } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2337,7 +2330,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { suit = 'Diamonds' } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2404,7 +2397,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { suit = 'Clubs' } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2471,7 +2464,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { suit = 'Hearts' } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2537,7 +2530,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { tags = 3 } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},
@@ -2583,7 +2576,7 @@ SMODS.Consumable {
 	hidden = true, 
 	soul_set = 'Tarot', 
 	config = { extra = { suit = 'Spades' } },
-	soul_rate = 0.0035,
+	soul_rate = 0.002,
 	attributes = {
 		'spectral_tarot',
 	},

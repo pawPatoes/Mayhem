@@ -1,4 +1,4 @@
--- Mostly copy and paste from FusionJokers, specificially the fork made by lshtech: https://github.com/lshtech/Fusion-Jokers
+	-- Mostly copy and paste from FusionJokers, specificially the fork made by lshtech: https://github.com/lshtech/Fusion-Jokers
 
 G.localization.misc.dictionary["b_fuse"] = "FUSE"
 may.fusions = { recipes = { } }
@@ -221,7 +221,7 @@ function Card:may_can_fuse_card()
 			end
 		end
 		if to_big(G.GAME.dollars) >= to_big(fusion.cost) * (G.GAME.may_fusion_price_multiplier or 1) then
-			if G.GAME.may_fusion_conditions[fusion.result_joker] == true then
+			if --[[G.GAME.may_fusion_conditions[fusion.result_joker] == true]] true then
 				local rounds
 				if fusion.jokers[1].name == 'j_may_omniversal_catalyst' or fusion.jokers[2].name == 'j_may_omniversal_catalyst' then 
 					if self:gc().key == 'j_may_omniversal_catalyst' and self.ability.extra.rounds >= 5 then 
@@ -342,7 +342,7 @@ function may.is_fusable(center)
 end
 
 function may.update_fusion_conditions()
-	G.GAME.may_fusion_conditions = G.GAME.may_fusion_conditions or {}
+	--[[G.GAME.may_fusion_conditions = G.GAME.may_fusion_conditions or {}
 	for k, v in pairs(may.fusions.recipes) do 
 		G.GAME.may_fusion_conditions[v.result_joker] = (v.condition or function() return true end)()
 	end
@@ -353,7 +353,7 @@ function may.update_fusion_conditions()
 		else 
 			v.fusion_juice = nil
 		end
-	end
+	end]] 
 end 
 
 may.no_update_conditions = {
@@ -362,7 +362,7 @@ may.no_update_conditions = {
 	'modify_draw'
 }
 
-local vanf_scs = SMODS.calculate_context
+--[[local vanf_scs = SMODS.calculate_context
 function SMODS.calculate_context(tab, ret)
 	if G.GAME and G.GAME.blind then
 		local to_update = true 
@@ -377,7 +377,7 @@ function SMODS.calculate_context(tab, ret)
 		end
 	end
 	return vanf_scs(tab, ret)
-end
+end]] 
 
 function may.get_condition(key)
 	return may.fusions.conditions[key]

@@ -1,13 +1,8 @@
 -- Misc
 
--- Taken from Entropy 
+-- Deprecated
 function Card:is_playing_card()
-    if not G.deck then return end
-    if self.area == G.play and self.ability.consumeable then return end
-    if (self.area == G.hand or self.area == G.play or self.area == G.discard) and (self.config.center.set == "Default" or self.config.center.set == "Enhanced") then return true end
-    for i, v in pairs(G.playing_cards) do
-        if v == self then return true end
-    end
+    return SMODS.is_playing_card(self)
 end
 
 function may.generate_arrow_text(arrow, threshold)
@@ -992,7 +987,7 @@ function may.varda_amount(card)
 		exp = exp + 1
 		ret = ret == 0 and 1 or math.ceil(ret * 1.45)
 	end
-	return math.floor(math.floor(ret * 0.85) ^ (1 + exp * 0.085))
+	return math.floor(math.floor(ret) ^ (1 + exp * 0.085))
 end
 
 -- Gets sell value of a playing card

@@ -558,7 +558,7 @@ SMODS.Joker {
             }
         end
 		if context.using_consumeable and context.consumeable:gc().key == 'c_may_hiiaka' then 
-            may.hand_mod_multchips(may.favhand(), 'chips', 3, card.ability.extra.EEEchip, false, context.consumeable)
+            may.hand_multchips_all(context.consumeable, nil, nil, {3, card.ability.extra.EEEchip})
         end
 	end
 }

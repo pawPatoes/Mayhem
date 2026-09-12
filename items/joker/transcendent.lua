@@ -462,7 +462,7 @@ SMODS.Joker {
         end
 		if context.using_consumeable then 
 			if context.consumeable:gc().key == 'c_may_hiiaka' then
-                may.hand_multchips(context.consumeable, may.favhand(), false, {card.ability.extra.hyperoperator, card.ability.extra.hyper_chips})
+                may.hand_multchips_all(context.consumeable, nil, false, {card.ability.extra.arrow, card.ability.extra.hyper_chips})
 			end
         end
 	end

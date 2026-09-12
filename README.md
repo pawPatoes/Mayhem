@@ -25,6 +25,7 @@ Mayhem has the following dependencies which must be installed for the mod to wor
 * [Steamodded](https://github.com/Steamodded/smods) - Core modding API, loader and framework
 * [Amulet](https://github.com/frostice482/Amulet) - Adds support for *very* large, hyperoperational numbers 
 * [Noituus](https://codeberg.org/alex343xd/Noituus) - Stacks identical Consumables and allows you to use most of them in bulk
+* [SpectralLib](https://github.com/Spectralpack/spectrallib) - Library mod
 
 If this is your first time modding Balatro, check the Wiki on the Steamodded repository for a tutorial on how to set the essentials up.
 
@@ -103,11 +104,14 @@ Mods marked with (CM) enable additional content from Mayhem when used.
 * UnBlind: Shows a preview of the current ante in the shop instead of the usual Shop sign
 * Main Menu Tweaks: Changes the buttons on the main menu, grouping the Options and Mods buttons together
 * Lua Patcher: Prevents certain crashes (disable this if you'd like to hunt for bugs!)
+* Troubadour: Expands the collection windows and introduces a shortened and cleaner version of the Mods menu
+* Scrollable Descriptions: Use the arrow keys to shift the descriptions of cards in case they go off-screen (they probably will)
 ### Content
 * Engulf (CM): Allows Planet Cards to appear with Editions which are applied to the Poker Hands they affect
 * Fitxes: Adds Token consumables which give Tags when used
 * Espazio (CM): Adds Blank Consumables which turn into the next consumable of their type that's used while held
 * Spectrum API: Adds the Spectrum hand type, which contains 5 different suits at once
+* Uranian Moons: Adds Planet Cards which level up said Spectrum hands
 * Card Sleeves: Adds Sleeves which are equipped on top of decks, analogous to existing decks
 * Finity: Adds Showdown Jokers corresponding to each Finisher Boss Blind, which are obtained after defeating them
 
