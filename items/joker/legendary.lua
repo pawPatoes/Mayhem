@@ -559,7 +559,7 @@ SMODS.Joker {
 		text = {
 			{
 				"Creates a {C:mult,E:1}Present{} {C:attention}before scoring{}", 
-				"if played {C:purple}Poker Hand{} is {C:attention}Pair{}",
+				"if played {C:purple}Poker Hand{} contains a {C:attention}Pair{}",
 				may.pager(50),
 				"{C:inactive}Requires room{}",
 				may.pager(50),
@@ -591,7 +591,7 @@ SMODS.Joker {
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_present
 	end,
 	calculate = function(self, card, context)
-		if context.before and context.scoring_name == 'Pair' then
+		if context.before and next(context.poker_hands['Pair']) then
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 				if G.consumeables and #G.consumeables.cards < G.consumeables.config.card_limit then 
 				    play_sound('timpani')

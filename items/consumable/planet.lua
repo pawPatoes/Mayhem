@@ -566,6 +566,7 @@ SMODS.Consumable {
 	set = 'Planet',
 	key = 'haumea',
 	pos = { x = 4, y = 1 },
+	config = { extra = { mul = 2 } },
 	atlas = 'planet',
 	no_ring_display = true, 
 	set_card_type_badge = function(self, card, badges)
@@ -574,31 +575,45 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'Haumea',
 		text = {
-			"Gain the {C:money}Dollars{} of a",
-			"{C:attention}random{} {C:purple}Poker Hand{}",
+			"Gain {X:green,C:white}X#1#{} the {C:money}Dollars{} of a",
+			"random {C:purple}Poker Hand{}",
+			"as {C:money}Money"
 		}
 	},
 	can_use = function(self, card)
 		return may.canuse() and G.GAME.round_resets.ante ~= 0
 	end,
 	loc_vars = function(self, info_queue, card)
-		info_queue[#info_queue + 1] = { key = "may_interest_tutorial", set = "Other" }
+		may.tut_tip(info_queue, 'hand_dollars')
+		return { vars = { card.ability.extra.mul } }
 	end,
 	use = function(self, card)
 		local hand = may.rndhand()
 		may.th(hand)
 		if G.GAME.hands[hand].dollars then
-			ease_dollars(G.GAME.hands[hand].dollars)
+			ease_dollars(G.GAME.hands[hand].dollars * card.ability.extra.mul)
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
 				play_sound('timpani')
 				card:juice_up(0.3, 0.5)
 			return true end}))
 		else
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = {'No Dollars!'}, colour = G.C.MULT, delay = 0.45})
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
-				card:juice_up(0.3, 0.5)
-				play_sound('tarot2')
-			return true end}))
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+                attention_text({
+                    text = localize('k_nope_ex'),
+                    scale = 1.3,
+                    hold = 1.4,
+                    major = card,
+                    backdrop_colour = G.C.SECONDARY_SET.Planet,
+                    align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and 'tm' or 'cm',
+                    offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
+                    silent = true
+                })
+                G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.06 * G.SETTINGS.GAMESPEED, blockable = false, blocking = false, func = function()
+                    play_sound('tarot2', 0.76, 0.4)
+                return true end}))
+                play_sound('tarot2', 1, 0.4)
+                card:juice_up(0.3, 0.5)
+            return true end}))
 		end
 		may.ch()
 		if Engulf and card.edition then 
@@ -607,24 +622,44 @@ SMODS.Consumable {
 		end
 	end,
 	bulk_use = function(self, card, area, copier, number)
-		for i=1, number, 1 do
+		for i = 1, number, 1 do
 			amount = 0
 			local hand = may.rndhand()
-			may.th(hand)
 			if G.GAME.hands[hand].dollars then
-				amount = amount + G.GAME.hands[hand].dollars
+				amount = amount + (G.GAME.hands[hand].dollars * card.ability.extra.mul)
 			end
 			if Engulf and card.edition then 
 				Engulf.EditionHand(card, hand, card.edition, 1)
 				may.ch()
 			end 
 		end
-		ease_dollars(amount)
-		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
-			play_sound('timpani')
-			card:juice_up(0.3, 0.5)
-		return true end}))
-		may.ch()
+		if amount > 0 then
+			may.a('+'..math.abs(number_format(amount))..' Dollars', 2, 1.5, G.C.MONEY, 'may_positive')
+			ease_dollars(amount)
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
+				play_sound('timpani')
+				card:juice_up(0.3, 0.5)
+			return true end}))
+			may.ch()
+		else
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+                attention_text({
+                    text = localize('k_nope_ex'),
+                    scale = 1.3,
+                    hold = 1.4,
+                    major = card,
+                    backdrop_colour = G.C.SECONDARY_SET.Planet,
+                    align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and 'tm' or 'cm',
+                    offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
+                    silent = true
+                })
+                G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.06 * G.SETTINGS.GAMESPEED, blockable = false, blocking = false, func = function()
+                    play_sound('tarot2', 0.76, 0.4)
+                return true end}))
+                play_sound('tarot2', 1, 0.4)
+                card:juice_up(0.3, 0.5)
+            return true end}))
+		end
 	end,
 }
 
@@ -1027,14 +1062,14 @@ SMODS.Consumable {
 			"of all {C:purple}Poker Hands{}", 
 			may.pager(50),
 			"If {C:planet}Astronomy{} {C:green}V{} is redeemed,", 
-			"gives "..may.hyp(4, "multchips", "#2##1#").." Chips & Mult instead", 
+			"gives "..may.hyp(4, "multchips", "#2##4#").." Chips & Mult instead", 
 			"{C:inactive}G = #3#{}"
 		}
 	},
 	loc_vars = function(self, info_queue, card)
 		--info_queue[#info_queue + 1] = G.P_CENTERS.v_may_astronomy_5
 		may.tut_tip(info_queue, 'global_op')
-		return { vars = { card.ability.extra.amount, '{G}', may.global_op() } }
+		return { vars = { card.ability.extra.amount, '{G}', may.global_op(), card.ability.extra.amount * 1.5 } }
 	end,
 	can_use = function(self, card)
 		return may.canuse()
@@ -1043,7 +1078,7 @@ SMODS.Consumable {
 		badges[1] = create_badge('Dwarf Planet', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
 	use = function(self, card)
-		may.hand_multchips_all(card, nil, false, {may.has_card('v_may_astronomy_5') and may.global_op() or 0, card.ability.extra.amount}, {may.has_card('v_may_astronomy_5') and may.global_op() or 0, card.ability.extra.amount})
+		may.hand_multchips_all(card, nil, false, {may.has_card('v_may_astronomy_5') and may.global_op() or 0, card.ability.extra.amount * (may.has_card('v_may_astronomy_5') and 1.5 or 1)}, {may.has_card('v_may_astronomy_5') and may.global_op() or 0, card.ability.extra.amount * (may.has_card('v_may_astronomy_5') and 1.5 or 1)})
 		may.ch()
 		if Engulf and card.edition then 
 			for k, v in pairs(G.GAME.hands) do
@@ -1052,7 +1087,7 @@ SMODS.Consumable {
 		end
 	end, 
 	bulk_use = function(self, card, area, copier, number)
-		may.hand_multchips_all(card, nil, false, {may.has_card('v_may_astronomy_5') and may.global_op() or 0, card.ability.extra.amount, number}, {may.has_card('v_may_astronomy_5') and may.global_op() or 0, card.ability.extra.amount, number})
+		may.hand_multchips_all(card, nil, false, {may.has_card('v_may_astronomy_5') and may.global_op() or 0, card.ability.extra.amount * (may.has_card('v_may_astronomy_5') and 1.5 or 1), number}, {may.has_card('v_may_astronomy_5') and may.global_op() or 0, card.ability.extra.amount * (may.has_card('v_may_astronomy_5') and 1.5 or 1), number})
 		may.ch()
 		if Engulf and card.edition then 
 			for k, v in pairs(G.GAME.hands) do
@@ -1067,7 +1102,7 @@ SMODS.Consumable {
 	key = 'hiiaka',
 	pos = { x = 4, y = 4 },
 	atlas = 'planet',
-	config = { extra = { Xchips = 0.2 } },
+	config = { extra = { Xchips = 0.25 } },
 	ignore_allplanets = true,
 	no_ring_display = true, 
 	set_card_type_badge = function(self, card, badges)
@@ -1078,8 +1113,8 @@ SMODS.Consumable {
 		text = {
 			"{C:mult}Destroy{} all {C:attention}Suitless{} or {C:attention}Rankless{} cards in {C:attention}full deck{}",
 			"{X:chips,C:white}+X#1#{} Chips {C:attention}per{} destroyed {C:attention}card{} to",
-			"most played {C:purple}Poker Hand{}",
-			"{C:inactive}Will give #2# X#3# Chips{}",
+			"all {C:purple}Poker Hands{}",
+			"{C:inactive}Currently X#2# Chips{}",
 		}
 	},
 	can_use = function(self, card)
@@ -1098,7 +1133,7 @@ SMODS.Consumable {
 				amount = amount + 1
 			end
 		end
-		return { vars = { card.ability.extra.Xchips, localize(may.favhand(), 'poker_hands'), 1 + (card.ability.extra.Xchips * amount), } }
+		return { vars = { card.ability.extra.Xchips, 1 + (card.ability.extra.Xchips * amount), } }
 	end,
 	use = function(self, card)
 		local found = {}
@@ -1123,9 +1158,11 @@ SMODS.Consumable {
 				SMODS.destroy_cards(v)
 			end
 		end
-		may.hand_multchips(card, may.favhand(), false, {0, 1 + (amount * card.ability.extra.Xchips)})
+		may.hand_multchips_all(card, nil, false, {0, 1 + (amount * card.ability.extra.Xchips)})
 		if Engulf and card.edition then 
-			Engulf.EditionHand(card, may.favhand(), card.edition, 1)
+			for k, v in pairs(G.GAME.hands) do
+				Engulf.EditionHand(card, k, card.edition, 1, true)
+			end
 		end
 		may.ch()
 	end,
@@ -1351,7 +1388,7 @@ SMODS.Consumable {
 	end,
 }
 
-SMODS.Consumable {
+--[[SMODS.Consumable {
 	set = 'Planet',
 	key = 'mangas',
 	pos = { x = 1, y = 0 },
@@ -1399,7 +1436,7 @@ SMODS.Consumable {
 		ease_dollars(total)
 		may.ch()
 	end
-}
+}]] 
 
 SMODS.Consumable {
 	set = 'Planet',
@@ -1411,7 +1448,7 @@ SMODS.Consumable {
 			"of all {C:purple}Poker Hands{}"
 		}
 	},
-	pos = {x = 0, y = 3 },
+	pos = { x = 0, y = 3 },
 	atlas = 'planet',
 	config = { extra = { amount = 1.1 } },
 	unlocked = true,
@@ -1446,6 +1483,53 @@ SMODS.Consumable {
 				Engulf.EditionHand(card, k, card.edition, number, true)
 			end
 		end
+	end, 
+}
+
+SMODS.Consumable {
+	set = 'Planet',
+	key = 'callisto',
+	loc_txt = {
+		name = 'Callisto',
+		text = {
+			"{X:purple,C:white}X#1#{} {C:may_demiurgic}Level{} Chips & Mult", 
+			"of most played {C:purple}Poker Hand{}", 
+			"{C:inactive}#2#{}"
+		}
+	},
+	pos = { x = 6, y = 0 },
+	atlas = 'planet',
+	config = { extra = { amount = 1.15 } },
+	unlocked = true,
+	discovered = true,
+	no_ring_display = true,
+	can_use = function(self, card)
+		return may.canuse()
+	end,
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Jovian Moon', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	loc_vars = function(self, info_queue, card)
+		may.tut_tip(info_queue, 'level_multchips')
+		return { vars = { card.ability.extra.amount, localize(may.favhand(), 'poker_hands') } }
+	end,
+	use = function(self, card, area, copier)
+		may.hand_lvl_multchips(card, may.favhand(), false, {0, card.ability.extra.amount}, {0, card.ability.extra.amount})
+		if Engulf and card.edition then 
+			may.refresh_score_operator()
+			Engulf.EditionHand(card, may.favhand(), card.edition, 1, false)
+		end 
+		may.ch()
+		may.refresh_score_operator()
+	end, 
+	bulk_use = function(self, card, area, copier, number)
+		may.hand_lvl_multchips(card, may.favhand(), false, {0, card.ability.extra.amount ^ number}, {0, card.ability.extra.amount ^ number})
+		if Engulf and card.edition then 
+			may.refresh_score_operator()
+			Engulf.EditionHand(card, may.favhand(), card.edition, number, false)
+		end
+		may.ch()
+		may.refresh_score_operator()
 	end, 
 }
 
@@ -1639,6 +1723,83 @@ SMODS.Consumable {
 		end
 		return false, {allow_duplicates = false}
 	end
+}
+
+SMODS.Consumable {
+	set = 'Planet',
+	key = 'vanth',
+	pos = { x = 5, y = 3 },
+	atlas = 'planet',
+	cost = 3,
+	config = { extra = { amount = 0.075 } }, 
+	loc_txt = {
+		name = 'Vanth',
+		text = {
+			"{C:planet}Levels up{} each {C:purple}Poker Hand{}", 
+			"by {C:attention}+#1#{} for every time", 
+			"it was {C:attention}played{} this run", 
+			"{C:inactive}Max of +3 levels{}"
+		} 
+	},
+	can_use = function(self, card)
+		return may.canuse()
+	end,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.amount..'' } }
+	end, 
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Orcian Moon', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+	use = function(self, card)
+		for k, v in pairs(G.GAME.hands) do 
+			level_up_hand(card, k, true, math.min(v.played * card.ability.extra.amount, 3))
+		end
+		if may.conf.hand_speed < 2 then 
+			may.h('Played Hands', '...', '...', '')
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+				play_sound('tarot1')
+				card:juice_up(0.8, 0.5)
+			return true end}))
+			may.hm('+', true)
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+				play_sound('tarot1')
+				card:juice_up(0.8, 0.5)
+			return true end}))
+			may.hc('+', true)
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+				play_sound('tarot1')
+				card:juice_up(0.8, 0.5)
+			return true end}))
+			may.hlv('+?', true)
+			delay(1.3)
+			may.ch()
+		end
+	end,
+	bulk_use = function(self, card, area, copier, number)
+		for k, v in pairs(G.GAME.hands) do 
+			level_up_hand(card, k, true, math.min(v.played * card.ability.extra.amount, 3) * number)
+		end
+		if may.conf.hand_speed < 2 then 
+			may.h('Played Hands', '...', '...', '')
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+				play_sound('tarot1')
+				card:juice_up(0.8, 0.5)
+			return true end}))
+			may.hm('+', true)
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+				play_sound('tarot1')
+				card:juice_up(0.8, 0.5)
+			return true end}))
+			may.hc('+', true)
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+				play_sound('tarot1')
+				card:juice_up(0.8, 0.5)
+			return true end}))
+			may.hlv('+?', true)
+			delay(1.3)
+			may.ch()
+		end
+	end,
 }
 
 SMODS.Consumable {
@@ -1849,7 +2010,7 @@ SMODS.Consumable {
 	key = 'rings_of_saturn',
 	pos = { x = 3, y = 2 },
 	atlas = 'planet',
-	config = { extra = { score = 800, dollars = 0.1 } },
+	config = { extra = { score = 1000, dollars = 0.1 } },
 	no_ring_display = true, 
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Ring System', get_type_colour(self or card.config, card), nil, 1.2)

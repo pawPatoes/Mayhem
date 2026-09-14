@@ -490,7 +490,7 @@ SMODS.Back {
 	end
 }]] 
 
---[[SMODS.Back {
+SMODS.Back {
 	name = "Test Deck",
 	key = "test_deck",
 	atlas = 'deck',
@@ -522,4 +522,4 @@ SMODS.Back {
 			end
 		return true end})) 
 	end, 
-}]] 
+}

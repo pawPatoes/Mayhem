@@ -198,7 +198,7 @@ SMODS.Enhancement {
 		name = 'Scorched Card',
 		text = { 
             {
-			    "{X:planet,C:white}X1.5{} Level of a {C:attention}random{}",
+			    "{C:planet}Level up{} a {C:attention}random{}",
 			    "{C:purple}Poker Hand{} when {C:mult}discarded{}",
             }, 
             {
@@ -209,14 +209,14 @@ SMODS.Enhancement {
 	pos = { x = 4, y = 0 },
 	unlocked = true,
 	replace_base_card = false,
-	weight = .05,
+	weight = .1,
 	discovered = true,
 	atlas = 'enhancement',
 	calculate = function(self, card, context)
 		if context.discard and context.other_card == card then
 			local hand = may.rndhand()
 			may.th(hand)
-			may.level_up_hand_hyper(card, hand, nil, 1.5)
+			level_up_hand(card, hand, nil, 1)
 			may.ch()
 		end
 	end
