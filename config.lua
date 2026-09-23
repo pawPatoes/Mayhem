@@ -2,6 +2,7 @@ return {
 	["custom_menu"] = true,
 	["menu_music"] = 1,
 	["debug"] = false,
+	["seasonal"] = true, 
 	["music"] = {
 		["party_time"] = true,
 		["santa"] = true,
@@ -59,7 +60,8 @@ return {
 	["joker_shaders"] = true,
 	["intense_hyperoperations"] = false,
 	["alt_joker_page"] = true, 
-	["hand_speed"] = 1,
+	["hand_speed"] = 1, 
+	["cosmetic_badges"] = true, 
 	["notices"] = {
 		["stj"] = false, 
 		["cry"] = false, 

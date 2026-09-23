@@ -207,35 +207,107 @@ SMODS.Back {
 	}, 
 }
 
---[[SMODS.Back {
+SMODS.Back {
 	name = "AAAA Deck",
 	key = "aaaa_deck",
-	atlas = 'joker1',
-	pos = { x = 4, y = 5 },
-	config = {rank = 'Ace'},
+	atlas = 'deck',
+	pos = { x = 3, y = 3 },
 	loc_txt = {
 		name = "AAAA Deck",
 		text = {
-			"Start run with {C:attention,T:j_may_aaaa}AAAA{}",
-			"and a deck of only {C:attention}Aces{}",
+			"Starting deck is composed of", 
+			"{C:attention}10{} Aces of {C:spades}Spades{}", 
+			"{X:attention,C:white}X4.4{} Blind Size",
 		},
 	},
+	mayday_2026 = true,
 	apply = function(self)
 		G.E_MANAGER:add_event(Event({func = function()
+			G.GAME.starting_params.ante_scaling = G.GAME.starting_params.ante_scaling * 4.4
 			for k, v in ipairs(G.playing_cards) do
-				assert(SMODS.change_base(v, nil, self.config.rank))
+				assert(SMODS.destroy_cards(v, { instant = true })) 
 			end
 		return true end}))
-		G.E_MANAGER:add_event(Event({func = function()
-			local card2 = create_card('Joker', G.jokers, nil, nil, nil, nil, 'j_may_aaaa', 'may_aaaa_deck')
-			G.jokers:emplace(card2)
-			card2:add_to_deck()
-			play_sound('holo1')
-		return true end}))
+		for i = 1, 10 do 
+			G.E_MANAGER:add_event(Event({func = function()
+				SMODS.add_card({ set = 'Base', rank = 'Ace', suit = 'Spades', area = G.deck })
+			return true end})) 
+		end
 	end
 }
 
 SMODS.Back {
+	name = "Anniversary Deck",
+	key = "anniversary_deck",
+	atlas = 'deck',
+	pos = { x = 4, y = 3 },
+	config = { joker_slot = 3 }, 
+	loc_txt = {
+		name = "Anniversary Deck",
+		text = {
+			"{C:attention}+3{} Joker Slots", 
+			"{C:attention}Blind Sizes{} are increased by {X:may_col_huge_operator_alt,C:white}+#1#1{}", 
+			"per {C:mult}empty{} {C:attention}Joker Slot{} after Round {C:attention}6{}", 
+			"Create a copy of {C:attention,T:j_may_anniversary_cake}Anniversary Cake{}", 
+			"when {C:attention}Boss Blind{} is defeated",
+			"{C:inactive}Does not require room{}",
+		},
+	},
+	mayday_2026 = true,
+	loc_vars = function(self, info_queue, card)
+		info_queue = info_queue or {}
+		may.tut_tip(info_queue, 'global_op')
+		return { vars = { '{G}' } }
+	end, 
+	calculate = function(self, back, context)
+		if context.end_of_round and context.game_over == false and context.main_eval and context.beat_boss then 
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+				local card2 = SMODS.add_card({ key = 'j_may_anniversary_cake' })
+				play_sound('may_cake_activate')
+				card2:juice_up(0.3, 0.5)
+			return true end}))
+		end
+		if context.setting_blind and G.GAME.round >= 6 then 
+			if G.GAME.round == 6 then
+				may.a('Blind Size increase activated!', '4', 1.5, may.C.score, 'may_instability_threshold')
+			end 
+			G.GAME.blind.chips = to_big(G.GAME.blind.chips):arrow(may.global_op(), 1 + (G.jokers.config.card_limit - #G.jokers.cards)) 
+			G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+		end
+	end
+}
+
+SMODS.Back {
+	name = "Power Deck",
+	key = "power_deck",
+	atlas = 'deck',
+	pos = { x = 5, y = 1 },
+	loc_txt = {
+		name = "Power Deck",
+		text = {
+			"Base {C:purple}Chips & Mult{}", 
+			"are increased by", 
+			may.hyp(4, 'multchips', '#1#'), 
+			"{C:inactive,s:0.7}No effect if Ante is negative{}"
+		},
+	},
+	mayday_2026 = true,
+	loc_vars = function(self, info_queue, card)
+		info_queue = info_queue or {}
+		may.tut_tip(info_queue, 'global_op')
+		return { vars = { '{G}(1 + Ante X 0.2)' } }
+	end, 
+	calculate = function(self, back, context)
+		if context.initial_scoring_step and G.GAME.round_resets.ante > 0 then 
+			return {
+				hyper_chips = {may.global_op(), 1 + (G.GAME.round_resets.ante * 0.2)}, 
+				hyper_mult = {may.global_op(), 1 + (G.GAME.round_resets.ante * 0.2)},
+			}
+		end
+	end
+}
+
+--[[SMODS.Back {
 	name = "Osmium deck",
 	key = "osmium_deck",
 	atlas = 'placeholder',
@@ -506,7 +578,7 @@ SMODS.Back {
 	},
 	apply = function(self)
 		G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() 
-			level_up_hand(nil, 'High Card', true, to_big(to_big(1e100):arrow(1, 10)):arrow(5005, to_big(to_big(1e100):arrow(1, 10))))
+			level_up_hand(nil, 'High Card', true, 1e25)
 			ease_dollars(9999)
 			--add_skill_xp(99999)
 			--for i = 1, 25 do 

@@ -57,6 +57,18 @@ may.setting_tips = {
 		"{C:attention}descriptions{} will use {C:spectral}old{}, {C:purple}simpler{} formatting", 
 		"{C:inactive}E.g.{} {X:may_ee_chips_bg,C:may_ee_chips}^^2{} {C:inactive}Chips >>{} {X:chips,C:white}^^2{} {C:inactive}Chips{}", 
 	}, 
+	cosmetic_badges = {
+		"If enabled, certain items will",
+		"have {C:dark_edition}cosmetic badges{} that do {C:mult}not{}", 
+		"have any {C:chips}gameplay{} meaning {C:inactive}(e.g. Seasonal){}"
+	}, 
+	seasonal = {
+		"{C:attention,E:1}REQUIRES RESTART{}", 
+		" ",
+		"Toggles {C:tarot}cosmetic changes{} for certain", 
+		"ongoing {C:green}real life{} events", 
+		"{C:inactive}(e.g. Christmas, MayDay){}"
+	}, 
 	debug = {
 		"{C:attention,E:1}REQUIRES RESTART{}", 
 		" ",
@@ -213,6 +225,33 @@ may.setting_tips = {
 
 may.conf.WIP = true
 
+may.menu_music_choices =  {
+	"Alptraum",
+	"Legacy Mayhem Theme",
+	"Eternum Theme",
+	"Yotta Card",
+	"UltraBlind",
+	"Transcendent Joker",
+	"Enhanced Pack",
+	"Party Time",
+	"Rondo Discoteca",
+	"Opalescent Joker",
+	"Pixel Pack",
+	"Tainted Boss",
+	"Fusion Joker",
+	"Fusion Pack",
+	"Fusion Joker (Shop)",
+	"Transcendent Joker (Shop)",
+	"Opalescent Joker (Shop)",
+	"Classic Theme Remix (MayDay 2026)",
+}
+
+if (may.season or '') == 'christmas' then 
+	table.insert(may.menu_music_choices, "Golden Christmas")
+end 
+
+table.insert(may.menu_music_choices, "Default")
+
 SMODS.current_mod.extra_tabs = function()
 	return {
 			{
@@ -276,6 +315,22 @@ SMODS.current_mod.extra_tabs = function()
 									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "legacy_formatting" },
 								}},
 							}},
+							{n = G.UIT.R, config = { align = "cm", padding = 0 }, nodes = {
+								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
+									{ n = G.UIT.T, config = { text = 'Cosmetic badges', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.cosmetic_badges } }},
+								}},
+								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
+									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "cosmetic_badges" },
+								}},
+							}},
+							(may.season ~= 'none' and {n = G.UIT.R, config = { align = "cm", padding = 0 }, nodes = {
+								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
+									{ n = G.UIT.T, config = { text = 'Seasonal changes', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.seasonal } }},
+								}},
+								{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
+									create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "seasonal7" },
+								}},
+							}} or nil), 
 							{n = G.UIT.R, config = { align = "cm", padding = 0.1 }, nodes = {
 								{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
 									{ n = G.UIT.T, config = { text = 'Debug', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.debug } }},
@@ -519,27 +574,8 @@ SMODS.current_mod.extra_tabs = function()
 							create_option_cycle({
 								label = "Menu Music",
 								scale = 1,
-								w = 6,
-								options = {
-									"Alptraum",
-									"Legacy Mayhem Theme",
-									"Eternum Theme",
-									"Yotta Card",
-									"UltraBlind",
-									"Transcendent Joker",
-									"Enhanced Pack",
-									"Party Time",
-									"Rondo Discoteca",
-									"Opalescent Joker",
-									"Pixel Pack",
-									"Tainted Boss",
-									"Fusion Joker",
-									"Fusion Pack",
-									"Fusion Joker (Shop)",
-									"Transcendent Joker (Shop)",
-									"Opalescent Joker (Shop)",
-									"Default"
-								},
+								w = 8,
+								options = may.menu_music_choices, 
 								opt_callback = 'may_upd_music',
 								current_option = may.conf.menu_music,
 								on_demand_tooltip = { text = may.setting_tips.menu_music }
@@ -558,6 +594,42 @@ SMODS.current_mod.extra_tabs = function()
 								on_demand_tooltip = { text = may.setting_tips.tr_volume }
 							}),
 						}},
+						{n=G.UIT.R, config={ align = "cm" }, nodes={
+							{n = G.UIT.C, config = { align = "cm", padding = 0 }, nodes = {
+								{ n = G.UIT.T, config = { text = 'Custom Hyperoperation Sounds', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.hyper_sounds } }},
+							}},
+							{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "custom_hyperoperations" },
+							}},
+
+							{n = G.UIT.C, config = { align = "cm", padding = 0 }, nodes = {
+								{ n = G.UIT.T, config = { text = 'Intense Hyperoperation Sounds', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.intense_hyperoperations } }},
+							}},
+							{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "intense_hyperoperations" },
+							}},
+						}},
+						{n=G.UIT.R, config={ align = "cm" }, nodes={
+							{n = G.UIT.C, config = { align = "cm", padding = 0 }, nodes = {
+								{ n = G.UIT.T, config = { text = 'Legacy Transcendence 1 Ambiance', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.legacy_tr1 } }},
+							}},
+							{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "legacy_tr1" },
+							}},
+						}},
+						{n=G.UIT.R, config={ align = "cm" }, nodes={
+							{n = G.UIT.C, config = { align = "cm", padding = 0 }, nodes = {
+								{ n = G.UIT.T, config = { text = 'Use Party Time Theme instead of Fusion Joker music', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.party_everywhere } }},
+							}},
+							{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
+								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "party_music_everywhere" },
+							}},
+						}}, 
+						{n=G.UIT.R, config={align = "cm"}, nodes={
+							{n=G.UIT.C, config={align = "cm"}, nodes={
+							    {n=G.UIT.T, config={text = "Music Tracks", colour = G.C.UI.TEXT_LIGHT, scale = 0.5, padding = 0.5}},
+						    }},
+					    }},
 						{n=G.UIT.R, config={ align = "cm" }, nodes={
 							{n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
 								{ n = G.UIT.T, config = { text = 'Santa', scale = 0.35, colour = G.C.UI.TEXT_LIGHT }},
@@ -649,38 +721,7 @@ SMODS.current_mod.extra_tabs = function()
 							{n = G.UIT.C, config = { align = "c", padding = 0.05 }, nodes = {
 								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf.music, ref_value = "transcendent_shop" },
 							}},
-						}}, 
-						{n=G.UIT.R, config={ align = "cm" }, nodes={
-							{n = G.UIT.C, config = { align = "cm", padding = 0 }, nodes = {
-								{ n = G.UIT.T, config = { text = 'Custom Hyperoperation Sounds', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.hyper_sounds } }},
-							}},
-							{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "custom_hyperoperations" },
-							}},
-
-							{n = G.UIT.C, config = { align = "cm", padding = 0 }, nodes = {
-								{ n = G.UIT.T, config = { text = 'Intense Hyperoperation Sounds', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.intense_hyperoperations } }},
-							}},
-							{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "intense_hyperoperations" },
-							}},
 						}},
-						{n=G.UIT.R, config={ align = "cm" }, nodes={
-							{n = G.UIT.C, config = { align = "cm", padding = 0 }, nodes = {
-								{ n = G.UIT.T, config = { text = 'Legacy Transcendence 1 Ambiance', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.legacy_tr1 } }},
-							}},
-							{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "legacy_tr1" },
-							}},
-						}},
-						{n=G.UIT.R, config={ align = "cm" }, nodes={
-							{n = G.UIT.C, config = { align = "cm", padding = 0 }, nodes = {
-								{ n = G.UIT.T, config = { text = 'Use Party Time Theme instead of Fusion Joker music', scale = 0.35, colour = G.C.UI.TEXT_LIGHT, on_demand_tooltip = { text = may.setting_tips.party_everywhere } }},
-							}},
-							{n = G.UIT.C, config = { align = "cm", padding = 0.05 }, nodes = {
-								create_toggle{ col = true, label = "", scale = 0.85, w = 0, shadow = true, ref_table = may.conf, ref_value = "party_music_everywhere" },
-							}},
-						}}
 					}}
 				}}
 			end

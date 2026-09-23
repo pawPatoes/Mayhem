@@ -4,9 +4,6 @@ may = may or {}
 
 -- Bulk load modules
 
-assert(SMODS.load_file("items/color.lua"))()
-print('MAYHEM: ITEM color.lua loaded!')
-
 may.libs = {
 	'init.lua',
 	'fusion.lua',
@@ -35,6 +32,7 @@ for k, v in ipairs(may.libs) do
 	print('MAYHEM: LIB '..v..' loaded!')
 end
 
+-- color.lua is loaded in init.lua for priority reasons
 may.items = {
 	'audio.lua',
 	'attribute.lua',

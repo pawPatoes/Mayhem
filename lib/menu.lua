@@ -3,14 +3,14 @@
 if math.random(1, 70) == 70 then
 	SMODS.Atlas({
 	    key = "titlecard",
-		path = "mehm_titlecard.png",
+		path = (may.season == 'christmas' and may.conf.seasonal) and "mehm_titlecard_christmas.png" or "mehm_titlecard.png",
 	    px = 358,
 	    py = 120,
 	})
 else
 	SMODS.Atlas({
 	    key = "titlecard",
-		path = "may_titlecard.png",
+		path = (may.season == 'christmas' and may.conf.seasonal) and "may_titlecard_christmas.png" or "may_titlecard.png",
 	    px = 512,
 	    py = 120,
 	})
@@ -53,7 +53,7 @@ Game.main_menu = function(change_context)
 			send = {
 				{ name = "time", ref_table = G.TIMERS, ref_value = "REAL_SHADER" },
 				{ name = "vort_speed", val = 0.25 },
-				{ name = "colour_1", ref_table = SMODS.Gradients, ref_value = "may_col_gray_gradient" },
+				{ name = "colour_1", ref_table = SMODS.Gradients, ref_value = (may.season == 'christmas' and may.conf.seasonal) and "may_col_mayhem_gradient" or "may_col_gray_gradient" },
 				{ name = "colour_2", ref_table = G.C, ref_value = 'BLACK' },
 			},
 		}})
@@ -101,7 +101,7 @@ Game.main_menu = function(change_context)
             speed = 0.1,
             padding = -1,
             attach = G.ROOM_ATTACH,
-            colours = { G.C.BLACK, SMODS.Gradients.may_col_gray_gradient },
+            colours = { G.C.BLACK, (may.season == 'christmas' and may.conf.seasonal) and SMODS.Gradients.may_col_mayhem_gradient_dark2 or SMODS.Gradients.may_col_gray_gradient },
             fill = true
         })
         G.menu_particles.fade_alpha = 0.7
@@ -216,6 +216,11 @@ may.menu_editions = {
 	'e_may_hypnotic', 
 	'e_may_twilight', 
 } 
+
+if may.season == 'mayday' and may.conf.seasonal then 
+	may.menu_cards = {'j_may_anniversary_cake'}
+	may.menu_editions = {'e_may_nostalgic', 'e_may_magenta'}
+end 
 
 if may.conf.custom_menu then
 	local chosen = may.menu_cards[math.random(1, #may.menu_cards)]

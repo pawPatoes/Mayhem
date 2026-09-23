@@ -287,17 +287,74 @@ if Talisman.effects and Talisman.effects.registerHyper then
 	end
 end
 
+function may.eval_to_arrow(eval)
+	if string.sub(eval, 1, 1) == 'e' then 
+		local ret = 0
+		for i = 1, 3 do 
+			if string.sub(eval, i, i) == 'e' then 
+				ret = ret + 1
+			end
+		end
+		return ret 
+	end 
+	return
+end 
+
+-- Only for >= exponentiation
+function may.get_eval_type(eval)
+	if string.sub(eval, 1, 1) == 'e' then
+		local pos = 0
+		local es = 0
+		for i = 1, 4 do 
+			if string.sub(eval, i, i) == '_' then 
+				pos = i
+				break 
+			else
+				es = es + 1
+			end 
+		end
+		return string.sub(eval, pos + 1, string.len(eval))
+	elseif string.sub(eval, 1, 5) == 'hyper' then 
+		return string.sub(eval, 7, string.len(eval))
+	end
+end
+
+function may.get_hyper_formatting_int(int, type)
+	local tab = {
+		chips = {
+			{SMODS.Gradients.may_e_chips, G.C.WHITE, 0.75},
+			{SMODS.Gradients.may_ee_chips_bg, SMODS.Gradients.may_ee_chips, 0.8},
+			{SMODS.Gradients.may_eee_chips_bg, SMODS.Gradients.may_eee_chips, 0.85},
+		}, 
+		mult = {
+			{SMODS.Gradients.may_e_mult, G.C.WHITE, 0.75},
+			{SMODS.Gradients.may_ee_mult_bg, SMODS.Gradients.may_ee_mult, 0.8},
+			{SMODS.Gradients.may_eee_mult_bg, SMODS.Gradients.may_eee_mult, 0.85},
+		}
+	}
+	return tab[type][int]
+end
+
 function may.get_hyper_formatting(eval, amt)
 	local tab = {
 		e_chips = {SMODS.Gradients.may_e_chips, G.C.WHITE, 0.75},
 		ee_chips = {SMODS.Gradients.may_ee_chips_bg, SMODS.Gradients.may_ee_chips, 0.8},
 		eee_chips = {SMODS.Gradients.may_eee_chips_bg, SMODS.Gradients.may_eee_chips, 0.85},
-		hyper_chips = {SMODS.Gradients.may_col_huge_operator_alt, SMODS.Gradients.may_hyper_chips, 0.85 + math.min(2, (amt - 3) * 0.05)},
+		--hyper_chips = {SMODS.Gradients.may_col_huge_operator_alt, SMODS.Gradients.may_hyper_chips, 0.85 + math.min(2, (amt - 3) * 0.05)},
 		
 		e_mult = {SMODS.Gradients.may_e_mult, G.C.WHITE, 0.75},
 		ee_mult = {SMODS.Gradients.may_ee_mult_bg, SMODS.Gradients.may_ee_mult, 0.8},
 		eee_mult = {SMODS.Gradients.may_eee_mult_bg, SMODS.Gradients.may_eee_mult, 0.85},
-		hyper_mult = {SMODS.Gradients.may_col_huge_operator_alt, SMODS.Gradients.may_hyper_mult, 0.85 + math.min(2, (amt - 3) * 0.05)},
+		--hyper_mult = {SMODS.Gradients.may_col_huge_operator_alt, SMODS.Gradients.may_hyper_mult, 0.85 + math.min(2, (amt - 3) * 0.05)},
 	}
+	if string.sub(eval, 1, 5) == 'hyper' then 
+		if amt[1] < 1 then 
+			return {G.C[string.upper(may.get_eval_type(eval))], G.C.WHITE, 0.7} 
+		elseif amt[1] <= 3 then 
+			return may.get_hyper_formatting(string.rep('e', amt[1])..'_'..may.get_eval_type(eval))
+		else
+			return {SMODS.Gradients.may_col_huge_operator_alt, SMODS.Gradients['may_hyper_'..may.get_eval_type(eval)], 0.85 + math.min(2, (amt[2] - 3) * 0.05)} 
+		end 
+	end
 	return tab[eval] 
 end
