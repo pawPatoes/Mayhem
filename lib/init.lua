@@ -2,9 +2,8 @@
 
 may.version = SMODS.current_mod.version
 may.conf = SMODS.current_mod.config
-
-SMODS.current_mod.badge_colour = SMODS.Gradients.may_col_gray_gradient
-SMODS.current_mod.display_name = {"Mayhem", SMODS.current_mod.version}
+-- Allowed values (sooner or later): none, christmas, halloween, easter, mayday, valentines, lunar_new_year
+may.season = 'mayday'
 
 SMODS.current_mod.optional_features = {
 	retrigger_joker = true,
@@ -44,3 +43,9 @@ function may.get_position(tab, item)
     end
     return 0
 end
+
+assert(SMODS.load_file("items/color.lua"))()
+print('MAYHEM: ITEM color.lua loaded!')
+
+SMODS.current_mod.badge_colour = (may.season == 'christmas' and may.conf.seasonal) and SMODS.Gradients.may_col_mayhem_gradient_dark1 or SMODS.Gradients.may_col_gray_gradient
+SMODS.current_mod.display_name = {"Mayhem", SMODS.current_mod.version} 

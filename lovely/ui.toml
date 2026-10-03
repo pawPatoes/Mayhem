@@ -288,9 +288,13 @@ if ((_c.set == 'Planet' or _c.show_ring_display) and not _c.no_ring_display) and
 				(G.GAME.may_ring_bonuses.mult or 0),
 				(G.GAME.may_ring_bonuses.lev_chips or 0),
 				(G.GAME.may_ring_bonuses.lev_mult or 0),
-				(G.GAME.may_ring_bonuses.dollars or 0),
-				(G.GAME.may_ring_bonuses.score or 0),
+				1 + (G.GAME.may_ring_bonuses.x_dollars or 0),
+				1 + (G.GAME.may_ring_bonuses.x_score or 0),
 				(G.GAME.may_ring_bonuses.levels or 0),
+				1 + (G.GAME.may_ring_bonuses.g_chips or 0),
+				1 + (G.GAME.may_ring_bonuses.g_mult or 0),
+				'{G}',
+				may.global_op(), 
 			 } }
 			break
 		end

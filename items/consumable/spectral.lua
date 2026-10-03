@@ -3030,6 +3030,204 @@ SMODS.Consumable {
 	end
 } 
 
+SMODS.Consumable {
+	key = 'hoxxes',
+	loc_txt = {
+		name = 'Hoxxes',
+		text = {
+			{
+				"{C:dark_edition,E:1}Mines{} all cards {C:attention}held in hand{}", 
+				may.pager(70),
+				"Adds their {C:attention}base{} {C:chips}Chips{} and additional", 
+				"{C:chips}Chips{}/{C:mult}Mult{} {C:dark_edition}perma-bonuses{} to {C:attention}all{} {C:purple}Poker Hands{}", 
+				may.pager(70),
+				"{C:attention}Rankless{} or {C:attention}Suitless{} cards are {C:mult}destroyed{}", 
+				"and {C:planet}level up{} all {C:purple}Poker Hands{}", 
+				may.pager(70),
+				"{C:dark_edition,E:1}Mining{} hits are {C:attention}repeated{}", 
+				"if a card has {C:dark_edition}perma-retriggers{}", 
+				may.pager(70),
+				"{C:attention}Cards{} will have their {C:dark_edition}perma-bonuses{} {C:mult}reduced{}", 
+				"based on their {C:attention}operator{} {C:inactive}(excluding perma-retriggers){}", 
+				"{C:inactive,s:0.8}+5 > X0.5 > +2.5 ; X5 > -1 X0.5 > X2 ; ^5 > -1 ^0.5 > ^2{}",
+				may.pager(70),
+				"{C:inactive,s:0.8}Does not consider perma-bonuses beyond ^Chips/^Mult{}"
+			}, 
+			{
+				"{C:inactive,E:1}Originally from POLTERWORX/BOOK OF SHADOWS{}"
+			}
+		}
+	},
+	set = 'Spectral',
+    hidden = true,
+	soul_set = "Planet",
+	soul_rate = may.spectral_planet_rate, 
+	attributes = {
+		'spectral_planet',
+	},
+	pos = { x = 4, y = 4 },
+	cost = 6,
+	unlocked = true,
+	discovered = true,
+	atlas = 'spectral_planet',
+	set_card_type_badge = function(self, card, badges)
+		badges[1] = create_badge('Spectral Planet', get_type_colour(self or card.config, card), nil, 1.2)
+	end,
+    loc_vars = function(self, info_queue, center)
+        return { vars = { localize(may.favhand(), 'poker_hands') } }
+    end,
+	can_use = function(self, card)
+		return may.canuse() and #G.hand.cards ~= 0
+	end,
+	use = function(self, card, area, copier)
+		may.h('All Hands', '...', '...', '...') 
+		for k, v in pairs(G.hand.cards) do
+			local bonuses = {}
+				
+			local final_chips = {'chip', -1, 0}
+			if not SMODS.has_no_rank(v) then 
+				final_chips[3] = final_chips[3] + v.base.nominal
+			end
+			if v.ability.perma_bonus then 
+				final_chips[3] = final_chips[3] + v.ability.perma_bonus
+			end
+			if v.ability.perma_h_chips then 
+				final_chips[3] = final_chips[3] + v.ability.perma_h_chips
+			end
+			if final_chips[3] > 0 then 
+				table.insert(bonuses, final_chips)
+			end
+			
+			local final_mult = {'mult', -1, 0}
+			if v.ability.perma_mult then 
+				final_mult[3] = final_mult[3] + v.ability.perma_mult
+			end
+			if v.ability.perma_h_mult then 
+				final_mult[3] = final_mult[3] + v.ability.perma_h_mult
+			end
+			if final_mult[3] > 0 then 
+				table.insert(bonuses, final_mult)
+			end
+			
+			local final_x_chips = {'chip', 0, 1}
+			if v.ability.perma_x_chips then 
+				final_x_chips[3] = final_x_chips[3] * (v.ability.perma_x_chips + 1)
+			end
+			if v.ability.perma_h_x_chips then 
+				final_x_chips[3] = final_x_chips[3] * (v.ability.perma_h_x_chips + 1)
+			end
+			if final_x_chips[3] > 1 then 
+				table.insert(bonuses, final_x_chips)
+			end
+			
+			local final_x_mult = {'mult', 0, 1}
+			if v.ability.perma_x_mult then 
+				final_x_mult[3] = final_x_mult[3] * (v.ability.perma_x_mult + 1)
+			end
+			if v.ability.perma_h_x_mult then 
+				final_x_mult[3] = final_x_mult[3] * (v.ability.perma_h_x_mult + 1)
+			end
+			if final_x_mult[3] > 1 then 
+				table.insert(bonuses, final_x_mult)
+			end
+			
+			local final_e_chips = {'chip', 1, 1}
+			if v.ability.perma_e_chips then 
+				final_e_chips[3] = final_e_chips[3] == 1 and (v.ability.perma_e_chips + 1) or final_e_chips[3] ^ (v.ability.perma_e_chips + 1)
+			end
+			if v.ability.perma_h_e_chips then 
+				final_e_chips[3] = final_e_chips[3] == 1 and (v.ability.perma_h_e_chips + 1) or final_e_chips[3] ^ (v.ability.perma_h_e_chips + 1)
+			end
+			if final_e_chips[3] > 1 then 
+				table.insert(bonuses, final_e_chips)
+			end
+			
+			local final_e_mult = {'mult', 1, 1}
+			if v.ability.perma_e_mult then 
+				final_e_mult[3] = final_e_mult[3] == 1 and (v.ability.perma_e_mult + 1) or final_e_mult[3] ^ (v.ability.perma_e_mult + 1)
+			end
+			if v.ability.perma_h_e_mult then 
+				final_e_mult[3] = final_e_mult[3] == 1 and (v.ability.perma_h_e_mult + 1) or final_e_chips[3] ^ (v.ability.perma_h_e_mult + 1)
+			end
+			if final_e_mult[3] > 1 then 
+				table.insert(bonuses, final_e_mult)
+			end
+			
+			if SMODS.has_no_rank(v) or SMODS.has_no_suit(v) then
+				table.insert(bonuses, {'level', -1, 1})
+			end
+			
+			for i = 1, (v.ability.perma_repetitions or 0) + 1 do
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.15, func = function() 
+					card:juice_up(0.3, 0.5)
+					if SMODS.has_no_rank(v) or SMODS.has_no_suit(v) then
+						v:flip()
+						play_sound('may_hoxxes_break'..math.random(2), 1 + math.random(-0.1, 0.1))
+						v:juice_up(0.3, 0.5)
+						G.ROOM.jiggle = G.ROOM.jiggle + 2
+					else
+						v:juice_up(0.3, 0.5)
+						G.ROOM.jiggle = G.ROOM.jiggle + 1
+						play_sound('may_hoxxes_hit'..math.random(4), 1 + math.random(-0.1, 0.1))
+					end
+				return true end})) 
+				if #bonuses > 0 then
+					for k2, v2 in pairs(bonuses) do
+						if v2[1] == 'mult' then
+							if v2[2] == -1 then
+								may.hand_multchips_all(card, nil, false, nil, {-1, v2[3]})
+								v.ability.perma_mult = (v.ability.perma_mult or 0) * 0.5
+								v.ability.perma_h_mult = (v.ability.perma_h_mult or 0) * 0.5
+								v2[3] = v2[3] * 0.5
+								delay(0.2)
+							elseif v2[2] == 0 then
+								may.hand_multchips_all(card, nil, false, nil, {0, v2[3]})
+								v.ability.perma_x_mult = (v.ability.perma_x_mult or 0) * 0.5
+								v.ability.perma_h_x_mult = (v.ability.perma_h_x_mult or 0) * 0.5 
+								v2[3] = (v2[3] - 1) * 0.5 
+								delay(0.2)
+							elseif v[2] == 1 then
+								may.hand_multchips_all(card, nil, false, nil, {1, v2[3]})
+								v.ability.perma_e_mult = (v.ability.perma_e_mult or 0) ^ 0.5
+								v.ability.perma_h_e_mult = (v.ability.perma_h_e_mult or 0) ^ 0.5 
+								v2[3] = (v2[3] - 1) ^ 0.5
+								delay(0.2)
+							end
+						elseif v2[1] == 'chip' then 
+							if v2[2] == -1 then
+								may.hand_multchips_all(card, nil, false, {-1, v2[3]})
+								v.ability.perma_bonus = (v.ability.perma_bonus or 0) * 0.5
+								v.ability.perma_h_chips = (v.ability.perma_h_chips or 0) * 0.5 
+								v2[3] = v2[3] * 0.5
+								delay(0.2)
+							elseif v[2] == 0 then
+								may.hand_multchips_all(card, nil, false, {0, v2[3]})
+								v.ability.perma_x_chips = (v.ability.perma_x_chips or 0) * 0.5
+								v.ability.perma_h_x_chips = (v.ability.perma_h_x_chips or 0) * 0.5
+								v2[3] = (v2[3] - 1) * 0.5
+								delay(0.2)
+							elseif v[2] == 1 then
+								may.hand_multchips_all(card, nil, false, {1, v2[3]})
+								v.ability.perma_e_chips = (v.ability.perma_e_chips or 0) ^ 0.5
+								v.ability.perma_h_e_chips = (v.ability.perma_h_e_chips or 0) ^ 0.5
+								v2[3] = (v2[3] - 1) ^ 0.5
+								delay(0.2)
+							end
+						else
+							lvupallhands(v2[3], v2[4])
+						end 
+					end
+				end
+				if SMODS.has_no_rank(v) or SMODS.has_no_suit(v) then
+					SMODS.destroy_cards(v)
+				end
+				may.h('All Hands', '...', '...', '...')
+			end
+		end
+		may.ch()
+	end
+}
+
 -- Hidden Spectrals
 
 SMODS.Consumable {

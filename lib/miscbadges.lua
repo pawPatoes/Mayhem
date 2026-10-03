@@ -47,12 +47,33 @@ may.misc_badges = {
 		text = {'Post-Transcendent'}, 
 		col = SMODS.Gradients.may_col_instability
 	}, 
+	mayday_2026 = {
+		text = {'Seasonal', 'MayDay 2026'}, 
+		col = may.C.score, 
+		should_apply = function()
+			return may.conf.cosmetic_badges
+		end
+	}, 
+	christmas_2025 = {
+		text = {'Seasonal', 'Christmas 2025'}, 
+		col = G.C.CHIPS, 
+		should_apply = function()
+			return may.conf.cosmetic_badges
+		end
+	}, 
+	christmas_2026 = {
+		text = {'Seasonal', 'Golden Christmas (2026)'}, 
+		col = SMODS.Gradients.may_col_golden_christmas, 
+		should_apply = function()
+			return may.conf.cosmetic_badges
+		end
+	} 
 }
 
 local smcmb = SMODS.create_mod_badges
 function SMODS.create_mod_badges(obj, badges)
 	smcmb(obj, badges)
-	if obj and obj.misc_badge then
+	if obj and obj.misc_badge and may.conf.cosmetic_badges then
 		local scale_fac = {}
 		local scale_fac_len = 1
 		if obj.misc_badge and obj.misc_badge.text then
@@ -108,7 +129,7 @@ function SMODS.create_mod_badges(obj, badges)
 	end
 	if obj then 
 		for k, v in pairs(may.misc_badges) do
-			if obj[k] then
+			if obj[k] and ((not v.should_apply) or v.should_apply()) then
 				local scale_fac = {}
 				local scale_fac_len = 1
 				for i = 1, #v.text do
