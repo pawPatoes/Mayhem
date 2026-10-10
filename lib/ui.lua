@@ -5,7 +5,7 @@
 -- Inspired by POLTERWORX, no code used however
 function may.cosmetic_score_operator(text, color, sound, no_juice)
 	-- man
-	local op = G.HUD:get_UIE_by_ID('hand_text_area').children[1].children[2].UIBox:get_UIE_by_ID('hand_operator_container').children[1] 
+	local op = G.HUD:get_UIE_by_ID('hand_operator_container').children[1] 
 	G.E_MANAGER:add_event(Event({trigger = 'immediate', func = function()
 	    G.GAME.may_cosmetic_op = true
 		if text then
@@ -49,7 +49,7 @@ function may.refresh_score_operator(delay, immediate)
 		G.E_MANAGER:add_event(Event({delay = f_delay, trigger = 'immediate', func = function()
 			if G.GAME.may_cosmetic_op then
 			    play_sound('button', 1.1, 0.75)
-			    G.HUD:get_UIE_by_ID('hand_text_area').children[1].children[2].UIBox:get_UIE_by_ID('hand_operator_container').children[1]:juice_up(0.8, 0.5)
+			    G.HUD:get_UIE_by_ID('hand_operator_container').children[1]:juice_up(0.8, 0.5)
 			    G.GAME.may_cosmetic_op = nil
 			    G.FUNCS.SMODS_scoring_calculation_function(G.HUD:get_UIE_by_ID('hand_text_area'))
                 G.HUD:get_UIE_by_ID('hand_operator_container').UIBox:recalculate()
@@ -625,7 +625,7 @@ function SMODS.set_scoring_calculation(key)
 			play_sound('may_demitrigger', 1, 0.85)
 		end
 		-- man
-	    G.HUD:get_UIE_by_ID('hand_text_area').children[1].children[2].UIBox:get_UIE_by_ID('hand_operator_container').children[1]:juice_up(0.8, 0.5)
+	    G.HUD:get_UIE_by_ID('hand_operator_container').children[1]:juice_up(0.8, 0.5)
     return true end}))
 end
 
@@ -693,11 +693,9 @@ function may.tut_tip(queue, key, extras)
 	queue[#queue + 1] = { key = "may_"..key.."_tutorial", set = "Other", vars = extras }
 end
 
--- Adds a fusion tooltip to info_queue
+-- Deprecated
 function may.fuse_tip(queue, key, extras)
-	if G.GAME and not G.title_top then 
-		queue[#queue + 1] = { key = "may_"..key.."_fusion_tip", set = "Other", vars = extras }
-	end
+	return
 end
 
 function may.get_operator_text_hand_ui()
