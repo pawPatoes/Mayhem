@@ -376,12 +376,15 @@ return {
 					"will gain the following:", 
 					may.pager(40),
 					"{C:chips}+#1#{} Chips | {C:mult}+#2#{} Mult", 
+					may.hyp(4, 'chips', '#10##8#').." Chips | "..may.hyp(4, 'mult', '#10##9#').." Mult", 
 					may.pager(40),
 					"{C:chips}+#3#{} {C:may_demiurgic}Level{} Chips | {C:mult}+#4#{} {C:may_demiurgic}Level{} Mult", 
 					may.pager(40),
-					"{C:money}+#5#{} Dollars | {C:may_score}+#6#{} Score", 
+					"{C:money}X#5#{} Dollars | {C:may_score}X#6#{} Score", 
 					may.pager(40),
-					"{C:planet}+#7#{} additional levels"
+					"{C:planet}+#7#{} additional levels", 
+					may.pager(40),
+					"{C:inactive}(G = #11#){}"
 				},
 			},
 			
