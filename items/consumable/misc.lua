@@ -27,6 +27,7 @@ SMODS.Consumable {
 	atlas = 'present',
 	cost = 8,
 	unlocked = true,
+	christmas_2025 = true, 
 	no_grc = true, 
 	no_doe = true,
 	can_use = function(self, card)
