@@ -245,8 +245,23 @@ config.scale = 0.7
 position = "at"
 payload = '''
 extra = extra or {}
-colour = may.get_hyper_formatting(eval_type, h.hyper and amt[2] or amt)[1]
-extra.text_colour = may.get_hyper_formatting(eval_type, h.hyper and amt[2] or amt)[2]
-config.scale = math.min(may.get_hyper_formatting(eval_type, h.hyper and amt[2] or amt)[3], 2)
+colour = may.get_hyper_formatting(eval_type, amt)[1]
+extra.text_colour = may.get_hyper_formatting(eval_type, amt)[2]
+config.scale = math.min(may.get_hyper_formatting(eval_type, amt)[3], 2)
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''text = h.stringify(amt)'''
+position = "after"
+payload = '''
+if h.hyper then 
+	local suffix = may.get_eval_type(eval_type) 
+	local initial = string.upper(string.sub(suffix, 1, 1))
+	suffix = ' '..initial..string.sub(suffix, 2, string.len_suffix)
+	text = may.generate_arrow_text(amt[1], 5)..amt[2]..suffix
+end
 '''
 match_indent = true
