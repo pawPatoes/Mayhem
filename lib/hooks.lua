@@ -235,15 +235,15 @@ function get_blind_amount(ante)
 		    amount = FALLBACK(amount, ante)
 	    end
 		if ethereal > to_big(0) then
-			amount = to_big(amount):arrow(1, to_big((ethereal * (big30 + (to_big(ante) * big0_3)) + big1)))
+			amount = to_big(amount):arrow(2, to_big((ethereal * (big30 + (to_big(ante) * big0_3)) + big1)))
 		    amount = FALLBACK(amount, ante)
 	    end
 		if prismatic > to_big(0) then
-			amount = to_big(amount):arrow(2, to_big((prismatic * ((big20 + (to_big(ante) * big0_3)) + big1))))
+			amount = to_big(amount):arrow(3, to_big((prismatic * ((big20 + (to_big(ante) * big0_3)) + big1))))
 		    amount = FALLBACK(amount, ante)
 	    end
 		if demiurgic > to_big(0) then 
-			amount = to_big(amount):arrow(3, to_big((demiurgic * ((big35 + (to_big(ante) * big0_35)) + big1))))
+			amount = to_big(amount):arrow(4, to_big((demiurgic * ((big35 + (to_big(ante) * big0_35)) + big1))))
 		    amount = FALLBACK(amount, ante)
 	    end
 		--[[if surreal > to_big(0) then 
@@ -508,6 +508,9 @@ function SMODS.injectItems(...)
 			v.can_sell = function(self, card, context)
 				return false
 			end
+		end
+		if (v.kind or '') == 'Celestial' and v.set == 'Booster' then 
+			v.draw_hand = true
 		end
 	end
 end

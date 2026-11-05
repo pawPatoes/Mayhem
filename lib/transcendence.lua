@@ -99,7 +99,7 @@ function may.get_transcendence(immediate, multchips)
 	if immediate then 
 		local score 
 		local reqs = to_big(G.ARGS.score_intensity.required_score+1)
-		if multchips and (type(multchips[1]) == 'number' or type(multchips[1]) == 'table') and (type(multchips[2]) == 'number' or type(multchips[2]) == 'table') then 
+		if multchips and to_big(multchips[1]):is_number() and to_big(multchips[1]):is_number() then 
 			score = to_big(G.GAME.current_scoring_calculation:func(multchips[1], multchips[2]))
 		elseif (type(SMODS.get_scoring_parameter('chips', true)) == 'number' or type(SMODS.get_scoring_parameter('chips', true)) == 'table') and (type(SMODS.get_scoring_parameter('mult', true)) == 'number' or type(SMODS.get_scoring_parameter('mult', true)) == 'table') then
 			score = G.ARGS.score_intensity.true_score
@@ -108,8 +108,9 @@ function may.get_transcendence(immediate, multchips)
 		end 
 		if score == to_big(0) or reqs == to_big(0) then 
 			return 0
-		end
-		if to_big(score):gte(reqs*1e100) then 
+		elseif to_big(score):gte(reqs*1e308) then 
+			return '_0'
+		elseif to_big(score):gte(reqs*to_big(10):arrow(1, 5)) then 
 			return 1
 		elseif to_big(score):gte(reqs^1e100) then 
 			return 2

@@ -387,7 +387,7 @@ SMODS.Consumable {
 			{
 				"Gives all {C:purple}Poker Hands{} "..may.hyp(4, 'chips', "#8##1#").." Chips",
 				"if you have used {C:attention}#2#{} copies of", 
-				"{C:tarot}The Wheel of Fortune{} used this run,",
+				"{C:tarot}The Wheel of Fortune{} this run,",
 				"then {C:attention}increase{} {C:mult}requirement{} by {X:retrocards,C:white}X#3#{}", 
 				may.pager(55),
 				"{C:inactive}#4# WoFs used this run{}", 

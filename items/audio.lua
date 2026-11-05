@@ -75,6 +75,13 @@ may.sounds = {
 	{'big_score2', 'big_score2.ogg'},
 	{'big_score3', 'big_score3.ogg'},
 	
+	{'hoxxes_hit1', 'consumable/hoxxes/hit1.ogg'}, 
+	{'hoxxes_hit2', 'consumable/hoxxes/hit2.ogg'}, 
+	{'hoxxes_hit3', 'consumable/hoxxes/hit3.ogg'}, 
+	{'hoxxes_hit4', 'consumable/hoxxes/hit4.ogg'}, 
+	{'hoxxes_break1', 'consumable/hoxxes/break1.ogg'}, 
+	{'hoxxes_break2', 'consumable/hoxxes/break2.ogg'}, 
+	
 	{'c_ascended', 'consumable/ascended.ogg'},
 	
 	{'intro', 'intro.ogg'}, 
@@ -192,7 +199,7 @@ SMODS.Sound({
 	sync = true,
 	select_music_track = function()
 		if G.GAME and not G.GAME.blind then
-			return may.conf.menu_music == 8 and 0
+			return may.is_selected_menu_track("Party Time") and 0
 		end
 		if may.conf.party_music_everywhere then
 			for k, v in pairs((G.jokers or {cards = {}}).cards) do 
@@ -214,7 +221,7 @@ SMODS.Sound({
 	sync = true,
 	select_music_track = function()
 		if G.GAME and not G.GAME.blind then
-			return may.conf.menu_music == 9 and 0 or nil
+			return may.is_selected_menu_track("Rondo Discoteca") and 0 or nil
 		end
 		return may.has_card('j_may_rondo_discoteca') and may.conf.music.ibiza and may.music_priorities.joker_theme + 2
 	end,
@@ -228,9 +235,31 @@ SMODS.Sound({
 	sync = true,
 	volume = 1.2,
 	select_music_track = function()
-		return may.conf.menu_music == 1 and (G.GAME and not G.GAME.blind) and 0
+		return may.is_selected_menu_track("Alptraum") and (G.GAME and not G.GAME.blind) and 0
 	end,
 })
+
+SMODS.Sound({
+	key = "music_christmas_menu",
+	path = "music/music_christmas_menu.ogg",
+	pitch = 1,
+	sync = true,
+	volume = 4,
+	select_music_track = function()
+		return may.is_selected_menu_track("Golden Christmas") and (G.GAME and not G.GAME.blind) and 0
+	end,
+})
+
+SMODS.Sound({
+	key = "music_birthday",
+	path = "music/music_birthday.ogg",
+	pitch = 1,
+	sync = true,
+	volume = 1,
+	select_music_track = function()
+		return may.is_selected_menu_track("Classic Theme Remix (MayDay 2026)") and (G.GAME and not G.GAME.blind) and 0
+	end,
+}) 
 
 SMODS.Sound({
 	key = "music_mayhem",
@@ -238,7 +267,7 @@ SMODS.Sound({
 	pitch = 1,
 	sync = true,
 	select_music_track = function()
-		return may.conf.menu_music == 2 and (G.GAME and not G.GAME.blind) and 0
+		return may.is_selected_menu_track("Legacy Mayhem Theme") and (G.GAME and not G.GAME.blind) and 0
 	end,
 })
 
@@ -249,7 +278,7 @@ SMODS.Sound({
 	volume = .85,
 	sync = true,
 	select_music_track = function()
-		return may.conf.menu_music == 3 and (G.GAME and not G.GAME.blind) and 0
+		return may.is_selected_menu_track("Eternum Theme") and (G.GAME and not G.GAME.blind) and 0
 	end,
 })
 
@@ -260,7 +289,7 @@ SMODS.Sound({
 	pitch = 1,
 	select_music_track = function()
 		if G.GAME and not G.GAME.blind then
-			return may.conf.menu_music == 10 and 0
+			return may.is_selected_menu_track("Opalescent Joker") and 0
 		end
 		if G.jokers then
 			for k, v in pairs(G.jokers.cards) do
@@ -280,7 +309,7 @@ SMODS.Sound({
 	pitch = 1,
 	select_music_track = function()
 		if G.GAME and not G.GAME.blind then
-			return may.conf.menu_music == 17 and 0
+			return may.is_selected_menu_track("Opalescent Joker (Shop)") and 0
 		end
 		if G.jokers then
 			for k, v in pairs(G.jokers.cards) do
@@ -300,7 +329,7 @@ SMODS.Sound({
 	pitch = 1,
 	select_music_track = function()
 		if G.GAME and not G.GAME.blind then
-			return may.conf.menu_music == 6 and 0
+			return may.is_selected_menu_track("Transcendent Joker") and 0
 		end
 		if G.jokers then
 			for k, v in pairs(G.jokers.cards) do
@@ -320,7 +349,7 @@ SMODS.Sound({
 	pitch = 1,
 	select_music_track = function()
 		if G.GAME and not G.GAME.blind then
-			return may.conf.menu_music == 16 and 0
+			return may.is_selected_menu_track("Transcendent Joker (Shop)") and 0
 		end
 		if G.jokers then
 			for k, v in pairs(G.jokers.cards) do
@@ -340,7 +369,7 @@ SMODS.Sound({
 	sync = true,
 	select_music_track = function()
 		if G.GAME and not G.GAME.blind then
-			return may.conf.menu_music == 13 and 0
+			return may.is_selected_menu_track("Fusion Joker") and 0
 		end
 		for k, v in pairs((G.jokers or {cards = {}}).cards) do 
 			if v:may_is_fusion() and v:gc().rarity ~= 'may_transcendent' and v:gc().rarity ~= 'may_opalescent' then 
@@ -358,7 +387,7 @@ SMODS.Sound({
 	sync = true,
 	select_music_track = function()
 		 if G.GAME and not G.GAME.blind then
-			return may.conf.menu_music == 15 and 0
+			return may.is_selected_menu_track("Fusion Joker (Shop)") and 0
 		end
 		for k, v in pairs((G.jokers or {cards = {}}).cards) do 
 			if v:may_is_fusion() and v:gc().rarity ~= 'may_transcendent' and v:gc().rarity ~= 'may_opalescent' then 
@@ -377,7 +406,7 @@ SMODS.Sound({
 	sync = true,
 	select_music_track = function()
 		if G.GAME and not G.GAME.blind then
-			return may.conf.menu_music == 7 and 0
+			return may.is_selected_menu_track("Enhanced Pack") and 0
 		end
 		return (G.booster_pack and not G.booster_pack.REMOVED and SMODS.OPENED_BOOSTER and SMODS.OPENED_BOOSTER.config.center.kind == "may_modifiercard" and may.conf.music.modifier) and may.music_priorities.pack
 	end
@@ -391,7 +420,7 @@ SMODS.Sound({
 	sync = true,
 	select_music_track = function()
 		if G.GAME and not G.GAME.blind then
-			return may.conf.menu_music == 11 and 0
+			return may.is_selected_menu_track("Pixel Pack") and 0
 		end
 		return (G.booster_pack and not G.booster_pack.REMOVED and SMODS.OPENED_BOOSTER and SMODS.OPENED_BOOSTER.config.center.kind == "retrocards" and may.conf.music.retro) and may.music_priorities.pack
 	end
@@ -405,7 +434,7 @@ SMODS.Sound({
 	sync = true,
 	select_music_track = function()
 		if G.GAME and not G.GAME.blind then
-			return may.conf.menu_music == 14 and 0
+			return may.is_selected_menu_track("Fusion Pack") and 0
 		end
 		return (G.booster_pack and not G.booster_pack.REMOVED and SMODS.OPENED_BOOSTER and SMODS.OPENED_BOOSTER.config.center.kind == "fusion" and may.conf.music.fusion_pack) and may.music_priorities.pack
 	end
@@ -418,7 +447,7 @@ SMODS.Sound({
 	sync = true,
 	select_music_track = function()
 		if G.GAME and not G.GAME.blind then
-			return may.conf.menu_music == 4 and 0
+			return may.is_selected_menu_track("Yotta Card") and 0
 		end
 		if G.pack_cards and G.pack_cards.cards then
 			for k, v in pairs(G.pack_cards.cards) do
@@ -439,7 +468,7 @@ SMODS.Sound({
 	sync = true,
 	select_music_track = function()
 		if G.GAME and not G.GAME.blind then
-			return may.conf.menu_music == 5 and 0
+			return may.is_selected_menu_track("UltraBlind") and 0
 		end
 		return (G.GAME and G.GAME.blind and G.GAME.blind.config.blind.ultra and may.conf.music.ultrablind) and may.music_priorities.ultra
 	end
@@ -452,11 +481,12 @@ SMODS.Sound({
 	sync = true,
 	select_music_track = function()
 		if G.GAME and not G.GAME.blind then
-			return may.conf.menu_music == 12 and 0
+			return may.is_selected_menu_track("Tainted Boss") and 0
 		end
 		return (G.GAME and G.GAME.blind and G.GAME.blind.config.blind.tainted and may.conf.music.ultrablind) and may.music_priorities.tainted
 	end
 })
+
 
 SMODS.Sound({
 	key = "music_tran9",

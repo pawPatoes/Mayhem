@@ -74,7 +74,7 @@ SMODS.Joker {
 			}
 		}
 	},
-	config = { extra = { odds = 15, mod = 1, blindmult = 200, active = false } },
+	config = { extra = { odds = 15, mod = 2, blindmult = 200, active = false } },
 	rarity = 'may_ethereal',
 	atlas = 'joker1',
 	blueprint_compat = false,
@@ -192,12 +192,12 @@ SMODS.Joker {
 				"copy of {C:spectral}Grim{}",
 				may.pager(),
 				"Played {C:attention}Aces{} are retriggered {C:attention}#1# times{}",
-				"and give "..may.hyp(1, 'mult', '^#2#').." Mult",
+				"and give "..may.hyp(2, 'mult', '^^#2#').." Mult",
 			},
 			may.add_fusion_text('Omniversal Catalyst', 'Acum Universum', may.get_condition('acum_universum')),
 		}
 	},
-	config = { extra = { repetitions = 4, e_mult = 2 } },
+	config = { extra = { repetitions = 4, ee_mult = 2 } },
 	rarity = "may_ethereal",
 	blueprint_compat = true,
 	demicoloncompat = true,
@@ -210,7 +210,7 @@ SMODS.Joker {
 	attributes = {
 		'generation', 
 		'ace', 
-		'emult', 
+		'eemult', 
 		'retrigger'
 	}, 
 	loc_vars = function(self, info_queue, card)
@@ -225,7 +225,7 @@ SMODS.Joker {
 		end
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_grim
 		info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
-		return { vars = { card.ability.extra.repetitions, card.ability.extra.e_mult } }
+		return { vars = { card.ability.extra.repetitions, card.ability.extra.ee_mult } }
 	end,
 	calculate = function(self, card, context)
 		if (context.cardarea == G.play and context.repetition) or (context.blueprint and context.cardarea == G.play and context.repetition) and not context.repetition_only then
@@ -251,7 +251,7 @@ SMODS.Joker {
 		if (context.individual and context.cardarea == G.play) or (context.individual and context.cardarea == G.play and context.blueprint) then
 			if context.other_card:get_id() == 14 then	
 				return {
-					e_mult = card.ability.extra.e_mult,
+					ee_mult = card.ability.extra.ee_mult,
 					card = context.other_card,
 				}
 			end
@@ -275,18 +275,18 @@ SMODS.Joker {
 		name = {'Intergalactic Tempest', "{C:inactive,s:0.5}Omniversal Catalyst + Destroyer{}"},
 		text = {
 			{
-				may.hyp(1, 'chips', '+^#1#').." Chips per {C:attention}held{} {C:planet}Planet Card{}", 
+				may.hyp(2, 'chips', '+^^#1#').." Chips per {C:attention}held{} {C:planet}Planet Card{}", 
 				may.pager(),
                 "At the {C:attention}end of round{}, {C:mult}destroys{} all", 
-                "held {C:planet}Planet Cards{} and gains "..may.hyp(1, 'chips', '+^#2#').." Chips", 
+                "held {C:planet}Planet Cards{} and gains "..may.hyp(2, 'chips', '+^^#2#').." Chips", 
                 "per {C:mult}destroyed{} {C:planet}Planet Card{}", 
 				may.pager(),
-				"{C:inactive}Currently ^#3# Chips, will gain +^#4#{}"
+				"{C:inactive}Currently ^^#3# Chips, will gain +^^#4#{}"
 			},
 			may.add_fusion_text('Omniversal Catalyst', 'World Destroyer', may.get_condition('world_destroyer')),
 		}
 	},
-	config = { extra = { Echip_gain = 3, Echip = 1, temp_scale = 0} },
+	config = { extra = { EEchip_gain = 3, EEchip = 1, temp_scale = 0} },
 	pos = { x = 2, y = 4 },
 	soul_pos = { x = 3, y = 4 },
 	cost = 300,
@@ -299,7 +299,7 @@ SMODS.Joker {
 	demicoloncompat = true,
 	endless = true,
 	attributes = {
-		'echips', 
+		'eechips', 
 		'planet', 
 		'destroy_card', 
 		'scaling'
@@ -314,7 +314,7 @@ SMODS.Joker {
                 end
             end
         end
-        return {vars = { card.ability.extra.Echip, card.ability.extra.Echip_gain, 1 + (card.ability.extra.Echip * amount), card.ability.extra.Echip_gain * amount }}
+        return {vars = { card.ability.extra.EEchip, card.ability.extra.EEchip_gain, 1 + (card.ability.extra.EEchip * amount), card.ability.extra.EEchip_gain * amount }}
     end,
     calculate = function(self, card, context)
 		if context.joker_main or context.forcetrigger then 
@@ -324,11 +324,9 @@ SMODS.Joker {
                     amount = amount + v:getQty()
                 end 
             end 
-            if 1 + (amount * card.ability.extra.Echip) > 1 then
+            if 1 + (amount * card.ability.extra.EEchip) > 1 then
 			    return {
-				    message = "^"..(1 + (amount * card.ability.extra.Echip)).." Chips",
-				    colour = G.C.CHIPS,
-				    Echip_mod = 1 + (amount * card.ability.extra.Echip),
+				    ee_chips = 1 + (amount * card.ability.extra.EEchip),
 				    card = card,			
 			    }
             end
@@ -344,10 +342,10 @@ SMODS.Joker {
                     return true end}))
                 end 
             end 
-            card.ability.extra.temp_scale = amount * card.ability.extra.Echip_gain
+            card.ability.extra.temp_scale = amount * card.ability.extra.EEchip_gain
             SMODS.scale_card(card, {
 				ref_table = card.ability.extra,
-				ref_value = "Echip",
+				ref_value = "EEchip",
 				scalar_value = "temp_scale",
                 scaling_message = {
                     colour = G.C.CHIPS, 
@@ -365,13 +363,12 @@ SMODS.Joker {
 		text = {
 			{
 				"{C:attention}Gives{} the {C:planet}level{} of played Poker Hand",
-				"as "..may.hyp(1, 'mult', '^Mult'), 
-				"{C:inactive}Max of ^1e300{}",
+				"as "..may.hyp(2, 'mult', '^^Mult'), 
+				"{C:inactive}Max of ^^1e300{}",
 			},
 			may.add_fusion_text('Omniversal Catalyst', 'Kepler', may.get_condition('kepler')),
 		}
 	},
-	config = { extra = { Emult = 1 } },
 	pos = { x = 5, y = 6 },
 	soul_pos = { x = 0, y = 7 },
 	cost = 300,
@@ -381,7 +378,7 @@ SMODS.Joker {
 	demicoloncompat = true,
 	endless = true,
 	attributes = {
-		'emult'
+		'eemult'
 	}, 
     loc_vars = function(self, info_queue, card)
 		local count = 1
@@ -389,23 +386,18 @@ SMODS.Joker {
 			count = math.max(count, v.level)
 		end
 		may.fuse_tip(info_queue, 'kepler', { count })
-        return {vars = {card.ability.extra.Emult}}
     end,
     calculate = function(self, card, context)
 		if context.joker_main then
 			return {
-				Emult_mod = to_big(math.min(1e300, G.GAME.hands[context.scoring_name].level)),
+				ee_mult = to_big(math.min(1e300, G.GAME.hands[context.scoring_name].level)),
 				card = card,
-				message = '^'..number_format(math.min(1e300, G.GAME.hands[context.scoring_name].level))..' Mult',
-				colour = G.C.MULT,
 			}
 		end
 		if context.forcetrigger then
 			return {
-				Emult_mod = to_big(math.min(1e300, G.GAME.hands[context.scoring_name].level)),
-				card = card,
-				message = '^'..number_format(math.min(1e300, G.GAME.hands[context.scoring_name].level))..' Mult',
-				colour = G.C.MULT,
+				ee_mult = to_big(math.min(1e300, G.GAME.hands[context.scoring_name].level)),
+				card = card, 
 			}
 		end
 	end
@@ -423,9 +415,9 @@ SMODS.Joker {
 				may.pager(60),
 				"{C:attention}Increases{} by {C:attention}#2#{} when {C:attention}hand{} is {C:attention}played{}",
 				may.pager(60),
-				may.hyp(1, 'mult', '+^#3#').." Mult per {C:attention}Joker{} with an {C:dark_edition}Edition{}",
+				may.hyp(2, 'mult', '+^^#3#').." Mult per {C:attention}Joker{} with an {C:dark_edition}Edition{}",
 				may.pager(60), 
-				"{C:inactive}Currently ^#4# Mult{}"
+				"{C:inactive}Currently ^^#4# Mult{}"
 			},
 			may.add_fusion_text('Collector\'s Edition', 'Diskus Dominus', may.get_condition('diskus_dominus')),
 		}
@@ -439,14 +431,14 @@ SMODS.Joker {
 	pos = { x = 3, y = 12 },
 	soul_pos = { x = 0, y = 13 },
 	cost = 314,
-	config = { extra = { blindcards = 20, cards_gain = 5, Emult = 14, } },
+	config = { extra = { blindcards = 20, cards_gain = 5, EEmult = 14, } },
 	attributes = {
 		'generation', 
 		'wheel', 
 		'scaling', 
 		'editions', 
 		'joker', 
-		'emult',
+		'eemult',
 	}, 
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_wheel_of_fortune
@@ -459,7 +451,7 @@ SMODS.Joker {
 				end
 			end
 		end
-		return { vars = { card.ability.extra.blindcards, card.ability.extra.cards_gain, card.ability.extra.Emult, num } }
+		return { vars = { card.ability.extra.blindcards, card.ability.extra.cards_gain, card.ability.extra.EEmult, num } }
 	end,
 	calculate = function(self, card, context)
 		if context.before and not context.blueprint then
@@ -490,7 +482,7 @@ SMODS.Joker {
 			end 
 			if num > 1 then
 			    return {
-				    e_mult = num,
+				    ee_mult = num,
 				    card = card 
 			    }
 			end
@@ -504,17 +496,17 @@ SMODS.Joker {
 		name = {'Bismuth Joker', "{C:inactive,s:0.5}Bedrock Joker + Stone Joker{}"},
 		text = {
 			{
-				may.hyp(1, 'chips', '^#1#').." Chips",
+				may.hyp(2, 'chips', '^^#1#').." Chips",
 				may.pager(),
                 "When {C:attention}Blind{} is {C:attention}selected{},", 
 				"create a {C:dark_edition}Negative{} copy of {C:spectral}Medusa{}",
 				may.pager(),
                 "After scoring, {C:mult}destroy{} all", 
 				"{C:dark_edition}Stone Cards{} {C:attention}held in hand{} and gain", 
-				may.hyp(1, 'chips', '+^#2#').." Chips per destroyed card",
+				may.hyp(2, 'chips', '+^^#2#').." Chips per destroyed card",
 				may.pager(), 
 				"Played {C:dark_edition}Stone Cards{} increase", 
-				may.hyp(1, 'chips', '^Chips').." gain by "..may.hyp(1, 'chips', '+^#3#').." before scoring",
+				may.hyp(2, 'chips', '^^Chips').." gain by "..may.hyp(2, 'chips', '+^^#3#').." before scoring",
 			},
             may.add_fusion_text('Cement Joker', 'Eternity Stone', may.get_condition('eternity_stone')), 
 			{
@@ -529,16 +521,16 @@ SMODS.Joker {
 	immutable = true,
 	pos = { x = 9, y = 3 },
 	soul_pos = { x = 10, y = 3 }, 
-	config = { extra = { Echip = 1, Echip_gain = 2, Echip_gain2 = 0.5, } },
+	config = { extra = { EEchip = 1, EEchip_gain = 2, EEchip_gain2 = 0.5, } },
 	loc_vars = function(self, info_queue, card)
 		may.fuse_tip(info_queue, 'stones', { (G.GAME.may_stones_destroyed or 0) })
         info_queue[#info_queue + 1] = { key = "e_negative_consumable", set = "Edition", config = { extra = 1 } }
 		info_queue[#info_queue + 1] = G.P_CENTERS.c_may_medusa
-		return { vars = { card.ability.extra.Echip, card.ability.extra.Echip_gain, card.ability.extra.Echip_gain2 } }
+		return { vars = { card.ability.extra.EEchip, card.ability.extra.EEchip_gain, card.ability.extra.EEchip_gain2 } }
 	end,
 	cost = 350,
 	attributes = {
-		'echips', 
+		'eechips', 
 		'generation', 
 		'destroy_card', 
 		'stone', 
@@ -574,8 +566,8 @@ SMODS.Joker {
                 if SMODS.has_enhancement(v, 'm_stone') then
                     SMODS.scale_card(card, {
                         ref_table = card.ability.extra,
-                        ref_value = "Echip_gain",
-                        scalar_value = "Echip_gain2",
+                        ref_value = "EEchip_gain",
+                        scalar_value = "EEchip_gain2",
 						scaling_message = {
                             colour = G.C.CHIPS, 
 							message = localize('k_upgrade_ex')
@@ -586,7 +578,7 @@ SMODS.Joker {
 		end
         if (context.joker_main or context.forcetrigger) and card.ability.extra.Echip > 1 then
             return {
-                e_chips = card.ability.extra.Echip, 
+                ee_chips = card.ability.extra.EEchip, 
                 card = card, 
             }
         end

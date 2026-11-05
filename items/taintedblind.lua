@@ -216,9 +216,10 @@ SMODS.Blind {
 		text = { 
 			"Hearts debuffed", 
 			"and drawn face down", 
-			"^2 Blind Size if", 
+			"#1# Blind Size if", 
 			"hand does not contain", 
 			"at least 1 Heart", 
+			"(G = #2#)"
 		}
 	},
 	boss = {
@@ -233,6 +234,12 @@ SMODS.Blind {
 	debuff = { suit = 'Hearts' }, 
 	endless = true, 
 	tainted = true,
+	collection_loc_vars = function(self, info_queue, card)
+		return { vars = { '{G}2', may.global_op() } }
+	end,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { '{G}2', may.global_op() } }
+	end,
 	calculate = function(self, blind, context)
 		if not blind.disabled then
 			if context.after then 
@@ -245,7 +252,7 @@ SMODS.Blind {
 				end 
 				if no_suit then
 					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-						G.GAME.blind.chips = G.GAME.blind.chips ^ 2
+						G.GAME.blind.chips = to_big(G.GAME.blind.chips):arrow(may.global_op(), 2) 
 						G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 						G.hand_text_area.blind_chips:juice_up()
 						SMODS.juice_up_blind()
@@ -272,9 +279,10 @@ SMODS.Blind {
 		text = { 
 			"Diamonds debuffed", 
 			"and drawn face down", 
-			"^2 Blind Size if", 
+			"#1# Blind Size if", 
 			"hand does not contain", 
 			"at least 1 Diamond", 
+			"(G = #2#)"
 		}
 	},
 	boss = {
@@ -289,6 +297,12 @@ SMODS.Blind {
 	debuff = { suit = 'Diamonds' }, 
 	endless = true, 
 	tainted = true,
+	collection_loc_vars = function(self, info_queue, card)
+		return { vars = { '{G}2', may.global_op() } }
+	end,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { '{G}2', may.global_op() } }
+	end,
 	calculate = function(self, blind, context)
 		if not blind.disabled then
 			if context.after then 
@@ -301,7 +315,7 @@ SMODS.Blind {
 				end 
 				if no_suit then
 					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-						G.GAME.blind.chips = G.GAME.blind.chips ^ 2
+						G.GAME.blind.chips = to_big(G.GAME.blind.chips):arrow(may.global_op(), 2) 
 						G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 						G.hand_text_area.blind_chips:juice_up()
 						SMODS.juice_up_blind()
@@ -328,9 +342,10 @@ SMODS.Blind {
 		text = { 
 			"Spades debuffed", 
 			"and drawn face down", 
-			"^2 Blind Size if", 
+			"#1# Blind Size if", 
 			"hand does not contain", 
 			"at least 1 Spade", 
+			"(G = #2#)"
 		}
 	},
 	boss = {
@@ -345,6 +360,12 @@ SMODS.Blind {
 	debuff = { suit = 'Spades' }, 
 	endless = true, 
 	tainted = true,
+	collection_loc_vars = function(self, info_queue, card)
+		return { vars = { '{G}2', may.global_op() } }
+	end,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { '{G}2', may.global_op() } }
+	end,
 	calculate = function(self, blind, context)
 		if not blind.disabled then
 			if context.after then 
@@ -357,7 +378,7 @@ SMODS.Blind {
 				end 
 				if no_suit then
 					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-						G.GAME.blind.chips = G.GAME.blind.chips ^ 2
+						G.GAME.blind.chips = to_big(G.GAME.blind.chips):arrow(may.global_op(), 2) 
 						G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 						G.hand_text_area.blind_chips:juice_up()
 						SMODS.juice_up_blind()
@@ -384,9 +405,10 @@ SMODS.Blind {
 		text = { 
 			"Clubs debuffed", 
 			"and drawn face down", 
-			"^2 Blind Size if",
+			"#1# Blind Size if",
 			"hand does not contain", 
 			"at least 1 Club", 
+			"(G = #2#)"
 		}
 	},
 	boss = {
@@ -401,6 +423,12 @@ SMODS.Blind {
 	debuff = { suit = 'Clubs' }, 
 	endless = true, 
 	tainted = true,
+	collection_loc_vars = function(self, info_queue, card)
+		return { vars = { '{G}2', may.global_op() } }
+	end,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { '{G}2', may.global_op() } }
+	end,
 	calculate = function(self, blind, context)
 		if not blind.disabled then
 			if context.after then 
@@ -413,7 +441,7 @@ SMODS.Blind {
 				end 
 				if no_suit then
 					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-						G.GAME.blind.chips = G.GAME.blind.chips ^ 2
+						G.GAME.blind.chips = to_big(G.GAME.blind.chips):arrow(may.global_op(), 2) 
 						G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 						G.hand_text_area.blind_chips:juice_up()
 						SMODS.juice_up_blind()
