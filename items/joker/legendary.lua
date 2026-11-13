@@ -578,6 +578,7 @@ SMODS.Joker {
 	pos = { x = 1, y = 6 },
 	soul_pos = { x = 5, y = 3 },
 	cost = 20,
+	christmas_2025 = true,
 	attributes = {
 		'generation', 
 		'hand_type'
