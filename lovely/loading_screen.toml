@@ -99,7 +99,8 @@ payload = '''
 		love.graphics.print(text, rectX+rectWidth/2, rectY+rectHeight/2, 0, size, size, textWidth/2, textHeight/2)
 	end 
 	
-	centered_text(0, -65, realw, realh, "MAYHEM", 1)
+	centered_text(0, -125, realw, realh, "MAYHEM", 1)
+	centered_text(0, -65, realw, realh, "Happy MayDay!", 1) 
 	centered_text(0, 120, realw, realh, (MAY_fun_fact or "ERROR (something actually broke, please report this)") , 1)
 '''
 match_indent = true

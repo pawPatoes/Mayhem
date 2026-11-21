@@ -471,9 +471,9 @@ end
 function may.op_from_rarity(key)
 	local tab = {
 		{'may_mythic', 1},
-		{'may_ethereal', 1},
-		{'may_prismatic', 2}, 
-		{'may_demiurgic', 3},
+		{'may_ethereal', 2},
+		{'may_prismatic', 3}, 
+		{'may_demiurgic', 4},
 	}
 	for k, v in pairs(tab) do
 		if v[1] == key then 
@@ -972,20 +972,20 @@ function Card:may_get_suit()
 end
 
 function may.varda_amount(card)
-	local ret = 0
+	local ret = 2
 	local exp = 0
 	if not SMODS.has_enhancement(card, 'c_base') then 
 		exp = exp + 1
-		ret = ret + math.max(0, math.max(0, math.ceil(1.4 - (G.P_CENTERS[card.config.center.key].weight or 1))) ^ 1.3) 
+		ret = ret + math.max(0, math.max(0, math.ceil(1.6 - (G.P_CENTERS[card.config.center.key].weight or 1))) ^ 1.3) 
 	end
 	if card.edition then
 		exp = exp + 1
 		ret = math.ceil(ret * 1.1)
-		ret = ret + math.max(0, math.ceil((math.max(0, (20 - (G.P_CENTERS[card.edition.key].weight or 15)) * 0.2)) ^ 1.1))
+		ret = ret + math.max(0, math.ceil((math.max(0, (25 - (G.P_CENTERS[card.edition.key].weight or 15)) * 0.2)) ^ 1.15))
 	end
 	if card.seal then
 		exp = exp + 1
-		ret = ret == 0 and 1 or math.ceil(ret * 1.45)
+		ret = ret == 0 and 1 or math.ceil(ret * 1.5)
 	end
 	return math.floor(math.floor(ret) ^ (1 + exp * 0.085))
 end
@@ -1020,3 +1020,7 @@ function Card:may_playing_sell_value()
 	end 
 	return may.round(ret)
 end
+
+function may.is_selected_menu_track(name)
+	return may.menu_music_choices[may.conf.menu_music] == name
+end 

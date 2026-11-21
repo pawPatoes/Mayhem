@@ -280,6 +280,7 @@ SMODS.Consumable {
 	key = 'charon',
 	pos = { x = 1, y = 2 },
 	atlas = 'planet',
+	config = { extra = { level = 0.2 } }, 
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Plutonian Moon', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
@@ -288,64 +289,45 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'Charon',
 		text = {
-			"Add the {C:attention}Nominal Chips{} of all {C:attention}cards{}",
-			"{C:attention}held in hand{} to the {C:chips}Chips{} of",
-			"all {C:purple}Poker Hands{}",
-			"{C:inactive}Currently #1# Chips{}"
+			"{C:planet}Level up{} a random {C:purple}Poker Hand{} by {C:attention}+#1#{}",
+			"per card {C:attention}held in hand{}", 
+			"{C:inactive}Currently +#2# levels{}"
 		}
 	},
 	can_use = function(self, card)
 		return may.canuse() and #G.hand.cards ~= 0
 	end,
 	loc_vars = function(self, info_queue, card)
-		local amt = 0
-		if G.hand and G.hand.cards then 
-			for k, v in pairs(G.hand.cards) do 
-				amt = amt + v:may_get_nominal_chips()
-			end
-		end
-		return { vars = { amt } }
+		return { vars = { card.ability.extra.level, #(G.hand or {cards = {}}).cards * card.ability.extra.level } }
 	end,
 	use = function(self, card)
-		local amount = 0
-		for k, v in pairs(G.hand.cards) do
-			if v:may_get_nominal_chips() then
-				amount = amount + v:may_get_nominal_chips()
-				card_eval_status_text(card, 'extra', nil, nil, nil, { message = (v:may_get_nominal_chips() > 0 and '+' or '-')..number_format(math.abs(v:may_get_nominal_chips())), colour = G.C.CHIPS, delay = 0.1, sound = 'chips1'})
-				G.E_MANAGER:add_event(Event({func = function()
-					v:juice_up(0.3, 0.4)
-				return true end}))
-			end
-		end
-		may.a((amount > 0 and '+' or '-')..number_format(math.abs(amount)), 2, 1.5, G.C.CHIPS, 'may_positive')
-		may.hand_multchips_all(card, nil, false, {-1, amount})
-		if Engulf and card.edition then 
-			for k, v in pairs(G.GAME.hands) do
-				Engulf.EditionHand(card, k, card.edition, 1, true)
-			end
-		end
-		delay(0.2)
+		level_up_hand(card, may.rndhand(), false, #G.hand.cards * card.ability.extra.level)
 		may.ch()
 	end,
 	bulk_use = function(self, card, area, copier, number)
-		local amount = 0
-		for k, v in pairs(G.hand.cards) do
-			if v:may_get_nominal_chips() then
-				amount = amount + v:may_get_nominal_chips()
-				card_eval_status_text(card, 'extra', nil, nil, nil, { message = (v:may_get_nominal_chips() > 0 and '+' or '-')..math.abs(v:may_get_nominal_chips()), colour = G.C.CHIPS, delay = 0.1, sound = 'chips1'})
-				G.E_MANAGER:add_event(Event({func = function()
-					v:juice_up(0.3, 0.4)
-				return true end}))
-			end
-		end
-		may.a((amount > 0 and '+' or '-')..math.abs(number_format(amount)), 2, 1.5, G.C.CHIPS, 'may_positive')
-		may.hand_multchips_all(card, nil, false, {-1, amount * number})
-		if Engulf and card.edition then 
-			for k, v in pairs(G.GAME.hands) do
-				Engulf.EditionHand(card, k, card.edition, number, true)
-			end
-		end
-		delay(0.2)
+		for i = 1, math.min(number, 1000) do 
+			level_up_hand(card, may.rndhand(), true, #G.hand.cards * card.ability.extra.level)
+		end 
+		may.h('Random Hands', '...', '...', '')
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+			play_sound('tarot1')
+			card:juice_up(0.8, 0.5)
+			G.TAROT_INTERRUPT_PULSE = true
+		return true end}))
+		may.hm('+', true)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+			play_sound('tarot1')
+			card:juice_up(0.8, 0.5)
+			G.TAROT_INTERRUPT_PULSE = true
+		return true end}))
+		may.hc('+', true)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.9, func = function()
+			play_sound('tarot1')
+			card:juice_up(0.8, 0.5)
+			G.TAROT_INTERRUPT_PULSE = true
+		return true end}))
+		may.hlv('+'..(#G.hand.cards * card.ability.extra.level), true)
+		delay(1.3)
 		may.ch()
 	end
 }
@@ -976,15 +958,11 @@ SMODS.Consumable {
 		text = {
 			"{C:mult}Destroys{} a selected {C:dark_edition}modified{} {C:attention}playing card{}",
 			"in exchange for {C:planet}Planet Cards{}",
-			may.pager(),
-			"Base of {C:mult}0{} {C:planet}Planets{}, additional {C:planet}Planets{}",
-			"given based on the {C:attention}rarity{}",
-			"of its {C:dark_edition}Enhancement{}, {C:dark_edition}Edition{} and/or {C:dark_edition}Seal{}",
-			"Increases {C:dark_edition}exponentially{} if card is",
-			"{C:green}heavily{} {C:dark_edition}modified{}",
-			may.pager(),
+			"based on the {C:money}sell value{} of the card", 
+			may.pager(50),
 			"{C:inactive}Currently #1# Planet Cards{}",
 			"{C:inactive}Does not require room{}",
+			"{C:inactive,s:0.7}No. of Planets = floor(Sell Value){}", 
 		} 
 	},
 	immutable = true,
@@ -1001,6 +979,7 @@ SMODS.Consumable {
 		badges[1] = create_badge('Dwarf Planet', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
 	loc_vars = function(self, info_queue, card)
+		may.tut_tip(info_queue, 'sell_playing')
 		if Engulf and card.edition then 
 			info_queue[#info_queue + 1] = { key = "may_enf_varda", set = "Other" } 
 		end 
@@ -1013,7 +992,7 @@ SMODS.Consumable {
 				end
 			end
 		end
-		return { vars = { (selected and #G.hand.highlighted <= (card.area == G.hand and 2 or 1)) and may.varda_amount(selected) or 'NaN' } }
+		return { vars = { (selected and #G.hand.highlighted <= (card.area == G.hand and 2 or 1)) and math.floor(selected:may_playing_sell_value()) or 'NaN' } }
 	end,
 	use = function(self, card)
 		local selected
@@ -1023,7 +1002,7 @@ SMODS.Consumable {
 				break
 			end
 		end
-		local amount = may.varda_amount(selected)
+		local amount = math.floor(selected:may_playing_sell_value())
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
 			play_sound('card3')
 			card:juice_up(0.3, 0.5)
@@ -1450,7 +1429,7 @@ SMODS.Consumable {
 	},
 	pos = { x = 0, y = 3 },
 	atlas = 'planet',
-	config = { extra = { amount = 1.1 } },
+	config = { extra = { amount = 1.05 } },
 	unlocked = true,
 	discovered = true,
 	no_ring_display = true,
@@ -1499,7 +1478,7 @@ SMODS.Consumable {
 	},
 	pos = { x = 6, y = 0 },
 	atlas = 'planet',
-	config = { extra = { amount = 1.15 } },
+	config = { extra = { amount = 1.1 } },
 	unlocked = true,
 	discovered = true,
 	no_ring_display = true,
@@ -2010,7 +1989,7 @@ SMODS.Consumable {
 	key = 'rings_of_saturn',
 	pos = { x = 3, y = 2 },
 	atlas = 'planet',
-	config = { extra = { score = 1000, dollars = 0.1 } },
+	config = { extra = { x_score = 0.2, x_dollars = 0.05 } },
 	no_ring_display = true, 
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Ring System', get_type_colour(self or card.config, card), nil, 1.2)
@@ -2020,7 +1999,8 @@ SMODS.Consumable {
 		name = 'Rings of Saturn',
 		text = {
 			"{C:attention}Next{} {C:planet}leveled up{} {C:purple}Poker Hand{} gains", 
-			"{C:may_score}+#1#{} Score and {C:money}+#2#{} Dollars"
+			"{X:may_score,C:white}+X#1#{} Score and {X:money,C:white}+X#2#{} Dollars", 
+			"{C:inactive,s:0.8}Stacks additively: 2 R.o.S. >> X#3# Score & X#4# Dollars{}"
 		}
 	},
 	attributes = {
@@ -2032,12 +2012,12 @@ SMODS.Consumable {
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = { key = "may_hand_score_tutorial", set = "Other" }
 		info_queue[#info_queue + 1] = { key = "may_hand_dollars_tutorial", set = "Other" }
-		return { vars = { card.ability.extra.score, card.ability.extra.dollars } }
+		return { vars = { card.ability.extra.x_score, card.ability.extra.x_dollars, 1 + (card.ability.extra.x_score * 2), 1 + (card.ability.extra.x_dollars * 2) } }
 	end,
 	use = function(self, card)
 		G.GAME.may_ring_bonuses = G.GAME.may_ring_bonuses or {}
-		G.GAME.may_ring_bonuses.score = (G.GAME.may_ring_bonuses.score or 0) + card.ability.extra.score
-		G.GAME.may_ring_bonuses.dollars = (G.GAME.may_ring_bonuses.dollars or 0) + card.ability.extra.dollars
+		G.GAME.may_ring_bonuses.x_score = (G.GAME.may_ring_bonuses.x_score or 0) + card.ability.extra.score
+		G.GAME.may_ring_bonuses.x_dollars = (G.GAME.may_ring_bonuses.x_dollars or 0) + card.ability.extra.dollars
 		card_eval_status_text(card, 'extra', nil, nil, nil, { message = 'Activated!', colour = get_type_colour(self or card.config, card), delay = 0.45})
 		if Engulf and card.edition then
 			local added
@@ -2056,8 +2036,8 @@ SMODS.Consumable {
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		G.GAME.may_ring_bonuses = G.GAME.may_ring_bonuses or {}
-		G.GAME.may_ring_bonuses.score = (G.GAME.may_ring_bonuses.score or 0) + (card.ability.extra.score * number)
-		G.GAME.may_ring_bonuses.dollars = (G.GAME.may_ring_bonuses.dollars or 0) + (card.ability.extra.dollars * number)
+		G.GAME.may_ring_bonuses.x_score = (G.GAME.may_ring_bonuses.x_score or 0) + (card.ability.extra.x_score * number)
+		G.GAME.may_ring_bonuses.x_dollars = (G.GAME.may_ring_bonuses.x_dollars or 0) + (card.ability.extra.x_dollars * number)
 		card_eval_status_text(card, 'extra', nil, nil, nil, { message = 'Activated!', colour = get_type_colour(self or card.config, card), delay = 0.45})
 		if Engulf and card.edition then
 			local added
@@ -2147,7 +2127,7 @@ SMODS.Consumable {
 	key = 'rings_of_neptune',
 	pos = { x = 0, y = 4 },
 	atlas = 'planet',
-	config = { extra = { mult = 4, chips = 25, } },
+	config = { extra = { mult = 4, chips = 25, g_mult = 0.1, g_chips = 0.2 } },
 	set_card_type_badge = function(self, card, badges)
 		badges[1] = create_badge('Ring System', get_type_colour(self or card.config, card), nil, 1.2)
 	end,
@@ -2156,7 +2136,12 @@ SMODS.Consumable {
 		name = 'Rings of Neptune',
 		text = {
 			"{C:attention}Next{} {C:planet}leveled up{} {C:purple}Poker Hand{} gains", 
-			"{C:mult}+#1#{} Mult and {C:chips}+#2#{} Chips"
+			"{C:mult}+#1#{} Mult and {C:chips}+#2#{} Chips", 
+			may.pager(), 
+			"If {C:planet}Astronomy{} {C:green}V{} is redeemed, instead", 
+			"adds "..may.hyp(4, 'mult', "+#3##4#").." Mult and "..may.hyp(4, 'chips', "+#3##5#").." Chips", 
+			"for the next {C:purple}Poker Hand{} {C:planet}leveled up{}", 
+			"{C:inactive,s:0.8}Stacks additively: 2 R.o.N. >> #3##6# Mult & #3##7# Chips{}"
 		}
 	},
 	attributes = {
@@ -2166,12 +2151,18 @@ SMODS.Consumable {
 		return may.canuse()
 	end,
 	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.extra.mult, card.ability.extra.chips, } }
+		may.tut_tip(info_queue, 'global_op')
+		return { vars = { card.ability.extra.mult, card.ability.extra.chips, '{G}', card.ability.extra.g_mult, card.ability.extra.g_chips, 1 + (card.ability.extra.g_mult * 2), 1 + (card.ability.extra.g_chips * 2) } }
 	end,
 	use = function(self, card)
 		G.GAME.may_ring_bonuses = G.GAME.may_ring_bonuses or {}
-		G.GAME.may_ring_bonuses.mult = (G.GAME.may_ring_bonuses.mult or 0) + card.ability.extra.mult
-		G.GAME.may_ring_bonuses.chips = (G.GAME.may_ring_bonuses.chips or 0) + card.ability.extra.chips
+		if may.has_card('v_may_astronomy_5') then
+			G.GAME.may_ring_bonuses.g_mult = (G.GAME.may_ring_bonuses.g_mult or 0) + card.ability.extra.g_mult
+			G.GAME.may_ring_bonuses.g_chips = (G.GAME.may_ring_bonuses.g_chips or 0) + card.ability.extra.g_chips
+		else
+			G.GAME.may_ring_bonuses.mult = (G.GAME.may_ring_bonuses.mult or 0) + card.ability.extra.mult
+			G.GAME.may_ring_bonuses.chips = (G.GAME.may_ring_bonuses.chips or 0) + card.ability.extra.chips
+		end
 		card_eval_status_text(card, 'extra', nil, nil, nil, { message = 'Activated!', colour = get_type_colour(self or card.config, card), delay = 0.45})
 		if Engulf and card.edition then
 			local added
@@ -2190,8 +2181,13 @@ SMODS.Consumable {
 	end,
 	bulk_use = function(self, card, area, copier, number)
 		G.GAME.may_ring_bonuses = G.GAME.may_ring_bonuses or {}
-		G.GAME.may_ring_bonuses.mult = (G.GAME.may_ring_bonuses.mult or 0) + (card.ability.extra.mult * number)
-		G.GAME.may_ring_bonuses.chips = (G.GAME.may_ring_bonuses.chips or 0) + (card.ability.extra.chips * number)
+		if may.has_card('v_may_astronomy_5') then
+			G.GAME.may_ring_bonuses.g_mult = (G.GAME.may_ring_bonuses.g_mult or 0) + (card.ability.extra.g_mult * number) 
+			G.GAME.may_ring_bonuses.g_chips = (G.GAME.may_ring_bonuses.g_chips or 0) + (card.ability.extra.g_chips * number)
+		else
+			G.GAME.may_ring_bonuses.mult = (G.GAME.may_ring_bonuses.mult or 0) + (card.ability.extra.mult * number)
+			G.GAME.may_ring_bonuses.chips = (G.GAME.may_ring_bonuses.chips or 0) + (card.ability.extra.chips * number)
+		end
 		card_eval_status_text(card, 'extra', nil, nil, nil, { message = 'Activated!', colour = get_type_colour(self or card.config, card), delay = 0.45})
 		if Engulf and card.edition then
 			local added
