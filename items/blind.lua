@@ -334,22 +334,23 @@ SMODS.Blind {
 	loc_txt = {
 		name = 'The Charge',
 		text = { 
-			"X#1# Blind Size when",
+			"#2##1# Blind Size when",
 			"hand is played",
+			"(G = #3#)"
 		}
     },
 	collection_loc_vars = function(self, info_queue, card)
-		return { vars = { 1.3 } }
+		return { vars = { 1.3, '{G}', may.global_op() } }
 	end,
 	loc_vars = function(self, info_queue, card)
-		return { vars = { self.config.multiplier or 1.3 } }
+		return { vars = { self.config.multiplier or 1.3, '{G}', may.global_op() } }
 	end,
 	disable = function(self)
 		self.config.canincrease = false
 	end,
 	press_play = function(self)
 		if self.config.canincrease then
-			G.GAME.blind.chips = G.GAME.blind.chips * self.config.multiplier
+			G.GAME.blind.chips = to_big(G.GAME.blind.chips):arrow(may.global_op(), self.config.multiplier) 
 			G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 			play_sound('may_blind_size')
 		end
@@ -664,14 +665,14 @@ SMODS.Blind {
 			"#1# Blind Size",
 			"unless a Blind was", 
 			"skipped this Ante", 
-			"(G is your highest hyperoperator)"
+			"(G = #2#)"
 		}
     },
 	collection_loc_vars = function(self, info_queue, card)
-		return { vars = { '{G}4' } }
+		return { vars = { '{G}4', may.global_op() } }
 	end,
 	loc_vars = function(self, info_queue, card)
-		return { vars = { '{G}4' } }
+		return { vars = { '{G}4', may.global_op() } }
 	end,
 	set_blind = function(self)
 		if not G.GAME.may_runaway then
@@ -815,8 +816,8 @@ SMODS.Blind {
 		text = {
 			"#1# Blind Size if",
 			"hand doesn't contain", 
-			"a Suitless or Rankless card", 
-			"(G is your highest hyperoperator)"
+			"a Suitless or Rankless card",
+			"(G = #2#)"
 		}
     },
 	boss = {
@@ -829,10 +830,10 @@ SMODS.Blind {
 	atlas = "blind",
 	pos = {x = 0, y = 24},
 	collection_loc_vars = function(self, info_queue, card)
-		return { vars = { '{G}5' } }
+		return { vars = { '{G}5', may.global_op() } }
 	end,
 	loc_vars = function(self, info_queue, card)
-		return { vars = { '{G}5' } }
+		return { vars = { '{G}5', may.global_op() } }
 	end,
 	modify_hand = function(self, cards, poker_hands, text, mult, hand_chips)
 		local found

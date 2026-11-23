@@ -543,3 +543,78 @@ SMODS.Joker {
 		SMODS.change_voucher_limit(-card.ability.extra.slots)
 	end,
 }
+
+SMODS.Joker {
+	key = 'jerrys_bait_shop',
+	loc_txt = {
+		name = 'Jerry\'s Bait Shop',
+		text = {
+            {
+			    "{X:chips,C:white}X#1#{} Chips", 
+				may.pager(),
+				"Earn {C:money}$#2#{} when {C:attention}skipping{} a {C:attention}Booster Pack{},", 
+				"then {C:green}increase{} the amount by {C:money}+$#3#{} {C:inactive}(max $#4#){}", 
+				may.pager(),
+				"If {C:money}money{} gain is equal to {C:money}$#4#{},", 
+				"increase {X:chips,C:white}XChips{} by {X:chips,C:white}+X#5#{}", 
+				"when {C:attention}opening{} a {C:attention}Booster Pack{}",
+            }, 
+            {
+			    "{C:inactive,E:1}Art & idea by _TeKKen_{}"
+            },
+		}
+	},
+	config = { extra = { x_chips = 1.25, p_dollars = 0.25, p_dollars_gain = 0.25, max_p_dollars = 15, x_chips_gain = 0.05 } },
+	rarity = may.epic_key,
+	atlas = 'joker1',
+	pos = { x = 0, y = 10 },
+	blueprint_compat = true,
+	demicoloncompat = true,
+	cost = 12,
+	mayday_2026 = true,
+	attributes = {
+		'xchips',
+		'economy', 
+		'scaling'
+	}, 
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.ability.extra.x_chips, card.ability.extra.p_dollars, card.ability.extra.p_dollars_gain, card.ability.extra.max_p_dollars, card.ability.extra.x_chips_gain } }
+	end,
+	calculate = function(self, card, context)
+		if context.skipping_booster and context.cardarea == G.jokers then
+			local gain = card.ability.extra.p_dollars
+			if card.ability.extra.p_dollars < card.ability.extra.max_p_dollars then 
+				SMODS.scale_card(card, {
+					ref_table = card.ability.extra,
+                	ref_value = "p_dollars",
+                	scalar_value = "p_dollars_gain",
+					scaling_message = {
+                    	colour = G.C.MONEY, 
+						message = localize('k_upgrade_ex')
+					}
+            	})
+			end
+			return {
+				p_dollars = gain, 
+				card = card
+			}
+		end
+		if context.joker_main then 
+			return {
+				x_chips = card.ability.extra.x_chips, 
+				card = card
+			}
+		end 
+		if context.open_booster and card.ability.extra.p_dollars >= card.ability.extra.max_p_dollars then
+			SMODS.scale_card(card, {
+				ref_table = card.ability.extra,
+            	ref_value = "x_chips",
+                scalar_value = "x_chips_gain",
+				scaling_message = {
+                	colour = G.C.CHIPS, 
+					message = localize('k_upgrade_ex')
+				}
+        	})
+		end 
+	end 
+}

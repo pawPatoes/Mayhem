@@ -31,19 +31,25 @@ SMODS.Gradient {
 
 SMODS.Gradient {
 	key = 'col_mayhem_gradient',
-	colours = {HEX('d61515ff'), HEX('841212ff')},
+	colours = (may.season == 'christmas' and may.conf.seasonal) and {HEX('f3c536'), HEX('d3ab32')} or {HEX('d61515ff'), HEX('841212ff')},
+	interpolation = 'trig'
+}
+
+SMODS.Gradient {
+	key = 'col_golden_christmas',
+	colours = {HEX('f3c536'), HEX('d3ab32')}, 
 	interpolation = 'trig'
 }
 
 SMODS.Gradient {
 	key = 'col_mayhem_gradient_dark1',
-	colours = {mix_colours(HEX('d61515ff'), HEX('000000'), 0.5), mix_colours(HEX('841212ff'), HEX('000000'), 0.5)},
+	colours = (may.season == 'christmas' and may.conf.seasonal) and {mix_colours(HEX('f3c536ff'), HEX('000000'), 0.5), mix_colours(HEX('d3ab32ff'), HEX('000000'), 0.5)} or {mix_colours(HEX('d61515ff'), HEX('000000'), 0.5), mix_colours(HEX('841212ff'), HEX('000000'), 0.5)},
 	interpolation = 'trig'
 }
 
 SMODS.Gradient {
 	key = 'col_mayhem_gradient_dark2',
-	colours = {mix_colours(HEX('d61515ff'), HEX('00000000'), 0.5), mix_colours(HEX('841212ff'), HEX('00000000'), 0.5)},
+	colours = (may.season == 'christmas' and may.conf.seasonal) and {mix_colours(HEX('f3c536ff'), HEX('00000000'), 0.5), mix_colours(HEX('d3ab32ff'), HEX('00000000'), 0.5)} or {mix_colours(HEX('d61515ff'), HEX('00000000'), 0.5), mix_colours(HEX('841212ff'), HEX('00000000'), 0.5)},
 	interpolation = 'trig'
 }
 

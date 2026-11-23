@@ -1505,16 +1505,16 @@ SMODS.Joker {
 				"{C:attention}#2#{} random {C:dark_edition}Negative{} {C:attention}consumables{}", 
 				may.pager(), 
                 "{C:inactive}Does not require room, excludes self{}", 
-                "{C:inactive}Common -> Uncommon -> Rare -> Epic -> Legendary{}", 
+                "{C:inactive}Common >> Uncommon >> Rare >> Epic >> Legendary{}", 
 			},
 			{
 				"{C:inactive,E:1}Art by 2Much{}"
 			}
 		}
 	},
-	config = { extra = { consumables = 10, rarity = 1 } },
+	config = { extra = { consumables = 8, rarity = 1 } },
 	pos = { x = 1, y = 7 },
-	cost = 12,
+	cost = 15,
 	rarity = 3,
 	atlas = 'joker2',
 	blueprint_compat = false,
